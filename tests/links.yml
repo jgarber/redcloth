@@ -141,4 +141,9 @@ comments: link text can not contain parentheses
 ---
 in: '"Dive Into XML":http://www.xml.com/pub/au/164'
 out: <p><a href="http://www.xml.com/pub/au/164">Dive Into <span class="caps">XML</span></a></p>
-
+---
+in: '"Lab Exercises":../lab/exercises/exercises.html.'
+out: <p><a href="../lab/exercises/exercises.html">Lab Exercises</a>.</p>
+---
+in: 'Go to "discuss":http://www.dreammoods.com/cgibin/cutecast/cutecast.pl?forum=1&thread=26627 to discuss.'
+out: <p>Go to <a href="http://www.dreammoods.com/cgibin/cutecast/cutecast.pl?forum=1&#38;thread=26627">discuss</a> to discuss.</p>

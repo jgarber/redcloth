@@ -1,6 +1,11 @@
 require 'yaml'
 require 'redcloth'
 
+def a_name( phrase )
+    phrase.downcase.
+           gsub( /\W+/, '-' )
+end
+
 file_name = ARGV.shift
 case file_name
 when 'README'
@@ -21,6 +26,9 @@ when 'QUICK-REFERENCE'
     end
 
     content = YAML::load( File.open( 'REFERENCE' ) )
+
+    sections = content.collect { |c| c.keys.first }
+    sections.shift
 
     puts <<-HTML
     <html>
@@ -76,12 +84,13 @@ when 'QUICK-REFERENCE'
     <body>
     <table>
     <tr><th colspan=3><h1>Textile Quick Reference</h1></th></tr>
+    <tr><th colspan=3>Sections: <nobr>#{ sections.collect { |s| "<a href='##{ a_name( s ) }'>#{ s }</a>" }.join( '</nobr> | <nobr>' ) }</nobr></th></tr>
     HTML
 
     ct = 0
     content.each do |section|
         section.each do |header, parags|
-            puts "<tr><th colspan=5>#{ header }</th></tr>" if ct.nonzero?
+            puts "<tr><th colspan=5><a name='#{ a_name( header ) }'>#{ header }</a></th></tr>" if ct.nonzero?
             parags.each do |p|
                 if p.is_a?( Array ) and p[0] == :example
                     puts "<tr><td nowrap><p class='example1'>#{ p[1] }</p></td><td>&rarr;</td>" +
@@ -128,6 +137,9 @@ when 'REFERENCE'
         font-weight: bold;
         padding-top: 30px;
     }
+    H1 {
+        font-size: 42pt;
+    }
     H4 {
         color: #999;
         background-color: #fee;
@@ -139,7 +151,7 @@ when 'REFERENCE'
         margin: 10px 15px 5px 15px;
     }
     P.example1 {
-        background-color: #A30;
+        background-color: #B30;
         color: white;
         font-weight: bold;
         font-size: 9pt;
