@@ -187,13 +187,13 @@ class RedCloth < String
     C_LNGE = '(?:\[[^\]]+\])'
     C_STYL = '(?:\{[^}]+\})'
     S_CSPN = '(?:\\\\\d+)'
-    S_RSPN = '(?:\/\d+)'
-    A = /(?:#{A_HLGN}?#{A_VLGN}?|#{A_VLGN}?#{A_HLGN}?)/
-    S = /(?:#{S_CSPN}?#{S_RSPN}|#{S_RSPN}?#{S_CSPN}?)/
-    C = /(?:#{C_CLAS}?#{C_STYL}?#{C_LNGE}?|#{C_STYL}?#{C_LNGE}?#{C_CLAS}?|#{C_LNGE}?#{C_STYL}?#{C_CLAS}?)/
+    S_RSPN = '(?:/\d+)'
+    A = "(?:#{A_HLGN}?#{A_VLGN}?|#{A_VLGN}?#{A_HLGN}?)"
+    S = "(?:#{S_CSPN}?#{S_RSPN}|#{S_RSPN}?#{S_CSPN}?)"
+    C = "(?:#{C_CLAS}?#{C_STYL}?#{C_LNGE}?|#{C_STYL}?#{C_LNGE}?#{C_CLAS}?|#{C_LNGE}?#{C_STYL}?#{C_CLAS}?)"
 	# PUNCT = Regexp::quote( '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~' )
     PUNCT = Regexp::quote( '!"#$%&\'*+,-./:;=?@\\^_`|~' )
-    HYPERLINK = '(\S+?)([^\w\s\/;=\?]*?)(\s|$)'
+    HYPERLINK = '(\S+?)([^\w\s/;=\?]*?)(\s|$)'
 
     GLYPHS = [
     # [ /([^\s[{(>])?\'(?(1)|(?=\s|s\b|[#{PUNCT}]))/, '\1&#8217;\2' ], # single closing
