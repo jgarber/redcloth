@@ -4,7 +4,7 @@ spec = Gem::Specification.new do |s|
   ## Basic Information
 
   s.name = 'RedCloth'
-  s.version = "2.0.9"
+  s.version = "2.0.10"
   s.platform = Gem::Platform::RUBY
   s.summary = <<-TXT
     RedCloth is a module for using Textile in Ruby. Textile is a text format. 

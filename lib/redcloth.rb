@@ -166,7 +166,7 @@ end
 
 class RedCloth < String
 
-    VERSION = '2.0.9'
+    VERSION = '2.0.10'
 
     #
     # Two accessor for setting security restrictions.
