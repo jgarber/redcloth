@@ -420,7 +420,7 @@ class RedCloth < String
 
 					if tag =~ /fn(\d+)/
 						tag = 'p';
-						atts << ' id="fn#{ $1 }"'
+						atts << " id=\"fn#{ $1 }\""
 						content = "<sup>#{ $1 }</sup> #{ content }"
 					end
 
