@@ -266,9 +266,7 @@ class RedCloth < String
         get_refs text 
 
         no_textile text 
-        image text 
-        links text 
-        code text 
+        glyphs text
 
         unless lite
             lists text
@@ -276,7 +274,6 @@ class RedCloth < String
             block text
         end
 
-        glyphs text
         footnote_ref text
         retrieve text
         text.gsub!( /<\/?notextile>/, '' )
@@ -487,7 +484,7 @@ class RedCloth < String
             \s?
             (?:\(([^)]+?)\)(?="))?     # $title
             ":
-            (\S+?\b)                   # $url
+            (\S+?)                     # $url
             (\/)?                      # $slash
             ([^\w\/;]*?)               # $post
             (?=\s|\.[#{PUNCT}]+|$)
@@ -505,7 +502,7 @@ class RedCloth < String
 	end
 
     def get_refs( text ) 
-    	text.gsub!( /(^|\s)\[(.+?)\]((?:http:\/\/|\/)\S+?)(?=\s|$)/ ) do |m|
+    	text.gsub!( /(^|\s)\[(.+?)\]((?:http:\/\/|javascript:|ftp:\/\/|\/)\S+?)(?=\s|$)/ ) do |m|
         	flag, url = $~[1..2]
 			@urlrefs[flag] = url
 		end
@@ -617,33 +614,49 @@ class RedCloth < String
             '<sup><a href="#fn\1">\1</a></sup>\2' )
 	end
     
-    def glyphs( text ) 
-        text.gsub!( /"\z/, "\" " )
+    def inline( text )
+        image text 
+        links text 
+        code text 
+        span text
+    end
+
+    def glyphs_deep( text )
         codepre = false
-        ## if no html, do a simple search and replace...
+        offtags = 'code|pre|kbd|notextile'
         if text !~ /<.*>/
             pgl( text )
         else
-            text.replace( text.split( /(<.*?>)/ ).collect do |line|
-                offtags = 'code|pre|kbd|notextile'
+            text.gsub!( /(?:[^<].*?(?=<[^\n]*?>|$)|<[^\n]*?>+)/m ) do |line|
+                tagline = ( line =~ /^<.*>/ )
                 
                 ## matches are off if we're between <code>, <pre> etc.
-                codepre = true if line =~ /<(#{ offtags })>/i
-                codepre = false if line =~ /<\/(#{ offtags })>/i
+                if tagline
+                    codepre = true if line =~ /^<(#{ offtags })>/i
+                    codepre = false if line =~ /^<\/(#{ offtags })>/i
+                end
             
-                pgl( line ) if line !~ /<.*>/ and not codepre
-
                 ## do htmlspecial if between <code>
                 if codepre
                     line.htmlesc!( :NoQuotes )
                     line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
-                else
-                    span line
+                elsif not tagline
+                    inline line
+                    glyphs_deep line
                 end
 
                 line
-            end.join )
+            end
         end
+    end
+
+    def glyphs( text ) 
+        text.gsub!( /"\z/, "\" " )
+        ## if no html, do a simple search and replace...
+        if text !~ /<.*>/
+            inline text
+        end
+        glyphs_deep text
     end
 
     def i_align( text )

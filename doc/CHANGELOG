@@ -1,4 +1,13 @@
 --- %YAML:1.0
+- version: 2.0.3
+  date: 2004-04-02
+  changes:
+    - Handling of pre, code, notextile was all wrong.  Also, got rid of the goofed up
+      split then collect.  Now using gsub! and recursion to handle inlines and glyphs.
+    - Better acronym support.
+    - Suppression of Regexp warnings.
+    - Single- and double-quoted string wierdness.  Thanks, Bret Pettichord.
+
 - version: 2.0.2
   date: 2004-03-08
   changes:
