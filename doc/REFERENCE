@@ -27,6 +27,19 @@
   - Line breaks are converted to HTML breaks.
   - !!example "I spoke.\nAnd none replied."
   - Line breaks can be disabled in RedCloth by turning on @fold_lines@.
+  - h4. Entities
+  - Single- and double-quotes around words or phrases are converted to curly quotations, much easier on the eye.
+  - !!example '"Observe!"'
+  - Double hyphens are replaced with an em-dash.
+  - !!example Observe -- very nice!
+  - Single hyphens are replaced with en-dashes.
+  - !!example Observe - tiny and brief.
+  - Triplets of periods become an ellipsis.
+  - !!example Observe...
+  - The letter 'x' becomes a dimension sign when used alone.
+  - !!example 'Observe: 2 x 2.'
+  - Conversion of trademark and copyright symbols.
+  - !!example 'one(TM), two(R), three(C).'
 - Quick Block Modifiers:
   - Blocks of text default to being treated as paragraphs.  But modifers can be affixed
     to the beginning of a block to change its treatment.
@@ -133,9 +146,10 @@
 
       </div>
       
-      The main text of the page
-      goes here and will stay to
-      the left of the sidebar.
+      The main text of the
+      page goes here and will 
+      stay to the left of the 
+      sidebar.
 
 - Lists:
   - h4. Numeric Lists
@@ -154,6 +168,16 @@
     descriptive phrase in quotation marks.  Follow it immediately by a colon and the URL.
   - !!example I searched "Google":http://google.com.
   - Notice, the link won't include any trailing punctuation.
+  - h4. Link Aliases
+  - If you are using the same link several times in your document, or you'd just like to be a tad more
+    organized, you can use a link alias.  Place the URL anywhere in your document, beginning with its
+    alias in square brackets.  Then, use the alias in place of the URL, using the link format above.
+  - !!example |
+      I am crazy about "Hobix":hobix
+      and "it's":hobix "all":hobix I ever
+      "link to":hobix!
+
+      [hobix]http://hobix.com
   - h4. Embedded Images
   - You can embed an image in your Textile document by surrounding its URL with exclamation marks.
   - !!example "!http://hobix.com/sample.jpg!" 

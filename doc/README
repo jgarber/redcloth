@@ -21,6 +21,13 @@ h4. RedCloth Links
 
 "Hobix":http://hobix.com is a lovely little blogging package which uses RedCloth for blog entries.
 
+<div id="css-buttons">
+
+* "(css-button w3c)%W3C% xhtml 1.0(Valid XHTML 1.0!)":http://validator.w3.org/check?uri=referer
+* "(css-button w3c w3c2)%W3C% valid css(Valid CSS!)":http://jigsaw.w3.org/css-validator/check/referer
+
+</div>
+
 </div>
 
 RedCloth is a module for using Textile in Ruby.  Textile is a text format.  A very simple text format.  Another stab at making readable text that can be converted to HTML.
@@ -45,7 +52,7 @@ Textile also handles some subtleties of formatting which will enhance your docum
 
 * Double hyphens are replaced with an em-dash.  Observe -- very nice!
 
-* Single hypens are replaced with en-dashes. Observe - so cute!
+* Single hyphens are replaced with en-dashes. Observe - so cute!
 
 * Triplets of periods become an ellipsis.  Observe...
 

@@ -1,12 +1,15 @@
 --- %YAML:1.0
 - version: 2.0.11
-  date: 2004-05-28
+  date: 2004-06-01
   changes:
+    - Fixed the new 2.0-style aliased links.
     - Lines starting with div opening or closing tags aren't given paragraph tags.
     - Escaped some sample markup that was being translated by RDoc.
     - Subtle changes to the quick tags to help them interact with surrounding HTML better.
     - Ensure angle brackets inside code quick tags get escaped.
     - New patch and test by F. Ros to fix <pre> tags with class settings.
+    - Commented out encode_entities and fix_entities, they do nothing now.  Thanks, Denis.
+    - Scaled back QTAGS a back to avoid mixing up hyphens and dels.  Thanks, Denis.
     - Work on the references to ensure they are generating at least XHTML 1.0 Transitional.
 
 - version: 2.0.10

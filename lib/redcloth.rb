@@ -228,8 +228,8 @@ class RedCloth < String
         @shelf = []
 
         incoming_entities text 
-        encode_entities text 
-        fix_entities text 
+        ## encode_entities text 
+        ## fix_entities text 
         clean_white_space text 
 
         get_refs text 
@@ -342,14 +342,15 @@ class RedCloth < String
         ['~', 'sub']
     ].collect do |rc, ht| 
         ttr = Regexp.quote(rc)
-        re  = /(^|[\s\>#{PUNCT}{(\[])
+        punct = PUNCT.sub( Regexp::quote(rc), '' )
+        re  = /(^|[\s\>#{punct}{(\[])
                 #{ttr}
                 (#{C})
                 (?::(\S+?))?
                 ([^\s#{ttr}]+?(?:[^\n]|\n(?!\n))*?)
-                ([#{PUNCT}]*?)
+                ([#{punct}]*?)
                 #{ttr}
-                (?=[\s\])}<#{PUNCT}]|$)/xm 
+                (?=[\s\])}<#{punct}]|$)/xm 
         [re, ht]
     end 
 
@@ -584,8 +585,9 @@ class RedCloth < String
 
     def get_refs( text ) 
         text.gsub!( REFS_RE ) do |m|
-            flag, url = $~[1..2]
+            flag, url = $~[2..3]
             @urlrefs[flag] = url
+            nil
         end
     end
     
