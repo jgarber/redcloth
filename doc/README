@@ -10,8 +10,8 @@ Take a complete tour of Textile at "A Textile Reference":http://hobix.com/textil
 
 For fast syntax checking, try the "Quick Reference":http://hobix.com/textile/quick.html.
 
-p(example1). Upgrade with RubyGems!  Try: 
-@gem -Ri RedCloth@.
+p(example1). Upgrade with "RubyGems":http://rubygems.rubyforge.org/!  Try: 
+@gem install RedCloth@.
 
 See the "project page":http://rubyforge.org/projects/redcloth/ for bug reporting, old releases and CVS instructions.  "Documentation":http://redcloth.rubyforge.org/rdoc/ is also hosted at RubyForge.
 
@@ -86,7 +86,7 @@ h2. Installing RedCloth
 To install RedCloth via RubyGems:
 
 <pre>
-  gem -Ri RedCloth
+  gem install RedCloth
 </pre>
 
 Or "download RedCloth":http://rubyforge.org/frs/download.php/670/redcloth-2.0.10.tar.gz and simply run the install.rb like so:

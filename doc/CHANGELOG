@@ -1,4 +1,13 @@
 --- %YAML:1.0
+- version: 3.0
+  date: 2004-10-26
+  changes:
+    - Broke up the Textile engine into smaller parts, recoded central block parser.
+    - Added preliminary support for Markdown.
+    - Added support for custom Textile prefixes.
+    - RedCloth now generates XHTML fragments.
+    - Complete HTML documents should now work, RedCloth ignores complex HTML.
+      
 - version: 2.0.12
   date: 2004-08-09
   changes:

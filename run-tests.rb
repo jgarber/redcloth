@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'redcloth'
+require 'lib/redcloth'
 require 'yaml'
 
 Dir["tests/*.yml"].each do |testfile|
