@@ -1,9 +1,12 @@
 #                                vim:ts=4:sw=4:
 # = RedCloth - Textile for Ruby
 #
-# (c) 2003 why the lucky stiff (and his puppet organizations.)
+# Homepage::  http://whytheluckystiff.net/ruby/redcloth/
+# Author::    why the lucky stiff (http://whytheluckystiff.net/)
+# Copyright:: (c) 2004 why the lucky stiff (and his puppet organizations.)
+# License::   BSD
 #
-# (see http://www.textism.com/tools/textile/ for Textile)
+# (see http://hobix.com/textile/ for a Textile Reference.)
 #
 # Based on (and also inspired by) both:
 #
@@ -110,7 +113,7 @@ end
 #
 # Will become:
 #
-# <img src="http://www.textism.com/common/textist.gif" alt="Textist" />
+#  <img src="http://www.textism.com/common/textist.gif" alt="Textist" />
 #
 # With a link:
 #
@@ -699,10 +702,11 @@ class RedCloth < String
     OFFTAG_MATCH = /(?:(<\/#{ OFFTAGS }>)|(<#{ OFFTAGS }[^>]*>))(.*?)(?=<\/?#{ OFFTAGS }>|\Z)/mi
     OFFTAG_OPEN = /<#{ OFFTAGS }/
     OFFTAG_CLOSE = /<\/?#{ OFFTAGS }/
+    HASTAG_MATCH = /(<\/?\w[^\n]*?>)/m
     ALLTAG_MATCH = /(<\/?\w[^\n]*?>)|.*?(?=<\/?\w[^\n]*?>|$)/m
 
     def glyphs( text, level = 0 )
-        if text !~ /<.*>/
+        if text !~ HASTAG_MATCH
             pgl text
             footnote_ref text
         else
@@ -748,7 +752,7 @@ class RedCloth < String
                     else
                         aftertag.htmlesc!( :NoQuotes ) if aftertag
                         line = "<redpre##{ pre_list.length }>"
-                        pre_list << "<#{ offtag }>#{ aftertag }"
+                        pre_list << "#{ $3 }#{ aftertag }"
                     end
                 elsif $1 and codepre > 0
                     if codepre - used_offtags.length > 0

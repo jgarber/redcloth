@@ -5,6 +5,7 @@
     - Escaped some sample markup that was being translated by RDoc.
     - Subtle changes to the quick tags to help them interact with surrounding HTML better.
     - Ensure angle brackets inside code quick tags get escaped.
+    - New patch and test by F. Ros to fix <pre> tags with class settings.
 
 - version: 2.0.10
   date: 2004-05-26

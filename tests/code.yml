@@ -61,3 +61,6 @@ out: '<p><strong>this <span></span> is strong</strong></p>'
 ---
 in: '*this <span>test</span> is strong*'
 out: '<p><strong>this <span>test</span> is strong</strong></p>'
+---
+in: <pre class="code"> __inline__</pre>
+out: <pre class="code"> __inline__</pre>

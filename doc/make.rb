@@ -60,6 +60,14 @@ when 'README'
         font-size: 15pt;
         color: red;
     }
+    #sidebar {
+        float: right;
+        font-family: verdana, arial, sans-serif;
+        font-size: 10pt;
+        border-left: solid 1px #999;
+        margin-left: 10px;
+        width: 200px;
+    }
     </style>
     </head>
     <body>

@@ -54,7 +54,7 @@
   - Strength can be give to text by surrounding with asterisks.  In HTML, this strength appears
     as <strong>bold</strong>.
   - !!example And then? She *fell*!
-  - Both italics and bold can be forces by doubling the underscores or asterisks.
+  - Both italics and bold can be forced by doubling the underscores or asterisks.
   - !!example "I __know__.\nI **really** __know__."
   - Use double question marks to indicate _citation_.  The title of a book, for instance.
   - !!example "??Cat's Cradle?? by Vonnegut"
