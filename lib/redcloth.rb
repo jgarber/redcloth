@@ -160,7 +160,7 @@ end
 
 class RedCloth < String
 
-    VERSION = '2.0.2'
+    VERSION = '2.0.3'
 
     #
     # Mapping of 8-bit ASCII codes to HTML numerical entity equivalents.
