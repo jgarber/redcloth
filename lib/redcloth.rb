@@ -191,7 +191,7 @@ class RedCloth < String
     A = "(?:#{A_HLGN}?#{A_VLGN}?|#{A_VLGN}?#{A_HLGN}?)"
     S = "(?:#{S_CSPN}?#{S_RSPN}|#{S_RSPN}?#{S_CSPN}?)"
     C = "(?:#{C_CLAS}?#{C_STYL}?#{C_LNGE}?|#{C_STYL}?#{C_LNGE}?#{C_CLAS}?|#{C_LNGE}?#{C_STYL}?#{C_CLAS}?)"
-	# PUNCT = Regexp::quote( '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~' )
+    # PUNCT = Regexp::quote( '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~' )
     PUNCT = Regexp::quote( '!"#$%&\'*+,-./:;=?@\\^_`|~' )
     HYPERLINK = '(\S+?)([^\w\s/;=\?]*?)(\s|$)'
 
@@ -234,37 +234,45 @@ class RedCloth < String
         '~' => 'bottom'
     }
 
-	QTAGS = [
-		['**', 'strong'],
-		['*', 'b'],
-		['??', 'cite'],
-		['-', 'del'],
-		['__', 'i'],
-		['_', 'em'],
-		['%', 'span'],
-		['+', 'ins'],
+    QTAGS = [
+        ['**', 'strong'],
+        ['*', 'b'],
+        ['??', 'cite'],
+        ['-', 'del'],
+        ['__', 'i'],
+        ['_', 'em'],
+        ['%', 'span'],
+        ['+', 'ins'],
         ['^', 'sup'],
-		['~', 'sub']
-	]
+        ['~', 'sub']
+    ]
 
     #
-    # This specifies an Array of security restrictions.
+    # Two accessor for setting security restrictions.
     #
     # This is a nice thing if you're using RedCloth for
     # formatting in public places (e.g. Wikis) where you
     # don't want users to abuse HTML for bad things.
     #
-    # If this includes +:filter_html+ HTML which wasn't
+    # If +:filter_html+ is set, HTML which wasn't
     # created by the Textile processor will be escaped.
     #
-    # If it includes +:filter_styles+ it will also disable
+    # If +:filter_styles+ is set, it will also disable
     # the style markup specifier. ('{color: red}')
     #
-    attr_accessor :restrictions
+    attr_accessor :filter_html, :filter_styles
+
+    #
+    # Accessor for toggling line folding.
+    #
+    # If +:fold_lines+ is set, single newlines will
+    # not be converted to break tags.
+    #
+    attr_accessor :fold_lines
 
     def initialize( string, restrictions = [] )
-      @restrictions = restrictions
-      super( string )
+        restrictions.each { |r| method( "#{ r }=" ).call( true ) }
+        super( string )
     end
 
     #
@@ -275,8 +283,8 @@ class RedCloth < String
         # make our working copy
         text = self.dup
         
-		@urlrefs = {}
-		@shelf = []
+        @urlrefs = {}
+        @shelf = []
 
         incoming_entities text 
         encode_entities text 
@@ -321,7 +329,7 @@ class RedCloth < String
             style << "vertical-align:#{ v_align( $& ) };" if text =~ A_VLGN
         end
 
-        style << "#{ $1 };" if not @restrictions.include?(:filter_styles) and
+        style << "#{ $1 };" if not @filter_styles and
             text.sub!( /\{([^}]*)\}/, '' )
 
         lang = $1 if
@@ -355,144 +363,145 @@ class RedCloth < String
         text.gsub!( /^(?:table(_?#{S}#{A}#{C})\. ?\n)?^(#{A}#{C}\.? ?\|.*?\|)\n\n/m ) do |matches|
 
             tatts, fullrow = $~[1..2]
-			tatts = pba( tatts, 'table' )
-			rows = []
+            tatts = pba( tatts, 'table' )
+            rows = []
 
-			fullrow.
-			split( /\|$/m ).
-			delete_if { |x| x.empty? }.
-			each do |row|
+            fullrow.
+            split( /\|$/m ).
+            delete_if { |x| x.empty? }.
+            each do |row|
 
-				ratts, row = pba( $1, 'tr' ), $2 if row =~ /^(#{A}#{C}\. )(.*)/m
-				
-				catts, cells = '', []
-				row.split( '|' ).each do |cell|
-					ctyp = 'd'
-					ctyp = 'h' if cell =~ /^_/
+                ratts, row = pba( $1, 'tr' ), $2 if row =~ /^(#{A}#{C}\. )(.*)/m
+                
+                catts, cells = '', []
+                row.split( '|' ).each do |cell|
+                    ctyp = 'd'
+                    ctyp = 'h' if cell =~ /^_/
 
-					catts, cell = pba( $1, 'td' ), $2 if cell =~ /^(_?#{S}#{A}#{C}\. )(.*)/
+                    catts, cell = pba( $1, 'td' ), $2 if cell =~ /^(_?#{S}#{A}#{C}\. )(.*)/
 
-					unless cell.strip.empty?
-						cells << "\t\t\t<t#{ ctyp }#{ catts }>#{ cell }</t#{ ctyp }>" 
-					end
-				end
-				rows << "\t\t<tr#{ ratts }>\n#{ cells.join( "\n" ) }\n\t\t</tr>"
-			end
-			"\t<table#{ tatts }>\n#{ rows.join( "\n" ) }\n\t</table>\n\n"
-		end
-	end
+                    unless cell.strip.empty?
+                        cells << "\t\t\t<t#{ ctyp }#{ catts }>#{ cell }</t#{ ctyp }>" 
+                    end
+                end
+                rows << "\t\t<tr#{ ratts }>\n#{ cells.join( "\n" ) }\n\t\t</tr>"
+            end
+            "\t<table#{ tatts }>\n#{ rows.join( "\n" ) }\n\t</table>\n\n"
+        end
+    end
 
     def lists( text ) 
-		lists = {}
+        lists = {}
         text.gsub!( /^([#*]+?#{C} .*?)$(?![^#*])/m ) do |match|
-			lines = match.split( /\n/ )
+            lines = match.split( /\n/ )
             next_line_id = 0
             lines.collect do |line|
                 next_line_id += 1
-				nextline = lines[next_line_id]
-				if line =~ /^([#*]+)(#{A}#{C}) (.*)$/m
-					tl,atts,content = $~[1..3]
-					nl = nextline.dup.gsub!( /^([#*]+)\s.*/, '\1' ) if nextline
-					unless lists.has_key? tl
-						lists[tl] = true
-						atts = pba( atts )
-						line = "\t<#{ lT(tl) }l#{ atts }>\n\t<li>#{ content }"
-					else
-						line = "\t\t<li>#{ content }"
-					end
+                nextline = lines[next_line_id]
+                if line =~ /^([#*]+)(#{A}#{C}) (.*)$/m
+                    tl,atts,content = $~[1..3]
+                    nl = nextline.dup.gsub!( /^([#*]+)\s.*/, '\1' ) if nextline
+                    unless lists.has_key? tl
+                        lists[tl] = true
+                        atts = pba( atts )
+                        line = "\t<#{ lT(tl) }l#{ atts }>\n\t<li>#{ content }"
+                    else
+                        line = "\t\t<li>#{ content }"
+                    end
 
-					if nl == tl
-						line << '</li>'
-					elsif nl == '*' or nl == '#'
-						line << "</li>\n\t</#{ lT( tl ) }l>\n\t</li>"
-						lists.delete( tl )
-					end
-					unless nl
-						lists.delete_if do |k, v|
-							line << "</li>\n\t</#{ lT( k ) }l>"
-							true
-						end
-					end
-				end
-				line
-			end.join( "\n" )   
-		end
-	end
+                    if nl == tl
+                        line << '</li>'
+                    elsif nl == '*' or nl == '#'
+                        line << "</li>\n\t</#{ lT( tl ) }l>\n\t</li>"
+                        lists.delete( tl )
+                    end
+                    unless nl
+                        lists.delete_if do |k, v|
+                            line << "</li>\n\t</#{ lT( k ) }l>"
+                            true
+                        end
+                    end
+                end
+                line
+            end.join( "\n" )   
+        end
+    end
 
     def lT( text ) 
-		text =~ /^#/ ? 'o' : 'u'
-	end
+        text =~ /^#/ ? 'o' : 'u'
+    end
 
     def block( text ) 
         pre = false
         find = ['bq','h[1-6]','fn\d+','p']
     
-        text.gsub!( /(.+)\n(?![#*\s|])/, '\1<br />' )
-   		lines = text.split( /\n/ ) + [' '] 
-		new_text = 
+        text.gsub!( /(.+)\n(?![#*\s|])/, "\\1#{ @fold_lines ? ' ' : '<br />' }" )
+
+        lines = text.split( /\n/ ) + [' '] 
+        new_text = 
         lines.collect do |line|
-			pre = true if line =~ /<pre>/i
-			find.each do |tag|
-				line.gsub!( /^(#{ tag })(#{A}#{C})\.(?::(\S+))? (.*)$/ ) do |m|
-					tag,atts,cite,content = $~[1..4]
+            pre = true if line =~ /<pre>/i
+            find.each do |tag|
+                line.gsub!( /^(#{ tag })(#{A}#{C})\.(?::(\S+))? (.*)$/ ) do |m|
+                    tag,atts,cite,content = $~[1..4]
 
-					atts = pba( atts )
+                    atts = pba( atts )
 
-					if tag =~ /fn(\d+)/
-						tag = 'p';
-						atts << " id=\"fn#{ $1 }\""
-						content = "<sup>#{ $1 }</sup> #{ content }"
-					end
+                    if tag =~ /fn(\d+)/
+                        tag = 'p';
+                        atts << " id=\"fn#{ $1 }\""
+                        content = "<sup>#{ $1 }</sup> #{ content }"
+                    end
 
-					start = "\t<#{ tag }"
-					tend = "</#{ tag }>"
-					
-					if tag == "bq"
-						cite = check_refs( cite )
-						cite = " cite=\"#{ cite }\"" if cite
-						start = "\t<blockquote#{ cite }>\n\t\t<p";
-						tend = "</p>\n\t</blockquote>";
-					end
+                    start = "\t<#{ tag }"
+                    tend = "</#{ tag }>"
+                    
+                    if tag == "bq"
+                        cite = check_refs( cite )
+                        cite = " cite=\"#{ cite }\"" if cite
+                        start = "\t<blockquote#{ cite }>\n\t\t<p";
+                        tend = "</p>\n\t</blockquote>";
+                    end
 
-					"#{ start }#{ atts }>#{ content }#{ tend }"
-				end unless pre
-			end
+                    "#{ start }#{ atts }>#{ content }#{ tend }"
+                end unless pre
+            end
             
             line.gsub!( /^(?!\t|<\/?pre|<\/?code|$| )(.*)/, "\t<p>\\1</p>" )
             
             line.gsub!( "<br />", "\n" ) if pre
-			pre = false if line =~ /<\/pre>/i
+            pre = false if line =~ /<\/pre>/i
             
             line
-		end.join( "\n" )
+        end.join( "\n" )
         text.replace( new_text )
-	end
+    end
     
     def span( text ) 
-		QTAGS.each do |tt, ht|
-			ttr = Regexp::quote( tt )
+        QTAGS.each do |tt, ht|
+            ttr = Regexp::quote( tt )
             text.gsub!( 
 
-				/(^|\s|\>|[#{PUNCT}{(\[])
-				#{ttr}
-				(#{C})
-				(?::(\S+?))?
-				([^\s#{ttr}]+?(?:[^\n]|\n(?!\n))*?)
-				([#{PUNCT}]*?)
-				#{ttr}
-				(?=[\])}]|[#{PUNCT}]+?|<|\s|$)/xm 
-			
-			) do |m|
-		 
-				start,atts,cite,content,tend = $~[1..5]
-				atts = pba( atts )
-				atts << " cite=\"#{ cite }\"" if cite
+                /(^|\s|\>|[#{PUNCT}{(\[])
+                #{ttr}
+                (#{C})
+                (?::(\S+?))?
+                ([^\s#{ttr}]+?(?:[^\n]|\n(?!\n))*?)
+                ([#{PUNCT}]*?)
+                #{ttr}
+                (?=[\])}]|[#{PUNCT}]+?|<|\s|$)/xm 
+            
+            ) do |m|
+         
+                start,atts,cite,content,tend = $~[1..5]
+                atts = pba( atts )
+                atts << " cite=\"#{ cite }\"" if cite
 
-				"#{ start }<#{ ht }#{ atts }>#{ content }#{ tend }</#{ ht }>"
+                "#{ start }<#{ ht }#{ atts }>#{ content }#{ tend }</#{ ht }>"
 
-			end
-		end
-	end
+            end
+        end
+    end
 
     def links( text ) 
         text.gsub!( /
@@ -508,28 +517,28 @@ class RedCloth < String
             ([^\w\/;]*?)               # $post
             (?=\s|\.[#{PUNCT}]+|$)
         /x ) do |m|
-			pre,atts,text,title,url,slash,post = $~[1..7]
+            pre,atts,text,title,url,slash,post = $~[1..7]
 
-			url = check_refs( url )
-			
-			atts = pba( atts )
-			atts << " title=\"#{ title }\"" if title
-			atts = shelve( atts ) if atts
-			
-			"#{ pre }<a href=\"#{ url }#{ slash }\"#{ atts }>#{ text }</a>#{ post }"
-    	end
-	end
+            url = check_refs( url )
+            
+            atts = pba( atts )
+            atts << " title=\"#{ title }\"" if title
+            atts = shelve( atts ) if atts
+            
+            "#{ pre }<a href=\"#{ url }#{ slash }\"#{ atts }>#{ text }</a>#{ post }"
+        end
+    end
 
     def get_refs( text ) 
-    	text.gsub!( /(^|\s)\[(.+?)\]((?:http:\/\/|javascript:|ftp:\/\/|\/)\S+?)(?=\s|$)/ ) do |m|
-        	flag, url = $~[1..2]
-			@urlrefs[flag] = url
-		end
-	end
+        text.gsub!( /(^|\s)\[(.+?)\]((?:http:\/\/|javascript:|ftp:\/\/|\/)\S+?)(?=\s|$)/ ) do |m|
+            flag, url = $~[1..2]
+            @urlrefs[flag] = url
+        end
+    end
     
     def check_refs( text ) 
         @urlrefs[text] || text
-	end
+    end
 
     def image( text ) 
         text.gsub!( /
@@ -543,95 +552,95 @@ class RedCloth < String
             \!                   # closing
             (?::#{ HYPERLINK })? # optional href
         /x ) do |m|
-			algn,atts,url,title,href,href_a1,href_a2 = $~[1..7]
-			atts = pba( atts )
-			atts << " align=\"#{ i_align( algn ) }\"" if algn
-			atts << " title=\"#{ title }\"" if title
-			atts << " alt=\"#{ title }\"" 
-			# size = @getimagesize($url);
-			# if($size) $atts.= " $size[3]";
+            algn,atts,url,title,href,href_a1,href_a2 = $~[1..7]
+            atts = pba( atts )
+            atts << " align=\"#{ i_align( algn ) }\"" if algn
+            atts << " title=\"#{ title }\"" if title
+            atts << " alt=\"#{ title }\"" 
+            # size = @getimagesize($url);
+            # if($size) $atts.= " $size[3]";
 
-			href = check_refs( href ) if href
-			url = check_refs( url )
+            href = check_refs( href ) if href
+            url = check_refs( url )
 
-			out = ''
-			out << "<a href=\"#{ href }\">" if href
-			out << "<img src=\"#{ url }\"#{ atts } />"
-			out << "</a>#{ href_a1 }#{ href_a2 }" if href
-			
-			out
-		end
-	end
+            out = ''
+            out << "<a href=\"#{ href }\">" if href
+            out << "<img src=\"#{ url }\"#{ atts } />"
+            out << "</a>#{ href_a1 }#{ href_a2 }" if href
+            
+            out
+        end
+    end
 
     def code( text ) 
         text.gsub!( /
             (?:^|([\s\(\[{]))                # 1 open bracket?
             @                                # opening
             (?:\|(\w+?)\|)?                  # 2 language
-			(\S(?:[^\n]|\n(?!\n))*?)         # 3 code
+            (\S(?:[^\n]|\n(?!\n))*?)         # 3 code
             @                                # closing
             (?:$|([\]})])|
             (?=[#{PUNCT}]{1,2}|
             \s))                             # 4 closing bracket?
         /x ) do |m|
-			before,lang,code,after = $~[1..4]
-			lang = " language=\"#{ lang }\"" if lang
-			"#{ before }<code#{ lang }>#{ code }</code>#{ after }"
-		end
-	end
+            before,lang,code,after = $~[1..4]
+            lang = " language=\"#{ lang }\"" if lang
+            "#{ before }<code#{ lang }>#{ code }</code>#{ after }"
+        end
+    end
 
     def shelve( val ) 
         @shelf << val
         " <#{ @shelf.length }>"
-	end
+    end
     
     def retrieve( text ) 
-		@shelf.each_with_index do |r, i|
+        @shelf.each_with_index do |r, i|
             text.gsub!( " <#{ i + 1 }>", r )
-		end
-	end
+        end
+    end
 
     def incoming_entities( text ) 
-		## turn any incoming ampersands into a dummy character for now.
-		## This uses a negative lookahead for alphanumerics followed by a semicolon,
-		## implying an incoming html entity, to be skipped
+        ## turn any incoming ampersands into a dummy character for now.
+        ## This uses a negative lookahead for alphanumerics followed by a semicolon,
+        ## implying an incoming html entity, to be skipped
 
         text.gsub!( /&(?![#a-z0-9]+;)/i, "x%x%" )
-	end
+    end
 
     def encode_entities( text ) 
-		## Convert high and low ascii to entities.
+        ## Convert high and low ascii to entities.
         #  if $-K == "UTF-8"  
         #      encode_high( text )
-		#  else
+        #  else
             text.htmlesc!( :NoQuotes )
         #  end
-	end
+    end
 
     def fix_entities( text )
-		## de-entify any remaining angle brackets or ampersands
-		text.gsub!( "&gt;", ">" )
-		text.gsub!( "&lt;", "<" )
-		text.gsub!( "&amp;", "&" )
-	end
+        ## de-entify any remaining angle brackets or ampersands
+        text.gsub!( "&gt;", ">" )
+        text.gsub!( "&lt;", "<" )
+        text.gsub!( "&amp;", "&" )
+    end
 
     def clean_white_space( text ) 
-		text.gsub!( /\r\n/, "\n" )
-		text.gsub!( /\t/, '' )
-		text.gsub!( /\n{3,}/, "\n\n" )
-		text.gsub!( /\n *\n/, "\n\n" )
+        text.gsub!( /\r\n/, "\n" )
+        text.gsub!( /\t/, '' )
+        text.gsub!( /\n{3,}/, "\n\n" )
+        text.gsub!( /\n *\n/, "\n\n" )
         text.gsub!( /"$/, "\" " )
-	end
+    end
 
     def no_textile( text ) 
         text.gsub!( /(^|\s)==(.*?)==(\s|$)?/,
             '\1<notextile>\2</notextile>\3' )
-	end
+    end
 
     def footnote_ref( text ) 
         text.gsub!( /\b\[([0-9]+?)\](\s)?/,
             '<sup><a href="#fn\1">\1</a></sup>\2' )
-	end
+    end
     
     def inline( text )
         image text 
@@ -656,7 +665,7 @@ class RedCloth < String
                       codepre = true
                     elsif line =~ /^<\/(#{ offtags })>/i
                       codepre = false
-                    elsif @restrictions.include?(:filter_html)
+                    elsif @filter_html
                       line.htmlesc!( :NoQuotes )
                       line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
                     end 
