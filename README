@@ -9,6 +9,23 @@ Textile is (c) 2003 Dean Allen.  All rights reserved. You can read more "here":h
 
 RedCloth is also based on PyTextile, which is: Copyright (c) 2003, "Mark Pilgrim":http://diveintomark.org/.  All rights reserved.  You can read more about PyTextile "here":http://diveintomark.org/projects/pytextile/.
 
+h2. About Version 2.0
+
+Last year, a new version of Textile was released for PHP.  This 2.0 version allowed specification of style attributes and element alignments.  Below, is a header element with a green font coloring added.
+
+<pre>
+  h2{color:green}. This is a title
+</pre>
+
+You can also add elements ids, classes, and language settings.
+
+<pre>
+  h2(class)
+  h2(#id)
+  h2[language]
+</pre>
+
+RedCloth 2.0 has been completely recoded and tested with Ruby versions 1.8.0 and 1.6.8.
 
 h2. Installing RedCloth
 
@@ -18,7 +35,7 @@ To install RedCloth via raa-install:
   raa-install -i redcloth
 </pre>
 
-Or "download RedCloth":http://prdownloads.sourceforge.net/yaml4r/redcloth-2.0.tar.gz and simply run the install.rb like so:
+Or "download RedCloth":http://prdownloads.sourceforge.net/yaml4r/redcloth-2.0.2.tar.gz and simply run the install.rb like so:
 
 <pre>
   ruby install.rb config
@@ -49,4 +66,3 @@ To generate HTML from your RedCloth object, use the @RedCloth#to_html@ method:
 h2. The Textile language
 
 See the "Textile home page":http://www.textism.com/tools/textile/ for details on the Textile language.
-

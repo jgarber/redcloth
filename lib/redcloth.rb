@@ -160,7 +160,7 @@ end
 
 class RedCloth < String
 
-    VERSION = '2.0'
+    VERSION = '2.0.2'
 
     #
     # Mapping of 8-bit ASCII codes to HTML numerical entity equivalents.
@@ -373,7 +373,7 @@ class RedCloth < String
 				nextline = lines[next_line_id]
 				if line =~ /^([#*]+)(#{A}#{C}) (.*)$/m
 					tl,atts,content = $~[1..3]
-					nl = nextline.gsub( /^([#*]+)\s.*/, '\1' ) if nextline
+					nl = nextline.dup.gsub!( /^([#*]+)\s.*/, '\1' ) if nextline
 					unless lists.has_key? tl
 						lists[tl] = true
 						atts = pba( atts )
