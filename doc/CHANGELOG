@@ -1,4 +1,10 @@
 --- %YAML:1.0
+- version: 3.0.4
+  date: 2005-02-18
+  changes:
+    - Fixed error triggered by complex lists.
+    - Brought back lite_mode.
+
 - version: 3.0.3
   date: 2005-02-06
   changes:

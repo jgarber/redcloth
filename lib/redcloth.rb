@@ -193,6 +193,18 @@ class RedCloth < String
     #
     attr_accessor :hard_breaks
 
+    # Accessor for toggling lite mode.
+    #
+    # In lite mode, block-level rules are ignored.  This means
+    # that tables, paragraphs, lists, and such aren't available.
+    # Only the inline markup for bold, italics, entities and so on.
+    #
+    #   r = RedCloth.new( "And then? She *fell*!", [:lite_mode] )
+    #   r.to_html
+    #   #=> "And then? She <strong>fell</strong>!"
+    #
+    attr_accessor :lite_mode
+
     #
     # Accessor for toggling span caps.
     #
@@ -283,9 +295,11 @@ class RedCloth < String
         # start processor
         @pre_list = []
         rip_offtags text
-        hard_break text
-        refs text
-        blocks text
+        hard_break text 
+        unless @lite_mode
+            refs text
+            blocks text
+        end
         inline text
         smooth_offtags text
 
