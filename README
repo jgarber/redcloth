@@ -1,0 +1,59 @@
+h1. RedCloth
+
+
+h2. Humane text for Ruby
+
+RedCloth is a module for using Textile in Ruby.  Textile is a
+text format.  A very simple text format.  Another stab at making
+readable text that can be converted to HTML.
+
+Textile is (c) 2003 Dean Allen.  All rights reserved.
+You can read more "here":http://www.textism.com/tools/textile/.
+
+RedCloth is also based on PyTextile, which is:
+Copyright (c) 2003, Mark Pilgrim, http://diveintomark.org/
+All rights reserved.  You can read more about PyTextile
+"here":http://diveintomark.org/projects/pytextile/.
+
+
+h2. Installing RedCloth
+
+To install RedCloth via raa-install:
+
+  raa-install -i redcloth
+
+Or download RedCloth and simply run the install.rb like so:
+
+<code>
+  ruby install.rb config
+  ruby install.rb setup
+  sudo ruby install.rb install
+</code>
+
+
+h2. Using RedCloth
+
+The RedCloth class is an extension of Ruby's String class.
+Use it like you would a String:
+
+<code>
+  >> r = RedCloth.new "*strong text* and _emphasized text_"
+  => "*strong text* and _emphasized text_"
+  >> r.gsub!( 'text', 'words' )
+  => "*strong words* and _emphasized words_"
+</code>
+
+To generate HTML from your RedCloth object, use the
+@RedCloth#to_html@ method:
+
+<code>
+  >> r.to_html
+  => "<p><strong>strong words</strong> and <em>emphasized words</em></p>"
+</code>
+
+
+h2. The Textile language
+
+See the "Textile home page":http://www.textism.com/tools/textile/ for
+details on the Textile language.
+
