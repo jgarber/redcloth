@@ -136,7 +136,7 @@ out: <p><a href="http://example.com/" title="link title">link text</a></p>
 # comments: this is a real test and should pass
 ---
 in: '"(link) text(link title)":http://example.com/'
-out: <p>&#8220;(link) text(link title)&#8221;:http://example.com/</p>
+out: <p><a href="http://example.com/" class="link" title="link title"> text</a></p>
 comments: link text can not contain parentheses
 ---
 in: '"Dive Into XML":http://www.xml.com/pub/au/164'

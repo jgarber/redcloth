@@ -1,4 +1,4 @@
-#
+#                                vim:ts=4:sw=4:
 # = RedCloth - Textile for Ruby
 #
 # (c) 2003 why the lucky stiff (and his puppet organizations.)
@@ -53,6 +53,8 @@
 #  ~subscript~
 #  @code@
 #  %(classname)span%
+#
+#  ==notextile== (leave text alone)
 #
 # === Links
 #
@@ -124,6 +126,11 @@
 #     |a|simple|table|row|
 #     |And|Another|table|row|
 #
+# Attributes are defined by style definitions in parentheses.
+#
+#     table(border:1px solid black).
+#     (background:#ddd;color:red). |{}| | | |
+#
 # === Using RedCloth
 # 
 # RedCloth is simply an extension of the String class, which can handle
@@ -153,6 +160,8 @@ end
 
 class RedCloth < String
 
+    VERSION = '2.0'
+
     #
     # Mapping of 8-bit ASCII codes to HTML numerical entity equivalents.
     # (from PyTextile)
@@ -174,239 +183,555 @@ class RedCloth < String
     #
     A_HLGN = /(?:\<(?!>)|\<\>|\=|[()]+)/
     A_VLGN = /[\-^~]/
-    C_CLAS = /(?:\([^)]+\))/
-    C_LNGE = /(?:\[[^\]]+\])/
-    C_STYL = /(?:\{[^}]+\})/
-    S_CSPN = /(?:\\\\\d+)/
-    S_RSPN = /(?:\/\d+)/
+    C_CLAS = '(?:\([^)]+\))'
+    C_LNGE = '(?:\[[^\]]+\])'
+    C_STYL = '(?:\{[^}]+\})'
+    S_CSPN = '(?:\\\\\d+)'
+    S_RSPN = '(?:\/\d+)'
     A = /(?:#{A_HLGN}?#{A_VLGN}?|#{A_VLGN}?#{A_HLGN}?)/
     S = /(?:#{S_CSPN}?#{S_RSPN}|#{S_RSPN}?#{S_CSPN}?)/
     C = /(?:#{C_CLAS}?#{C_STYL}?#{C_LNGE}?|#{C_STYL}?#{C_LNGE}?#{C_CLAS}?|#{C_LNGE}?#{C_STYL}?#{C_CLAS}?)/
-    PUNCT = /[\!"#\$%&\'()\*\+,\-\.\/:;<=>\?@\[\\\]\^_`{\|}\~]/
-
-
+	# PUNCT = Regexp::quote( '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~' )
+    PUNCT = Regexp::quote( '!"#$%&\'*+,-./:;=?@\\^_`|~' )
     HYPERLINK = '(\S+?)([^\w\s\/;=\?]*?)(\s|$)'
-    TEXTILE_TAGS.push(
 
-        # incoming ampersands into dummy char
-        [ /&(?![#a-zA-Z0-9]+;)/, 'x%x%' ],
-
-        # unescape incoming elements
-        [ "&gt;", ">" ],
-        [ "&lt;", "<" ],
-        [ "&amp;", "&" ],
-
-        # normalize linefeeds
-        [ /\r\n/, "\n" ],
-        [ /\n{3,}/, "\n\n" ],
-        [ /\n +\n/, "\n\n" ],
-        [ /"$/, '" ' ],
-
-        # get references
-        [ /(^|\s)\[(.+?)\]((?:http:\/\/|\/)\S+)(?=\s|$)/, proc { @urlRefs ||= {}; @urlRefs[$2] = $3; $1 } ],
-
-        ### QUICK TAGS ###
-
-        # double equals -> <notextile>
-        [ /(^|\s)==(.*?)==([^\w]{0,2})/, '\1<notextile>\2</notextile>\3' ],
-
-        # image -> <img>
-        [ /!([^\s\(=!]+?)\s?(\(([^\)]+?)\))?!/, '<img src="\1" alt="\3" />' ],
-
-        # image with hyperlink -> <a><img>
-        [ /(<img.+ \/>):#{ HYPERLINK }/, '<a href="\2">\1</a>\3\4' ],
-
-        # hyperlink -> <a>
-        [ /"([^"\(]+)\s?(\(([^\)]+)\))?":#{ HYPERLINK }/, '<a href="\4" title="\3">\1</a>\5\6' ]
-
-    )
-
-    #
-    # Quick phrase modifiers. 
-    #
-    PHRASE_MODS = [
-        [ '@', 'code' ],
-        [ '**', 'b' ],
-        [ '*', 'strong' ],
-        [ '??', 'cite' ],
-        [ '-', 'del' ],
-        [ '+', 'ins' ],
-        [ '~', 'sub' ],
-        [ '__', 'i' ],
-        [ '_', 'em' ],
-        [ '^', 'sup' ]
-    ]
-
-    TEXTILE_TAGS.concat(
-        PHRASE_MODS.collect do |texttag, htmltag|
-            [ /(^|\s)#{ Regexp::quote( texttag ) }(\S.*?)#{ Regexp::quote( texttag ) }([\W\s])/, 
-              '\1<' + htmltag + '>\2</' + htmltag + '>\3' ]
-        end
-    )
-
-    # quotes at end of line
-    TEXTILE_TAGS.push(
-        [ /"$/, '" ' ]
-    )
-    
-    #
-    # Encodings and special characters.
-    #
     GLYPHS = [
+    # [ /([^\s[{(>])?\'(?(1)|(?=\s|s\b|[#{PUNCT}]))/, '\1&#8217;\2' ], # single closing
         [ /([^\s\[{(>])?\'([dmst]\b|ll\b|ve\b|\s|:|$)/, '\1&#8217;\2' ], # single closing
         [ /\'/, '&#8216;' ], # single opening
+    # [ /([^\s[{(>])?"(?(1)|(?=\s|[#{PUNCT}]))/, '\1&#8221;\2' ], # double closing
         [ /([^\s\[{(])?"(\s|:|$)/, '\1&#8221;\2' ], # double closing
         [ /"/, '&#8220;' ], # double opening
         [ /\b( )?\.{3}/, '\1&#8230;' ], # ellipsis
-        [ /\b([A-Z][A-Z0-9]{2,})\b(\(([^\)]+)\))/, '<acronym title="\3">\1</acronym>' ], # 3+ uppercase acronym
+        [ /\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])/, '<acronym title="\2">\1</acronym>' ], # 3+ uppercase acronym
         [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]{2,})([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3' ], # 3+ uppercase caps
         [ /\s?--\s?/, '&#8212;' ], # em dash
         [ /\s-\s/, ' &#8211; ' ], # en dash
         [ /(\d+) ?x ?(\d+)/, '\1&#215;\2' ], # dimension sign
-        [ /\b ?(\((tm|TM)\))/, '&#8482;' ], # trademark
-        [ /\b ?(\([rR]\))/, '&#174;' ], # registered
-        [ /\b ?(\([cC]\))/, '&#169;' ] # registered
+        [ /\b ?[(\[]TM[\])]/i, '&#8482;' ], # trademark
+        [ /\b ?[(\[]R[\])]/i, '&#174;' ], # registered
+        [ /\b ?[(\[]C[\])]/i, '&#169;' ] # copyright
     ]
 
-    TEXTILE_PREP_BLOCK = [
+    I_ALGN_VALS = {
+        '<' => 'left',
+        '=' => 'center',
+        '>' => 'right'
+    }
 
-        # deal with forced breaks; this is going to be a problem between
-        #  <pre> tags, but we'll clean them later
-        [ /(\\S)(_*?)([^\\w\\s]*?) *?\n([^#*\\s])/, '\1\2\3<br />\4' ],
+    H_ALGN_VALS = {
+        '<' => 'left',
+        '=' => 'center',
+        '>' => 'right',
+        '<>' => 'justify'
+    }
 
-        # might be a problem with lists
-        [ /l><br \/>/, "l>\n" ]
+    V_ALGN_VALS = {
+        '^' => 'top',
+        '-' => 'middle',
+        '~' => 'bottom'
+    }
 
-    ]
-
-    BLOCKS = [
-        [ /^\s?\*\s(.*)/, "<liu>\\1</liu>" ], # bulleted list *
-        [ /^\s?#\s(.*)/, "<lio>\\1</lio>" ], # numeric list #
-        [ /^bq\. (.*)/, "<blockquote>\\1</blockquote>" ], # blockquote bq.
-        [ /^h(\d)\(([\w]+)\)\.\s(.*)/, "<h\\1 class=\"\\2\">\\3</h\\1>" ], # header hn(class).  w/ css class
-        [ /^h(\d)\. (.*)/, "<h\\1>\\2</h\\1>" ], # plain header hn.
-        [ /^p\(([\w]+)\)\.\s(.*)/, "<p class=\"\\1\">\\2</p>" ], # para p(class).  w/ css class
-        [ /^p\. (.*)/, "<p>\\1</p>" ], # plain paragraph
-        [ /^([^\t ]+.*)/, "<p>\\1</p>" ] # remaining plain paragraph
-    ]
-
-    TEXTILE_CLEAN = [
-
-        # clean out <notextile>
-        [ /<\/?notextile>/, "" ],
-                
-        # clean up liu and lio
-        [ /<(\/?)li(u|o)>/, '<\1li>' ],
-        
-        # clean up empty titles
-        [ / title=""/, '' ],
-        
-        # turn the temp char back to an ampersand entity
-        [ /x%x%/, "&#38;" ],
-        
-        # Newline linebreaks, just for markup tidiness
-        [ /<br \/>/, "<br />\n" ]
-
-    ]
+	QTAGS = [
+		['**', 'strong'],
+		['*', 'b'],
+		['??', 'cite'],
+		['-', 'del'],
+		['__', 'i'],
+		['_', 'em'],
+		['%', 'span'],
+		['+', 'ins'],
+        ['^', 'sup'],
+		['~', 'sub']
+	]
 
     #
     # Generate HTML.
     #
-    def to_html
+    def to_html( lite = false )
 
         # make our working copy
         text = self.dup
+        
+		@urlrefs = {}
+		@shelf = []
 
-        # apply first set of replacements
-        TEXTILE_TAGS.each do |re, resub|
-            if resub.respond_to? :call
-                text.gsub! re, &resub
-            else
-                text.gsub! re, resub
-            end
+        incoming_entities text 
+        encode_entities text 
+        fix_entities text 
+        clean_white_space text 
+
+        get_refs text 
+
+        no_textile text 
+        image text 
+        links text 
+        code text 
+        span text 
+        footnote_ref text
+        glyphs text
+        retrieve text
+
+        unless lite
+            lists text
+            table text
+            block text
         end
 
-        # flag for inside of <code> and <pre> tags
-        codepre = false 
-
-        # apply GLYPHs based on if there is HTML content
-        if /<.*>/.match text
-            text = text.split( /(<.*?>)/ ).collect do |line|
-                case line.downcase
-                when /<(code|pre|kbd|notextile)>/
-                    codepre = true
-                when /<\/(code|pre|kbd|notextile)>/
-                    codepre = false
-                when /<.*?>/
-                    if codepre
-                        line.htmlesc! :NoQuotes
-                        line.gsub! '&lt;pre&gt;', '<pre>'
-                        line.gsub! '&lt;code&gt;', '<code>'
-                    end
-                else
-                    unless codepre
-                        GLYPHS.each do |re, resub|
-                            line.gsub! re, resub
-                        end
-                    end
-                end
-                line
-            end.join
-        else
-            GLYPHS.each do |re, resub|
-                text.gsub! re, resub
-            end
-        end
-
-        # prepare for block replacements
-        TEXTILE_PREP_BLOCK.each do |re, resub|
-            text.gsub! re, resub
-        end
-
-        list = ''
-        pre = false
-
-        # apply block replacements
-        text = text.split( /\n/ ).collect do |line|
-
-            # make sure line isn't blank
-            unless line.empty?
-
-                # matches are off if we're between <pre> tags
-                pre = true if line.downcase.include? '<pre>'
-
-                # deal with block replacements first, then see if we're in a list
-                BLOCKS.each { |re, resub| break if line.gsub! re, resub } unless pre
-
-                # kill any br tags that slipped in earlier
-                line.gsub!( '<br />', "\n" ) if pre
-
-                # matches are back on after </pre>
-                pre = false if line.downcase.include? '</pre>'
-
-            end
-
-            # at the beginning of a list, $line switches to a value
-            if list.empty? and line.include? "<li"
-                list = line[3,1] # "u" or "o", presumably
-                line.gsub!( /^(<li)(o|u)/, "\n<\\2l>\n\\1\\2" )
-            elsif not list.empty? and not line.include? "<li#{ list }"
-                line.gsub!( /^(.*)$/, "</#{ list }l>\n\\1" )
-                list = ''
-            end
-
-            line
-
-        end.join( "\n" )
-
-        # apply cleaning replacements
-        TEXTILE_CLEAN.each do |re, resub|
-            text.gsub! re, resub
-        end
-
+        text.gsub!( /<\/?notextile>/, '' )
+        text.gsub!( /x%x%/, '&#38;' )
+        text.gsub!( /<br \/>/, "<br />\n" )
+        text.strip!
         text
 
     end
 
+    def pgl( text )
+        GLYPHS.each do |re, resub|
+            text.gsub! re, resub
+        end
+    end
+
+    def pba( text_in, element = "" )
+        
+        return '' unless text_in
+
+        style = []
+        text = text_in.dup
+        if element == 'td'
+            colspan = $1 if text =~ /\\\\(\d+)/
+            rowspan = $1 if text =~ /\/(\d+)/
+            style << "vertical-align:#{ $& };" if text =~ A_VLGN
+        end
+
+        style << "#{ $1 };" if
+            text.sub!( /\{([^}]*)\}/, '' )
+
+        lang = $1 if
+            text.sub!( /\[([^)]+?)\]/, '' )
+
+        cls = $1 if
+            text.sub!( /\(([^()]+?)\)/, '' )
+                        
+        style << "padding-left:#{ $1.length }em;" if
+            text.sub!( /([(]+)/, '' )
+
+        style << "padding-right:#{ $1.length }em;" if text.sub!( /([)]+)/, '' )
+
+        style << "text-align:#{ hAlign( $& ) };" if text =~ A_HLGN
+
+        cls, id = $1, $2 if text =~ /^(.*)#(.*)$/
+        
+        atts = ''
+        atts << " style=\"#{ style.join }\"" unless style.empty?
+        atts << " class=\"#{ cls }\"" if cls
+        atts << " lang=\"#{ lang }\"" if lang
+        atts << " id=\"#{ id }\"" if id
+        atts << " colspan=\"#{ colspan }\"" if colspan
+        atts << " rowspan=\"#{ rowspan }\"" if rowspan
+        
+        atts
+    end
+
+    def table( text ) 
+        text << "\n\n"
+        text.gsub!( /^(?:table(_?#{S}#{A}#{C})\. ?\n)?^(#{A}#{C}\.? ?\|.*?\|)\n\n/m ) do |matches|
+			tatts = pba( matches[1], 'table' )
+			rows = []
+
+			matches[2].
+			split( /\|$/m ).
+			delete_if { |x| x.empty? }.
+			each do |row|
+
+				ratts, row = pba( $1, 'tr' ), $2 if row =~ /^(#{A}#{C}\. )(.*)/m
+				
+				catts, cells = '', []
+				row.split( '|' ).each do |cell|
+					ctyp = 'd'
+					ctyp = 'h' if cell =~ /^_/
+
+					catts, cell = pba( $1, 'td' ), $2 if cell =~ /^(_?#{S}#{A}#{C}\. )(.*)/
+
+					unless cell.strip.empty?
+						cells << "\t\t\t<t#{ ctyp }#{ catts }>#{ cell }</t#{ ctyp }>" 
+					end
+				end
+				rows << "\t\t<tr#{ ratts }>\n#{ cells.join( "\n" ) }\n\t\t</tr>"
+			end
+			"\t<table#{ tatts }>\n#{ rows.join( "\n" ) }\n\t</table>\n\n"
+		end
+	end
+
+    def lists( text ) 
+		lists = {}
+        text.gsub!( /^([#*]+?#{C} .*?)$(?![^#*])/m ) do |match|
+			lines = match.split( /\n/ )
+            next_line_id = 0
+            lines.collect do |line|
+                next_line_id += 1
+				nextline = lines[next_line_id]
+				if line =~ /^([#*]+)(#{A}#{C}) (.*)$/m
+					tl,atts,content = $~[1..3]
+					nl = nextline.gsub( /^([#*]+)\s.*/, '\1' )
+					unless lists.has_key? tl
+						lists[tl] = true
+						atts = pba( atts )
+						line = "\t<#{ lT(tl) }l#{ atts }>\n\t<li>#{ content }"
+					else
+						line = "\t\t<li>#{ content }"
+					end
+
+					if nl == tl
+						line << '</li>'
+					elsif nl == '*' or nl == '#'
+						line << "</li>\n\t</#{ lT( tl ) }l>\n\t</li>"
+						lists.delete( tl )
+					end
+					if nl.empty?
+						lists.delete_if do |k, v|
+							line << "</li>\n\t</#{ lT( k ) }l>"
+							true
+						end
+					end
+				end
+				line
+			end.join( "\n" )   
+		end
+	end
+
+    def lT( text ) 
+		text =~ /^#/ ? 'o' : 'u'
+	end
+
+    def block( text ) 
+        pre = false
+        find = ['bq','h[1-6]','fn\d+','p']
+    
+        text.gsub!( /(.+)\n(?![#*\s|])/, '\1<br />' )
+   		lines = text.split( /\n/ ) + [' '] 
+		new_text = 
+        lines.collect do |line|
+			pre = true if line =~ /<pre>/i
+			find.each do |tag|
+				line.gsub!( /^(#{ tag })(#{A}#{C})\.(?::(\S+))? (.*)$/ ) do |m|
+					tag,atts,cite,content = $~[1..4]
+
+					atts = pba( atts )
+
+					if tag =~ /fn(\d+)/
+						tag = 'p';
+						atts << ' id="fn#{ $1 }"'
+						content = "<sup>#{ $1 }</sup> #{ content }"
+					end
+
+					start = "\t<#{ tag }"
+					tend = "</#{ tag }>"
+					
+					if tag == "bq"
+						cite = check_refs( cite )
+						cite = " cite=\"#{ cite }\"" if cite
+						start = "\t<blockquote#{ cite }>\n\t\t<p";
+						tend = "</p>\n\t</blockquote>";
+					end
+
+					"#{ start }#{ atts }>#{ content }#{ tend }"
+				end unless pre
+			end
+            
+            line.gsub!( /^(?!\t|<\/?pre|<\/?code|$| )(.*)/, "\t<p>\\1</p>" )
+            
+            line.gsub!( "<br />", "\n" ) if pre
+			pre = false if line =~ /<\/pre>/i
+            
+            line
+		end.join( "\n" )
+        text.replace( new_text )
+	end
+    
+    def span( text ) 
+		QTAGS.each do |tt, ht|
+			# text.gsub!( /(?<=^|\s|\>|[[:punct:]]|[{(\[])
+			ttr = Regexp::quote( tt )
+            text.gsub!( 
+
+				/(^|\s|\>|[#{PUNCT}{(\[])
+				(#{ttr})
+				(#{C})
+				(?::(\S+?))?
+				(\S([^\n]|\n(?!\n))*?)
+				([#{PUNCT}]*?)
+				#{ttr}
+				(?=[\])}]|[#{PUNCT}]+?|\s|$)/xm 
+			
+			) do |m|
+		 
+				start,atts,cite,content,tend = $~[1..5]
+				atts = pba( atts )
+				atts << " cite=\"#{ cite }\"" unless cite.empty?
+
+				"#{ start }<#{ ht }#{ atts }>#{ content }#{ tend }</#{ ht }>"
+
+			end
+		end
+	end
+
+    def links( text ) 
+        text.gsub!( /
+            ([\s\[{(]|[#{PUNCT}])?     # $pre
+            "                          # start
+            (#{C})                     # $atts
+            ([^"]+?)                   # $text
+            \s?
+            (?:\(([^)]+?)\)(?="))?     # $title
+            ":
+            (\S+?\b)                   # $url
+            (\/)?                      # $slash
+            ([^\w\/;]*?)               # $post
+            (?=\s|$)
+        /x ) do |m|
+			pre,atts,text,title,url,slash,post = $~[1..7]
+
+			url = check_refs( url )
+			
+			atts = pba( atts )
+			atts << " title=\"#{ title }\"" if title
+			atts = shelve( atts ) if atts
+			
+			"#{ pre }<a href=\"#{ url }#{ slash }\"#{ atts }>#{ text }</a>#{ post }"
+    	end
+	end
+
+    def get_refs( text ) 
+    	text.gsub!( /(^|\s)\[(.+?)\]((?:http:\/\/|\/)\S+?)(?=\s|$)/ ) do |m|
+        	flag, url = $~[1..2]
+			@urlrefs[flag] = url
+		end
+	end
+    
+    def check_refs( text ) 
+        @urlrefs[text] || text
+	end
+
+    def image( text ) 
+        text.gsub!( /
+            \!                   # opening
+            (\<|\=|\>)?          # optional alignment atts
+            (#{C})               # optional style,class atts
+            (?:\. )?             # optional dot-space
+            ([^\s(!]+?)          # presume this is the src
+            \s?                  # optional space
+            (?:\(([^\)]+?)\))?   # optional title
+            \!                   # closing
+            (?::#{ HYPERLINK })? # optional href
+        /x ) do |m|
+			algn,atts,url,title,href,href_a1,href_a2 = $~[1..7]
+			atts = pba( atts )
+			atts << " align=\"#{ i_align( algn ) }\"" if algn
+			atts << " title=\"#{ title }\"" if title
+			atts = " alt=\"#{ title }\"" 
+			# size = @getimagesize($url);
+			# if($size) $atts.= " $size[3]";
+
+			href = check_refs( href ) if href
+			url = check_refs( url )
+
+			out = ''
+			out << "<a href=\"#{ href }\">" if href
+			out << "<img src=\"#{ url }\"#{ atts } />"
+			out << "</a>#{ href_a1 }#{ href_a2 }" if href
+			
+			out
+		end
+	end
+
+    def code( text ) 
+        text.gsub!( /
+            (?:^|([\s\(\[{]))                # 1 open bracket?
+            @                                # opening
+            (?:\|(\w+?)\|)?                  # 2 language
+			(\S(?:[^\n]|\n(?!\n))*?)         # 3 code
+            @                                # closing
+            (?:$|([\]})])|
+            (?=[#{PUNCT}]{1,2}|
+            \s))                             # 4 closing bracket?
+        /x ) do |m|
+			before,lang,code,after = $~[1..4]
+			lang = " language=\"#{ lang }\"" if lang
+			"#{ before }<code#{ lang }>#{ code }</code>#{ after }"
+		end
+	end
+
+    def shelve( val ) 
+        @shelf << val
+        " <#{ @shelf.length }>"
+	end
+    
+    def retrieve( text ) 
+		@shelf.each_with_index do |r, i|
+            text.gsub!( " <#{ i + 1 }>", r )
+		end
+	end
+
+    def incoming_entities( text ) 
+		## turn any incoming ampersands into a dummy character for now.
+		## This uses a negative lookahead for alphanumerics followed by a semicolon,
+		## implying an incoming html entity, to be skipped
+
+        text.gsub!( /&(?![#a-z0-9]+;)/i, "x%x%" )
+	end
+
+    def encode_entities( text ) 
+		## Convert high and low ascii to entities.
+        #  if $-K == "UTF-8"  
+        #      encode_high( text )
+		#  else
+            text.htmlesc!( :NoQuotes )
+        #  end
+	end
+
+    def fix_entities( text )
+		## de-entify any remaining angle brackets or ampersands
+		text.gsub!( "&gt;", ">" )
+		text.gsub!( "&lt;", "<" )
+		text.gsub!( "&amp;", "&" )
+	end
+
+    def clean_white_space( text ) 
+		text.gsub!( "\r\n", "\n" )
+		text.gsub!( "\t", '' )
+		text.gsub!( /\n{3,}/, "\n\n" )
+		text.gsub!( /\n *\n/, "\n\n" )
+        text.gsub!( /"$/, "\" " )
+	end
+
+    def no_textile( text ) 
+        text.gsub!( /(^|\s)==(.*?)==(\s|$)?/m,
+            '\1<notextile>\2</notextile>\3' )
+	end
+
+    def footnote_ref( text ) 
+        text.gsub!( /\b\[([0-9]+?)\](\s)?/,
+            '<sup><a href="#fn\1">\1</a></sup>\2' )
+	end
+    
+    def glyphs( text ) 
+        text.gsub!( /"\z/, "\" " )
+        codepre = false
+        ## if no html, do a simple search and replace...
+        if text !~ /<.*>/
+            pgl( text )
+        else
+            text.split( /(<.*?>)/ ).collect do |line|
+                offtags = 'code|pre|kbd|notextile'
+                
+                ## matches are off if we're between <code>, <pre> etc.
+                codepre = true if line =~ /<(#{ offtags })>/i
+                codepre = false if line =~ /<\/(#{ offtags })>/i
+            
+                pgl( line ) if line !~ /<.*>/ and not codepre
+
+                ## do htmlspecial if between <code>
+                if codepre
+                    line.htmlesc!( :NoQuotes )
+                    line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
+                end
+
+            end.join
+        end
+    end
+
+    def i_align( text )
+        I_ALGN_VALS[text]
+    end
+
+    def h_align( text ) 
+        H_ALGN_VALS[text]
+    end
+
+    def v_align( text ) 
+        V_ALGN_VALS[text]
+    end
+
+    def encode_high( text )
+        ## mb_encode_numericentity($text, $cmap, $charset);
+    end
+
+    def decode_high( text )
+        ## mb_decode_numericentity($text, $cmap, $charset);
+    end
+
+    def textile_popup_help( name, helpvar, windowW, windowH )
+        ' <a target="_blank" href="http://www.textpattern.com/help/?item=' + helpvar + '" onclick="window.open(this.href, \'popupwindow\', \'width=' + windowW + ',height=' + windowH + ',scrollbars,resizable\'); return false;">' + name + '</a><br />'
+    end
+
+    CMAP = [
+         160,  255,  0, 0xffff,
+         402,  402,  0, 0xffff,
+         913,  929,  0, 0xffff,
+         931,  937,  0, 0xffff,
+         945,  969,  0, 0xffff,
+         977,  978,  0, 0xffff, 
+         982,  982,  0, 0xffff,
+         8226, 8226, 0, 0xffff,
+         8230, 8230, 0, 0xffff,
+         8242, 8243, 0, 0xffff,
+         8254, 8254, 0, 0xffff,
+         8260, 8260, 0, 0xffff,
+         8465, 8465, 0, 0xffff,
+         8472, 8472, 0, 0xffff,
+         8476, 8476, 0, 0xffff,
+         8482, 8482, 0, 0xffff,
+         8501, 8501, 0, 0xffff,
+         8592, 8596, 0, 0xffff,
+         8629, 8629, 0, 0xffff,
+         8656, 8660, 0, 0xffff,
+         8704, 8704, 0, 0xffff,
+         8706, 8707, 0, 0xffff,
+         8709, 8709, 0, 0xffff,
+         8711, 8713, 0, 0xffff,
+         8715, 8715, 0, 0xffff,
+         8719, 8719, 0, 0xffff,
+         8721, 8722, 0, 0xffff,
+         8727, 8727, 0, 0xffff,
+         8730, 8730, 0, 0xffff,
+         8733, 8734, 0, 0xffff,
+         8736, 8736, 0, 0xffff,
+         8743, 8747, 0, 0xffff,
+         8756, 8756, 0, 0xffff,
+         8764, 8764, 0, 0xffff,
+         8773, 8773, 0, 0xffff,
+         8776, 8776, 0, 0xffff,
+         8800, 8801, 0, 0xffff,
+         8804, 8805, 0, 0xffff,
+         8834, 8836, 0, 0xffff,
+         8838, 8839, 0, 0xffff,
+         8853, 8853, 0, 0xffff,
+         8855, 8855, 0, 0xffff,
+         8869, 8869, 0, 0xffff,
+         8901, 8901, 0, 0xffff,
+         8968, 8971, 0, 0xffff,
+         9001, 9002, 0, 0xffff,
+         9674, 9674, 0, 0xffff,
+         9824, 9824, 0, 0xffff,
+         9827, 9827, 0, 0xffff,
+         9829, 9830, 0, 0xffff,
+         338,  339,  0, 0xffff,
+         352,  353,  0, 0xffff,
+         376,  376,  0, 0xffff, 
+         710,  710,  0, 0xffff,
+         732,  732,  0, 0xffff,
+         8194, 8195, 0, 0xffff,
+         8201, 8201, 0, 0xffff,
+         8204, 8207, 0, 0xffff,
+         8211, 8212, 0, 0xffff,
+         8216, 8218, 0, 0xffff,
+         8218, 8218, 0, 0xffff,
+         8220, 8222, 0, 0xffff,
+         8224, 8225, 0, 0xffff,
+         8240, 8240, 0, 0xffff,
+         8249, 8250, 0, 0xffff,
+         8364, 8364, 0, 0xffff
+     ]
 end
 
