@@ -380,11 +380,12 @@ class RedCloth < String
 
                 ratts, row = pba( $1, 'tr' ), $2 if row =~ /^(#{A}#{C}\. )(.*)/m
                 
-                catts, cells = '', []
+                cells = []
                 row.split( '|' ).each do |cell|
                     ctyp = 'd'
                     ctyp = 'h' if cell =~ /^_/
 
+                    catts = ''
                     catts, cell = pba( $1, 'td' ), $2 if cell =~ /^(_?#{S}#{A}#{C}\. )(.*)/
 
                     unless cell.strip.empty?
