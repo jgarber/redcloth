@@ -233,7 +233,7 @@ class RedCloth < String
 
         no_textile text 
 
-        glyphs text
+        inline text
 
         unless @lite
             fold text
@@ -698,7 +698,86 @@ class RedCloth < String
             '<sup><a href="#fn\1">\1</a></sup>\2' )
     end
     
-    def inline( text )
+    OFFTAGS = /(code|pre|kbd|notextile)/
+    OFFTAG_MATCH = /(?:(<\/#{ OFFTAGS }>)|(<#{ OFFTAGS }[^>]*>))(.*?)(?=<\/?#{ OFFTAGS }>|\Z)/mi
+    OFFTAG_OPEN = /<#{ OFFTAGS }/
+    OFFTAG_CLOSE = /<\/?#{ OFFTAGS }/
+    ALLTAG_MATCH = /(<\/?\w[^\n]*?>)|.*?(?=<\/?\w[^\n]*?>|$)/m
+
+    def glyphs( text, level = 0 )
+        if text !~ /<.*>/
+            pgl text
+            footnote_ref text
+        else
+            codepre = 0
+            text.gsub!( ALLTAG_MATCH ) do |line|
+                ## matches are off if we're between <code>, <pre> etc.
+                if $1
+                    if @filter_html
+                        line.htmlesc!( :NoQuotes )
+                    elsif line =~ OFFTAG_OPEN
+                        codepre += 1
+                    elsif line =~ OFFTAG_CLOSE
+                        codepre -= 1
+                        codepre = 0 if codepre < 0
+                    end 
+                ## do htmlspecial if between <code>
+                elsif codepre.zero?
+                    glyphs( line, level + 1 )
+                end
+                ## p [level, codepre, orig_line, line]
+
+                line
+            end
+        end
+    end
+
+    def rip_offtags( text )
+        pre_list = []
+        if text =~ /<.*>/
+            ## strip and encode <pre> content
+            codepre, used_offtags = 0, {}
+            text.gsub!( OFFTAG_MATCH ) do |line|
+                if $3
+                    offtag, aftertag = $4, $5
+                    codepre += 1
+                    used_offtags[offtag] = true
+                    if codepre - used_offtags.length > 0
+                        line.htmlesc!( :NoQuotes ) 
+                        pre_list.last << line
+                        line = ""
+                    else
+                        aftertag.htmlesc!( :NoQuotes ) if aftertag
+                        line = "<redpre##{ pre_list.length }>"
+                        pre_list << "<#{ offtag }>#{ aftertag }"
+                    end
+                elsif $1 and codepre > 0
+                    if codepre - used_offtags.length > 0
+                        line.htmlesc!( :NoQuotes ) 
+                        pre_list.last << line
+                        line = ""
+                    end
+                    codepre -= 1 unless codepre.zero?
+                    used_offtags = {} if codepre.zero?
+                end 
+                line
+            end
+        end
+        pre_list
+    end
+
+    def smooth_offtags( text, pre_list )
+        unless pre_list.empty?
+            ## replace <pre> content
+            text.gsub!( /<redpre#(\d+)>/ ) { pre_list[$1.to_i] }
+        end
+    end
+
+    def inline( text ) 
+        text.gsub!( /"\z/, "\" " )
+        pre_list = rip_offtags text
+
+        ## apply inline markup
         unless @lite
             lists text
             table text
@@ -708,78 +787,10 @@ class RedCloth < String
         links text 
         code text 
         span text
-    end
 
-    OFFTAGS = /(?:code|pre|kbd|notextile)/
-    TAG_MATCH_0 = /<\/?#{ OFFTAGS }[^>]*>+|.+?(?=<\/?#{ OFFTAGS }>|\Z)|/mi
-    TAGLINE_MATCH_0 = /^<\/?#{ OFFTAGS }>/
-    LINE_MATCH_0 = /<(#{ OFFTAGS })[^>]*>(.*)/mi
-    LINE_MATCH_1 = /<\/(#{ OFFTAGS })>/i
-
-    def glyphs_deep( text, level = 0 )
-        codepre = 0
-        if text !~ /<.*>/
-            pgl text
-            footnote_ref text
-        else
-            used_offtags = {}
-            tag_match =
-                if level.zero?
-                    TAG_MATCH_0
-                else
-                    /[^<].*?(?=<[^\n]*?>|$)|<[^\n]*?>+/m
-                end
-            text.gsub!( tag_match ) do |line|
-                orig_line = line
-                tagline = 
-                if level.zero?
-                    line =~ TAGLINE_MATCH_0
-                else
-                    line =~ /^<.*>/
-                end
-                
-                ## matches are off if we're between <code>, <pre> etc.
-                if tagline
-                    if line =~ LINE_MATCH_0
-                        offtag, aftertag = $1, $2
-                        codepre += 1
-                        used_offtags[offtag] = true
-                        if codepre - used_offtags.length > 0
-                            line.htmlesc!( :NoQuotes ) 
-                        else
-                            aftertag.htmlesc!( :NoQuotes )
-                            line = "<#{ offtag }>#{ aftertag }"
-                        end
-                    elsif line =~ LINE_MATCH_1
-                        line.htmlesc!( :NoQuotes ) if codepre - used_offtags.length > 0
-                        codepre -= 1 unless codepre.zero?
-                        used_offtags = {} if codepre.zero?
-                    elsif @filter_html or codepre > 0
-                        line.htmlesc!( :NoQuotes )
-                        ## line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
-                    end 
-                ## do htmlspecial if between <code>
-                elsif codepre > 0
-                    line.htmlesc!( :NoQuotes )
-                    ## line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
-                elsif not tagline
-                    inline line if level.zero?
-                    glyphs_deep( line, level + 1 )
-                end
-                ## p [level, codepre, orig_line, line]
-
-                line
-            end
-        end
-    end
-
-    def glyphs( text ) 
-        text.gsub!( /"\z/, "\" " )
-        ## if no html, do a simple search and replace...
-        if text !~ /<.*>/
-            inline text
-        end
-        glyphs_deep text
+        ## replace entities
+        glyphs text
+        smooth_offtags text, pre_list
     end
 
     def i_align( text )

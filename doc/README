@@ -4,7 +4,7 @@ p=. !redcloth-title.png!
 
 h4. Get RedCloth
 
-p(example1). *Latest version:* "2.0.7":http://rubyforge.org/frs/download.php/555/redcloth-2.0.7.tar.gz
+p(example1). *Latest version:* "2.0.9":http://rubyforge.org/frs/download.php/668/redcloth-2.0.9.tar.gz
 
 Take a complete tour of Textile at "A Textile Reference":http://hobix.com/textile/.
 
@@ -82,7 +82,7 @@ To install RedCloth via RubyGems:
   gem -Ri RedCloth
 </pre>
 
-Or "download RedCloth":http://rubyforge.org/frs/download.php/555/redcloth-2.0.7.tar.gz and simply run the install.rb like so:
+Or "download RedCloth":http://rubyforge.org/frs/download.php/668/redcloth-2.0.9.tar.gz and simply run the install.rb like so:
 
 <pre>
   ruby install.rb config

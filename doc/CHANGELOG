@@ -1,4 +1,9 @@
 --- %YAML:1.0
+- version: 2.0.10
+  date: 2004-05-26
+  changes:
+    - Table and list problems.  Rewrote the <pre> handling code.. again.
+
 - version: 2.0.9
   date: 2004-05-26
   changes:
