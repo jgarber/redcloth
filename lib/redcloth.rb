@@ -555,7 +555,7 @@ class RedCloth < String
             (\S+?)                     # $url
             (\/)?                      # $slash
             ([^\w\/;]*?)               # $post
-            (?=\s|$)
+            (?=<|\s|$)
         /x 
 
     def links( text ) 

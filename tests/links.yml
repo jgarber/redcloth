@@ -147,3 +147,6 @@ out: <p><a href="../lab/exercises/exercises.html">Lab Exercises</a>.</p>
 ---
 in: 'Go to "discuss":http://www.dreammoods.com/cgibin/cutecast/cutecast.pl?forum=1&thread=26627 to discuss.'
 out: <p>Go to <a href="http://www.dreammoods.com/cgibin/cutecast/cutecast.pl?forum=1&#38;thread=26627">discuss</a> to discuss.</p>
+---
+in: '* "rubylang":http://www.ruby-lang.org/en/'
+out: "<ul>\n\t<li><a href=\"http://www.ruby-lang.org/en/\">rubylang</a></li>\n\t</ul>"

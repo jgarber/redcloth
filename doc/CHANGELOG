@@ -1,7 +1,8 @@
 --- %YAML:1.0
 - version: 2.0.9
-  date: 2004-05-22
+  date: 2004-05-25
   changes:
+    - Links were consuming closing HTML tags.  (See latest test in tests/links.yml.)
     - Improved RDoc.  Ri documentation is auto-installed now!
 
 - version: 2.0.8
