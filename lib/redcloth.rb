@@ -196,11 +196,13 @@ class RedCloth < String
     HYPERLINK = '(\S+?)([^\w\s/;=\?]*?)(\s|$)'
 
     GLYPHS = [
-    # [ /([^\s[{(>])?\'(?(1)|(?=\s|s\b|[#{PUNCT}]))/, '\1&#8217;\2' ], # single closing
-        [ /([^\s\[{(>])?\'([dmst]\b|ll\b|ve\b|\s|:|$)/, '\1&#8217;\2' ], # single closing
+    #   [ /([^\s\[{(>])?\'([dmst]\b|ll\b|ve\b|\s|:|$)/, '\1&#8217;\2' ], # single closing
+        [ /([^\s\[{(>])\'/, '\1&#8217;' ], # single closing
+        [ /\'(?=\s|s\b|[#{PUNCT}])/, '&#8217;' ], # single closing
         [ /\'/, '&#8216;' ], # single opening
-    # [ /([^\s[{(>])?"(?(1)|(?=\s|[#{PUNCT}]))/, '\1&#8221;\2' ], # double closing
-        [ /([^\s\[{(])?"(\s|:|$)/, '\1&#8221;\2' ], # double closing
+    #   [ /([^\s\[{(])?"(\s|:|$)/, '\1&#8221;\2' ], # double closing
+        [ /([^\s\[{(>])"/, '\1&#8221;' ], # double closing
+        [ /"(?=\s|[#{PUNCT}])/, '&#8221;' ], # double closing
         [ /"/, '&#8220;' ], # double opening
         [ /\b( )?\.{3}/, '\1&#8230;' ], # ellipsis
         [ /\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])/, '<acronym title="\2">\1</acronym>' ], # 3+ uppercase acronym
