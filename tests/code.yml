@@ -70,3 +70,10 @@ in: |-
   * @bar@
   * and @x@ is also.
 out: "<ul>\n\t<li><code>foo</code></li>\n\t\t<li><code>bar</code></li>\n\t\t<li>and <code>x</code> is also.</li>\n\t</ul>"
+---
+in: |-
+  <pre class="code"> <hello> </pre>
+  <pre class="code"> <hello> </pre>
+out: |-
+  <pre class="code"> &lt;hello&gt; </pre>
+  <pre class="code"> &lt;hello&gt; </pre>
