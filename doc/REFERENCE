@@ -6,7 +6,7 @@
   - You can try Textile out on the "Textile home page":http://www.textism.com/tools/textile/.
     Textile is also available as "RedCloth":http://whytheluckystiff.net/ruby/redcloth/ for
     Ruby or "PyTextile":http://dealmeida.net/projects/textile for Python.
-  - Also refer to the "*Quick Reference*":http://hobix.com/textile/quick.html for this guide.
+  - Also refer to the "*Quick Reference*":javascript:quickRedReference(); for this guide.
   - h4. Reading the Examples
   - In each section below, examples are provided to clearly illustrate.  In each example,
     the Textile example is followed by the raw HTML it is translated into, followed by how
@@ -134,6 +134,8 @@
   - A title for the image can also be provided in parens, just before the closing exclamation.
   - !!example "!openwindow1.gif(Bunny.)!"
   - The title also acts as *alt* text should the image not be found.
+  - Links can be attached to images with a colon.
+  - !!example "!openwindow1.gif!:http://hobix.com/"
   - h4. Image Alignments
   - Alignments can be applied as well to images.
   - !!example "!>obake.gif!\n\nAnd others sat all round the small\nmachine and paid it to sing to them."

@@ -30,11 +30,13 @@ when 'README'
         border-top: solid 1px #eee;
     }
     H4 {
-        color: #999;
-        background-color: #fee;
         border: solid 1px #caa;
         margin: 10px 15px 5px 10px;
         padding: 5px;
+        color: white;
+        background-color: #333;
+        font-weight: bold;
+        font-size: 12pt;
     }
     P {
         margin: 10px 15px 5px 15px;
@@ -84,19 +86,22 @@ when 'QUICK-REFERENCE'
     <title>Textile Quick Reference</title>
     <style type="text/css">
     BODY {
-        margin: 10px 60px;
+        margin: 5px;
     }
     TABLE {
         font-family: georgia, serif;
-        font-size: 12pt;
-        padding: 15px;
-        width: 250px;
+        font-size: 10pt;
+        padding: 5px;
+        width: 200px;
     }
     TH {
-        padding-top: 15px;
+        padding-top: 10px;
     }
     TD {
         border-top: solid 1px #eee;
+    }
+    H1 {
+        font-size: 18pt;
     }
     H4 {
         color: #999;
@@ -106,25 +111,24 @@ when 'QUICK-REFERENCE'
         padding: 5px;
     }
     P {
-        margin: 10px 15px 5px 15px;
+        margin: 2px 5px 2px 5px;
     }
     P.example1 {
         background-color: #FEE;
-        font-weight: bold;
-        font-size: 9pt;
+        font-size: 8pt;
         padding: 5px;
     }
     P.example2 {
         border: solid 1px #DDD;
         background-color: #EEE;
-        font-size: 9pt;
+        font-size: 8pt;
         padding: 5px;
     }
     .big {
-        font-size: 15pt;
+        font-size: 12pt;
     }
     #big-red {
-        font-size: 15pt;
+        font-size: 12pt;
         color: red;
     }
     </style>
@@ -158,9 +162,9 @@ when 'REFERENCE'
         esc.htmlesc!( :NoQuotes )
         [ esc.gsub( /\n/, '<br />' ),
           RedCloth.new( val ).to_html.
+                   gsub( /;(\w)/, '; \1' ).
                    htmlesc!( :NoQuotes ).
-                   gsub( /\n/, '<br />' ).
-                   gsub( /;(\w)/, '; \1' ),
+                   gsub( /\n/, '<br />' ),
           RedCloth.new( val ).to_html ]
     end
 
@@ -172,11 +176,11 @@ when 'REFERENCE'
     <title>Textile Reference</title>
     <style type="text/css">
     BODY {
-        margin: 10px 60px;
+        margin: 10px 30px;
     }
     TABLE {
         font-family: georgia, serif;
-        font-size: 12pt;
+        font-size: 11pt;
         padding: 15px;
     }
     TH {
@@ -198,17 +202,22 @@ when 'REFERENCE'
     P {
         margin: 10px 15px 5px 15px;
     }
-    P.example1 {
+    TD.example1 P {
         background-color: #B30;
         color: white;
         font-weight: bold;
         font-size: 9pt;
         padding: 5px;
     }
-    P.example2 {
+    TD.example2 P {
         border: solid 1px #DDD;
         background-color: #EEE;
         font-size: 9pt;
+        padding: 5px;
+    }
+    TD.example3 {
+        border: solid 1px #EED;
+        background-color: #FFE;
         padding: 5px;
     }
     .big {
@@ -219,6 +228,17 @@ when 'REFERENCE'
         color: red
     }
     </style>
+    <script language="JavaScript">
+        function quickRedReference() {
+            window.open( 
+                "quick.html",
+                "redRef",
+                "height=600,width=550,channelmode=0,dependent=0," +
+                "directories=0,fullscreen=0,location=0,menubar=0," +
+                "resizable=0,scrollbars=1,status=1,toolbar=0"
+            );
+        }
+    </script>
     </head>
     <body>
     <table>
@@ -228,17 +248,17 @@ when 'REFERENCE'
     content.each do |section|
         section.each do |header, parags|
             if ct.zero?
-                puts "<tr><th colspan=5><h1>#{ header }</h1></th></tr>"
+                puts "<tr><th colspan=3><h1>#{ header }</h1></th></tr>"
             else
-                puts "<tr><th colspan=5><small>#{ ct }.</small><br />#{ header }</th></tr>"
+                puts "<tr><th colspan=3><small>#{ ct }.</small><br />#{ header }</th></tr>"
             end
             parags.each do |p|
                 if p.is_a? Array
-                    puts "<tr><td nowrap><p class='example1'>#{ p[0] }</p></td><td>&rarr;</td>" +
-                             "<td><p class='example2'>#{ p[1] }</p></td><td>&rarr;</td>" +
-                             "<td><p class='example3'>#{ p[2] }</p></td></tr>"
+                    puts "<tr><td class='example1' valign='top' nowrap><p>#{ p[0] }</p></td><td>&rarr;</td>" +
+                             "<td class='example2'><p>#{ p[1] }</p></td></tr><tr><td colspan='2'></td>" +
+                             "<td class='example3'>#{ p[2] }</p></td></tr>"
                 else
-                    puts "<tr><td class='explain' colspan=5>"
+                    puts "<tr><td class='explain' colspan=3>"
                     puts RedCloth.new( p ).to_html
                     puts "</td></tr>"
                 end

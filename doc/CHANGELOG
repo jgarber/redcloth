@@ -1,4 +1,10 @@
 --- %YAML:1.0
+- version: 2.0.8
+  date: 2004-05-17
+  changes:
+    - Patch by Denis Mertz to speed up RedCloth by compiling the various RegExps
+      only once.  Thanks, David!
+
 - version: 2.0.7
   date: 2004-04-21
   changes:

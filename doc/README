@@ -2,9 +2,9 @@ p=. !redcloth-title.png!
 
 <div style="font-family: verdana, arial, sans-serif; font-size: 10pt; border-left: solid 1px #999; width: 200px; float: right;">
 
-*Get RedCloth*
+h4. Get RedCloth
 
-p(example1). *Latest version:* "2.0.7":http://redcloth.rubyforge.org/
+p(example1). *Latest version:* "2.0.7":http://rubyforge.org/frs/download.php/555/redcloth-2.0.7.tar.gz
 
 Take a complete tour of Textile at "A Textile Reference":http://hobix.com/textile/.
 
@@ -13,9 +13,11 @@ For fast syntax checking, try the "Quick Reference":http://hobix.com/textile/qui
 p(example1). Upgrade with RubyGems!  Try: 
 @gem -Ri RedCloth@.
 
-*RedCloth Links*
+See the "project page":http://rubyforge.org/projects/redcloth/ for bug reporting, old releases and CVS instructions.
 
-"Instiki":http://instiki.org is the greatest Wiki ever!  Uses RedCloth for its markup!
+h4. RedCloth Links
+
+"Instiki":http://www.instiki.org is the greatest Wiki ever!  Uses RedCloth for its markup!
 
 "Hobix":http://hobix.com is a lovely little blogging package which uses RedCloth for
 blog entries.
@@ -81,7 +83,7 @@ To install RedCloth via RubyGems:
   gem -Ri RedCloth
 </pre>
 
-Or "download RedCloth":http://rubyforge.org/frs/download.php/528/redcloth-2.0.6.tar.gz and simply run the install.rb like so:
+Or "download RedCloth":http://rubyforge.org/frs/download.php/555/redcloth-2.0.7.tar.gz and simply run the install.rb like so:
 
 <pre>
   ruby install.rb config

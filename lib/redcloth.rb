@@ -160,7 +160,7 @@ end
 
 class RedCloth < String
 
-    VERSION = '2.0.7'
+    VERSION = '2.0.8'
 
     #
     # Mapping of 8-bit ASCII codes to HTML numerical entity equivalents.
@@ -246,7 +246,18 @@ class RedCloth < String
         ['+', 'ins'],
         ['^', 'sup'],
         ['~', 'sub']
-    ]
+    ].collect{|rc, ht| 
+        ttr = Regexp.quote(rc)
+        re  = /(^|\s|\>|[#{PUNCT}{(\[])
+                #{ttr}
+                (#{C})
+                (?::(\S+?))?
+                ([^\s#{ttr}]+?(?:[^\n]|\n(?!\n))*?)
+                ([#{PUNCT}]*?)
+                #{ttr}
+                (?=[\])}]|[#{PUNCT}]+?|<|\s|$)/xm 
+        [re, ht]
+  }
 
     #
     # Two accessor for setting security restrictions.
@@ -365,9 +376,11 @@ class RedCloth < String
         atts
     end
 
+    TABLE_RE = /^(?:table(_?#{S}#{A}#{C})\. ?\n)?^(#{A}#{C}\.? ?\|.*?\|)\n\n/m
+    
     def table( text ) 
         text << "\n\n"
-        text.gsub!( /^(?:table(_?#{S}#{A}#{C})\. ?\n)?^(#{A}#{C}\.? ?\|.*?\|)\n\n/m ) do |matches|
+        text.gsub!( TABLE_RE  ) do |matches|
 
             tatts, fullrow = $~[1..2]
             tatts = pba( tatts, 'table' )
@@ -398,13 +411,16 @@ class RedCloth < String
         end
     end
 
+    LISTS_RE = /^([#*]+?#{C} .*?)$(?![^#*])/m
+    LISTS_CONTENT_RE = /^([#*]+)(#{A}#{C}) (.*)$/m
+
     def lists( text ) 
-        text.gsub!( /^([#*]+?#{C} .*?)$(?![^#*])/m ) do |match|
+        text.gsub!( LISTS_RE ) do |match|
             lines = match.split( /\n/ )
             last_line = -1
             depth = []
             lines.each_with_index do |line, line_id|
-                if line =~ /^([#*]+)(#{A}#{C}) (.*)$/m
+                if line =~ LISTS_CONTENT_RE 
                     tl,atts,content = $~[1..3]
                     if depth.last
                         if depth.last.length > tl.length
@@ -495,20 +511,8 @@ class RedCloth < String
     end
     
     def span( text ) 
-        QTAGS.each do |tt, ht|
-            ttr = Regexp::quote( tt )
-            text.gsub!( 
-
-                /(^|\s|\>|[#{PUNCT}{(\[])
-                #{ttr}
-                (#{C})
-                (?::(\S+?))?
-                ([^\s#{ttr}]+?(?:[^\n]|\n(?!\n))*?)
-                ([#{PUNCT}]*?)
-                #{ttr}
-                (?=[\])}]|[#{PUNCT}]+?|<|\s|$)/xm 
-            
-            ) do |m|
+      QTAGS.each do |ttr, ht|
+        text.gsub!(ttr) do |m|
          
                 start,atts,cite,content,tend = $~[1..5]
                 atts = pba( atts )
@@ -520,8 +524,7 @@ class RedCloth < String
         end
     end
 
-    def links( text ) 
-        text.gsub!( /
+    LINK_RE = /
             ([\s\[{(]|[#{PUNCT}])?     # $pre
             "                          # start
             (#{C})                     # $atts
@@ -533,7 +536,10 @@ class RedCloth < String
             (\/)?                      # $slash
             ([^\w\/;]*?)               # $post
             (?=\s|$)
-        /x ) do |m|
+        /x 
+
+    def links( text ) 
+        text.gsub!( LINK_RE ) do |m|
             pre,atts,text,title,url,slash,post = $~[1..7]
 
             url = check_refs( url )
@@ -546,8 +552,10 @@ class RedCloth < String
         end
     end
 
+    REFS_RE =  /(^|\s)\[(.+?)\]((?:http:\/\/|javascript:|ftp:\/\/|\/)\S+?)(?=\s|$)/
+
     def get_refs( text ) 
-        text.gsub!( /(^|\s)\[(.+?)\]((?:http:\/\/|javascript:|ftp:\/\/|\/)\S+?)(?=\s|$)/ ) do |m|
+        text.gsub!( REFS_RE ) do |m|
             flag, url = $~[1..2]
             @urlrefs[flag] = url
         end
@@ -557,8 +565,7 @@ class RedCloth < String
         @urlrefs[text] || text
     end
 
-    def image( text ) 
-        text.gsub!( /
+    IMAGE_RE = /
             \!                   # opening
             (\<|\=|\>)?          # optional alignment atts
             (#{C})               # optional style,class atts
@@ -568,7 +575,10 @@ class RedCloth < String
             (?:\(((?:[^\(\)]|\([^\)]+\))+?)\))?   # optional title
             \!                   # closing
             (?::#{ HYPERLINK })? # optional href
-        /x ) do |m|
+        /x 
+
+    def image( text ) 
+        text.gsub!( IMAGE_RE )  do |m|
             algn,atts,url,title,href,href_a1,href_a2 = $~[1..7]
             atts = pba( atts )
             atts << " align=\"#{ i_align( algn ) }\"" if algn
@@ -579,6 +589,7 @@ class RedCloth < String
 
             href = check_refs( href ) if href
             url = check_refs( url )
+            atts << " border=\"0\"" if href
 
             out = ''
             out << "<a href=\"#{ href }\">" if href
@@ -589,8 +600,7 @@ class RedCloth < String
         end
     end
 
-    def code( text ) 
-        text.gsub!( /
+    CODE_RE = /
             (?:^|([\s\(\[{]))                # 1 open bracket?
             @                                # opening
             (?:\|(\w+?)\|)?                  # 2 language
@@ -599,7 +609,11 @@ class RedCloth < String
             (?:$|([\]})])|
             (?=[#{PUNCT}]{1,2}|
             \s))                             # 4 closing bracket?
-        /x ) do |m|
+        /x 
+
+
+    def code( text ) 
+        text.gsub!( CODE_RE ) do |m|
             before,lang,code,after = $~[1..4]
             lang = " language=\"#{ lang }\"" if lang
             "#{ before }<code#{ lang }>#{ code }</code>#{ after }"

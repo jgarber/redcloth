@@ -10,8 +10,8 @@ Dir["tests/*.yml"].each do |testfile|
             if html == doc['out']
                 puts "success: true"
             else
-                puts "out: #{ html }"
-                puts "expected: #{ doc['out'] }"
+                puts "out: "; p html
+                puts "expected: "; p doc['out']
             end
         end
     end

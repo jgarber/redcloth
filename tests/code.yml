@@ -39,4 +39,18 @@ out: |-
     &lt;/script&gt;
   </code>
   </pre>
-
+---
+in: |-
+  <notextile>
+  *** test
+  </notextile>
+out: |-
+  <notextile>
+  *** test
+  </notextile>
+---
+in: '*this <span></span> is strong*'
+out: '<p><strong>this <span></span> is strong</strong></p>'
+---
+in: '*this <span>test</span> is strong*'
+out: '<p><strong>this <span>test</span> is strong</strong></p>'
