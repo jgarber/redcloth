@@ -208,6 +208,7 @@ class RedCloth < String
         [ /\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])/, '<acronym title="\2">\1</acronym>' ], # 3+ uppercase acronym
         [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]{2,})([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3' ], # 3+ uppercase caps
         [ /(\.\s)?\s?--\s?/, '\1&#8212;' ], # em dash
+        [ /\s->\s/, ' &rarr; ' ], # en dash
         [ /\s-\s/, ' &#8211; ' ], # en dash
         [ /(\d+) ?x ?(\d+)/, '\1&#215;\2' ], # dimension sign
         [ /\b ?[(\[]TM[\])]/i, '&#8482;' ], # trademark
@@ -443,7 +444,7 @@ class RedCloth < String
         lines = text.split( /\n/ ) + [' '] 
         new_text = 
         lines.collect do |line|
-            pre = true if line =~ /<pre>/i
+            pre = true if line =~ /<(pre|notextile)>/i
             find.each do |tag|
                 line.gsub!( /^(#{ tag })(#{A}#{C})\.(?::(\S+))? (.*)$/ ) do |m|
                     tag,atts,cite,content = $~[1..4]
@@ -470,10 +471,10 @@ class RedCloth < String
                 end unless pre
             end
             
-            line.gsub!( /^(?!\t|<\/?pre|<\/?code|$| )(.*)/, "\t<p>\\1</p>" )
+            line.gsub!( /^(?!\t|<\/?pre|<\/?notextile|<\/?code|$| )(.*)/, "\t<p>\\1</p>" )
             
             line.gsub!( "<br />", "\n" ) if pre
-            pre = false if line =~ /<\/pre>/i
+            pre = false if line =~ /<\/(pre|notextile)>/i
             
             line
         end.join( "\n" )
