@@ -166,7 +166,7 @@
 
 class RedCloth < String
 
-    VERSION = '3.0.3'
+    VERSION = '3.0.4'
     DEFAULT_RULES = [:textile, :markdown]
 
     #
@@ -530,7 +530,7 @@ class RedCloth < String
                                 depth.pop
                             end
                         end
-                        if depth.last.length == tl.length
+                        if depth.last and depth.last.length == tl.length
                             lines[line_id - 1] << '</li>'
                         end
                     end
