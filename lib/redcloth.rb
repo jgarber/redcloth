@@ -367,13 +367,15 @@ class RedCloth < String
         pre = false
 
         # apply block replacements
-        text = text.split( "\n" ).collect do |line|
+        text = text.split( /\n{2,}/ ).collect do |line|
 
             # make sure line isn't blank
             unless line.empty?
 
                 # matches are off if we're between <pre> tags
                 pre = true if line.downcase.include? '<pre>'
+
+                line.gsub!( "\n", "<br />" ) unless pre
 
                 # deal with block replacements first, then see if we're in a list
                 BLOCKS.each { |re, resub| break if line.gsub! re, resub } unless pre
@@ -397,7 +399,7 @@ class RedCloth < String
 
             line
 
-        end.join( "\n" )
+        end.join( "\n\n" )
 
         # apply cleaning replacements
         TEXTILE_CLEAN.each do |re, resub|
