@@ -225,13 +225,13 @@ class RedCloth < String
     # Quick phrase modifiers. 
     #
     PHRASE_MODS = [
+        [ '@', 'code' ],
         [ '**', 'b' ],
         [ '*', 'strong' ],
         [ '??', 'cite' ],
         [ '-', 'del' ],
         [ '+', 'ins' ],
         [ '~', 'sub' ],
-        [ '@', 'code' ],
         [ '__', 'i' ],
         [ '_', 'em' ],
         [ '^', 'sup' ]
@@ -239,7 +239,7 @@ class RedCloth < String
 
     TEXTILE_TAGS.concat(
         PHRASE_MODS.collect do |texttag, htmltag|
-            [ /(^|\s)#{ Regexp::quote( texttag ) }(.*?)#{ Regexp::quote( texttag ) }([^\w\s]{0,2})/, 
+            [ /(^|\s)#{ Regexp::quote( texttag ) }(\S.*?)#{ Regexp::quote( texttag ) }([\W\s])/, 
               '\1<' + htmltag + '>\2</' + htmltag + '>\3' ]
         end
     )
@@ -367,15 +367,13 @@ class RedCloth < String
         pre = false
 
         # apply block replacements
-        text = text.split( /\n{2,}/ ).collect do |line|
+        text = text.split( /\n/ ).collect do |line|
 
             # make sure line isn't blank
             unless line.empty?
 
                 # matches are off if we're between <pre> tags
                 pre = true if line.downcase.include? '<pre>'
-
-                line.gsub!( "\n", "<br />" ) unless pre
 
                 # deal with block replacements first, then see if we're in a list
                 BLOCKS.each { |re, resub| break if line.gsub! re, resub } unless pre
@@ -399,7 +397,7 @@ class RedCloth < String
 
             line
 
-        end.join( "\n\n" )
+        end.join( "\n" )
 
         # apply cleaning replacements
         TEXTILE_CLEAN.each do |re, resub|
