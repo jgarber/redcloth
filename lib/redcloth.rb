@@ -671,11 +671,11 @@ class RedCloth < String
                 
                 ## matches are off if we're between <code>, <pre> etc.
                 if tagline
-                    if line =~ /^<(#{ offtags })>/i
+                    if line =~ /<(#{ offtags })>/i
                         codepre += 1
                         used_offtags[$1] = true
                         line.htmlesc!( :NoQuotes ) if codepre - used_offtags.length > 0
-                    elsif line =~ /^<\/(#{ offtags })>/i
+                    elsif line =~ /<\/(#{ offtags })>/i
                         line.htmlesc!( :NoQuotes ) if codepre - used_offtags.length > 0
                         codepre -= 1 unless codepre.zero?
                         used_offtags = {} if codepre.zero?
