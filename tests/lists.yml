@@ -45,7 +45,6 @@ in: |-
   yeah number
   #* bullet
   *** okay
-
   ****# what
 
 
@@ -66,7 +65,6 @@ out: |-
   	<li>bullet
   	<ul>
   	<li>okay
-  
   	<ol>
   	<li>what</li>
   	</ul></li>

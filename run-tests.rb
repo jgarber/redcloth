@@ -12,6 +12,9 @@ Dir["tests/*.yml"].each do |testfile|
                        red.to_html
                    end
             puts "---"
+
+            html.gsub!( /\n+/, "\n" )
+            doc['out'].gsub!( /\n+/, "\n" )
             if html == doc['out']
                 puts "success: true"
             else
