@@ -167,6 +167,7 @@
 class RedCloth < String
 
     VERSION = '3.0.1'
+    DEFAULT_RULES = [:textile, :markdown]
 
     #
     # Two accessor for setting security restrictions.
@@ -230,7 +231,6 @@ class RedCloth < String
     #
     def initialize( string, restrictions = [] )
         restrictions.each { |r| method( "#{ r }=" ).call( true ) }
-        @rules = [:textile, :markdown]
         super( string )
     end
 
@@ -242,7 +242,7 @@ class RedCloth < String
     #     #=>"And then? She <strong>fell</strong>!"
     #
     def to_html( *rules )
-        rules = @rules if rules.empty?
+        rules = DEFAULT_RULES if rules.empty?
         # make our working copy
         text = self.dup
         
@@ -268,6 +268,7 @@ class RedCloth < String
         # standard clean up
         incoming_entities text 
         clean_white_space text 
+        no_textile text
 
         # start processor
         pre_list = rip_offtags text
@@ -363,23 +364,36 @@ class RedCloth < String
         '~' => 'bottom'
     }
 
-    QTAGS = [
+    QTAGS_1 = [
         ['**', 'b'],
         ['*', 'strong'],
         ['??', 'cite'],
-        ['-', 'del'],
         ['__', 'i'],
+        ['^', 'sup'],
+        ['~', 'sub']
+    ] 
+    QTAGS_RE_1 = /(#{ QTAGS_1.collect { |rc, ht| Regexp::quote( rc ) }.join( '|' ) })
+        (#{C})
+        (?::(\S+?))?
+        ([^\s\1]+?(?:[^\n]|\n(?!\n))*?)
+        \1/xm 
+
+    QTAGS_2 = [
+        ['-', 'del'],
         ['_', 'em'],
         ['%', 'span'],
         ['+', 'ins'],
         ['^', 'sup'],
         ['~', 'sub']
-    ] 
-    QTAGS_RE = /(#{ QTAGS.collect { |rc, ht| Regexp::quote( rc ) }.join( '|' ) })
+    ]
+    QTAGS_RE_2 = /(^|[\s\>#{ PUNCT }{(\[])
+        (#{ QTAGS_2.collect { |rc, ht| Regexp::quote( rc ) }.join( '|' ) })
         (#{C})
         (?::(\S+?))?
-        ([^\s\1]+?(?:[^\n]|\n(?!\n))*?)
-        \1/xm 
+        ([^\s\2]+?(?:[^\n]|\n(?!\n))*?)
+        \2
+        (?=[\s\])}<#{ PUNCT }]|$)/xm 
+    QTAGS = QTAGS_1 + QTAGS_2
 
     #
     # Flexible HTML escaping
@@ -551,7 +565,7 @@ class RedCloth < String
         text.gsub!( /(.)\n(?! *[#*\s|])/, "\\1<br />" ) if @hard_breaks
     end
 
-    BLOCKS_GROUP_RE = /((?:\n*([#*> ])(?:[^\n]|\n+\2|\n(?!\n|\Z))+))|((?:[^\n]+|\n+ +|\n(?![#*\n]|\Z))+)/m
+    BLOCKS_GROUP_RE = /((?:^([#*> ])(?:[^\n]|\n+(?:\2|>)|\n(?!\n|\Z))+))|((?:[^\n]+|\n+ +|\n(?![#*\n]|\Z))+)/m
 
     def blocks( text, deep_code = false )
         text.gsub!( BLOCKS_GROUP_RE ) do |blk|
@@ -694,7 +708,7 @@ class RedCloth < String
     end
 
     def inline_textile_span( text ) 
-        text.gsub!( QTAGS_RE ) do |m|
+        text.gsub!( QTAGS_RE_1 ) do |m|
          
             qtag,atts,cite,content = $~[1..4]
             ht = QTAGS.assoc( qtag ).last
@@ -703,6 +717,17 @@ class RedCloth < String
             atts = shelve( atts ) if atts
 
             "<#{ ht }#{ atts }>#{ content }</#{ ht }>"
+
+        end
+        text.gsub!( QTAGS_RE_2 ) do |m|
+         
+            sta,qtag,atts,cite,content = $~[1..5]
+            ht = QTAGS.assoc( qtag ).last
+            atts = pba( atts )
+            atts << " cite=\"#{ cite }\"" if cite
+            atts = shelve( atts ) if atts
+
+            "#{ sta }<#{ ht }#{ atts }>#{ content }</#{ ht }>"
 
         end
     end
@@ -885,9 +910,9 @@ class RedCloth < String
     end
 
     def no_textile( text ) 
-        text.gsub!( /(^|\s)==(.*?)==(\s|$)?/,
+        text.gsub!( /(^|\s)==([^=]+.*?)==(\s|$)?/,
             '\1<notextile>\2</notextile>\3' )
-        text.gsub!( /^ *==(.*?)==/m,
+        text.gsub!( /^ *==([^=]+.*?)==/m,
             '\1<notextile>\2</notextile>\3' )
     end
 
@@ -909,7 +934,7 @@ class RedCloth < String
         indt = 0
         while text !~ /^ {#{indt}}\S/
             indt += 1
-        end
+        end unless text.empty?
         if indt.nonzero?
             text.gsub!( /^ {#{indt}}/, '' )
         end
@@ -936,9 +961,7 @@ class RedCloth < String
             text.gsub!( ALLTAG_MATCH ) do |line|
                 ## matches are off if we're between <code>, <pre> etc.
                 if $1
-                    if @filter_html
-                        htmlesc( line, :NoQuotes )
-                    elsif line =~ OFFTAG_OPEN
+                    if line =~ OFFTAG_OPEN
                         codepre += 1
                     elsif line =~ OFFTAG_CLOSE
                         codepre -= 1
