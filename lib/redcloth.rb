@@ -934,11 +934,13 @@ class RedCloth < String
 
     def flush_left( text )
         indt = 0
-        while text !~ /^ {#{indt}}\S/
-            indt += 1
-        end unless text.empty?
-        if indt.nonzero?
-            text.gsub!( /^ {#{indt}}/, '' )
+        if text =~ /^ /
+            while text !~ /^ {#{indt}}\S/
+                indt += 1
+            end unless text.empty?
+            if indt.nonzero?
+                text.gsub!( /^ {#{indt}}/, '' )
+            end
         end
     end
 
