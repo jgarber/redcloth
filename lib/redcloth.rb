@@ -373,7 +373,7 @@ class RedCloth < String
 				nextline = lines[next_line_id]
 				if line =~ /^([#*]+)(#{A}#{C}) (.*)$/m
 					tl,atts,content = $~[1..3]
-					nl = nextline.gsub( /^([#*]+)\s.*/, '\1' )
+					nl = nextline.gsub( /^([#*]+)\s.*/, '\1' ) if nextline
 					unless lists.has_key? tl
 						lists[tl] = true
 						atts = pba( atts )
@@ -388,7 +388,7 @@ class RedCloth < String
 						line << "</li>\n\t</#{ lT( tl ) }l>\n\t</li>"
 						lists.delete( tl )
 					end
-					if nl.empty?
+					unless nl
 						lists.delete_if do |k, v|
 							line << "</li>\n\t</#{ lT( k ) }l>"
 							true
