@@ -1,4 +1,11 @@
 --- %YAML:1.0
+- version: 3.0.1
+  date: 2004-11-15
+  changes:
+    - Using `float' rather than `text-align' to align image blocks.
+    - Shelving more HTML attributes to prevent them from clashing with Textile glyphs.
+    - Simplifying the block regexp.
+
 - version: 3.0
   date: 2004-10-26
   changes:
