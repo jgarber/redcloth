@@ -1,4 +1,10 @@
 --- %YAML:1.0
+- version: 2.0.4
+  date: 2004-04-08
+  changes:
+    - Scaled back aggresiveness of the inline matching to aid the em-dash.
+    - Scaled back footnotes to stay out of array indices.
+
 - version: 2.0.3
   date: 2004-04-02
   changes:

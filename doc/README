@@ -35,7 +35,7 @@ To install RedCloth via raa-install:
   raa-install -i redcloth
 </pre>
 
-Or "download RedCloth":http://prdownloads.sourceforge.net/yaml4r/redcloth-2.0.2.tar.gz and simply run the install.rb like so:
+Or "download RedCloth":http://prdownloads.sourceforge.net/yaml4r/redcloth-2.0.4.tar.gz and simply run the install.rb like so:
 
 <pre>
   ruby install.rb config
