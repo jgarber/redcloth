@@ -51,6 +51,8 @@
 #  +inserted text+
 #  ^superscript^
 #  ~subscript~
+#  @code@
+#  %(classname)span%
 #
 # === Links
 #
@@ -114,6 +116,14 @@
 #
 #  <acronym title="American Civil Liberties Union">ACLU</acronym>
 #
+# === Adding Tables
+#
+# In Textile, simple tables can be added by seperating each column by
+# a pipe.
+#
+#     |a|simple|table|row|
+#     |And|Another|table|row|
+#
 # === Using RedCloth
 # 
 # RedCloth is simply an extension of the String class, which can handle
@@ -162,6 +172,19 @@ class RedCloth < String
     #
     # Regular expressions to convert to HTML.
     #
+    A_HLGN = /(?:\<(?!>)|\<\>|\=|[()]+)/
+    A_VLGN = /[\-^~]/
+    C_CLAS = /(?:\([^)]+\))/
+    C_LNGE = /(?:\[[^\]]+\])/
+    C_STYL = /(?:\{[^}]+\})/
+    S_CSPN = /(?:\\\\\d+)/
+    S_RSPN = /(?:\/\d+)/
+    A = /(?:#{A_HLGN}?#{A_VLGN}?|#{A_VLGN}?#{A_HLGN}?)/
+    S = /(?:#{S_CSPN}?#{S_RSPN}|#{S_RSPN}?#{S_CSPN}?)/
+    C = /(?:#{C_CLAS}?#{C_STYL}?#{C_LNGE}?|#{C_STYL}?#{C_LNGE}?#{C_CLAS}?|#{C_LNGE}?#{C_STYL}?#{C_CLAS}?)/
+    PUNCT = /[\!"#\$%&\'()\*\+,\-\.\/:;<=>\?@\[\\\]\^_`{\|}\~]/
+
+
     HYPERLINK = '(\S+?)([^\w\s\/;=\?]*?)(\s|$)'
     TEXTILE_TAGS.push(
 
@@ -174,7 +197,13 @@ class RedCloth < String
         [ "&amp;", "&" ],
 
         # normalize linefeeds
-        [ /\r[\n]/, "\n" ],
+        [ /\r\n/, "\n" ],
+        [ /\n{3,}/, "\n\n" ],
+        [ /\n +\n/, "\n\n" ],
+        [ /"$/, '" ' ],
+
+        # get references
+        [ /(^|\s)\[(.+?)\]((?:http:\/\/|\/)\S+)(?=\s|$)/, proc { @urlRefs ||= {}; @urlRefs[$2] = $3; $1 } ],
 
         ### QUICK TAGS ###
 
@@ -196,16 +225,16 @@ class RedCloth < String
     # Quick phrase modifiers. 
     #
     PHRASE_MODS = [
-        ['**', 'b'],
-        ['*', 'strong'],
-        ['??', 'cite'],
-        ['-', 'del'],
-        ['+', 'ins'],
-        ['~', 'sub'],
-        ['@', 'code'],
-        ['__', 'i'],
-        ['_', 'em'],
-        ['^', 'sup']
+        [ '**', 'b' ],
+        [ '*', 'strong' ],
+        [ '??', 'cite' ],
+        [ '-', 'del' ],
+        [ '+', 'ins' ],
+        [ '~', 'sub' ],
+        [ '@', 'code' ],
+        [ '__', 'i' ],
+        [ '_', 'em' ],
+        [ '^', 'sup' ]
     ]
 
     TEXTILE_TAGS.concat(
@@ -224,19 +253,19 @@ class RedCloth < String
     # Encodings and special characters.
     #
     GLYPHS = [
-        [/([^\s[{(>])?\'([dmst]\b|ll\b|ve\b|\s|:|$)/, '\1&#8217;\2'], # single closing
-        [/\'/, '&#8216;'], # single opening
-        [/([^\s[{(])?"(\s|:|$)/, '\1&#8221;\2'], # double closing
-        [/"/, '&#8220;'], # double opening
-        [/\b( )?\.{3}/, '\1&#8230;'], # ellipsis
-        [/\b([A-Z][A-Z0-9]{2,})\b(\(([^\)]+)\))/, '<acronym title="\3">\1</acronym>'], # 3+ uppercase acronym
-        [/(^|[^"][>\s])([A-Z][A-Z0-9 ]{2,})([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3'], # 3+ uppercase caps
-        [/\s?--\s?/, '&#8212;'], # em dash
-        [/\s-\s/, ' &#8211; '], # en dash
-        [/(\d+) ?x ?(\d+)/, '\1&#215;\2'], # dimension sign
-        [/\b ?(\((tm|TM)\))/, '&#8482;'], # trademark
-        [/\b ?(\([rR]\))/, '&#174;'], # registered
-        [/\b ?(\([cC]\))/, '&#169;'] # registered
+        [ /([^\s\[{(>])?\'([dmst]\b|ll\b|ve\b|\s|:|$)/, '\1&#8217;\2' ], # single closing
+        [ /\'/, '&#8216;' ], # single opening
+        [ /([^\s\[{(])?"(\s|:|$)/, '\1&#8221;\2' ], # double closing
+        [ /"/, '&#8220;' ], # double opening
+        [ /\b( )?\.{3}/, '\1&#8230;' ], # ellipsis
+        [ /\b([A-Z][A-Z0-9]{2,})\b(\(([^\)]+)\))/, '<acronym title="\3">\1</acronym>' ], # 3+ uppercase acronym
+        [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]{2,})([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3' ], # 3+ uppercase caps
+        [ /\s?--\s?/, '&#8212;' ], # em dash
+        [ /\s-\s/, ' &#8211; ' ], # en dash
+        [ /(\d+) ?x ?(\d+)/, '\1&#215;\2' ], # dimension sign
+        [ /\b ?(\((tm|TM)\))/, '&#8482;' ], # trademark
+        [ /\b ?(\([rR]\))/, '&#174;' ], # registered
+        [ /\b ?(\([cC]\))/, '&#169;' ] # registered
     ]
 
     TEXTILE_PREP_BLOCK = [
@@ -246,7 +275,7 @@ class RedCloth < String
         [ /(\\S)(_*?)([^\\w\\s]*?) *?\n([^#*\\s])/, '\1\2\3<br />\4' ],
 
         # might be a problem with lists
-        [ 'l><br />', "l>\n" ]
+        [ /l><br \/>/, "l>\n" ]
 
     ]
 
@@ -258,7 +287,7 @@ class RedCloth < String
         [ /^h(\d)\. (.*)/, "<h\\1>\\2</h\\1>" ], # plain header hn.
         [ /^p\(([\w]+)\)\.\s(.*)/, "<p class=\"\\1\">\\2</p>" ], # para p(class).  w/ css class
         [ /^p\. (.*)/, "<p>\\1</p>" ], # plain paragraph
-        [ '^([^\t ]+.*)', "<p>\\1</p>" ] # remaining plain paragraph
+        [ /^([^\t ]+.*)/, "<p>\\1</p>" ] # remaining plain paragraph
     ]
 
     TEXTILE_CLEAN = [
@@ -270,13 +299,13 @@ class RedCloth < String
         [ /<(\/?)li(u|o)>/, '<\1li>' ],
         
         # clean up empty titles
-        [ ' title=""', '' ],
+        [ / title=""/, '' ],
         
         # turn the temp char back to an ampersand entity
-        [ 'x%x%', "&#38;" ],
+        [ /x%x%/, "&#38;" ],
         
         # Newline linebreaks, just for markup tidiness
-        [ '<br />', "<br />\n" ]
+        [ /<br \/>/, "<br />\n" ]
 
     ]
 
@@ -290,7 +319,11 @@ class RedCloth < String
 
         # apply first set of replacements
         TEXTILE_TAGS.each do |re, resub|
-            text.gsub! re, resub
+            if resub.respond_to? :call
+                text.gsub! re, &resub
+            else
+                text.gsub! re, resub
+            end
         end
 
         # flag for inside of <code> and <pre> tags
