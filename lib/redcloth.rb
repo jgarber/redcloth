@@ -542,7 +542,7 @@ class RedCloth < String
     def inline_textile_code( text ) 
         text.gsub!( CODE_RE ) do |m|
             before,lang,code,after = $~[1..4]
-            lang = " language=\"#{ lang }\"" if lang
+            lang = " lang=\"#{ lang }\"" if lang
             "#{ before }<code#{ lang }>#{ code }</code>#{ after }"
         end
     end
@@ -575,10 +575,16 @@ class RedCloth < String
                 if blk.empty?
                     blk
                 else
+                    code_blk = nil
                     blk.gsub!( /((?:\n(?:\n^ +[^\n]*)+)+)/m ) do |iblk|
                         flush_left iblk
                         blocks iblk, plain
                         iblk.gsub( /^(\S)/, "\t\\1" )
+                        if plain
+                            code_blk = iblk; ""
+                        else
+                            iblk
+                        end
                     end
 
                     block_applied = nil
@@ -593,7 +599,7 @@ class RedCloth < String
                         end
                     end
                     # hard_break blk
-                    blk + "\n"
+                    blk + "\n#{ code_blk }"
                 end
             end
 

@@ -78,3 +78,28 @@ in: |-
 out: |-
   <pre class="code"> &lt;hello&gt; </pre>
   <pre class="code"> &lt;hello&gt; </pre>
+---
+in: |
+  Test of Markdown-style indented code.
+
+    a = [1, 2, 3]
+    a.each do |x|
+      puts "test number", x,
+        "and more!"
+    end
+
+  Paragraph 2.
+
+  Paragraph 3.
+out: |-
+  <p>Test of Markdown-style indented code.</p>
+  
+  	<pre><code>a = [1, 2, 3]
+  a.each do |x|
+    puts "test number", x,
+      "and more!" 
+  end</code></pre>
+  
+  	<p>Paragraph 2.</p>
+  
+  	<p>Paragraph 3.</p>
