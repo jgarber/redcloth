@@ -41,13 +41,20 @@ out: |-
   </pre>
 ---
 in: |-
+  <pre>
+  *** test
+  </pre>
+out: |-
+  <pre>
+  *** test
+  </pre>
+---
+in: |-
   <notextile>
   *** test
   </notextile>
 out: |-
-  <notextile>
   *** test
-  </notextile>
 ---
 in: '*this <span></span> is strong*'
 out: '<p><strong>this <span></span> is strong</strong></p>'

@@ -283,6 +283,7 @@ class RedCloth < String
     attr_accessor :fold_lines
 
     def initialize( string, restrictions = [] )
+        @lite = false
         restrictions.each { |r| method( "#{ r }=" ).call( true ) }
         super( string )
     end
@@ -290,7 +291,9 @@ class RedCloth < String
     #
     # Generate HTML.
     #
-    def to_html( lite = false )
+    def to_html( lite = nil )
+
+        @lite = lite unless lite.nil?
 
         # make our working copy
         text = self.dup
@@ -307,14 +310,9 @@ class RedCloth < String
 
         no_textile text 
 
-        unless lite
-            lists text
-            table text
-        end
-
         glyphs text
 
-        unless lite
+        unless @lite
             fold text
             block text
         end
@@ -376,10 +374,9 @@ class RedCloth < String
         atts
     end
 
-    TABLE_RE = /^(?:table(_?#{S}#{A}#{C})\. ?\n)?^(#{A}#{C}\.? ?\|.*?\|)\n\n/m
+    TABLE_RE = /^(?:table(_?#{S}#{A}#{C})\. ?\n)?^(#{A}#{C}\.? ?\|.*?\|)(\n\n|\Z)/m
     
     def table( text ) 
-        text << "\n\n"
         text.gsub!( TABLE_RE  ) do |matches|
 
             tatts, fullrow = $~[1..2]
@@ -500,7 +497,7 @@ class RedCloth < String
                 end unless pre
             end
             
-            line.gsub!( /^(?!\t|<\/?pre|<\/?notextile|<\/?code|$| )(.*)/, "\t<p>\\1</p>" )
+            line.gsub!( /^(?!\t|<\/?pre|<\/?notextile|<\/?code|$| )(.*)/, "\t<p>\\1</p>" ) unless pre
             
             line.gsub!( "<br />", "\n" ) if pre
             pre = false if line =~ /<\/(pre|notextile)>/i
@@ -674,13 +671,18 @@ class RedCloth < String
     end
     
     def inline( text )
+        unless @lite
+            lists text
+            table text
+        end
+
         image text 
         links text 
         code text 
         span text
     end
 
-    def glyphs_deep( text )
+    def glyphs_deep( text, level = 0 )
         codepre = 0
         offtags = /(?:code|pre|kbd|notextile)/
         if text !~ /<.*>/
@@ -688,15 +690,33 @@ class RedCloth < String
             footnote_ref text
         else
             used_offtags = {}
-            text.gsub!( /(?:[^<].*?(?=<[^\n]*?>|$)|<[^\n]*?>+)/m ) do |line|
-                tagline = ( line =~ /^<.*>/ )
+            tag_match =
+                if level.zero?
+                    /<\/?#{ offtags }>+|.+?(?=<\/?#{ offtags }>|\Z)|/mi
+                else
+                    /[^<].*?(?=<[^\n]*?>|$)|<[^\n]*?>+/m
+                end
+            text.gsub!( tag_match ) do |line|
+                orig_line = line
+                tagline = 
+                if level.zero?
+                    line =~ /^<\/?#{ offtags }>/
+                else
+                    line =~ /^<.*>/
+                end
                 
                 ## matches are off if we're between <code>, <pre> etc.
                 if tagline
-                    if line =~ /<(#{ offtags })>/i
+                    if line =~ /<(#{ offtags })>(.*)/mi
+                        offtag, aftertag = $1, $2
                         codepre += 1
-                        used_offtags[$1] = true
-                        line.htmlesc!( :NoQuotes ) if codepre - used_offtags.length > 0
+                        used_offtags[offtag] = true
+                        if codepre - used_offtags.length > 0
+                            line.htmlesc!( :NoQuotes ) 
+                        else
+                            aftertag.htmlesc!( :NoQuotes )
+                            line = "<#{ offtag }>#{ aftertag }"
+                        end
                     elsif line =~ /<\/(#{ offtags })>/i
                         line.htmlesc!( :NoQuotes ) if codepre - used_offtags.length > 0
                         codepre -= 1 unless codepre.zero?
@@ -710,9 +730,10 @@ class RedCloth < String
                     line.htmlesc!( :NoQuotes )
                     ## line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
                 elsif not tagline
-                    inline line
-                    glyphs_deep line
+                    inline line if level.zero?
+                    glyphs_deep( line, level + 1 )
                 end
+                ## p [level, codepre, orig_line, line]
 
                 line
             end
