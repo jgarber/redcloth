@@ -76,3 +76,6 @@ out: |-
   	</ul></li>
   	</ul></li>
   	</ol>
+---
+in: "* command run: @time ruby run-tests.rb > toto@"
+out: "<ul>\n\t<li>command run: <code>time ruby run-tests.rb &gt; toto</code></li>\n\t</ul>"

@@ -166,7 +166,7 @@ end
 
 class RedCloth < String
 
-    VERSION = '2.0.10'
+    VERSION = '2.0.11'
 
     #
     # Two accessor for setting security restrictions.
@@ -339,14 +339,14 @@ class RedCloth < String
         ['~', 'sub']
     ].collect do |rc, ht| 
         ttr = Regexp.quote(rc)
-        re  = /(^|\s|\>|[#{PUNCT}{(\[])
+        re  = /(^|[\s\>#{PUNCT}{(\[])
                 #{ttr}
                 (#{C})
                 (?::(\S+?))?
                 ([^\s#{ttr}]+?(?:[^\n]|\n(?!\n))*?)
                 ([#{PUNCT}]*?)
                 #{ttr}
-                (?=[\])}]|[#{PUNCT}]+?|<|\s|$)/xm 
+                (?=[\s\])}<#{PUNCT}]|$)/xm 
         [re, ht]
     end 
 
@@ -626,16 +626,13 @@ class RedCloth < String
     end
 
     CODE_RE = /
-            (?:^|([\s\(\[{]))                # 1 open bracket?
+            (^|[\s>#{PUNCT}{(\[])            # 1 open bracket?
             @                                # opening
             (?:\|(\w+?)\|)?                  # 2 language
             (\S(?:[^\n]|\n(?!\n))*?)         # 3 code
             @                                # closing
-            (?:$|([\]})])|
-            (?=[#{PUNCT}]{1,2}|
-            \s))                             # 4 closing bracket?
+            (?=[\s\]}\)<#{PUNCT}]|$)         # 4 closing bracket?
         /x 
-
 
     def code( text ) 
         text.gsub!( CODE_RE ) do |m|
@@ -724,6 +721,8 @@ class RedCloth < String
                 ## do htmlspecial if between <code>
                 elsif codepre.zero?
                     glyphs( line, level + 1 )
+                else
+                    line.htmlesc!( :NoQuotes )
                 end
                 ## p [level, codepre, orig_line, line]
 

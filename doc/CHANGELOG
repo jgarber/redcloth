@@ -1,4 +1,10 @@
 --- %YAML:1.0
+- version: 2.0.11
+  date: 2004-05-27
+  changes:
+    - Subtle changes to the quick tags to help them interact with surrounding HTML better.
+    - Ensure angle brackets inside code quick tags get escaped.
+
 - version: 2.0.10
   date: 2004-05-26
   changes:
