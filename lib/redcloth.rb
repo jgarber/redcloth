@@ -174,7 +174,7 @@ class RedCloth < String
         [ "&amp;", "&" ],
 
         # normalize linefeeds
-        [ /\r[\n]/, '\n' ],
+        [ /\r[\n]/, "\n" ],
 
         ### QUICK TAGS ###
 
@@ -246,7 +246,7 @@ class RedCloth < String
         [ /(\\S)(_*?)([^\\w\\s]*?) *?\n([^#*\\s])/, '\1\2\3<br />\4' ],
 
         # might be a problem with lists
-        [ 'l><br />', 'l>\n' ]
+        [ 'l><br />', "l>\n" ]
 
     ]
 
@@ -276,7 +276,7 @@ class RedCloth < String
         [ 'x%x%', "&#38;" ],
         
         # Newline linebreaks, just for markup tidiness
-        [ '<br />', '<br />\n' ]
+        [ '<br />', "<br />\n" ]
 
     ]
 
@@ -334,7 +334,7 @@ class RedCloth < String
         pre = false
 
         # apply block replacements
-        text = text.split( '\n' ).collect do |line|
+        text = text.split( "\n" ).collect do |line|
 
             # make sure line isn't blank
             unless line.empty?
@@ -364,7 +364,7 @@ class RedCloth < String
 
             line
 
-        end.join( '\n' )
+        end.join( "\n" )
 
         # apply cleaning replacements
         TEXTILE_CLEAN.each do |re, resub|

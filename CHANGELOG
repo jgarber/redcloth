@@ -1,4 +1,9 @@
 --- %YAML:1.0
+- version: 0.41
+  date: 2003-06-20
+  changes:
+    - Newlines were outputing as escaped.
+
 - version: 0.4
   date: 2003-06-20
   changes:
