@@ -1,4 +1,23 @@
 --- %YAML:1.0
+- version: 2.0.2
+  date: 2004-03-08
+  changes:
+    - Fixed broken lists, broken tables.
+    - code/pre tags now escape properly, glyphs are working, spans are working when surrounded by html tags.
+    - Fixed classes and ids. 
+    - Restricted notextile tags to a single line.
+
+- version: 2.0.1
+  date: 2004-02-10
+  changes:
+    - Unmatched closing slash on regexps in ruby 1.6.8.
+    - Fixes to bulleted lists.
+
+- version: 2.0
+  date: 2004-02-06
+  changes:
+    - Complete rewrite of RedCloth, against beta2 from textism.com.
+
 - version: 0.41
   date: 2003-06-20
   changes:

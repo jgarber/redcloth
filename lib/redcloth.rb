@@ -488,7 +488,7 @@ class RedCloth < String
             (\S+?\b)                   # $url
             (\/)?                      # $slash
             ([^\w\/;]*?)               # $post
-            (?=\s|$)
+            (?=\s|\.[#{PUNCT}]+|$)
         /x ) do |m|
 			pre,atts,text,title,url,slash,post = $~[1..7]
 
@@ -521,7 +521,7 @@ class RedCloth < String
             (?:\. )?             # optional dot-space
             ([^\s(!]+?)          # presume this is the src
             \s?                  # optional space
-            (?:\(([^\)]+?)\))?   # optional title
+            (?:\(((?:[^\(\)]|\([^\)]+\))+?)\))?   # optional title
             \!                   # closing
             (?::#{ HYPERLINK })? # optional href
         /x ) do |m|
@@ -598,8 +598,8 @@ class RedCloth < String
 	end
 
     def clean_white_space( text ) 
-		text.gsub!( "\r\n", "\n" )
-		text.gsub!( "\t", '' )
+		text.gsub!( /\r\n/, "\n" )
+		text.gsub!( /\t/, '' )
 		text.gsub!( /\n{3,}/, "\n\n" )
 		text.gsub!( /\n *\n/, "\n\n" )
         text.gsub!( /"$/, "\" " )
