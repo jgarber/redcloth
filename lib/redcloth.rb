@@ -15,19 +15,6 @@
 # 
 #
 
-class String
-    #
-    # Flexible HTML escaping
-    #
-    def htmlesc!( mode )
-        gsub!( '&', '&amp;' )
-        gsub!( '"', '&quot;' ) if mode != :NoQuotes
-        gsub!( "'", '&#039;' ) if mode == :Quotes
-        gsub!('<', '&lt;')
-        gsub!('>', '&gt;')
-    end
-end
-
 # = RedCloth
 #
 # RedCloth is a Ruby library for converting Textile
@@ -169,7 +156,7 @@ end
 
 class RedCloth < String
 
-    VERSION = '2.0.11'
+    VERSION = '2.0.12'
 
     #
     # Two accessor for setting security restrictions.
@@ -228,8 +215,6 @@ class RedCloth < String
         @shelf = []
 
         incoming_entities text 
-        ## encode_entities text 
-        ## fix_entities text 
         clean_white_space text 
 
         get_refs text 
@@ -247,7 +232,7 @@ class RedCloth < String
 
         text.gsub!( /<\/?notextile>/, '' )
         text.gsub!( /x%x%/, '&#38;' )
-        text.gsub!( /<br \/>/, "<br />\n" )
+        text.gsub!( /<br \/>/, "#{ '<br />' unless @fold_lines }\n" )
         text.strip!
         text
 
@@ -353,6 +338,17 @@ class RedCloth < String
                 (?=[\s\])}<#{punct}]|$)/xm 
         [re, ht]
     end 
+
+    #
+    # Flexible HTML escaping
+    #
+    def htmlesc( str, mode )
+        str.gsub!( '&', '&amp;' )
+        str.gsub!( '"', '&quot;' ) if mode != :NoQuotes
+        str.gsub!( "'", '&#039;' ) if mode == :Quotes
+        str.gsub!('<', '&lt;')
+        str.gsub!('>', '&gt;')
+    end
 
     def pgl( text )
         GLYPHS.each do |re, resub|
@@ -487,7 +483,7 @@ class RedCloth < String
     end
 
     def fold( text )
-        text.gsub!( /(.+)\n(?![#*\s|])/, "\\1#{ @fold_lines ? ' ' : '<br />' }" )
+        text.gsub!( /(.+)\n(?![#*\s|])/, "\\1<br />" )
     end
 
     BLOCK_RE = ['bq','h[1-6]','fn\d+','p'].collect!{|stag|
@@ -666,22 +662,6 @@ class RedCloth < String
         text.gsub!( /&(?![#a-z0-9]+;)/i, "x%x%" )
     end
 
-    def encode_entities( text ) 
-        ## Convert high and low ascii to entities.
-        #  if $-K == "UTF-8"  
-        #      encode_high( text )
-        #  else
-            text.htmlesc!( :NoQuotes )
-        #  end
-    end
-
-    def fix_entities( text )
-        ## de-entify any remaining angle brackets or ampersands
-        text.gsub!( "&gt;", ">" )
-        text.gsub!( "&lt;", "<" )
-        text.gsub!( "&amp;", "&" )
-    end
-
     def clean_white_space( text ) 
         text.gsub!( /\r\n/, "\n" )
         text.gsub!( /\t/, '' )
@@ -701,7 +681,7 @@ class RedCloth < String
     end
     
     OFFTAGS = /(code|pre|kbd|notextile)/
-    OFFTAG_MATCH = /(?:(<\/#{ OFFTAGS }>)|(<#{ OFFTAGS }[^>]*>))(.*?)(?=<\/?#{ OFFTAGS }>|\Z)/mi
+    OFFTAG_MATCH = /(?:(<\/#{ OFFTAGS }>)|(<#{ OFFTAGS }[^>]*>))(.*?)(?=<\/?#{ OFFTAGS }|\Z)/mi
     OFFTAG_OPEN = /<#{ OFFTAGS }/
     OFFTAG_CLOSE = /<\/?#{ OFFTAGS }/
     HASTAG_MATCH = /(<\/?\w[^\n]*?>)/m
@@ -717,18 +697,17 @@ class RedCloth < String
                 ## matches are off if we're between <code>, <pre> etc.
                 if $1
                     if @filter_html
-                        line.htmlesc!( :NoQuotes )
+                        htmlesc( line, :NoQuotes )
                     elsif line =~ OFFTAG_OPEN
                         codepre += 1
                     elsif line =~ OFFTAG_CLOSE
                         codepre -= 1
                         codepre = 0 if codepre < 0
                     end 
-                ## do htmlspecial if between <code>
                 elsif codepre.zero?
                     glyphs( line, level + 1 )
                 else
-                    line.htmlesc!( :NoQuotes )
+                    htmlesc( line, :NoQuotes )
                 end
                 ## p [level, codepre, orig_line, line]
 
@@ -748,17 +727,17 @@ class RedCloth < String
                     codepre += 1
                     used_offtags[offtag] = true
                     if codepre - used_offtags.length > 0
-                        line.htmlesc!( :NoQuotes ) 
+                        htmlesc( line, :NoQuotes ) unless used_offtags['notextile']
                         pre_list.last << line
                         line = ""
                     else
-                        aftertag.htmlesc!( :NoQuotes ) if aftertag
+                        htmlesc( aftertag, :NoQuotes ) if aftertag and not used_offtags['notextile']
                         line = "<redpre##{ pre_list.length }>"
                         pre_list << "#{ $3 }#{ aftertag }"
                     end
                 elsif $1 and codepre > 0
                     if codepre - used_offtags.length > 0
-                        line.htmlesc!( :NoQuotes ) 
+                        htmlesc( line, :NoQuotes ) unless used_offtags['notextile']
                         pre_list.last << line
                         line = ""
                     end
@@ -810,85 +789,9 @@ class RedCloth < String
         V_ALGN_VALS[text]
     end
 
-    def encode_high( text )
-        ## mb_encode_numericentity($text, $cmap, $charset);
-    end
-
-    def decode_high( text )
-        ## mb_decode_numericentity($text, $cmap, $charset);
-    end
-
     def textile_popup_help( name, helpvar, windowW, windowH )
         ' <a target="_blank" href="http://www.textpattern.com/help/?item=' + helpvar + '" onclick="window.open(this.href, \'popupwindow\', \'width=' + windowW + ',height=' + windowH + ',scrollbars,resizable\'); return false;">' + name + '</a><br />'
     end
 
-    CMAP = [
-         160,  255,  0, 0xffff,
-         402,  402,  0, 0xffff,
-         913,  929,  0, 0xffff,
-         931,  937,  0, 0xffff,
-         945,  969,  0, 0xffff,
-         977,  978,  0, 0xffff, 
-         982,  982,  0, 0xffff,
-         8226, 8226, 0, 0xffff,
-         8230, 8230, 0, 0xffff,
-         8242, 8243, 0, 0xffff,
-         8254, 8254, 0, 0xffff,
-         8260, 8260, 0, 0xffff,
-         8465, 8465, 0, 0xffff,
-         8472, 8472, 0, 0xffff,
-         8476, 8476, 0, 0xffff,
-         8482, 8482, 0, 0xffff,
-         8501, 8501, 0, 0xffff,
-         8592, 8596, 0, 0xffff,
-         8629, 8629, 0, 0xffff,
-         8656, 8660, 0, 0xffff,
-         8704, 8704, 0, 0xffff,
-         8706, 8707, 0, 0xffff,
-         8709, 8709, 0, 0xffff,
-         8711, 8713, 0, 0xffff,
-         8715, 8715, 0, 0xffff,
-         8719, 8719, 0, 0xffff,
-         8721, 8722, 0, 0xffff,
-         8727, 8727, 0, 0xffff,
-         8730, 8730, 0, 0xffff,
-         8733, 8734, 0, 0xffff,
-         8736, 8736, 0, 0xffff,
-         8743, 8747, 0, 0xffff,
-         8756, 8756, 0, 0xffff,
-         8764, 8764, 0, 0xffff,
-         8773, 8773, 0, 0xffff,
-         8776, 8776, 0, 0xffff,
-         8800, 8801, 0, 0xffff,
-         8804, 8805, 0, 0xffff,
-         8834, 8836, 0, 0xffff,
-         8838, 8839, 0, 0xffff,
-         8853, 8853, 0, 0xffff,
-         8855, 8855, 0, 0xffff,
-         8869, 8869, 0, 0xffff,
-         8901, 8901, 0, 0xffff,
-         8968, 8971, 0, 0xffff,
-         9001, 9002, 0, 0xffff,
-         9674, 9674, 0, 0xffff,
-         9824, 9824, 0, 0xffff,
-         9827, 9827, 0, 0xffff,
-         9829, 9830, 0, 0xffff,
-         338,  339,  0, 0xffff,
-         352,  353,  0, 0xffff,
-         376,  376,  0, 0xffff, 
-         710,  710,  0, 0xffff,
-         732,  732,  0, 0xffff,
-         8194, 8195, 0, 0xffff,
-         8201, 8201, 0, 0xffff,
-         8204, 8207, 0, 0xffff,
-         8211, 8212, 0, 0xffff,
-         8216, 8218, 0, 0xffff,
-         8218, 8218, 0, 0xffff,
-         8220, 8222, 0, 0xffff,
-         8224, 8225, 0, 0xffff,
-         8240, 8240, 0, 0xffff,
-         8249, 8250, 0, 0xffff,
-         8364, 8364, 0, 0xffff
-     ]
 end
 

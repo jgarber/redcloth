@@ -64,3 +64,9 @@ out: '<p><strong>this <span>test</span> is strong</strong></p>'
 ---
 in: <pre class="code"> __inline__</pre>
 out: <pre class="code"> __inline__</pre>
+---
+in: |-
+  * @foo@
+  * @bar@
+  * and @x@ is also.
+out: "<ul>\n\t<li><code>foo</code></li>\n\t\t<li><code>bar</code></li>\n\t\t<li>and <code>x</code> is also.</li>\n\t</ul>"
