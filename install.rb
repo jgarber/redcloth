@@ -652,8 +652,17 @@ class Installer
     install_files targfiles, config('rb-dir') + '/' + rel, 0644
     begin
         require 'rdoc/rdoc'
-        r = RDoc::RDoc.new
-        r.document(%w{--ri-site})
+        ri_site = true
+        if RDOC_VERSION =~ /^0\./
+            require 'rdoc/options'
+            unless Options::OptionList::OPTION_LIST.assoc('--ri-site')
+                ri_site = false
+            end
+        end
+        if ri_site
+            r = RDoc::RDoc.new
+            r.document(%w{--ri-site})
+        end
     rescue
         puts "** Unable to install Ri documentation for RedCloth **"
     end
