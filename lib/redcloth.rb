@@ -297,6 +297,7 @@ class RedCloth < String
         glyphs text
 
         unless lite
+            fold text
             lists text
             table text
             block text
@@ -431,12 +432,14 @@ class RedCloth < String
         text =~ /^#/ ? 'o' : 'u'
     end
 
+    def fold( text )
+        text.gsub!( /(.+)\n(?![#*\s|])/, "\\1#{ @fold_lines ? ' ' : '<br />' }" )
+    end
+
     def block( text ) 
         pre = false
         find = ['bq','h[1-6]','fn\d+','p']
     
-        text.gsub!( /(.+)\n(?![#*\s|])/, "\\1#{ @fold_lines ? ' ' : '<br />' }" )
-
         lines = text.split( /\n/ ) + [' '] 
         new_text = 
         lines.collect do |line|
