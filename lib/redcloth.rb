@@ -160,7 +160,7 @@ end
 
 class RedCloth < String
 
-    VERSION = '2.0.4'
+    VERSION = '2.0.5'
 
     #
     # Mapping of 8-bit ASCII codes to HTML numerical entity equivalents.
@@ -248,6 +248,26 @@ class RedCloth < String
 	]
 
     #
+    # This specifies an Array of security restrictions.
+    #
+    # This is a nice thing if you're using RedCloth for
+    # formatting in public places (e.g. Wikis) where you
+    # don't want users to abuse HTML for bad things.
+    #
+    # If this includes +:filter_html+ HTML which wasn't
+    # created by the Textile processor will be escaped.
+    #
+    # If it includes +:filter_styles+ it will also disable
+    # the style markup specifier. ('{color: red}')
+    #
+    attr_accessor :restrictions
+
+    def initialize( string, restrictions = [] )
+      @restrictions = restrictions
+      super( string )
+    end
+
+    #
     # Generate HTML.
     #
     def to_html( lite = false )
@@ -301,7 +321,7 @@ class RedCloth < String
             style << "vertical-align:#{ v_align( $& ) };" if text =~ A_VLGN
         end
 
-        style << "#{ $1 };" if
+        style << "#{ $1 };" if not @restrictions.include?(:filter_styles) and
             text.sub!( /\{([^}]*)\}/, '' )
 
         lang = $1 if
@@ -632,8 +652,14 @@ class RedCloth < String
                 
                 ## matches are off if we're between <code>, <pre> etc.
                 if tagline
-                    codepre = true if line =~ /^<(#{ offtags })>/i
-                    codepre = false if line =~ /^<\/(#{ offtags })>/i
+                    if line =~ /^<(#{ offtags })>/i
+                      codepre = true
+                    elsif line =~ /^<\/(#{ offtags })>/i
+                      codepre = false
+                    elsif @restrictions.include?(:filter_html)
+                      line.htmlesc!( :NoQuotes )
+                      line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
+                    end 
                 end
             
                 ## do htmlspecial if between <code>
