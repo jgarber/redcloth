@@ -207,7 +207,7 @@ class RedCloth < String
         [ /\b( )?\.{3}/, '\1&#8230;' ], # ellipsis
         [ /\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])/, '<acronym title="\2">\1</acronym>' ], # 3+ uppercase acronym
         [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]{2,})([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3' ], # 3+ uppercase caps
-        [ /\s?--\s?/, '&#8212;' ], # em dash
+        [ /(\.\s)?\s?--\s?/, '\1&#8212;' ], # em dash
         [ /\s-\s/, ' &#8211; ' ], # en dash
         [ /(\d+) ?x ?(\d+)/, '\1&#215;\2' ], # dimension sign
         [ /\b ?[(\[]TM[\])]/i, '&#8482;' ], # trademark
