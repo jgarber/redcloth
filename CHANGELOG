@@ -1,6 +1,0 @@
---- %YAML:1.0
-- version: 0.4
-  date: 2003-06-20
-  changes:
-    - Initial public release.
-    - Integration of YAML-based PyTextile tests.
