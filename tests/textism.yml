@@ -114,7 +114,7 @@ in: h3=. centered header
 out: <h3 style="text-align:center;">centered header</h3>
 ---
 in: '!>/image.gif! right-aligned image'
-out: <p style="text-align:right"><img src="/image.gif" alt="" /> right-aligned image</p>
+out: <p style="float:right"><img src="/image.gif" alt="" /> right-aligned image</p>
 ---
 in: p[no]{color:red}. A Norse of a different colour.
 out: <p style="color:red;" lang="no">A Norse of a different colour.</p>

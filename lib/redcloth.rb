@@ -167,7 +167,7 @@ require 'uri'
 
 class RedCloth < String
 
-    VERSION = '3.0'
+    VERSION = '3.0.0'
 
     #
     # Two accessor for setting security restrictions.
@@ -216,8 +216,10 @@ class RedCloth < String
     # refs_markdown::         Markdown references (for example: [hobix]: http://hobix.com/)
     # block_markdown_setext:: Markdown setext headers
     # block_markdown_atx::    Markdown atx headers
+    # block_markdown_rule::   Markdown horizontal rules
     # block_markdown_bq::     Markdown blockquotes
     # block_markdown_lists::  Markdown lists
+    # inline_markdown_link::  Markdown links
     attr_accessor :rules
 
     # Returns a new RedCloth object, based on _string_ and
@@ -250,8 +252,9 @@ class RedCloth < String
         textile_rules = [:refs_textile, :block_textile_table, :block_textile_lists,
                          :block_textile_prefix, :inline_textile_image, :inline_textile_link,
                          :inline_textile_code, :inline_textile_span, :inline_textile_glyphs]
-        markdown_rules = [:refs_markdown, :block_markdown_setext, :block_markdown_atx, :block_markdown_bq,
-                          :block_markdown_lists]
+        markdown_rules = [:refs_markdown, :block_markdown_setext, :block_markdown_atx, :block_markdown_rule,
+                          :block_markdown_bq, :block_markdown_lists, 
+                          :inline_markdown_reflink, :inline_markdown_link]
         @rules = rules.collect do |rule|
             case rule
             when :markdown
@@ -397,12 +400,14 @@ class RedCloth < String
         str.gsub!( '>', '&gt;')
     end
 
+    # Search and replace for Textile glyphs (quotes, dashes, other symbols)
     def pgl( text )
         GLYPHS.each do |re, resub|
             text.gsub! re, resub
         end
     end
 
+    # Parses Textile attribute lists and builds an HTML attribute string
     def pba( text_in, element = "" )
         
         return '' unless text_in
@@ -446,6 +451,7 @@ class RedCloth < String
 
     TABLE_RE = /^(?:table(_?#{S}#{A}#{C})\. ?\n)?^(#{A}#{C}\.? ?\|.*?\|)(\n\n|\Z)/m
     
+    # Parses a Textile table block, building HTML from the result.
     def block_textile_table( text ) 
         text.gsub!( TABLE_RE ) do |matches|
 
@@ -481,6 +487,7 @@ class RedCloth < String
     LISTS_RE = /^([#*]+?#{C} .*?)$(?![^#*])/m
     LISTS_CONTENT_RE = /^([#*]+)(#{A}#{C}) (.*)$/m
 
+    # Parses Textile lists and generates HTML
     def block_textile_lists( text ) 
         text.gsub!( LISTS_RE ) do |match|
             lines = match.split( /\n/ )
@@ -510,9 +517,7 @@ class RedCloth < String
                     end
                     last_line = line_id
 
-                elsif line =~ /^\s+\S/
-                    last_line = line_id
-                elsif line_id - last_line < 2 and line =~ /^\S/
+                else
                     last_line = line_id
                 end
                 if line_id - last_line > 1 or line_id == lines.length - 1
@@ -552,12 +557,14 @@ class RedCloth < String
 
     BLOCKS_GROUP_RE = /(#{
         ['#', '*', '>'].collect do |sym|
-            '(?:\n*[' + sym + ' ]+(?:[^\n]+|\n+[' + sym + ' ]+|\n(?!\n|\Z))+)|'
-        end 
-    }(?:[^\n]+|\n+ +|\n(?![#*\n]|\Z))+)/m 
+            sym = Regexp::quote( sym )
+            '(?:\n*[' + sym + ' ](?:[^\n]|\n+[' + sym + ' ]|\n(?!\n|\Z))+)'
+        end.join '|' 
+    })|((?:[^\n]+|\n+ +|\n(?![#*\n]|\Z))+)/m
 
     def blocks( text, deep_code = false )
         text.gsub!( BLOCKS_GROUP_RE ) do |blk|
+            plain = $2 ? true : false
 
             # skip blocks that are complex HTML
             if blk =~ /^<\/?(\w+).*>/ and not SIMPLE_HTML_TAGS.include? $1
@@ -570,7 +577,7 @@ class RedCloth < String
                 else
                     blk.gsub!( /((?:\n(?:\n^ +[^\n]*)+)+)/m ) do |iblk|
                         flush_left iblk
-                        blocks iblk, true
+                        blocks iblk, plain
                         iblk.gsub( /^(\S)/, "\t\\1" )
                     end
 
@@ -579,8 +586,11 @@ class RedCloth < String
                         break if block_applied = ( rule_name.to_s.match /^block_/ and method( rule_name ).call( blk ) )
                     end
                     unless block_applied
-                        tag = deep_code ? "code" : "p"
-                        blk = "\t<#{ tag }>#{ blk }</#{ tag }>"
+                        if deep_code
+                            blk = "\t<pre><code>#{ blk }</code></pre>"
+                        else
+                            blk = "\t<p>#{ blk }</p>"
+                        end
                     end
                     # hard_break blk
                     blk + "\n"
@@ -591,7 +601,7 @@ class RedCloth < String
     end
 
     def textile_bq( tag, atts, cite, content )
-        cite = check_refs( cite )
+        cite, cite_title = check_refs( cite )
         cite = " cite=\"#{ cite }\"" if cite
         "\t<blockquote#{ cite }>\n\t\t<p#{ atts }>#{ content }</p>\n\t</blockquote>"
     end
@@ -666,7 +676,21 @@ class RedCloth < String
         end
     end
 
+    MARKDOWN_RULE_RE = /^#{
+        ['*', '-', '_'].collect { |ch| '( ?' + Regexp::quote( ch ) + ' ?){3,}' }.join( '|' )
+    }$/
+
+    def block_markdown_rule( text )
+        text.gsub!( MARKDOWN_RULE_RE ) do |blk|
+            "<hr />"
+        end
+    end
+
+    # XXX TODO XXX
     def block_markdown_lists( text )
+    end
+
+    def inline_markdown_link( text )
     end
 
     def inline_textile_span( text ) 
@@ -701,7 +725,8 @@ class RedCloth < String
         text.gsub!( LINK_RE ) do |m|
             pre,atts,text,title,url,slash,post = $~[1..7]
 
-            url = check_refs( url )
+            url, url_title = check_refs( url )
+            title ||= url_title
             
             atts = pba( atts )
             atts = " href=\"#{ url }#{ slash }\"#{ atts }"
@@ -712,8 +737,59 @@ class RedCloth < String
         end
     end
 
-    TEXTILE_REFS_RE =  /(^|\s)\[(.+?)\](#{URI::ABS_URI_REF})(?=\s|$)/
-    MARKDOWN_REFS_RE = /(^|\s)\[(.+?)\]:\s+<?(#{URI::ABS_URI_REF})>?\s+"((?:[^"]|\\")+)"(?=\s|$)/m
+    MARKDOWN_REFLINK_RE = /
+            \[([^\[\]]+)\]      # $text
+            [ ]?                # opt. space
+            (?:\n[ ]*)?         # one optional newline followed by spaces
+            \[(.*?)\]           # $id
+        /x 
+
+    def inline_markdown_reflink( text ) 
+        text.gsub!( MARKDOWN_REFLINK_RE ) do |m|
+            text, id = $~[1..2]
+
+            if id.empty?
+                url, title = check_refs( text )
+            else
+                url, title = check_refs( id )
+            end
+            
+            atts = " href=\"#{ url }\""
+            atts << " title=\"#{ title }\"" if title
+            atts = shelve( atts )
+            
+            "<a#{ atts }>#{ text }</a>"
+        end
+    end
+
+    MARKDOWN_LINK_RE = /
+            \[([^\[\]]+)\]      # $text
+            \(                  # open paren
+            [ \t]*              # opt space
+            <?(.+?)>?           # $href
+            [ \t]*              # opt space
+            (?:                 # whole title
+            (['"])              # $quote
+            (.*?)               # $title
+            \3                  # matching quote
+            )?                  # title is optional
+            \)
+        /x 
+
+    def inline_markdown_link( text ) 
+        text.gsub!( MARKDOWN_LINK_RE ) do |m|
+            text, url, quote, title = $~[1..4]
+
+            atts = " href=\"#{ url }\""
+            atts << " title=\"#{ title }\"" if title
+            atts = shelve( atts )
+            
+            "<a#{ atts }>#{ text }</a>"
+        end
+    end
+
+    TEXTILE_REFS_RE =  /(^ *)\[([^\n]+?)\](#{HYPERLINK})(?=\s|$)/
+    MARKDOWN_REFS_RE = /(^ *)\[([^\n]+?)\]:\s+<?(#{HYPERLINK})>?(?:\s+"((?:[^"]|\\")+)")?(?=\s|$)/m
 
     def refs( text )
         @rules.each do |rule_name|
@@ -724,7 +800,7 @@ class RedCloth < String
     def refs_textile( text ) 
         text.gsub!( TEXTILE_REFS_RE ) do |m|
             flag, url = $~[2..3]
-            @urlrefs[flag] = [url, nil]
+            @urlrefs[flag.downcase] = [url, nil]
             nil
         end
     end
@@ -732,18 +808,19 @@ class RedCloth < String
     def refs_markdown( text )
         text.gsub!( MARKDOWN_REFS_RE ) do |m|
             flag, url = $~[2..3]
-            title = $~[13]
-            @urlrefs[flag] = [url, title]
+            title = $~[6]
+            @urlrefs[flag.downcase] = [url, title]
             nil
         end
     end
 
     def check_refs( text ) 
-        @urlrefs[text] || text
+        ret = @urlrefs[text.downcase] if text
+        ret || [text, nil]
     end
 
     IMAGE_RE = /
-            (<p>|.)              # start of line?
+            (<p>|.|^)            # start of line?
             \!                   # opening
             (\<|\=|\>)?          # optional alignment atts
             (#{C})               # optional style,class atts
@@ -765,8 +842,8 @@ class RedCloth < String
             # size = @getimagesize($url);
             # if($size) $atts.= " $size[3]";
 
-            href = check_refs( href ) if href
-            url = check_refs( url )
+            href, alt_title = check_refs( href ) if href
+            url, url_title = check_refs( url )
 
             out = ''
             out << "<a#{ shelve( " href=\"#{ href }\"" ) }>" if href
@@ -776,9 +853,9 @@ class RedCloth < String
             if algn 
                 algn = h_align( algn )
                 if stln == "<p>"
-                    out = "<p style=\"text-align:#{ algn }\">#{ out }"
+                    out = "<p style=\"float:#{ algn }\">#{ out }"
                 else
-                    out = "#{ stln }<div style=\"text-align:#{ algn }\">#{ out }</div>"
+                    out = "#{ stln }<div style=\"float:#{ algn }\">#{ out }</div>"
                 end
             else
                 out = stln + out
