@@ -1,4 +1,12 @@
 --- %YAML:1.0
+- version: 3.0.2
+  date: 2005-02-02
+  changes:
+    - Stack overflow Regexps replaced.
+    - All code blocks protected from formatting.
+    - Hard breaks working.
+    - Filter HTML now uses detailed cleaner.
+
 - version: 3.0.1
   date: 2004-11-15
   changes:

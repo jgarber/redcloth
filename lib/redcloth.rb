@@ -166,7 +166,7 @@
 
 class RedCloth < String
 
-    VERSION = '3.0.2'
+    VERSION = '3.0.3'
     DEFAULT_RULES = [:textile, :markdown]
 
     #
@@ -370,7 +370,7 @@ class RedCloth < String
     QTAGS = [
         ['**', 'b'],
         ['*', 'strong'],
-        ['??', 'cite'],
+        ['??', 'cite', :limit],
         ['-', 'del', :limit],
         ['__', 'i'],
         ['_', 'em', :limit],
@@ -546,14 +546,12 @@ class RedCloth < String
         end
     end
 
-    CODE_RE = /
-            (^|[\s>#{PUNCT}{(\[])            # 1 open bracket?
-            @                                # opening
-            (?:\|(\w+?)\|)?                  # 2 language
-            (\S(?:[^\n]|\n(?!\n))*?)         # 3 code
-            @                                # closing
-            (?=[\s\]}\)<#{PUNCT}]|$)         # 4 closing bracket?
-        /x 
+    CODE_RE = /(\W)
+        @
+        (?:\|(\w+?)\|)?
+        (.+?)
+        @
+        (?=\W)/x
 
     def inline_textile_code( text ) 
         text.gsub!( CODE_RE ) do |m|

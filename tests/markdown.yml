@@ -19,6 +19,9 @@ out: |-
   </table>
   	<p>This is another regular paragraph.</p>
 ---
+in: '"Larry Bird":http://images.google.com/images?num=30&q=larry+bird'
+out: '<p>"Larry Bird":http://images.google.com/images?num=30&#38;q=larry+bird</p>'
+---
 in: '&copy;'
 out: <p>&copy;</p>
 ---
@@ -74,7 +77,7 @@ in: |
   > This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
   consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
   Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
-
+  >
   > Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
   id sem consectetuer libero luctus adipiscing.
 out: |-
@@ -126,9 +129,8 @@ out: |-
   	<p>1.   This is the first list item.
   	2.   This is the second list item.</p>
   
-  	<p>Here's some example code:
-  	<code>return shell_exec(\"echo $input | $markdown_script\");</code>
-  	</p>
+  	<p>Here's some example code:</p>
+  	<pre><code>return shell_exec("echo $input | $markdown_script");</code></pre>
   
   </blockquote>
 ---
