@@ -274,7 +274,6 @@ class RedCloth < String
             block text
         end
 
-        footnote_ref text
         retrieve text
         text.gsub!( /<\/?notextile>/, '' )
         text.gsub!( /x%x%/, '&#38;' )
@@ -458,7 +457,7 @@ class RedCloth < String
 				#{ttr}
 				(#{C})
 				(?::(\S+?))?
-				(\S(?:[^\n]|\n(?!\n))*?)
+				([^\s#{ttr}]+?(?:[^\n]|\n(?!\n))*?)
 				([#{PUNCT}]*?)
 				#{ttr}
 				(?=[\])}]|[#{PUNCT}]+?|<|\s|$)/xm 
@@ -625,7 +624,8 @@ class RedCloth < String
         codepre = false
         offtags = 'code|pre|kbd|notextile'
         if text !~ /<.*>/
-            pgl( text )
+            pgl text
+            footnote_ref text
         else
             text.gsub!( /(?:[^<].*?(?=<[^\n]*?>|$)|<[^\n]*?>+)/m ) do |line|
                 tagline = ( line =~ /^<.*>/ )
