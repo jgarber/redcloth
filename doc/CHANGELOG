@@ -1,4 +1,10 @@
 --- %YAML:1.0
+- version: 3.0.3
+  date: 2005-02-06
+  changes:
+    - Stack overflow regexp on code inlines obliterated.
+    - Citations scaled back.
+
 - version: 3.0.2
   date: 2005-02-02
   changes:
