@@ -319,11 +319,11 @@ class RedCloth < String
 
         style << "text-align:#{ h_align( $& ) };" if text =~ A_HLGN
 
-        cls, id = $1, $2 if text =~ /^(.*)#(.*)$/
+        cls, id = $1, $2 if cls =~ /^(.*?)#(.*)$/
         
         atts = ''
         atts << " style=\"#{ style.join }\"" unless style.empty?
-        atts << " class=\"#{ cls }\"" if cls
+        atts << " class=\"#{ cls }\"" unless cls.to_s.empty?
         atts << " lang=\"#{ lang }\"" if lang
         atts << " id=\"#{ id }\"" if id
         atts << " colspan=\"#{ colspan }\"" if colspan
@@ -529,7 +529,7 @@ class RedCloth < String
 			atts = pba( atts )
 			atts << " align=\"#{ i_align( algn ) }\"" if algn
 			atts << " title=\"#{ title }\"" if title
-			atts = " alt=\"#{ title }\"" 
+			atts << " alt=\"#{ title }\"" 
 			# size = @getimagesize($url);
 			# if($size) $atts.= " $size[3]";
 
@@ -606,7 +606,7 @@ class RedCloth < String
 	end
 
     def no_textile( text ) 
-        text.gsub!( /(^|\s)==(.*?)==(\s|$)?/m,
+        text.gsub!( /(^|\s)==(.*?)==(\s|$)?/,
             '\1<notextile>\2</notextile>\3' )
 	end
 
