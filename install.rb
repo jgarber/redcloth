@@ -650,6 +650,13 @@ class Installer
 
   def install_dir_lib( rel )
     install_files targfiles, config('rb-dir') + '/' + rel, 0644
+    begin
+        require 'rdoc/rdoc'
+        r = RDoc::RDoc.new
+        r.document(%w{--ri-site})
+    rescue
+        puts "** Unable to install Ri documentation for RedCloth **"
+    end
   end
 
   def install_dir_ext( rel )

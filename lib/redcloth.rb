@@ -11,12 +11,31 @@
 # Textism for PHP: http://www.textism.com/tools/textile/
 # 
 #
+
+class String
+    #
+    # Flexible HTML escaping
+    #
+    def htmlesc!( mode )
+        gsub!( '&', '&amp;' )
+        gsub!( '"', '&quot;' ) if mode != :NoQuotes
+        gsub!( "'", '&#039;' ) if mode == :Quotes
+        gsub!('<', '&lt;')
+        gsub!('>', '&gt;')
+    end
+end
+
+# = RedCloth
+#
+# RedCloth is a Ruby library for converting Textile
+# into HTML.
+#
 # == What is Textile?
 #
 # Textile is a simple formatting style for text
 # documents, loosely based on some HTML conventions.
 #
-# === Sample Textile Text
+# == Sample Textile Text
 #
 #  h2. This is a title
 #
@@ -26,7 +45,7 @@
 #
 #  bq. This is a blockquote.
 #
-# === Writing Textile
+# = Writing Textile
 #
 # A Textile document consists of paragraphs.  Paragraphs
 # can be specially formatted by adding a small instruction
@@ -37,7 +56,7 @@
 #  #       Numeric list.
 #  *       Bulleted list.
 #
-# === Quick Phrase Modifiers
+# == Quick Phrase Modifiers
 #
 # Quick phrase modifiers are also included, to allow formatting
 # of small portions of text within a paragraph.
@@ -56,7 +75,7 @@
 #
 #  ==notextile== (leave text alone)
 #
-# === Links
+# == Links
 #
 # To make a hypertext link, put the link text in "quotation 
 # marks" followed immediately by a colon and the URL of the link.
@@ -73,7 +92,7 @@
 # 
 #  <a href="http://www.textism.com" title="This is a title">This is a link</a>
 #
-# === Images
+# == Images
 #
 # To insert an image, put the URL for the image inside exclamation marks.
 #
@@ -101,7 +120,7 @@
 #
 #  <a href="http://textism.com"><img src="/common/textist.gif" alt="Textist" /></a>
 #
-# === Defining Acronyms
+# == Defining Acronyms
 #
 # HTML allows authors to define acronyms via the tag. The definition appears as a 
 # tool tip when a cursor hovers over the acronym. A crucial aid to clear writing, 
@@ -118,7 +137,7 @@
 #
 #  <acronym title="American Civil Liberties Union">ACLU</acronym>
 #
-# === Adding Tables
+# == Adding Tables
 #
 # In Textile, simple tables can be added by seperating each column by
 # a pipe.
@@ -131,7 +150,7 @@
 #     table(border:1px solid black).
 #     (background:#ddd;color:red). |{}| | | |
 #
-# === Using RedCloth
+# == Using RedCloth
 # 
 # RedCloth is simply an extension of the String class, which can handle
 # Textile formatting.  Use it like a String and output HTML with its
@@ -145,28 +164,100 @@
 #
 #  puts doc.to_html
 
-class String
-    #
-    # Flexible HTML escaping
-    #
-    def htmlesc!( mode )
-        gsub!( '&', '&amp;' )
-        gsub!( '"', '&quot;' ) if mode != :NoQuotes
-        gsub!( "'", '&#039;' ) if mode == :Quotes
-        gsub!('<', '&lt;')
-        gsub!('>', '&gt;')
-    end
-end
-
 class RedCloth < String
 
-    VERSION = '2.0.8'
+    VERSION = '2.0.9'
 
+    #
+    # Two accessor for setting security restrictions.
+    #
+    # This is a nice thing if you're using RedCloth for
+    # formatting in public places (e.g. Wikis) where you
+    # don't want users to abuse HTML for bad things.
+    #
+    # If +:filter_html+ is set, HTML which wasn't
+    # created by the Textile processor will be escaped.
+    #
+    # If +:filter_styles+ is set, it will also disable
+    # the style markup specifier. ('{color: red}')
+    #
+    attr_accessor :filter_html, :filter_styles
+
+    #
+    # Accessor for toggling line folding.
+    #
+    # If +:fold_lines+ is set, single newlines will
+    # not be converted to break tags.
+    #
+    attr_accessor :fold_lines
+
+    #
+    # Returns a new RedCloth object, based on _string_ and
+    # enforcing all the included _restrictions_.
+    #
+    #   r = RedCloth.new( "h1. A <b>bold</b> man", [:filter_html] )
+    #   r.to_html
+    #     #=>"<h1>A &lt;b&gt;bold&lt;/b&gt; man</h1>"
+    #
+    def initialize( string, restrictions = [] )
+        @lite = false
+        restrictions.each { |r| method( "#{ r }=" ).call( true ) }
+        super( string )
+    end
+
+    #
+    # Generates HTML from the Textile contents.  The _lite_ flag
+    # may be used to honor only inline markup, ignoring lists, tables,
+    # and block formatting.
+    #
+    #   r = RedCloth.new( "And then? She *fell*!" )
+    #   r.to_html( true )
+    #     #=>"And then? She <strong>fell</strong>!"
+    #
+    def to_html( lite = nil )
+
+        @lite = lite unless lite.nil?
+
+        # make our working copy
+        text = self.dup
+        
+        @urlrefs = {}
+        @shelf = []
+
+        incoming_entities text 
+        encode_entities text 
+        fix_entities text 
+        clean_white_space text 
+
+        get_refs text 
+
+        no_textile text 
+
+        glyphs text
+
+        unless @lite
+            fold text
+            block text
+        end
+
+        retrieve text
+
+        text.gsub!( /<\/?notextile>/, '' )
+        text.gsub!( /x%x%/, '&#38;' )
+        text.gsub!( /<br \/>/, "<br />\n" )
+        text.strip!
+        text
+
+    end
+
+    #######
+    private
+    #######
     #
     # Mapping of 8-bit ASCII codes to HTML numerical entity equivalents.
     # (from PyTextile)
     #
-    TEXTILE_TAGS = 
+    TEXTILE_TAGS =
 
         [[128, 8364], [129, 0], [130, 8218], [131, 402], [132, 8222], [133, 8230], 
          [134, 8224], [135, 8225], [136, 710], [137, 8240], [138, 352], [139, 8249], 
@@ -246,7 +337,7 @@ class RedCloth < String
         ['+', 'ins'],
         ['^', 'sup'],
         ['~', 'sub']
-    ].collect{|rc, ht| 
+    ].collect do |rc, ht| 
         ttr = Regexp.quote(rc)
         re  = /(^|\s|\>|[#{PUNCT}{(\[])
                 #{ttr}
@@ -257,75 +348,7 @@ class RedCloth < String
                 #{ttr}
                 (?=[\])}]|[#{PUNCT}]+?|<|\s|$)/xm 
         [re, ht]
-  }
-
-    #
-    # Two accessor for setting security restrictions.
-    #
-    # This is a nice thing if you're using RedCloth for
-    # formatting in public places (e.g. Wikis) where you
-    # don't want users to abuse HTML for bad things.
-    #
-    # If +:filter_html+ is set, HTML which wasn't
-    # created by the Textile processor will be escaped.
-    #
-    # If +:filter_styles+ is set, it will also disable
-    # the style markup specifier. ('{color: red}')
-    #
-    attr_accessor :filter_html, :filter_styles
-
-    #
-    # Accessor for toggling line folding.
-    #
-    # If +:fold_lines+ is set, single newlines will
-    # not be converted to break tags.
-    #
-    attr_accessor :fold_lines
-
-    def initialize( string, restrictions = [] )
-        @lite = false
-        restrictions.each { |r| method( "#{ r }=" ).call( true ) }
-        super( string )
-    end
-
-    #
-    # Generate HTML.
-    #
-    def to_html( lite = nil )
-
-        @lite = lite unless lite.nil?
-
-        # make our working copy
-        text = self.dup
-        
-        @urlrefs = {}
-        @shelf = []
-
-        incoming_entities text 
-        encode_entities text 
-        fix_entities text 
-        clean_white_space text 
-
-        get_refs text 
-
-        no_textile text 
-
-        glyphs text
-
-        unless @lite
-            fold text
-            block text
-        end
-
-        retrieve text
-
-        text.gsub!( /<\/?notextile>/, '' )
-        text.gsub!( /x%x%/, '&#38;' )
-        text.gsub!( /<br \/>/, "<br />\n" )
-        text.strip!
-        text
-
-    end
+    end 
 
     def pgl( text )
         GLYPHS.each do |re, resub|
