@@ -2,6 +2,7 @@
 - version: 2.0.11
   date: 2004-05-27
   changes:
+    - Escaped some sample markup that was being translated by RDoc.
     - Subtle changes to the quick tags to help them interact with surrounding HTML better.
     - Ensure angle brackets inside code quick tags get escaped.
 

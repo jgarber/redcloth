@@ -61,10 +61,10 @@ end
 # Quick phrase modifiers are also included, to allow formatting
 # of small portions of text within a paragraph.
 #
-#  _emphasis_
-#  __italicized__
-#  *strong*
-#  **bold**
+#  \_emphasis\_
+#  \_\_italicized\_\_
+#  \*strong\*
+#  \*\*bold\*\*
 #  ??citation??
 #  -deleted text-
 #  +inserted text+
