@@ -274,9 +274,8 @@ class RedCloth < String
             block text
         end
 
-        span text 
-        footnote_ref text
         glyphs text
+        footnote_ref text
         retrieve text
         text.gsub!( /<\/?notextile>/, '' )
         text.gsub!( /x%x%/, '&#38;' )
@@ -463,7 +462,7 @@ class RedCloth < String
 				(\S(?:[^\n]|\n(?!\n))*?)
 				([#{PUNCT}]*?)
 				#{ttr}
-				(?=[\])}]|[#{PUNCT}]+?|\s|$)/xm 
+				(?=[\])}]|[#{PUNCT}]+?|<|\s|$)/xm 
 			
 			) do |m|
 		 
@@ -623,7 +622,7 @@ class RedCloth < String
         if text !~ /<.*>/
             pgl( text )
         else
-            text.split( /(<.*?>)/ ).collect do |line|
+            text.replace( text.split( /(<.*?>)/ ).collect do |line|
                 offtags = 'code|pre|kbd|notextile'
                 
                 ## matches are off if we're between <code>, <pre> etc.
@@ -636,9 +635,12 @@ class RedCloth < String
                 if codepre
                     line.htmlesc!( :NoQuotes )
                     line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
+                else
+                    span line
                 end
 
-            end.join
+                line
+            end.join )
         end
     end
 
