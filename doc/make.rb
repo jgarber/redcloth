@@ -9,11 +9,59 @@ end
 file_name = ARGV.shift
 case file_name
 when 'README'
-    puts "<html>"
-    puts "<head>"
-    puts "<title>RedCloth [Textile Humane Web Text for Ruby]</title>"
-    puts "</head>"
-    puts "<body>"
+    puts <<-HTML
+    <html>
+    <head>
+    <title>RedCloth [Textile Humane Web Text for Ruby]</title>
+    <style type="text/css">
+    BODY {
+        margin: 10px 60px;
+        font-family: georgia, serif;
+        font-size: 12pt;
+    }
+    TABLE {
+        padding: 15px;
+        width: 250px;
+    }
+    TH {
+        text-align: left;
+    }
+    TD {
+        border-top: solid 1px #eee;
+    }
+    H4 {
+        color: #999;
+        background-color: #fee;
+        border: solid 1px #caa;
+        margin: 10px 15px 5px 10px;
+        padding: 5px;
+    }
+    P {
+        margin: 10px 15px 5px 15px;
+    }
+    P.example1 {
+        background-color: #FEE;
+        font-weight: bold;
+        font-size: 9pt;
+        padding: 5px;
+    }
+    P.example2 {
+        border: solid 1px #DDD;
+        background-color: #EEE;
+        font-size: 9pt;
+        padding: 5px;
+    }
+    .big {
+        font-size: 15pt;
+    }
+    #big-red {
+        font-size: 15pt;
+        color: red;
+    }
+    </style>
+    </head>
+    <body>
+    HTML
     puts RedCloth.new( File.open( file_name ).read ).to_html
     puts "</body>"
     puts "</html>"

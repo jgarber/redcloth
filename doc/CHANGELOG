@@ -1,4 +1,12 @@
 --- %YAML:1.0
+- version: 2.0.7
+  date: 2004-04-21
+  changes:
+    - New REFERENCE and QUICK-REFERENCE.  See http://hobix.com/textile/.
+    - Lists rewritten to accomplish better line folding.
+    - Better, greedier links.
+    - Additional link and list tests.
+
 - version: 2.0.6
   date: 2004-04-16
   changes:
