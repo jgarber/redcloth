@@ -267,10 +267,6 @@ class RedCloth < String
         image text 
         links text 
         code text 
-        span text 
-        footnote_ref text
-        glyphs text
-        retrieve text
 
         unless lite
             lists text
@@ -278,6 +274,10 @@ class RedCloth < String
             block text
         end
 
+        span text 
+        footnote_ref text
+        glyphs text
+        retrieve text
         text.gsub!( /<\/?notextile>/, '' )
         text.gsub!( /x%x%/, '&#38;' )
         text.gsub!( /<br \/>/, "<br />\n" )
@@ -301,7 +301,7 @@ class RedCloth < String
         if element == 'td'
             colspan = $1 if text =~ /\\\\(\d+)/
             rowspan = $1 if text =~ /\/(\d+)/
-            style << "vertical-align:#{ $& };" if text =~ A_VLGN
+            style << "vertical-align:#{ v_align( $& ) };" if text =~ A_VLGN
         end
 
         style << "#{ $1 };" if
@@ -318,7 +318,7 @@ class RedCloth < String
 
         style << "padding-right:#{ $1.length }em;" if text.sub!( /([)]+)/, '' )
 
-        style << "text-align:#{ hAlign( $& ) };" if text =~ A_HLGN
+        style << "text-align:#{ h_align( $& ) };" if text =~ A_HLGN
 
         cls, id = $1, $2 if text =~ /^(.*)#(.*)$/
         
@@ -336,10 +336,12 @@ class RedCloth < String
     def table( text ) 
         text << "\n\n"
         text.gsub!( /^(?:table(_?#{S}#{A}#{C})\. ?\n)?^(#{A}#{C}\.? ?\|.*?\|)\n\n/m ) do |matches|
-			tatts = pba( matches[1], 'table' )
+
+            tatts, fullrow = $~[1..2]
+			tatts = pba( tatts, 'table' )
 			rows = []
 
-			matches[2].
+			fullrow.
 			split( /\|$/m ).
 			delete_if { |x| x.empty? }.
 			each do |row|
@@ -451,15 +453,14 @@ class RedCloth < String
     
     def span( text ) 
 		QTAGS.each do |tt, ht|
-			# text.gsub!( /(?<=^|\s|\>|[[:punct:]]|[{(\[])
 			ttr = Regexp::quote( tt )
             text.gsub!( 
 
 				/(^|\s|\>|[#{PUNCT}{(\[])
-				(#{ttr})
+				#{ttr}
 				(#{C})
 				(?::(\S+?))?
-				(\S([^\n]|\n(?!\n))*?)
+				(\S(?:[^\n]|\n(?!\n))*?)
 				([#{PUNCT}]*?)
 				#{ttr}
 				(?=[\])}]|[#{PUNCT}]+?|\s|$)/xm 
@@ -468,7 +469,7 @@ class RedCloth < String
 		 
 				start,atts,cite,content,tend = $~[1..5]
 				atts = pba( atts )
-				atts << " cite=\"#{ cite }\"" unless cite.empty?
+				atts << " cite=\"#{ cite }\"" if cite
 
 				"#{ start }<#{ ht }#{ atts }>#{ content }#{ tend }</#{ ht }>"
 
