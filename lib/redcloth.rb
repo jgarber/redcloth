@@ -528,7 +528,7 @@ class RedCloth < String
                 end unless pre
             end
             
-            line.gsub!( /^(?!\t|<\/?pre|<\/?notextile|<\/?code|$| )(.*)/, "\t<p>\\1</p>" ) unless pre
+            line.gsub!( /^(?!\t|<\/?div|<\/?pre|<\/?notextile|<\/?code|$| )(.*)/, "\t<p>\\1</p>" ) unless pre
             
             line.gsub!( "<br />", "\n" ) if pre
             pre = false if line =~ /<\/(pre|notextile)>/i

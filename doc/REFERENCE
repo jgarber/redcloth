@@ -85,7 +85,7 @@
     the class.
   - !!example p(#big-red). Red here
   - Class and ID can be combined by placing the class first.
-  - !!example p(example1#big-red). Red here
+  - !!example p(example1#big-red2). Red here
   - Style settings can be provided directly by surrounding them in curly braces.
   - !!example p{color:blue;margin:30px}. Spacey blue
   - Language designations can be given between angel brackets.
@@ -110,6 +110,33 @@
   - !!example "h2()>. Bingo."
   - And, furthermore, coupled with language settings and CSS styles.
   - !!example "h3()>[no]{color:red}. Bingo"
+  - h4. HTML in Textile
+  - Textile is designed for quickening the simple markups.  For more complex formatting, you are encouraged
+    to break out into HTML.
+  - For example, long code blocks belong between @pre@ and @code@ tags.  Please also indent your code inside
+    the tags to be sure that all Textile processors out there will ignore the contents.
+  - !!example |
+      <pre>
+      <code>
+        a.gsub!( /</, '' )
+      </code>
+      </pre>
+  - You may also choose to surround sections with @div@ tags to separate your document into sections.
+    "Instiki":http://www.instiki.org/ uses this technique to float a sidebar to the right.
+  - !!example |
+      <div style="float:right;">
+      
+      h3. Sidebar
+
+      "Hobix":http://hobix.com/
+      "Ruby":http://ruby-lang.org/
+
+      </div>
+      
+      The main text of the page
+      goes here and will stay to
+      the left of the sidebar.
+
 - Lists:
   - h4. Numeric Lists
   - To make a numbered list, place each item in its own paragraph, preceded by "#".

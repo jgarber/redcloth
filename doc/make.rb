@@ -10,8 +10,11 @@ file_name = ARGV.shift
 case file_name
 when 'README'
     puts <<-HTML
-    <html>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+            "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
     <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>RedCloth [Textile Humane Web Text for Ruby]</title>
     <style type="text/css">
     BODY {
@@ -60,6 +63,10 @@ when 'README'
         font-size: 15pt;
         color: red;
     }
+    #big-red2 {
+        font-size: 15pt;
+        color: red;
+    }
     #sidebar {
         float: right;
         font-family: verdana, arial, sans-serif;
@@ -89,8 +96,11 @@ when 'QUICK-REFERENCE'
     sections.shift
 
     puts <<-HTML
-    <html>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+         "DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
     <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Textile Quick Reference</title>
     <style type="text/css">
     BODY {
@@ -121,12 +131,14 @@ when 'QUICK-REFERENCE'
     P {
         margin: 2px 5px 2px 5px;
     }
-    P.example1 {
+    TD.example1 PRE {
         background-color: #FEE;
+        font-family: georgia, serif;
         font-size: 8pt;
         padding: 5px;
+        padding: 5px;
     }
-    P.example2 {
+    TD.example3 {
         border: solid 1px #DDD;
         background-color: #EEE;
         font-size: 8pt;
@@ -139,22 +151,26 @@ when 'QUICK-REFERENCE'
         font-size: 12pt;
         color: red;
     }
+    #big-red2 {
+        font-size: 15pt;
+        color: red;
+    }
     </style>
     </head>
     <body>
     <table>
-    <tr><th colspan=3><h1>Textile Quick Reference</h1></th></tr>
-    <tr><th colspan=3>Sections: <nobr>#{ sections.collect { |s| "<a href='##{ a_name( s ) }'>#{ s }</a>" }.join( '</nobr> | <nobr>' ) }</nobr></th></tr>
+    <tr><th colspan='3'><h1>Textile Quick Reference</h1></th></tr>
+    <tr><th colspan='3'>Sections: #{ sections.collect { |s| "<a href='##{ a_name( s ) }'>#{ s.gsub( /\s/, '&nbsp;' ) }</a>" }.join( ' | ' ) }</th></tr>
     HTML
 
     ct = 0
     content.each do |section|
         section.each do |header, parags|
-            puts "<tr><th colspan=5><a name='#{ a_name( header ) }'>#{ header }</a></th></tr>" if ct.nonzero?
+            puts "<tr><th colspan='5'><a name='#{ a_name( header ) }'>#{ header }</a></th></tr>" if ct.nonzero?
             parags.each do |p|
                 if p.is_a?( Array ) and p[0] == :example
-                    puts "<tr><td nowrap><p class='example1'>#{ p[1] }</p></td><td>&rarr;</td>" +
-                             "<td><p class='example3'>#{ p[2] }</p></td></tr>"
+                    puts "<tr><td class='example1'><pre>#{ p[1] }</pre></td><td>&rarr;</td>" +
+                             "<td class='example2'>#{ p[2] }</td></tr>"
                 end
             end
         end
@@ -179,8 +195,11 @@ when 'REFERENCE'
     content = YAML::load( File.open( file_name ) )
 
     puts <<-HTML
-    <html>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+         "DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
     <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Textile Reference</title>
     <style type="text/css">
     BODY {
@@ -210,16 +229,18 @@ when 'REFERENCE'
     P {
         margin: 10px 15px 5px 15px;
     }
-    TD.example1 P {
+    TD.example1 PRE {
         background-color: #B30;
         color: white;
+        font-family: georgia, serif;
         font-weight: bold;
         font-size: 9pt;
         padding: 5px;
     }
-    TD.example2 P {
+    TD.example2 PRE {
         border: solid 1px #DDD;
         background-color: #EEE;
+        font-family: georgia, serif;
         font-size: 9pt;
         padding: 5px;
     }
@@ -236,7 +257,7 @@ when 'REFERENCE'
         color: red
     }
     </style>
-    <script language="JavaScript">
+    <script type="text/javascript">
         function quickRedReference() {
             window.open( 
                 "quick.html",
@@ -256,23 +277,23 @@ when 'REFERENCE'
     content.each do |section|
         section.each do |header, parags|
             if ct.zero?
-                puts "<tr><th colspan=3><h1>#{ header }</h1></th></tr>"
+                puts "<tr><th colspan='3'><h1>#{ header }</h1></th></tr>"
             else
-                puts "<tr><th colspan=3><small>#{ ct }.</small><br />#{ header }</th></tr>"
+                puts "<tr><th colspan='3'><small>#{ ct }.</small><br />#{ header }</th></tr>"
             end
             parags.each do |p|
                 if p.is_a? Array
-                    puts "<tr><td class='example1' valign='top' nowrap><p>#{ p[0] }</p></td><td>&rarr;</td>" +
-                             "<td class='example2'><p>#{ p[1] }</p></td></tr><tr><td colspan='2'></td>" +
-                             "<td class='example3'>#{ p[2] }</p></td></tr>"
+                    puts "<tr><td class='example1' valign='top'><pre>#{ p[0] }</pre></td><td>&rarr;</td>" +
+                             "<td class='example2'><pre>#{ p[1] }</pre></td></tr><tr><td colspan='2'></td>" +
+                             "<td class='example3'>#{ p[2] }</td></tr>"
                 else
-                    puts "<tr><td class='explain' colspan=3>"
+                    puts "<tr><td class='explain' colspan='3'>"
                     puts RedCloth.new( p ).to_html
                     puts "</td></tr>"
                 end
             end
             unless ct.zero?
-                puts "<tr><td colspan=5 style='border-bottom: solid 1px #eee;'></tr>"
+                puts "<tr><td colspan='5' style='border-bottom: solid 1px #eee;'></td></tr>"
             end
         end
         ct += 1
