@@ -27,9 +27,11 @@ out: <p>&copy;</p>
 ---
 in: AT&T
 out: <p>AT&#38;T</p>
----
-in: 4 < 5
-out: 4 &lt; 5
+
+# We don't do this.
+# ---
+# in: 4 < 5
+# out: 4 &lt; 5
 ---
 in: |
   This is an H1

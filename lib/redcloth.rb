@@ -194,6 +194,16 @@ class RedCloth < String
     attr_accessor :hard_breaks
 
     #
+    # Accessor for toggling span caps.
+    #
+    # Textile places `span' tags around capitalized
+    # words by default, but this wreaks havoc on Wikis.
+    # If +:no_span_caps+ is set, this will be
+    # suppressed.
+    #
+    attr_accessor :no_span_caps
+
+    #
     # Establishes the markup predence.  Available rules include:
     #
     # == Textile Rules
@@ -344,7 +354,7 @@ class RedCloth < String
         [ /"/, '&#8220;' ], # double opening
         [ /\b( )?\.{3}/, '\1&#8230;' ], # ellipsis
         [ /\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])/, '<acronym title="\2">\1</acronym>' ], # 3+ uppercase acronym
-        [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]{2,})([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3' ], # 3+ uppercase caps
+        [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]{2,})([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3', :no_span_caps ], # 3+ uppercase caps
         [ /(\.\s)?\s?--\s?/, '\1&#8212;' ], # em dash
         [ /\s->\s/, ' &rarr; ' ], # right arrow
         [ /\s-\s/, ' &#8211; ' ], # en dash
@@ -414,7 +424,8 @@ class RedCloth < String
 
     # Search and replace for Textile glyphs (quotes, dashes, other symbols)
     def pgl( text )
-        GLYPHS.each do |re, resub|
+        GLYPHS.each do |re, resub, tog|
+            next if tog and method( tog ).call
             text.gsub! re, resub
         end
     end

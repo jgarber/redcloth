@@ -4,6 +4,7 @@
   changes:
     - Stack overflow regexp on code inlines obliterated.
     - Citations scaled back.
+    - Toggle span tags on CAPS with :no_span_tags accessor.
 
 - version: 3.0.2
   date: 2005-02-02
