@@ -486,6 +486,11 @@ class RedCloth < String
         text.gsub!( /(.+)\n(?![#*\s|])/, "\\1#{ @fold_lines ? ' ' : '<br />' }" )
     end
 
+    BLOCK_RE = ['bq','h[1-6]','fn\d+','p'].collect!{|stag|
+      [stag,
+       /^(#{ stag })(#{A}#{C})\.(?::(\S+))? (.*)$/]
+    }
+
     def block( text ) 
         pre = false
         find = ['bq','h[1-6]','fn\d+','p']
@@ -493,9 +498,9 @@ class RedCloth < String
         lines = text.split( /\n/ ) + [' '] 
         new_text = 
         lines.collect do |line|
-            pre = true if line =~ /<(pre|notextile)>/i
-            find.each do |tag|
-                line.gsub!( /^(#{ tag })(#{A}#{C})\.(?::(\S+))? (.*)$/ ) do |m|
+            pre = true if line =~ /<(pre|notextile)[^>]*>/i
+            BLOCK_RE.each do |stag, ctag|
+                line.gsub!( ctag ) do |m|
                     tag,atts,cite,content = $~[1..4]
 
                     atts = pba( atts )
@@ -705,9 +710,14 @@ class RedCloth < String
         span text
     end
 
+    OFFTAGS = /(?:code|pre|kbd|notextile)/
+    TAG_MATCH_0 = /<\/?#{ OFFTAGS }[^>]*>+|.+?(?=<\/?#{ OFFTAGS }>|\Z)|/mi
+    TAGLINE_MATCH_0 = /^<\/?#{ OFFTAGS }>/
+    LINE_MATCH_0 = /<(#{ OFFTAGS })[^>]*>(.*)/mi
+    LINE_MATCH_1 = /<\/(#{ OFFTAGS })>/i
+
     def glyphs_deep( text, level = 0 )
         codepre = 0
-        offtags = /(?:code|pre|kbd|notextile)/
         if text !~ /<.*>/
             pgl text
             footnote_ref text
@@ -715,7 +725,7 @@ class RedCloth < String
             used_offtags = {}
             tag_match =
                 if level.zero?
-                    /<\/?#{ offtags }>+|.+?(?=<\/?#{ offtags }>|\Z)|/mi
+                    TAG_MATCH_0
                 else
                     /[^<].*?(?=<[^\n]*?>|$)|<[^\n]*?>+/m
                 end
@@ -723,14 +733,14 @@ class RedCloth < String
                 orig_line = line
                 tagline = 
                 if level.zero?
-                    line =~ /^<\/?#{ offtags }>/
+                    line =~ TAGLINE_MATCH_0
                 else
                     line =~ /^<.*>/
                 end
                 
                 ## matches are off if we're between <code>, <pre> etc.
                 if tagline
-                    if line =~ /<(#{ offtags })>(.*)/mi
+                    if line =~ LINE_MATCH_0
                         offtag, aftertag = $1, $2
                         codepre += 1
                         used_offtags[offtag] = true
@@ -740,7 +750,7 @@ class RedCloth < String
                             aftertag.htmlesc!( :NoQuotes )
                             line = "<#{ offtag }>#{ aftertag }"
                         end
-                    elsif line =~ /<\/(#{ offtags })>/i
+                    elsif line =~ LINE_MATCH_1
                         line.htmlesc!( :NoQuotes ) if codepre - used_offtags.length > 0
                         codepre -= 1 unless codepre.zero?
                         used_offtags = {} if codepre.zero?
