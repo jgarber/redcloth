@@ -376,7 +376,7 @@ class RedCloth < String
                 pre = true if line.downcase.include? '<pre>'
 
                 # deal with block replacements first, then see if we're in a list
-                BLOCKS.each { |re, resub| line.gsub! re, resub } unless pre
+                BLOCKS.each { |re, resub| break if line.gsub! re, resub } unless pre
 
                 # kill any br tags that slipped in earlier
                 line.gsub!( '<br />', "\n" ) if pre
@@ -388,8 +388,8 @@ class RedCloth < String
 
             # at the beginning of a list, $line switches to a value
             if list.empty? and line.include? "<li"
+                list = line[3,1] # "u" or "o", presumably
                 line.gsub!( /^(<li)(o|u)/, "\n<\\2l>\n\\1\\2" )
-                list = line[2,1] # "u" or "o", presumably
             elsif not list.empty? and not line.include? "<li#{ list }"
                 line.gsub!( /^(.*)$/, "</#{ list }l>\n\\1" )
                 list = ''
