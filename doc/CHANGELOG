@@ -1,4 +1,16 @@
 --- %YAML:1.0
+- version: 2.0.6
+  date: 2004-04-16
+  changes:
+    - Bold and strong tags were mixed up.  '*' is now strong.  '**' is bold.
+      They were swapped until now.
+    - Horizontal alignments were pretty buggy.  Combining alignments with
+      indents was totally broken.
+    - Fixed table problem.  Now glyphs are handled between tables and blocks.
+    - Nested <pre> and <code> tags are now escaped.  Much better handling of
+      HTML inside <pre> tags.  Really: quite nice.
+    - Patch from Florian Gross to fix an html filtration inconsistency.
+
 - version: 2.0.5
   date: 2004-04-14
   changes: 

@@ -160,7 +160,7 @@ end
 
 class RedCloth < String
 
-    VERSION = '2.0.5'
+    VERSION = '2.0.6'
 
     #
     # Mapping of 8-bit ASCII codes to HTML numerical entity equivalents.
@@ -181,7 +181,7 @@ class RedCloth < String
     #
     # Regular expressions to convert to HTML.
     #
-    A_HLGN = /(?:\<(?!>)|\<\>|\=|[()]+)/
+    A_HLGN = /(?:(?:<>|<|>|\=|[()]+)+)/
     A_VLGN = /[\-^~]/
     C_CLAS = '(?:\([^)]+\))'
     C_LNGE = '(?:\[[^\]]+\])'
@@ -236,8 +236,8 @@ class RedCloth < String
     }
 
     QTAGS = [
-        ['**', 'strong'],
-        ['*', 'b'],
+        ['**', 'b'],
+        ['*', 'strong'],
         ['??', 'cite'],
         ['-', 'del'],
         ['__', 'i'],
@@ -295,16 +295,21 @@ class RedCloth < String
         get_refs text 
 
         no_textile text 
+
+        unless lite
+            lists text
+            table text
+        end
+
         glyphs text
 
         unless lite
             fold text
-            lists text
-            table text
             block text
         end
 
         retrieve text
+
         text.gsub!( /<\/?notextile>/, '' )
         text.gsub!( /x%x%/, '&#38;' )
         text.gsub!( /<br \/>/, "<br />\n" )
@@ -326,7 +331,7 @@ class RedCloth < String
         style = []
         text = text_in.dup
         if element == 'td'
-            colspan = $1 if text =~ /\\\\(\d+)/
+            colspan = $1 if text =~ /\\(\d+)/
             rowspan = $1 if text =~ /\/(\d+)/
             style << "vertical-align:#{ v_align( $& ) };" if text =~ A_VLGN
         end
@@ -654,31 +659,34 @@ class RedCloth < String
     end
 
     def glyphs_deep( text )
-        codepre = false
-        offtags = 'code|pre|kbd|notextile'
+        codepre = 0
+        offtags = /(?:code|pre|kbd|notextile)/
         if text !~ /<.*>/
             pgl text
             footnote_ref text
         else
+            used_offtags = {}
             text.gsub!( /(?:[^<].*?(?=<[^\n]*?>|$)|<[^\n]*?>+)/m ) do |line|
                 tagline = ( line =~ /^<.*>/ )
                 
                 ## matches are off if we're between <code>, <pre> etc.
                 if tagline
                     if line =~ /^<(#{ offtags })>/i
-                      codepre = true
+                        codepre += 1
+                        used_offtags[$1] = true
+                        line.htmlesc!( :NoQuotes ) if codepre - used_offtags.length > 0
                     elsif line =~ /^<\/(#{ offtags })>/i
-                      codepre = false
-                    elsif @filter_html
-                      line.htmlesc!( :NoQuotes )
-                      line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
+                        line.htmlesc!( :NoQuotes ) if codepre - used_offtags.length > 0
+                        codepre -= 1 unless codepre.zero?
+                        used_offtags = {} if codepre.zero?
+                    elsif @filter_html or codepre > 0
+                        line.htmlesc!( :NoQuotes )
+                        ## line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
                     end 
-                end
-            
                 ## do htmlspecial if between <code>
-                if codepre
+                elsif codepre > 0
                     line.htmlesc!( :NoQuotes )
-                    line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
+                    ## line.gsub!( /&lt;(\/?#{ offtags })&gt;/, '<\1>' )
                 elsif not tagline
                     inline line
                     glyphs_deep line

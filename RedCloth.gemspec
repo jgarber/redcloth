@@ -1,7 +1,7 @@
 require 'rubygems'
 spec = Gem::Specification.new do |s|
   s.name = 'RedCloth'
-  s.version = "2.0.4"
+  s.version = "2.0.6"
   s.platform = Gem::Platform::RUBY
   s.summary = "RedCloth is a module for using Textile in Ruby. Textile is a text format. A very simple text format. Another stab at making readable text that can be converted to HTML."
 #  s.requirements << 'um?'
