@@ -1,4 +1,13 @@
 --- %YAML:1.0
+- version: 2.0.5
+  date: 2004-04-14
+  changes: 
+    - Added safe mode (patch courtesy of Florian Gross).
+    - Added line folding (suggested by Jim Menard).
+    - Fixing notextile tags to work multi-line.
+    - Ambiguity with em-dash and block opener.
+    - Footnote bug. (Thanks, Jim Menard!)
+
 - version: 2.0.4
   date: 2004-04-08
   changes:
