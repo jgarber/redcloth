@@ -1,0 +1,20 @@
+---
+- Headers:
+  - To make an entire paragraph into a Header, place "h<em>n</em>.i " at 
+    its beginning, where _n_ is a number from 1-6.
+  - !!example h1. Header 1
+  - !!example h2. Header 2
+  - !!example h2. Header 3
+- Block Quotes:
+  - To make an entire paragraph into a block quotation, place
+    "bq." before it.
+  - !!example "An old text\n\nbq. A block quotation.\n\nAny old text"
+- Footnotes:
+  - Numeric references within text to footnotes appear between square brackets.
+  - !!example This is covered elsewhere[1].
+  - To create the footnote that corresponds to its reference within the text, begin a new paragraph with fn and the 
+    footnote's number, followed by a dot and a space.
+  - !!example fn1. Down here, in fact.
+- Numeric List:
+  - To make a numbered list, place each item in its own paragraph, preceded by "#".
+  - !!example "# A first item"
