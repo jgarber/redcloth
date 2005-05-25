@@ -3,6 +3,7 @@
   date: 2005-02-18
   changes:
     - Fixed error triggered by complex lists.
+    - Inline markups need to be butted up against enclosing text, no spaces.
     - Brought back lite_mode.
 
 - version: 3.0.3
