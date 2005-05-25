@@ -231,7 +231,7 @@ class RedCloth < String
     # inline_textile_image::  Textile inline images
     # inline_textile_link::   Textile inline links
     # inline_textile_span::   Textile inline spans
-    # inline_textile_glyphs:: Textile entities (such as em-dashes and smart quotes)
+    # glyphs_textile:: Textile entities (such as em-dashes and smart quotes)
     #
     # == Markdown
     #
@@ -272,7 +272,7 @@ class RedCloth < String
         @shelf = []
         textile_rules = [:refs_textile, :block_textile_table, :block_textile_lists,
                          :block_textile_prefix, :inline_textile_image, :inline_textile_link,
-                         :inline_textile_code, :inline_textile_glyphs, :inline_textile_span]
+                         :inline_textile_code, :inline_textile_span, :glyphs_textile]
         markdown_rules = [:refs_markdown, :block_markdown_setext, :block_markdown_atx, :block_markdown_rule,
                           :block_markdown_bq, :block_markdown_lists, 
                           :inline_markdown_reflink, :inline_markdown_link]
@@ -404,7 +404,7 @@ class RedCloth < String
         [ /"/, '&#8220;' ], # double opening
         [ /\b( )?\.{3}/, '\1&#8230;' ], # ellipsis
         [ /\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])/, '<acronym title="\2">\1</acronym>' ], # 3+ uppercase acronym
-        [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]{2,})([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3', :no_span_caps ], # 3+ uppercase caps
+        [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]+[A-Z0-9])([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3', :no_span_caps ], # 3+ uppercase caps
         [ /(\.\s)?\s?--\s?/, '\1&#8212;' ], # em dash
         [ /\s->\s/, ' &rarr; ' ], # right arrow
         [ /\s-\s/, ' &#8211; ' ], # en dash
@@ -593,7 +593,7 @@ class RedCloth < String
     end
 
     def hard_break( text )
-        text.gsub!( /(.)\n(?! *[#*\s|]|$)/, "\\1<br />" ) if hard_breaks
+        text.gsub!( /(.)\n(?! *[#*|=]+(\s|$))/, "\\1<br />" ) if hard_breaks
     end
 
     BLOCKS_GROUP_RE = /\n{2,}(?! )/m
@@ -721,9 +721,9 @@ class RedCloth < String
         end
     end
 
-    MARKDOWN_RULE_RE = /^#{
+    MARKDOWN_RULE_RE = /^(#{
         ['*', '-', '_'].collect { |ch| '( ?' + Regexp::quote( ch ) + ' ?){3,}' }.join( '|' )
-    }$/
+    })$/
 
     def block_markdown_rule( text )
         text.gsub!( MARKDOWN_RULE_RE ) do |blk|
@@ -733,9 +733,6 @@ class RedCloth < String
 
     # XXX TODO XXX
     def block_markdown_lists( text )
-    end
-
-    def inline_markdown_link( text )
     end
 
     def inline_textile_span( text ) 
@@ -981,7 +978,7 @@ class RedCloth < String
     HASTAG_MATCH = /(<\/?\w[^\n]*?>)/m
     ALLTAG_MATCH = /(<\/?\w[^\n]*?>)|.*?(?=<\/?\w[^\n]*?>|$)/m
 
-    def inline_textile_glyphs( text, level = 0 )
+    def glyphs_textile( text, level = 0 )
         if text !~ HASTAG_MATCH
             pgl text
             footnote_ref text
@@ -997,7 +994,7 @@ class RedCloth < String
                         codepre = 0 if codepre < 0
                     end 
                 elsif codepre.zero?
-                    inline_textile_glyphs( line, level + 1 )
+                    glyphs_textile( line, level + 1 )
                 else
                     htmlesc( line, :NoQuotes )
                 end
@@ -1049,8 +1046,10 @@ class RedCloth < String
     end
 
     def inline( text ) 
-        @rules.each do |rule_name|
-            method( rule_name ).call( text ) if rule_name.to_s.match /^inline_/
+        [/^inline_/, /^glyphs_/].each do |meth_re|
+            @rules.each do |rule_name|
+                method( rule_name ).call( text ) if rule_name.to_s.match( meth_re )
+            end
         end
     end
 

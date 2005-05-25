@@ -401,3 +401,6 @@ out: |-
   		<li>We must act</li>
   	</ul>
 
+---
+in: '"test":http://foo.com/b---ar'
+out: <p><a href="http://foo.com/b---ar">test</a></p>
