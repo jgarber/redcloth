@@ -290,11 +290,11 @@ class RedCloth < String
         # standard clean up
         incoming_entities text 
         clean_white_space text 
-        no_textile text
 
         # start processor
         @pre_list = []
         rip_offtags text
+        no_textile text
         hard_break text 
         unless @lite_mode
             refs text
@@ -347,6 +347,8 @@ class RedCloth < String
     C = "(?:#{C_CLAS}?#{C_STYL}?#{C_LNGE}?|#{C_STYL}?#{C_LNGE}?#{C_CLAS}?|#{C_LNGE}?#{C_STYL}?#{C_CLAS}?)"
     # PUNCT = Regexp::quote( '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~' )
     PUNCT = Regexp::quote( '!"#$%&\'*+,-./:;=?@\\^_`|~' )
+    PUNCT_NOQ = Regexp::quote( '!"#$&\',./:;=?@\\`|' )
+    PUNCT_Q = Regexp::quote( '*-_+^~%' )
     HYPERLINK = '(\S+?)([^\w\s/;=\?]*?)(?=\s|<|$)'
 
     # Text markup tags, don't conflict with block tags
@@ -355,41 +357,6 @@ class RedCloth < String
         'samp', 'kbd', 'var', 'cite', 'abbr', 'acronym', 'a', 'img', 'br',
         'br', 'map', 'q', 'sub', 'sup', 'span', 'bdo'
     ]
-
-    # Elements to handle
-    GLYPHS = [
-    #   [ /([^\s\[{(>])?\'([dmst]\b|ll\b|ve\b|\s|:|$)/, '\1&#8217;\2' ], # single closing
-        [ /([^\s\[{(>])\'/, '\1&#8217;' ], # single closing
-        [ /\'(?=\s|s\b|[#{PUNCT}])/, '&#8217;' ], # single closing
-        [ /\'/, '&#8216;' ], # single opening
-    #   [ /([^\s\[{(])?"(\s|:|$)/, '\1&#8221;\2' ], # double closing
-        [ /([^\s\[{(>])"/, '\1&#8221;' ], # double closing
-        [ /"(?=\s|[#{PUNCT}])/, '&#8221;' ], # double closing
-        [ /"/, '&#8220;' ], # double opening
-        [ /\b( )?\.{3}/, '\1&#8230;' ], # ellipsis
-        [ /\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])/, '<acronym title="\2">\1</acronym>' ], # 3+ uppercase acronym
-        [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]{2,})([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3', :no_span_caps ], # 3+ uppercase caps
-        [ /(\.\s)?\s?--\s?/, '\1&#8212;' ], # em dash
-        [ /\s->\s/, ' &rarr; ' ], # right arrow
-        [ /\s-\s/, ' &#8211; ' ], # en dash
-        [ /(\d+) ?x ?(\d+)/, '\1&#215;\2' ], # dimension sign
-        [ /\b ?[(\[]TM[\])]/i, '&#8482;' ], # trademark
-        [ /\b ?[(\[]R[\])]/i, '&#174;' ], # registered
-        [ /\b ?[(\[]C[\])]/i, '&#169;' ] # copyright
-    ]
-
-    H_ALGN_VALS = {
-        '<' => 'left',
-        '=' => 'center',
-        '>' => 'right',
-        '<>' => 'justify'
-    }
-
-    V_ALGN_VALS = {
-        '^' => 'top',
-        '-' => 'middle',
-        '~' => 'bottom'
-    }
 
     QTAGS = [
         ['**', 'b'],
@@ -424,6 +391,41 @@ class RedCloth < String
             end
         [rc, ht, re, rtype]
     end
+
+    # Elements to handle
+    GLYPHS = [
+    #   [ /([^\s\[{(>])?\'([dmst]\b|ll\b|ve\b|\s|:|$)/, '\1&#8217;\2' ], # single closing
+        [ /([^\s\[{(>#{PUNCT_Q}][#{PUNCT_Q}]*)\'/, '\1&#8217;' ], # single closing
+        [ /\'(?=[#{PUNCT_Q}]*(s\b|[\s#{PUNCT_NOQ}]))/, '&#8217;' ], # single closing
+        [ /\'/, '&#8216;' ], # single opening
+    #   [ /([^\s\[{(])?"(\s|:|$)/, '\1&#8221;\2' ], # double closing
+        [ /([^\s\[{(>#{PUNCT_Q}][#{PUNCT_Q}]*)"/, '\1&#8221;' ], # double closing
+        [ /"(?=[#{PUNCT_Q}]*[\s#{PUNCT_NOQ}])/, '&#8221;' ], # double closing
+        [ /"/, '&#8220;' ], # double opening
+        [ /\b( )?\.{3}/, '\1&#8230;' ], # ellipsis
+        [ /\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])/, '<acronym title="\2">\1</acronym>' ], # 3+ uppercase acronym
+        [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]{2,})([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3', :no_span_caps ], # 3+ uppercase caps
+        [ /(\.\s)?\s?--\s?/, '\1&#8212;' ], # em dash
+        [ /\s->\s/, ' &rarr; ' ], # right arrow
+        [ /\s-\s/, ' &#8211; ' ], # en dash
+        [ /(\d+) ?x ?(\d+)/, '\1&#215;\2' ], # dimension sign
+        [ /\b ?[(\[]TM[\])]/i, '&#8482;' ], # trademark
+        [ /\b ?[(\[]R[\])]/i, '&#174;' ], # registered
+        [ /\b ?[(\[]C[\])]/i, '&#169;' ] # copyright
+    ]
+
+    H_ALGN_VALS = {
+        '<' => 'left',
+        '=' => 'center',
+        '>' => 'right',
+        '<>' => 'justify'
+    }
+
+    V_ALGN_VALS = {
+        '^' => 'top',
+        '-' => 'middle',
+        '~' => 'bottom'
+    }
 
     #
     # Flexible HTML escaping

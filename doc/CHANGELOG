@@ -4,6 +4,7 @@
   changes:
     - Fixed error triggered by complex lists.
     - Inline markups need to be butted up against enclosing text, no spaces.
+    - Fixed problem with intermingled single and double quotes.
     - Brought back lite_mode.
 
 - version: 3.0.3
