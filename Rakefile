@@ -75,14 +75,14 @@ Rake::GemPackageTask.new(spec) do |pkg|
     pkg.need_zip = true
 end
 
-desc "Publish the release files to RubyForge."
+desc "Tag the release in CVS."
 task :tag_cvs do
-    system("cvs tag RELEASE_#{PKG_VERSION.gsub(/\./,'_')} -m 'tag release #{PKG_VERSION}'")
+    system("cvs tag RELEASE_#{PKG_VERSION.gsub(/\./,'_')}")
 end
 
 desc "Publish the release files to RubyForge."
 task :rubyforge_upload => [:package] do
-    files = ["exe", "tar.gz", "zip"].map { |ext| "pkg/#{PKG_FILE_NAME}.#{ext}" }
+    files = ["gem", "tar.gz", "zip"].map { |ext| "pkg/#{PKG_FILE_NAME}.#{ext}" }
 
     if RUBY_FORGE_PROJECT then
         require 'net/http'
