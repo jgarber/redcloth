@@ -398,13 +398,15 @@ class RedCloth < String
         [ /([^\s\[{(>#{PUNCT_Q}][#{PUNCT_Q}]*)\'/, '\1&#8217;' ], # single closing
         [ /\'(?=[#{PUNCT_Q}]*(s\b|[\s#{PUNCT_NOQ}]))/, '&#8217;' ], # single closing
         [ /\'/, '&#8216;' ], # single opening
+        [ /</, '&lt;' ], # less-than
+        [ />/, '&gt;' ], # greater-than
     #   [ /([^\s\[{(])?"(\s|:|$)/, '\1&#8221;\2' ], # double closing
         [ /([^\s\[{(>#{PUNCT_Q}][#{PUNCT_Q}]*)"/, '\1&#8221;' ], # double closing
         [ /"(?=[#{PUNCT_Q}]*[\s#{PUNCT_NOQ}])/, '&#8221;' ], # double closing
         [ /"/, '&#8220;' ], # double opening
         [ /\b( )?\.{3}/, '\1&#8230;' ], # ellipsis
         [ /\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])/, '<acronym title="\2">\1</acronym>' ], # 3+ uppercase acronym
-        [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]+[A-Z0-9])([^<a-z0-9]|$)/, '\1<span class="caps">\2</span>\3', :no_span_caps ], # 3+ uppercase caps
+        [ /(^|[^"][>\s])([A-Z][A-Z0-9 ]+[A-Z0-9])([^<A-Za-z0-9]|$)/, '\1<span class="caps">\2</span>\3', :no_span_caps ], # 3+ uppercase caps
         [ /(\.\s)?\s?--\s?/, '\1&#8212;' ], # em dash
         [ /\s->\s/, ' &rarr; ' ], # right arrow
         [ /\s-\s/, ' &#8211; ' ], # en dash
@@ -593,7 +595,7 @@ class RedCloth < String
     end
 
     def hard_break( text )
-        text.gsub!( /(.)\n(?! *[#*|=]+(\s|$))/, "\\1<br />" ) if hard_breaks
+        text.gsub!( /(.)\n(?!\Z| *([#*=]+(\s|$)|[{|]))/, "\\1<br />" ) if hard_breaks
     end
 
     BLOCKS_GROUP_RE = /\n{2,}(?! )/m
@@ -916,12 +918,12 @@ class RedCloth < String
 
     def shelve( val ) 
         @shelf << val
-        " <#{ @shelf.length }>"
+        " :redsh##{ @shelf.length }:"
     end
     
     def retrieve( text ) 
         @shelf.each_with_index do |r, i|
-            text.gsub!( " <#{ i + 1 }>", r )
+            text.gsub!( " :redsh##{ i + 1 }:", r )
         end
     end
 
@@ -998,7 +1000,7 @@ class RedCloth < String
                 else
                     htmlesc( line, :NoQuotes )
                 end
-                ## p [level, codepre, orig_line, line]
+                # p [level, codepre, line]
 
                 line
             end
