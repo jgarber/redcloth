@@ -1,0 +1,36 @@
+in: |-
+  here is a definition list:
+  
+  - yes := no
+  - no:=no
+  - maybe:= yes
+out: |-
+  <p>here is a definition list:</p>
+  
+  <dl>
+  	<dt>yes</dt>
+  	<dd>no</dd>
+  
+  	<dt>no</dt>
+  	<dd>no</dd>
+  
+  	<dt>maybe</dt>
+  	<dd>yes</dd>
+  </dl>
+---
+in: |-
+  here is a long definition
+  
+  - some term :=
+  *sweet*
+  yes
+  ok =:
+  - regular term := no
+out: |-
+  <p>here is a long definition</p>
+  <dl>
+  	<dt>some term</dt>
+  	<dd><p><strong>sweet</strong></p><p>yes</p><p>ok</p></dd>
+  	<dt>regular term</dt>
+  	<dd>no</dd>
+  </dl>
