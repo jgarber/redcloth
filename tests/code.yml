@@ -1,0 +1,3 @@
+---
+in: 'This is an empty dictionary: @{}@'
+out: '<p>This is an empty dictionary: <code>{}</code></p>'
