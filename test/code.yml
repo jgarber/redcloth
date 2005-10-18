@@ -1,0 +1,135 @@
+---
+in: 'This is an empty dictionary: @{}@'
+out: '<p>This is an empty dictionary: <code>{}</code></p>'
+---
+in: 'This is an empty dictionary: ==```=={}==```=='
+out: '<p>This is an empty dictionary: ```{}```</p>'
+---
+in: 'This is an empty dictionary: ```{}```'
+out: '<p>This is an empty dictionary: <pre><code>{}</code></pre></p>'
+---
+in: |-
+  Testing nested pre tags...
+
+  <pre>
+  <code>
+    Good code here.
+
+    <pre>
+      a = 1
+    </pre>
+
+    Bad code here.
+
+    <script language="JavaScript">
+      window.open( "about:blank" );
+    </script>
+  </code>
+  </pre>
+
+out: |-
+  <p>Testing nested pre tags&#8230;</p>
+  
+
+  <pre>
+  <code>
+    Good code here.
+  
+    &lt;pre&gt;
+      a = 1
+    &lt;/pre&gt;
+  
+    Bad code here.
+  
+    &lt;script language="JavaScript"&gt;
+      window.open( "about:blank" );
+    &lt;/script&gt;
+  </code>
+  </pre>
+---
+in: |-
+  <pre>
+  *** test
+  </pre>
+out: |-
+  <pre>
+  *** test
+  </pre>
+---
+in: |-
+  <notextile>
+  *** test
+  </notextile>
+out: |-
+  *** test
+---
+in: '*this <span></span> is strong*'
+out: '<p><strong>this <span></span> is strong</strong></p>'
+---
+in: '*this <span>test</span> is strong*'
+out: '<p><strong>this <span>test</span> is strong</strong></p>'
+---
+in: <pre class="code"> __inline__</pre>
+out: <pre class="code"> __inline__</pre>
+---
+in: |-
+  * @foo@
+  * @bar@
+  * and @x@ is also.
+
+out: |-
+  <ul>
+  	<li><code>foo</code></li>
+  	<li><code>bar</code></li>
+  	<li>and <code>x</code> is also.</li>
+  </ul>
+
+
+---
+in: |-
+  <pre class="code"> <hello> </pre>
+  <pre class="code"> <hello> </pre>
+out: |-
+  <pre class="code"> &lt;hello&gt; </pre>
+  <pre class="code"> &lt;hello&gt; </pre>
+---
+in: |-
+  Test of Markdown-style indented code.
+
+    a = [1, 2, 3]
+    a.each do |x|
+      puts "test number", x,
+        "and more!"
+    end
+
+  Paragraph 2.
+
+  Paragraph 3.
+out: |-
+  <p>Test of Markdown-style indented code.</p>
+  
+  	<pre><code>a = [1, 2, 3]
+  a.each do |x|
+    puts "test number", x,
+      "and more!" 
+  end</code></pre>
+  
+  	<p>Paragraph 2.</p>
+  
+  	<p>Paragraph 3.</p>
+---
+in: |-
+  If, however, you have a line or two of code or HTML or the like to embed, sandwich it between two sets of triple-backticks, ==```==, like so:
+
+  ```
+  ./foo.pl%
+  <p>foo outputs an HTML paragraph</p>
+
+  ```
+out: |-
+  <p>If, however, you have a line or two of code or <span class="caps">HTML</span> or the like to embed, sandwich it between two sets of triple-backticks, ```, like so:</p>
+
+  <pre><code>
+  ./foo.pl%
+  &lt;p&gt;foo outputs an HTML paragraph&lt;/p&gt;
+  </code></pre>
