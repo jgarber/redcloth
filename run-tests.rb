@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'lib/redcloth'
+require 'lib/redcloth/all_formats'
 require 'yaml'
 require 'rubygems'
 require 'breakpoint' # for some reason, this allows the .'s to dynamically appear

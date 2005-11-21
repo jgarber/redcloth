@@ -1,4 +1,30 @@
 #!/usr/bin/env ruby
 $:.unshift(File.dirname(__FILE__) + '/../lib/')
+require 'optparse'
 require 'redcloth'
-puts RedCloth.new( ARGF.read ).to_html
+
+output_as = "html"
+opts = OptionParser.new do |opts|
+    opts.banner = "Usage: redcloth [options] [redcloth_formatted.txt]"
+    opts.separator "If no file specified, STDIN will be used."
+    opts.separator ""
+    opts.on("-o", "--output STYLE", "Output format (defaults to #{output_as})") do |o|
+        output_as = o
+    end
+end
+opts.parse! ARGV
+
+red = RedCloth.new( ARGF.read )
+unless output_as == 'html'
+    begin
+        require "redcloth/#{ output_as }"
+    rescue LoadError
+        abort "** No outputter library found for the `#{ output_as }' format"
+    end
+end
+out_meth = "to_#{ output_as }"
+if red.respond_to? out_meth
+    puts red.method( out_meth ).call
+else
+    abort "** No to_#{ output_as } method found for the `#{ output_as }' format"
+end
