@@ -1,6 +1,6 @@
 class RedCloth < String
 
-    VERSION = '3.1.0'
+    VERSION = '3.0.4'
     DEFAULT_RULES = [] # let each class add to this array
     TEXTILE_RULES = [:refs_textile, :block_textile_table, :block_textile_lists, :block_textile_defs,
                      :block_textile_prefix, :inline_textile_image, :inline_textile_link,
@@ -139,7 +139,7 @@ class RedCloth < String
     PUNCT = Regexp::quote( '!"#$%&\'*+,-./:;=?@\\^_`|~' )
     HYPERLINK = '(\S+?)([^\w\s/;=\?]*?)(?=\s|<|$)'
     
-    TABLE_RE = /^(?:table(_?#{S}#{A}#{C})\. ?\n)?^(#{A}#{C}\.? ?\|.*?\|)(\n\n|\Z)/m
+    TABLE_RE = /^(?:id ?\{(.*?)\}\. ?\n)?^(?:caption ?\{(.*?)\}\. ?\n)?^(?:table(_?#{S}#{A}#{C})\. ?\n)?^(#{A}#{C}\.? ?\|.*?\|)(\n\n|\Z)/m
     LISTS_RE = /^([#*_0-9]+?#{C} .*?)$(?![^#*])/m
     LISTS_CONTENT_RE = /^([#*]+)([_0-9]*)(#{A}#{C}) (.*)$/m
     DEFS_RE = /^(-#{C}\s.*?\:\=.*?)$(?![^-])/m
@@ -329,7 +329,7 @@ class RedCloth < String
         
         atts = ''
         atts << " style=\"#{ style.join }\"" unless style.empty?
-        atts << " class=\"#{ cls }\"" unless cls.to_s.empty?
+        atts << " class=\"#{ cls }\"" unless String(cls).empty?
         atts << " lang=\"#{ lang }\"" if lang
         atts << " id=\"#{ id }\"" if id
         atts << " colspan=\"#{ colspan }\"" if colspan
@@ -620,7 +620,7 @@ class RedCloth < String
                       (?:www\.)             # www.*
                     ) 
                     (
-                      ([\w]+[=?&\/.-]?)*    # url segment
+                      ([\w]+[=?&:%\/.-]?)*    # url segment
                       \w+[\/]?              # url tail
                       (?:\#\w*)?            # trailing anchor
                     )

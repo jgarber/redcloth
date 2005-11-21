@@ -1,5 +1,6 @@
 require 'rake'
 require 'rake/clean'
+require 'rake/rdoctask'
 require 'rake/gempackagetask'
 require 'rake/contrib/rubyforgepublisher'
 require File.dirname(__FILE__) + '/lib/redcloth'
@@ -8,18 +9,49 @@ PKG_VERSION = RedCloth::VERSION
 PKG_NAME = "RedCloth"
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 RUBY_FORGE_PROJECT = "redcloth"
-RUBY_FORGE_USER = "why"
+RUBY_FORGE_USER = ENV['RUBY_FORGE_USER'] || "why"
 RELEASE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 PKG_FILES = FileList[
-    '*.rb',
     'bin/**/*', 
     'doc/**/*', 
-    'lib/**/redcloth.rb', 
+    'lib/**/*', 
     'tests/**/*',
     'images/*'
 ]
 
 CLEAN.include "**/.*.sw*"
+
+desc "Default Task"
+task :default => [ :test ]
+
+# Run the unit tests
+desc "Run all unit tests"
+task :test do
+   verbose( false ) { sh "ruby run-tests.rb" }
+end
+
+# Make a console, useful when working on tests
+desc "Generate a test console"
+task :console do
+   verbose( false ) { sh "irb -I lib/ -r 'redcloth'" }
+end
+
+# Genereate the RDoc documentation
+desc "Create documentation"
+Rake::RDocTask.new("doc") do |rdoc|
+  rdoc.title = "RedCloth"
+  rdoc.rdoc_dir = 'doc'
+  rdoc.rdoc_files.include('README')
+  rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
+desc "Report code statistics (KLOCs, etc) from the application"
+task :stats do
+  require 'code_statistics'
+  CodeStatistics.new(
+    ["Library", "lib"]
+  ).to_s
+end
 
 spec = Gem::Specification.new do |s|
     s.name = PKG_NAME

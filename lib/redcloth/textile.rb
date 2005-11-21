@@ -47,7 +47,7 @@ class RedCloth < String
     def textile_pre_process(text)
       no_textile text
 			
-			{'w' => 'warning', 'n' => 'note', 'c' => 'comment', 'pro' => 'production'}.each do |char, word|
+			{'w' => 'warning', 'n' => 'note', 'c' => 'comment', 'pro' => 'production', 'dt' => 'dt', 'dd' => 'dd'}.each do |char, word|
 			  parts = text.split(/^\s*#{char}\./)
 			  text.replace(parts.first + "\n" + parts[1..-1].map do |part|
 				  if part =~ /\.#{char}\s*$/
@@ -85,35 +85,37 @@ class RedCloth < String
     def block_textile_table( text ) 
         text.gsub!( TABLE_RE ) do |matches|
 
-            tatts, fullrow = $~[1..2]
+            caption, id, tatts, fullrow = $~[1..4]
             tatts = pba( tatts, 'table' )
             tatts = shelve( tatts ) if tatts
             rows = []
 
             fullrow.
             split( /\|$/m ).
-            delete_if { |x| x.empty? }.
+            delete_if {|row|row.empty?}.
             each do |row|
 
                 ratts, row = pba( $1, 'tr' ), $2 if row =~ /^(#{A}#{C}\. )(.*)/m
+                row << " "
                 
                 cells = []
-                row.split( '|' ).each do |cell|
+                row.split( '|' ).each_with_index do |cell, i|
+                    next if i == 0
+                    
                     ctyp = 'd'
                     ctyp = 'h' if cell =~ /^_/
 
                     catts = ''
                     catts, cell = pba( $1, 'td' ), $2 if cell =~ /^(_?#{S}#{A}#{C}\. ?)(.*)/
 
-                    unless cell.strip.empty?
-                        catts = shelve( catts ) if catts
-                        cells << "\t\t\t<t#{ ctyp }#{ catts }>#{ cell }</t#{ ctyp }>" 
-                    end
+                    catts = shelve( catts ) if catts
+                    cells << "\t\t\t<t#{ ctyp }#{ catts }>#{ cell.strip.empty? ? "&nbsp;" : row.split( '|' ).size-1 != i ? cell : cell[0...cell.length-1] }</t#{ ctyp }>"
                 end
                 ratts = shelve( ratts ) if ratts
                 rows << "\t\t<tr#{ ratts }>\n#{ cells.join( "\n" ) }\n\t\t</tr>"
             end
-            "\t<table#{ tatts }>\n#{ rows.join( "\n" ) }\n\t</table>\n\n"
+            caption = "\t<p class=\"caption\">#{caption}</p>\n" if caption
+            "#{caption}\t<table#{ tatts }>\n#{ rows.join( "\n" ) }\n\t</table>\n\n"
         end
     end
 
@@ -141,8 +143,8 @@ class RedCloth < String
             lines.each_with_index do |line, line_id|
                 if line =~ LISTS_CONTENT_RE 
                   
-                    @last_line += 1
                     tl,continuation,atts,content = $~[1..4]
+                    @last_line += 1 if tl.length == 1
                     
                     unless depth.last.nil?
                         if depth.last.length > tl.length
@@ -153,7 +155,7 @@ class RedCloth < String
 																tab_in = true
                             end
                         end
-                        if depth.last.length == tl.length
+                        if depth.last && depth.last.length == tl.length
 														lines[line_id - 1] << "</li>"
                         end
                     end
@@ -166,8 +168,34 @@ class RedCloth < String
                     else
                         lines[line_id] = "#{"\t"*depth.size}<li>#{ content }"
                     end
+                elsif line =~ /^([_]+)(#{A}#{C}) (.*)$/m
+                    @last_line += 1
+                    tl = "u"
+                    atts,content = $~[2..3]
+                  
+                    unless depth.last.nil?
+                        if depth.last.length > tl.length
+                            (depth.length - 1).downto(0) do |i|
+                                break if depth[i].length == tl.length
+                                lines[line_id - 1] << "</li>\n#{"\t"*(depth.size-1)}</#{ lT( depth[i] ) }l>"
+                                depth.pop
+  															tab_in = true
+                            end
+                        end
+                        if depth.last.length == tl.length
+  													lines[line_id - 1] << "</li>"
+                        end
+                    end
+                    unless depth.last == tl
+                        depth << tl
+                        atts = pba( atts )
+                        atts = shelve( atts ) if atts
+                        lines[line_id] = "#{"\t"*(depth.size-1)}<#{ lT(tl) }l#{ atts }>\n#{"\t"*depth.size}<li>#{ content }"
+                    else
+                        lines[line_id] = "#{"\t"*depth.size}<li>#{ content }"
+                    end
                 end
-
+                
                 if line_id == lines.length - 1
 										tabs = depth.size-1
                     depth.reverse.delete_if do |v|
@@ -393,7 +421,5 @@ class RedCloth < String
     def inline_textile_autolink_emails(text)
       text.gsub!(/([\w\.!#\$%\-+.]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)+)/, '<a href="mailto:\1">\1</a>')
     end
-
-    
 end
 

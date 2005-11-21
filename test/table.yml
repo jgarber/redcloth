@@ -114,84 +114,98 @@ out: |-
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/02/04</td>
+  			<td>&nbsp;</td>
   			<td>011</td>
   			<td>Dialog pass 1 and 2 complete (98+%)</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/02/04</td>
+  			<td>&nbsp;</td>
   			<td>051</td>
   			<td>Dialog pass 1 and 2 complete (98+%)</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/02/04</td>
+  			<td>&nbsp;</td>
   			<td>081</td>
   			<td>Dialog pass 1 and 2 complete (98+%)</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/03/04</td>
+  			<td>&nbsp;</td>
   			<td>011</td>
   			<td>Feature complete</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/03/04</td>
+  			<td>&nbsp;</td>
   			<td>051</td>
   			<td>Feature complete</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/03/04</td>
+  			<td>&nbsp;</td>
   			<td>081</td>
   			<td>Feature complete</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/10/04</td>
+  			<td>&nbsp;</td>
   			<td>011</td>
   			<td>Deployed to Napa test workstation. Passes smoke test.</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/10/04</td>
+  			<td>&nbsp;</td>
   			<td>051</td>
   			<td>Deployed to Napa test workstation. Passes smoke test.</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/10/04</td>
+  			<td>&nbsp;</td>
   			<td>081</td>
   			<td>Deployed to Napa test workstation. Passes smoke test.</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/10/04</td>
+  			<td>&nbsp;</td>
   			<td>070</td>
   			<td>Deployed to Napa test workstation. Passes smoke test.</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/17/04</td>
+  			<td>&nbsp;</td>
   			<td>011</td>
   			<td>System testing complete. Begin testing with live customer data.</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/17/04</td>
+  			<td>&nbsp;</td>
   			<td>051</td>
   			<td>System testing complete. Begin testing with live customer data.</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/17/04</td>
+  			<td>&nbsp;</td>
   			<td>081</td>
   			<td>System testing complete. Begin testing with live customer data.</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/17/04</td>
+  			<td>&nbsp;</td>
   			<td>070</td>
   			<td>System testing complete. Begin testing with live customer data.</td>
   		</tr>

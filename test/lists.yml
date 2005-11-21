@@ -206,6 +206,8 @@ in: |-
 
   #_ four
   # five
+  ## sub-note
+  ## another sub-note
   # six
 
   #_ seven
@@ -219,7 +221,11 @@ out: |-
   </ol>
   <ol start="4">
   	<li>four</li>
-  	<li>five</li>
+  	<li>five
+  	<ol>
+  		<li>sub-note</li>
+  		<li>another sub-note</li>
+  	</ol></li>
   	<li>six</li>
   </ol>
   <ol start="7">

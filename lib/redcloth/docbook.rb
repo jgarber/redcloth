@@ -128,12 +128,12 @@ class RedCloth < String
 
     DOCBOOK_TAGS = [
         ['**', 'emphasis role="strong"'],
-        ['*',  'emphasis role="strong"', :nobreak],
-        ['??', 'citation', :limit],
         ['__', 'emphasis'],
+        ['*',  'emphasis role="strong"', :limit],
+        ['_',  'emphasis', :limit],
+        ['??', 'citation', :limit],
         ['^',  'superscript', :limit],
         ['~',  'subscript', :limit],
-        ['_',  'emphasis', :limit],
         ['%',  'para', :limit],
         ['@',  'literal', :limit],
     ]
@@ -149,12 +149,6 @@ class RedCloth < String
                 (.+?)
                 #{rcq}
                 (?=\W)/x
-            when :nobreak
-                /(#{rcq})
-                (#{C})
-                (?::(\S+?))?
-                (.+?)
-                #{rcq}/
             else
                 /(#{rcq})
                 (#{C})
@@ -182,7 +176,7 @@ class RedCloth < String
 
       no_textile text
 			
-			{'w' => 'warning', 'n' => 'note', 'c' => 'comment', 'pro' => 'production'}.each do |char, word|
+			{'w' => 'warning', 'n' => 'note', 'c' => 'comment', 'pro' => 'production', 'dt' => 'dt', 'dd' => 'dd'}.each do |char, word|
 			  parts = text.split(/^\s*#{char}\./)
 			  text.replace(parts.first + "\n" + parts[1..-1].map do |part|
 				  if part =~ /\.#{char}\s*$/
@@ -249,32 +243,32 @@ class RedCloth < String
     def block_docbook_table( text ) 
         text.gsub!( TABLE_RE ) do |matches|
 
-            tatts, fullrow = $~[1..2]
-            tatts = docbook_pba( tatts, 'informaltable' )
+            caption, id, tatts, fullrow = $~[1..4]
+            tatts = docbook_pba( tatts, caption ? 'table' : 'informaltable' )
             tatts = shelve( tatts ) if tatts
             rows = []
 
             found_first = false
             cols = 0
-            raw_rows = fullrow.split( /\|$/m ).delete_if { |x| x.empty? }
+            raw_rows = fullrow.split( /\|$/m ).delete_if {|row|row.empty?}
             raw_rows.each do |row|
 
                 ratts, row = docbook_pba( $1, 'row' ), $2 if row =~ /^(#{A}#{C}\. )(.*)/m
+                row << " "
                 
                 cells = []
                 head = 'tbody'
                 cols = row.split( '|' ).size-1
-                row.split( '|' ).each do |cell|
+                row.split( '|' ).each_with_index do |cell, i|
+                    next if i == 0
                     ctyp = 'entry'
                     head = 'thead' if cell =~ /^_/
 
                     catts = ''
                     catts, cell = docbook_pba( $1, 'entry' ), $2 if cell =~ /^(_?#{S}#{A}#{C}\. ?)(.*)/
 
-                    unless cell.strip.empty?
-                        catts = shelve( catts ) if catts
-                        cells << "<#{ ctyp }#{ catts }>#{ cell }</#{ ctyp }>" 
-                    end
+                    catts = shelve( catts ) if catts
+                    cells << "<#{ ctyp }#{ catts }>#{ cell.strip.empty? ? "&nbsp;" : row.split( '|' ).size-1 != i ? cell : cell[0...cell.length-1] }</#{ ctyp }>" 
                 end
                 ratts = shelve( ratts ) if ratts
                 if head == 'tbody'
@@ -288,7 +282,11 @@ class RedCloth < String
                 rows << "<row#{ ratts }>\n#{ cells.join( "\n" ) }\n</row>"
                 rows << "</#{ head }>" if head != 'tbody' || raw_rows.last == row
             end
-            %{<informaltable#{ tatts }>\n<tgroup cols="#{cols}">\n#{ rows.join( "\n" ) }\n</tgroup>\n</informaltable>\n\n}
+            title = "<title>#{ caption }</title>\n" if caption
+            id = " id=\"#{ "id#{id}" }\"" if id
+            @ids << "id#{id}"
+            
+            %{<#{ caption ? nil : 'informal' }table#{ id }#{ tatts }>\n#{title}<tgroup cols="#{cols}">\n#{ rows.join( "\n" ) }\n</tgroup>\n</#{ caption ? nil : 'informal' }table>\n\n}
         end
     end
     
@@ -419,7 +417,7 @@ class RedCloth < String
             before,lang,code,after = $~[1..4]
             code = code.gsub(/\\@@?/,'@')
             htmlesc code, :NoQuotes
-            docbook_rip_offtags( "#{ before }<literal>#{ code }</literal>#{ after }" )
+            docbook_rip_offtags( "#{ before }<literal>#{ shelve code }</literal>#{ after }" )
         end
     end
     
@@ -600,8 +598,10 @@ class RedCloth < String
             href, alt_title = check_refs( href ) if href
             url, url_title = check_refs( url )
 
-            out = ''
-            out << "#{stln}<graphic#{ shelve( atts ) } />"
+            out = stln
+            out << "<figure><title>#{title}</title>\n" if title && !title.blank?
+            out << "<graphic#{ shelve( atts ) } />\n"
+            out << "</figure>" if title && !title.blank?
             
             out
         end
@@ -884,6 +884,9 @@ class RedCloth < String
       case atts
       when /comment/
         ht = "remark"
+        atts = nil
+      when /preface/
+        ht = "preface"
         atts = nil
       when /blockquote/
         ht = "blockquote"
