@@ -269,6 +269,10 @@ class RedCloth < String
         atts = shelve( atts ) if atts
         "\t<p#{ atts }>#{ content }</p>"
     end
+    
+    def textile_ch( tag, atts, cite, content )
+      textile_p("h1", atts, cite, content)
+    end
 
     def block_textile_prefix( text ) 
         if text =~ BLOCK_RE
