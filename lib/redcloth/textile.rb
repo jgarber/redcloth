@@ -18,11 +18,11 @@ class RedCloth < String
     # block_textile_table::   Textile table block structures
     # block_textile_lists::   Textile list structures
     # block_textile_prefix::  Textile blocks with prefixes (i.e. bq., h2., etc.)
-    # block_textile_defs::   Textile definition lists
+    # block_textile_defs::    Textile definition lists
     # inline_textile_image::  Textile inline images
     # inline_textile_link::   Textile inline links
     # inline_textile_span::   Textile inline spans
-    # inline_textile_glyphs:: Textile entities (such as em-dashes and smart quotes)
+    # glyphs_textile::        Textile entities (such as em-dashes and smart quotes)
     #
     
     #######
@@ -179,11 +179,11 @@ class RedCloth < String
                                 break if depth[i].length == tl.length
                                 lines[line_id - 1] << "</li>\n#{"\t"*(depth.size-1)}</#{ lT( depth[i] ) }l>"
                                 depth.pop
-  															tab_in = true
+                                tab_in = true
                             end
                         end
-                        if depth.last.length == tl.length
-  													lines[line_id - 1] << "</li>"
+                        if depth.last and depth.last.length == tl.length
+                            lines[line_id - 1] << "</li>"
                         end
                     end
                     unless depth.last == tl
@@ -377,7 +377,7 @@ class RedCloth < String
         end
     end
 
-    def inline_textile_glyphs( text, level = 0 )
+    def glyphs_textile( text, level = 0 )
         if text !~ HASTAG_MATCH
             pgl text
             footnote_ref text
@@ -393,7 +393,7 @@ class RedCloth < String
                         codepre = 0 if codepre < 0
                     end 
                 elsif codepre.zero?
-                    inline_textile_glyphs( line, level + 1 )
+                    glyphs_textile( line, level + 1 )
                 else
                     htmlesc( line, :NoQuotes )
                 end
