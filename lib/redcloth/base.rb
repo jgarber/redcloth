@@ -613,7 +613,7 @@ class RedCloth < String
                         if raw[3] =~ /#{prop}\s*=\s*#{q}([^#{q2}]+)#{q}/i
                             attrv = $1
                             next if prop == 'src' and attrv =~ %r{^(?!http)\w+:}
-                            pcs << "#{prop}=\"#{$1.gsub('"', '\\"')}\""
+                            pcs << "#{prop}=\"#{attrv.gsub('"', '\\"')}\""
                             break
                         end
                     end
