@@ -612,7 +612,7 @@ class RedCloth < String
                         q2 = ( q != '' ? q : '\s' )
                         if raw[3] =~ /#{prop}\s*=\s*#{q}([^#{q2}]+)#{q}/i
                             attrv = $1
-                            next if prop == 'src' and attrv =~ %r{^(?!http)\w+:}
+                            next if (prop == 'src' or prop == 'href') and not attrv =~ %r{^(http|https|ftp):}
                             pcs << "#{prop}=\"#{attrv.gsub('"', '\\"')}\""
                             break
                         end
