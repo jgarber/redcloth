@@ -28,7 +28,13 @@ class RedCloth < String
     # If +:filter_styles+ is set, it will also disable
     # the style markup specifier. ('{color: red}')
     #
-    attr_accessor :filter_html, :filter_styles
+    # If +:filter_classes+ is set, it will also disable
+    # class attributes. ('!(classname)image!')
+    #
+    # If +:filter_ids+ is set, it will also disable
+    # id attributes. ('!(classname#id)image!')
+    #
+    attr_accessor :filter_html, :filter_styles, :filter_classes, :filter_ids
 
     #
     # Accessor for toggling hard breaks.
@@ -343,9 +349,9 @@ class RedCloth < String
         
         atts = ''
         atts << " style=\"#{ style.join }\"" unless style.empty?
-        atts << " class=\"#{ cls }\"" unless String(cls).empty?
+        atts << " class=\"#{ cls }\"" unless cls.to_s.empty? or filter_classes
         atts << " lang=\"#{ lang }\"" if lang
-        atts << " id=\"#{ id }\"" if id
+        atts << " id=\"#{ id }\"" if id and not filter_ids
         atts << " colspan=\"#{ colspan }\"" if colspan
         atts << " rowspan=\"#{ rowspan }\"" if rowspan
         
