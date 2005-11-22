@@ -283,8 +283,11 @@ class RedCloth < String
                 rows << "</#{ head }>" if head != 'tbody' || raw_rows.last == row
             end
             title = "<title>#{ caption }</title>\n" if caption
-            id = " id=\"#{ "id#{id}" }\"" if id
-            @ids << "id#{id}"
+            
+            if id
+              @ids << "id#{id}"
+              id = " id=\"#{ "id#{id}" }\""
+            end
             
             %{<#{ caption ? nil : 'informal' }table#{ id }#{ tatts }>\n#{title}<tgroup cols="#{cols}">\n#{ rows.join( "\n" ) }\n</tgroup>\n</#{ caption ? nil : 'informal' }table>\n\n}
         end

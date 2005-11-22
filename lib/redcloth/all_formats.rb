@@ -1,4 +1,9 @@
-$:.unshift(File.dirname(__FILE__) + "/../")
+$:.unshift(File.dirname(__FILE__))
 
-require 'redcloth'
-require 'redcloth/docbook'
+unless defined? RedCloth
+  require 'base'
+  require 'textile'
+  require 'markdown'
+end
+
+require 'docbook'
