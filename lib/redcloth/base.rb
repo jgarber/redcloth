@@ -472,7 +472,7 @@ class RedCloth < String
 		#  e.g. retrieve("<1>") => "some text"
     def retrieve( text ) 
         @shelf.each_with_index do |r, i|
-            text.gsub!( " <#{ i + 1 }>", r )
+            text.gsub!( " <#{ i + 1 }>" ){|m| r }
         end
     end
 
