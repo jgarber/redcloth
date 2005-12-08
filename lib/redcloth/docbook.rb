@@ -73,9 +73,9 @@ class RedCloth < String
         end.flatten
         
         # standard clean up
+        no_docbook text
         incoming_entities text 
         clean_white_space text 
-        no_docbook text
 
         # start processor
         @pre_list = []

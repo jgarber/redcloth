@@ -287,7 +287,7 @@ class RedCloth < String
         '~' => 'bottom'
     }
 
-    OFFTAGS = /(code|pre|kbd|notextile|programlisting)/i
+    OFFTAGS = /(code|pre|kbd|notextile|nodocbook|programlisting)/i
     OFFTAG_MATCH = /(?:(<\/#{ OFFTAGS }>)|(<#{ OFFTAGS }[^>]*>))(.*?)(?=<\/?#{ OFFTAGS }|\Z)/mi
     OFFTAG_OPEN = /<#{ OFFTAGS }/
     OFFTAG_CLOSE = /<\/?#{ OFFTAGS }/

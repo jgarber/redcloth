@@ -33,7 +33,7 @@ end
 # Make a console, useful when working on tests
 desc "Generate a test console"
 task :console do
-   verbose( false ) { sh "irb -I lib/ -r 'redcloth'" }
+   verbose( false ) { sh "irb -I lib/ -r 'redcloth/all_formats'" }
 end
 
 # Genereate the RDoc documentation
