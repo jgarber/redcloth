@@ -209,7 +209,7 @@ class RedCloth < String
 
       text.gsub!( BACKTICK_CODE_RE ) do |m|
           before,lang,code,after = $~[1..4]
-          docbook_rip_offtags( "#{ before }<programlisting>#{ code.gsub(/\\\`\`\`/,'```') }</programlisting>#{ after }" )
+          docbook_rip_offtags( "#{ before }<programlisting>#{ code.gsub(/\\\`\`\`/,'```') }</programlisting>\n#{ after }" )
       end
     end
 
@@ -628,11 +628,13 @@ class RedCloth < String
       text.gsub!(/([\w\.!#\$%\-+.]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)+)/, '<email>\1</email>')
     end
     
-    def no_docbook( text ) 
-        text.gsub!( /(^|\s)==([^=]+.*?)==(\s|$)?/,
-            '\1<nodocbook>\2</nodocbook>\3' )
-        text.gsub!( /^ *==([^=]+.*?)==/m,
-            '\1<nodocbook>\2</nodocbook>\3' )
+    def no_docbook( text )
+        text.gsub!( /(^|\s)(\\?)==([^=]+.*?)\2==(\s|$)?/ ) do |m|
+          $2.empty? ? "#{$1}<nodocbook>#{$3}</nodocbook>#{$4}" : "#{$1}==#{$3}==#{$4}"
+        end
+        text.gsub!( /^ *(\\?)==([^=]+.*?)\1==/m ) do |m|
+          $1.empty? ? "<nodocbook>#{$2}</nodocbook>" : "==#{$2}=="
+        end
     end
 
     def docbook_footnote_ref( text ) 

@@ -368,7 +368,7 @@ class RedCloth < String
         end
     end
 
-    def no_textile( text ) 
+    def no_textile( text )
         text.gsub!( /(^|\s)(\\?)==([^=]+.*?)\2==(\s|$)?/ ) do |m|
           $2.empty? ? "#{$1}<notextile>#{$3}</notextile>#{$4}" : "#{$1}==#{$3}==#{$4}"
         end
