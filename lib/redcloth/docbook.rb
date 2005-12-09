@@ -907,6 +907,9 @@ class RedCloth < String
       when /important/
         ht = "important"
         atts = nil
+      when /filename/
+        ht = "filename"
+        atts = nil
       when /production/
         ht = "remark"
         atts = nil
