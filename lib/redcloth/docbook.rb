@@ -73,17 +73,18 @@ class RedCloth < String
         end.flatten
         
         # standard clean up
-        no_docbook text
         incoming_entities text 
         clean_white_space text 
 
         # start processor
         @pre_list = []
         pre_process_docbook text
+
+        no_docbook text
         docbook_rip_offtags text
         docbook_hard_break text
-        refs text
-        
+
+        refs text        
         docbook_blocks text
         inline text
         
@@ -173,8 +174,6 @@ class RedCloth < String
       # Prepare superscripts and subscripts
       text.gsub!( /(\w)(\^[0-9,]+\^)/, '\1 \2' )
       text.gsub!( /(\w)(\~[0-9,]+\~)/, '\1 \2' )
-
-      no_textile text
 			
 			{'w' => 'warning', 'n' => 'note', 'c' => 'comment', 'pro' => 'production', 'dt' => 'dt', 'dd' => 'dd'}.each do |char, word|
 			  parts = text.split(/^\s*#{char}\./)
@@ -209,8 +208,9 @@ class RedCloth < String
 
       text.gsub!( BACKTICK_CODE_RE ) do |m|
           before,lang,code,after = $~[1..4]
-          docbook_rip_offtags( "#{ before }<programlisting>#{ code.gsub(/\\\`\`\`/,'```') }</programlisting>\n#{ after }" )
+          docbook_rip_offtags( "#{ before }<programlisting>#{ code.gsub(/\\\`\`\`/,'```') }</programlisting>#{ after }" )
       end
+      
     end
 
     def post_process_docbook( text )
@@ -222,7 +222,6 @@ class RedCloth < String
 			text.gsub! %r{<para[^>]*>\s*<para([^>]*)>}i,'<para\1>' # clean multiple paragraphs in a row just in case
 			text.gsub! %r{</para>\s*</para>}i,'</para>' # clean multiple paragraphs in a row just in case
 			text.gsub! %r{<para[^>]*>\s*</para>\s*}i, '' # clean emtpy paras
-      text.gsub! %r{</?notextile>},         ''
       text.gsub! %r{<(/?)sup>}i,            '<\1superscript>'
       text.gsub! %r{<(/?)sub>}i,            '<\1subscript>'
       text.gsub! %r{<pre>\s*(<code>)?}i,       '<para><programlisting>'
@@ -236,7 +235,7 @@ class RedCloth < String
       end
       
       text.gsub!( %r{<programlisting>\n}, "<programlisting>" )
-      text.gsub!( %r{\n</programlisting>}, "</programlisting>" )
+      text.gsub!( %r{\n</programlisting>}, "</programlisting>\n" )
     end
 
     # Parses a Docbook table block, building XML from the result.

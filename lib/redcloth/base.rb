@@ -117,6 +117,7 @@ class RedCloth < String
         clean_white_space text 
 
         # start processor
+        no_textile text
         rip_offtags text
         hard_break text
         unless @lite_mode

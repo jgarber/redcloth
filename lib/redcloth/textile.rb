@@ -45,8 +45,6 @@ class RedCloth < String
         end
     
     def textile_pre_process(text)
-      no_textile text
-			
 			{'w' => 'warning', 'n' => 'note', 'c' => 'comment', 'pro' => 'production', 'dt' => 'dt', 'dd' => 'dd'}.each do |char, word|
 			  parts = text.split(/^\s*#{char}\./)
 			  text.replace(parts.first + "\n" + parts[1..-1].map do |part|
