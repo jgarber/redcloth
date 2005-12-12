@@ -14,6 +14,7 @@ class RedCloth < String
                      :inline_docbook_code, :inline_docbook_glyphs, :inline_docbook_span,
                      :inline_docbook_wiki_words, :inline_docbook_wiki_links, :inline_docbook_autolink_urls,
                      :inline_docbook_autolink_emails]
+    @@escape_keyword ||= "redcloth"
     
     #
     # Two accessor for setting security restrictions.
@@ -230,7 +231,7 @@ class RedCloth < String
         ['+', 'ins', :limit],
         ['^', 'sup'],
         ['~', 'sub']
-    ] 
+    ]
     QTAGS.collect! do |rc, ht, rtype|
         rcq = Regexp::quote rc
         re =
@@ -250,7 +251,24 @@ class RedCloth < String
                 (\S.*?\S|\S)
                 #{rcq}/xm 
             end
-        [rc, ht, re, rtype]
+        escaped_re =
+            case rtype
+            when :limit
+                /(\W)
+                (#{@@escape_keyword}#{rcq})
+                (#{C})
+                (?::(\S+?))?
+                (\S.*?\S|\S)
+                #{rcq}#{@@escape_keyword}
+                (?=\W)/x
+            else
+                /(#{@@escape_keyword}#{rcq})
+                (#{C})
+                (?::(\S+))?
+                (\S.*?\S|\S)
+                #{rcq}#{@@escape_keyword}/xm
+            end
+        [rc, ht, re, rtype, escaped_re]
     end
 
     # Elements to handle

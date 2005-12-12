@@ -79,6 +79,10 @@ class RedCloth < String
       end
     end
     
+    def textile_post_process(text)
+      post_inline_textile_span(text)
+    end
+    
     # Parses a Textile table block, building HTML from the result.
     def block_textile_table( text ) 
         text.gsub!( TABLE_RE ) do |matches|
@@ -287,7 +291,7 @@ class RedCloth < String
     end
 
     def inline_textile_span( text ) 
-        QTAGS.each do |qtag_rc, ht, qtag_re, rtype|
+        QTAGS.each do |qtag_rc, ht, qtag_re, rtype, escaped_re|
             text.gsub!( qtag_re ) do |m|
              
                 case rtype
@@ -302,7 +306,25 @@ class RedCloth < String
                 atts = shelve( atts ) if atts
 
                 "#{ sta }<#{ ht }#{ atts }>#{ content }</#{ ht }>"
+            end
+        end
+    end
+            
+    def post_inline_textile_span( text ) 
+        QTAGS.each do |qtag_rc, ht, qtag_re, rtype, escaped_re|
+            text.gsub!( escaped_re ) do |m|
+             
+                case rtype
+                when :limit
+                    sta,qtag,atts,cite,content = $~[1..5]
+                else
+                    qtag,atts,cite,content = $~[1..4]
+                    sta = ''
+                end
+                atts = pba( atts )
+                atts << " cite=\"#{ cite }\"" if cite
 
+                "#{ sta }<#{ ht }#{ atts }>#{ content }</#{ ht }>"
             end
         end
     end

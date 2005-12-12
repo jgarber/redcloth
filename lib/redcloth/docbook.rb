@@ -157,7 +157,24 @@ class RedCloth < String
                 (.+?)
                 #{rcq}/xm 
             end
-        [rc, ht, re, rtype]
+        escaped_re =
+            case rtype
+            when :limit
+                /(\W)
+                (#{@@escape_keyword}#{rcq})
+                (#{C})
+                (?::(\S+?))?
+                (\S.*?\S|\S)
+                #{rcq}#{@@escape_keyword}
+                (?=\W)/x
+            else
+                /(#{@@escape_keyword}#{rcq})
+                (#{C})
+                (?::(\S+))?
+                (\S.*?\S|\S)
+                #{rcq}#{@@escape_keyword}/xm 
+            end
+        [rc, ht, re, rtype, escaped_re]
     end
     
     def pre_process_docbook(text)
@@ -236,6 +253,30 @@ class RedCloth < String
       
       text.gsub!( %r{<programlisting>\n}, "<programlisting>" )
       text.gsub!( %r{\n</programlisting>}, "</programlisting>\n" )
+
+      DOCBOOK_TAGS.each do |qtag_rc, ht, qtag_re, rtype, escaped_re|
+          text.gsub!( escaped_re ) do |m|
+            case rtype
+            when :limit
+                sta,qtag,atts,cite,content = $~[1..5]
+            else
+                qtag,atts,cite,content = $~[1..4]
+                sta = ''
+            end
+            
+            ht, atts = docbook_sanitize_para atts, content, ht
+
+            atts = docbook_pba( atts )
+            atts << " cite=\"#{ cite }\"" if cite
+            
+            if @stack.size == 0
+              sect1 = ""
+              end_sect1 = ""
+            end
+            
+            "#{ sta }#{ sect1 }<#{ ht }#{ atts }>#{ '<para>' if ['note', 'blockquote'].include? ht }#{ content }#{ '</para>' if ['note', 'blockquote'].include? ht }</#{ ht.gsub(/^([^\s]+).*/,'\1') }>#{ end_sect1 }"
+          end
+      end
     end
 
     # Parses a Docbook table block, building XML from the result.
@@ -535,7 +576,7 @@ class RedCloth < String
     end
 
     def inline_docbook_span( text )
-        DOCBOOK_TAGS.each do |qtag_rc, ht, qtag_re, rtype|
+        DOCBOOK_TAGS.each do |qtag_rc, ht, qtag_re, rtype, escaped_re|
             text.gsub!( qtag_re ) do |m|
              
                 case rtype
