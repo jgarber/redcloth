@@ -103,4 +103,15 @@ out: |-
   <chapter label="2" id="id2"><title>no</title>
   <para>no ok</para>
   </chapter>
+---
+in: |-
+  ```
+  here is some *starred* code
+
+  but I want some redcloth*bold*redcloth code
+  ```
+out: |
+  <programlisting>here is some *starred* code
+
+  but I want some <emphasis role="strong">bold</emphasis> code</programlisting>
   

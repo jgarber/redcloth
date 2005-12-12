@@ -133,3 +133,16 @@ out: |-
   ./foo.pl%
   &lt;p&gt;foo outputs an HTML paragraph&lt;/p&gt;
   </code></pre>
+---
+in: |-
+  ```
+  here is some *starred* code
+
+  but I want some redcloth*bold*redcloth code
+  ```
+out: |-
+  <pre><code>
+  here is some *starred* code
+
+  but I want some <strong>bold</strong> code
+  </code></pre>
