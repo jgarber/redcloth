@@ -84,7 +84,7 @@ class RedCloth < String
         docbook_rip_offtags text
         docbook_hard_break text
 
-        refs text        
+        refs text
         docbook_blocks text
         inline text
         
@@ -223,6 +223,9 @@ class RedCloth < String
       text.gsub!(/<br.*?>/i, "&#x00A;")
       text.gsub!(/<\/?em.*?>/i, "__")
 
+      text.gsub! %r{<pre>\s*(<code>)?}i,       '<para><programlisting>'
+      text.gsub! %r{(</code>)?\s*</pre>}i,     '</programlisting></para>'
+      text.gsub! %r{<(/?)code>}i,           '<\1programlisting>'
       text.gsub!( BACKTICK_CODE_RE ) do |m|
           before,lang,code,after = $~[1..4]
           docbook_rip_offtags( "#{ before }<programlisting>#{ code.gsub(/\\\`\`\`/,'```') }</programlisting>#{ after }" )
@@ -241,9 +244,6 @@ class RedCloth < String
 			text.gsub! %r{<para[^>]*>\s*</para>\s*}i, '' # clean emtpy paras
       text.gsub! %r{<(/?)sup>}i,            '<\1superscript>'
       text.gsub! %r{<(/?)sub>}i,            '<\1subscript>'
-      text.gsub! %r{<pre>\s*(<code>)?}i,       '<para><programlisting>'
-      text.gsub! %r{(</code>)?\s*</pre>}i,     '</programlisting></para>'
-      text.gsub! %r{<(/?)code>}i,           '<\1programlisting>'
       text.gsub! %r{</?nodocbook>},         ''
       text.gsub! %r{x%x%},                   '&#38;'
       
@@ -709,11 +709,16 @@ class RedCloth < String
         end
     end
 
+    DOCBOOK_OFFTAGS = /(nodocbook|programlisting)/i
+    DOCBOOK_OFFTAG_MATCH = /(?:(<\/#{ DOCBOOK_OFFTAGS }>)|(<#{ DOCBOOK_OFFTAGS }[^>]*>))(.*?)(?=<\/?#{ DOCBOOK_OFFTAGS }|\Z)/mi
+    DOCBOOK_OFFTAG_OPEN = /<#{ DOCBOOK_OFFTAGS }/
+    DOCBOOK_OFFTAG_CLOSE = /<\/?#{ DOCBOOK_OFFTAGS }/
+
     def docbook_rip_offtags( text )
         if text =~ /<.*>/
             ## strip and encode <pre> content
             codepre, used_offtags = 0, {}
-            text.gsub!( OFFTAG_MATCH ) do |line|
+            text.gsub!( DOCBOOK_OFFTAG_MATCH ) do |line|
                 if $3
                     offtag, aftertag = $4, $5
                     codepre += 1

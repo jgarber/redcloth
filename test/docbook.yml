@@ -115,3 +115,16 @@ out: |
 
   but I want some <emphasis role="strong">bold</emphasis> code</programlisting>
   
+---
+in: |-
+  <pre><code>
+  here is some *starred* code
+
+  but I want some redcloth*bold*redcloth code
+  </code></pre>
+out: |
+  <para><programlisting>here is some *starred* code
+
+  but I want some <emphasis role="strong">bold</emphasis> code</programlisting>
+  </para>
+  
