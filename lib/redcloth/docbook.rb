@@ -850,14 +850,14 @@ class RedCloth < String
 			@current_class ||= nil
 			
 			# Find all occurences of div(class). and process them as blocks
-			text.gsub!( /div\((.*?)\)\.\s*(.*?)(?=div\([^\)]+\)\.\s*)/mi ) do |blk|
+			text.gsub!( /^div\((.*?)\)\.\s*(.*?)(?=div\([^\)]+\)\.\s*)/m ) do |blk|
 				block_class = (@current_class == $1) ? nil : %{ role=#{$1.inspect}}
 				@current_class = $1
 				BLOCK_GROUP_SPLITTER + ( ($2.strip.empty? || block_class.nil?) ? $2 : docbook_div('div', block_class, nil, "\n\n#{$2.strip}\n\n", false) )
 			end
 			
 			# Take care of the very last div
-			text.sub!( /div\((.*?)\)\.\s*(.*)/mi ) do |blk|
+			text.sub!( /div\((.*?)\)\.\s*(.*)/m ) do |blk|
 				block_class = (@current_class == $1) ? nil : %{ role=#{$1.inspect}}
 				@current_class = $1
 				BLOCK_GROUP_SPLITTER + ( ($2.strip.empty? || block_class.nil?) ? $2 : docbook_div('div', block_class, nil, "\n\n#{$2.strip}\n\n", false) )
