@@ -494,7 +494,11 @@ class RedCloth < String
         para, end_para = extra_para || (ht == 'para') ? ["\n<para>", "</para>\n"] : ["", ""]
         return "<#{ ht }#{ atts }>#{ para }#{ content }#{ end_para }</#{ ht.gsub(/^([^\s]+).*/,'\1') }>\n"
     end
-
+    
+    def automatic_content_id
+      "S"+MD5.new(@stack.map{|title|title.sub(/^\s*\{\{(.+)\}\}.+/,'\1').strip}.join('-').to_s).to_s
+    end
+    
     # def docbook_h1, def docbook_h2, def docbook_h3, def docbook_h4
     1.upto 4 do |i|
       class_eval %Q{
@@ -515,7 +519,7 @@ class RedCloth < String
           @stack.push sanitized_id_for(content)
           string = end_sections
           string << '<sect#{i} id="'
-          string << (content_id.nil? ? "S"+MD5.new(@stack.join('-').to_s).to_s : sanitized_id_for(content_id))
+          string << (content_id.nil? ? automatic_content_id : sanitized_id_for(content_id))
           string << '"'
           if role
             string << ' role="'
@@ -523,7 +527,7 @@ class RedCloth < String
             string << '"'
           end
           string << '><title>'
-          string << content
+          string << content.sub(/^\\s*\\{\\{.+\\}\\}(.+)/,'\\1').strip
           string << '</title>'
         end
       }
@@ -834,13 +838,13 @@ class RedCloth < String
     end
 
     def sanitized_id_for( text )
-      word = text.gsub(CAMEL_CASED_WORD_BORDER, '\1 \2').downcase.gsub(/[\s]/,'-').gsub(/[^A-Za-z0-9-]/,'').sub(/^[\W]*/, '')
+      word = text.gsub(CAMEL_CASED_WORD_BORDER, '\1 \2').downcase.gsub(/\s/,'-').gsub(/[^A-Za-z0-9\-\{\}]/,'').sub(/^[^\w\{]*/, '')
       @ids << word unless @ids.include? word
       return word
     end
     
     def sanitized_reference_for( text )
-      word = text.gsub(CAMEL_CASED_WORD_BORDER, '\1 \2').downcase.gsub(/[\s]/,'-').gsub(/[^A-Za-z0-9-]/,'').sub(/^[\W]*/, '')
+      word = text.gsub(CAMEL_CASED_WORD_BORDER, '\1 \2').downcase.gsub(/\s/,'-').gsub(/[^A-Za-z0-9\-\{\}]/,'').sub(/^[^\w\{]*/, '')
       @references << word unless @references.include? word
       return word
     end

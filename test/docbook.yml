@@ -86,6 +86,38 @@ out: |
   
 ---
 in: |-
+  h1. ok
+
+  h2. End Notes
+
+  # End Notes should be a numbered list
+  # Like this
+  # They must have anchors in the text
+
+  h2. {{See Also}} New name
+
+  * See Also notes should be bullets
+  * Like this
+
+out: |
+  <sect1 id="S444bcb3a3fcf8389296c49467f27e1d6"><title>ok</title>
+  <sect2 id="S861155758b260c9316294984d5070782"><title>End Notes</title>
+  <orderedlist>
+  <listitem><para>End Notes should be a numbered list</para></listitem>
+  <listitem><para>Like this</para></listitem>
+  <listitem><para>They must have anchors in the text</para></listitem>
+  </orderedlist>
+  </sect2>
+  <sect2 id="S6a2cc0034d8f5dcd5e7e6c8321c85946"><title>New name</title>
+  <itemizedlist>
+  <listitem><para>See Also notes should be bullets</para></listitem>
+  <listitem><para>Like this</para></listitem>
+  </itemizedlist>
+  </sect2>
+  </sect1>
+
+---
+in: |-
   ch. 1. yes id. 1
 
   w. yes ok .w
