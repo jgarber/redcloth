@@ -372,3 +372,6 @@ out: |-
   	<li>The time is not yesterday</li>
   	<li>We must act</li>
   </ul>
+---
+in: /me <3 beer
+out: <p>/me &lt;3 beer</p>
