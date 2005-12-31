@@ -190,8 +190,8 @@ class RedCloth < String
                     end
                     unless depth.last == tl
                         depth << tl
-                        atts = pba( "#{atts} style=\"list-style-type:none;\"" )
-                        atts = shelve( atts ) if atts
+                        atts = pba( atts )
+                        atts = shelve( "#{atts} style=\"list-style-type:none;\"" )
                         lines[line_id] = "#{"\t"*(depth.size-1)}<#{ lT(tl) }l#{ atts }>\n#{"\t"*depth.size}<li>#{ content }"
                     else
                         lines[line_id] = "#{"\t"*depth.size}<li>#{ content }"
