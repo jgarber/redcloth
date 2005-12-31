@@ -661,7 +661,7 @@ class RedCloth < String
                       (?:www\.)             # www.*
                     ) 
                     (
-                      ([\w]+[=?&:%\/.-]?)*    # url segment
+                      ([\w]+[=?&:%\/\.\~\-]*)*    # url segment
                       \w+[\/]?              # url tail
                       (?:\#\w*)?            # trailing anchor
                     )
