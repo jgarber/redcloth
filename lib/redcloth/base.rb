@@ -97,6 +97,8 @@ class RedCloth < String
         # make our working copy
         text = self.dup
         
+	return "" if text == ""
+
         @urlrefs = {}
         @shelf = []
         @rules = rules.collect do |rule|
