@@ -147,14 +147,14 @@ class RedCloth < String
                 (#{rcq})
                 (#{C})
                 (?::(\S+?))?
-                (.+?)
+                (\S.*?\S|\S)
                 #{rcq}
                 (?=\W)/x
             else
                 /(#{rcq})
                 (#{C})
-                (?::(\S+?))?
-                (.+?)
+                (?::(\S+))?
+                (\S.*?\S|\S)
                 #{rcq}/xm 
             end
         escaped_re =
@@ -172,7 +172,7 @@ class RedCloth < String
                 (#{C})
                 (?::(\S+))?
                 (\S.*?\S|\S)
-                #{rcq}#{@@escape_keyword}/xm 
+                #{rcq}#{@@escape_keyword}/xm
             end
         [rc, ht, re, rtype, escaped_re]
     end
