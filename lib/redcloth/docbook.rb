@@ -223,13 +223,13 @@ class RedCloth < String
       text.gsub!(/<br.*?>/i, "&#x00A;")
       text.gsub!(/<\/?em.*?>/i, "__")
 
-      text.gsub! %r{<pre>\s*(<code>)?}i,       '<para><programlisting>'
-      text.gsub! %r{(</code>)?\s*</pre>}i,     '</programlisting></para>'
-      text.gsub! %r{<(/?)code>}i,           '<\1programlisting>'
       text.gsub!( BACKTICK_CODE_RE ) do |m|
           before,lang,code,after = $~[1..4]
           docbook_rip_offtags( "#{ before }<programlisting>#{ code.gsub(/\\\`\`\`/,'```') }</programlisting>#{ after }" )
       end
+      text.gsub! %r{<pre>\s*(<code>)?}i,       '<para><programlisting>'
+      text.gsub! %r{(</code>)?\s*</pre>}i,     '</programlisting></para>'
+      text.gsub! %r{<(/?)code>}i,           '<\1programlisting>'
       
     end
 
