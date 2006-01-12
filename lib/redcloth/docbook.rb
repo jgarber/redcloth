@@ -267,14 +267,13 @@ class RedCloth < String
             ht, atts = docbook_sanitize_para atts, content, ht
 
             atts = docbook_pba( atts )
-            atts << " cite=\"#{ cite }\"" if cite
             
             if @stack.size == 0
               sect1 = ""
               end_sect1 = ""
             end
             
-            "#{ sta }#{ sect1 }<#{ ht }#{ atts }>#{ '<para>' if ['note', 'blockquote'].include? ht }#{ content }#{ '</para>' if ['note', 'blockquote'].include? ht }</#{ ht.gsub(/^([^\s]+).*/,'\1') }>#{ end_sect1 }"
+            "#{ sta }#{ sect1 }<#{ ht }#{ atts }>#{ '<para>' if ['note', 'blockquote'].include? ht }#{ cite }#{ content }#{ '</para>' if ['note', 'blockquote'].include? ht }</#{ ht.gsub(/^([^\s]+).*/,'\1') }>#{ end_sect1 }"
           end
       end
     end
@@ -474,7 +473,7 @@ class RedCloth < String
 		
     def docbook_bq( tag, atts, cite, content )
         cite, cite_title = check_refs( cite )
-        cite = " cite=\"#{ cite }\"" if cite
+        cite = " citetitle=\"#{ cite }\"" if cite
         atts = shelve( atts ) if atts
         "<blockquote#{ cite }>\n<para>#{ content }</para>\n</blockquote>"
     end
@@ -483,7 +482,7 @@ class RedCloth < String
     def docbook_p( tag, atts, cite, content )
         ht, atts = docbook_sanitize_para atts, content
         atts = docbook_pba( atts )
-        atts << " cite=\"#{ cite }\"" if cite
+        atts << " citetitle=\"#{ cite }\"" if cite
         atts = shelve( atts ) if atts
         
         "<#{ ht }#{ atts }>#{ '<para>' if DOCBOOK_DIVS.include? ht }#{ content }#{ '</para>' if DOCBOOK_DIVS.include? ht }</#{ ht.gsub(/^([^\s]+).*/,'\1') }>"
@@ -594,7 +593,7 @@ class RedCloth < String
                 ht, atts = docbook_sanitize_para atts, content, ht
 
                 atts = docbook_pba( atts )
-                atts << " cite=\"#{ cite }\"" if cite
+                atts << " citetitle=\"#{ cite }\"" if cite
                 atts = shelve( atts ) if atts
                 
                 if @stack.size == 0
