@@ -210,7 +210,7 @@ class RedCloth < String
             (?:\. )?             # optional dot-space
             ([^\s(!]+?)          # presume this is the src
             \s?                  # optional space
-            (?:\(((?:[^\(\)]|\([^\)]+\))*?)\))?   # optional title
+            (?:\(((?:[^\(\)]|\([^\)]+\))+?)\))?   # optional title
             \!                   # closing
             (?::#{ HYPERLINK })? # optional href
         /x 
