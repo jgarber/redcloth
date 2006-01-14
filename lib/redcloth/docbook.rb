@@ -645,9 +645,9 @@ class RedCloth < String
             url, url_title = check_refs( url )
 
             out = stln
-            out << "<figure><title>#{title}</title>\n" if title && !title.blank?
+            out << "<figure><title>#{title}</title>\n" if title && !title.empty?
             out << "<graphic#{ shelve( atts ) } />\n"
-            out << "</figure>" if title && !title.blank?
+            out << "</figure>" if title && !title.empty?
             
             out
         end
