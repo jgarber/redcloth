@@ -37,6 +37,8 @@ in: |-
   
   some content
   
+  h2. some header
+  
   c. a comment
   
   p(tip). here is a tip
@@ -46,6 +48,8 @@ out: |
   <sect1 id="id123"><title>some title</title>
   <sect2 id="S6ede2841a9427120e9045f8d1da84c8d"><title>some header</title>
   <para>some content</para>
+  </sect2>
+  <sect2 id="S90e01ac521922e8db71dcff86cc3c5d5"><title>some header</title>
   <remark>a comment</remark>
   <tip>here is a tip</tip>
   </sect2>

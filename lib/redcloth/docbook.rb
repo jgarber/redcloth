@@ -56,6 +56,7 @@ class RedCloth < String
         @stack = Array.new
         @ids = Array.new
         @references = Array.new
+        @automatic_content_ids = Array.new
 
         rules = DEFAULT_RULES if rules.empty?
         # make our working copy
@@ -495,7 +496,14 @@ class RedCloth < String
     end
     
     def automatic_content_id
-      "S"+MD5.new(@stack.map{|title|title.sub(/^\s*\{\{(.+)\}\}.+/,'\1').strip}.join('-').to_s).to_s
+      i, new_id = 0, 0
+      while new_id == 0 || @automatic_content_ids.include?(new_id)
+        j = (i == 0) ? nil : i
+        new_id = "S"+MD5.new(@stack.map{|title|title.sub(/^\s*\{\{(.+)\}\}.+/,'\1').strip}.join('-').to_s+j.to_s).to_s
+        i += 1
+      end
+      @automatic_content_ids.push(new_id)
+      return new_id
     end
     
     # def docbook_h1, def docbook_h2, def docbook_h3, def docbook_h4
