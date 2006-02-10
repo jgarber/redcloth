@@ -978,6 +978,9 @@ class RedCloth < String
       when /author/
         ht = "para"
         atts = %{ role="hacks-contributor"}
+      when /technical/
+        ht = "command"
+        atts = nil
       end
       return ht, atts
     end
