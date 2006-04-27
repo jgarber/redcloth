@@ -254,7 +254,24 @@ class RedCloth < String
       
       text.gsub!( %r{<programlisting>\n}, "<programlisting>" )
       text.gsub!( %r{\n</programlisting>}, "</programlisting>\n" )
-
+      
+      i = 1
+      text.gsub!(/\[\d+\]/) do |ref|
+        id = ref[/\d+/].to_i
+        if id == i
+          i += 1
+          if text =~ /<footnote id="fn#{id}">(.*?)<\/footnote>/
+            "<footnote id=\"footnote#{id}\">#{$1}</footnote>"
+          else
+            ref
+          end
+        else
+          ref
+        end
+      end
+      
+      text.gsub!(/<footnote id="fn\d+">(.*?)<\/footnote>/, '')
+      
       DOCBOOK_TAGS.each do |qtag_rc, ht, qtag_re, rtype, escaped_re|
           text.gsub!( escaped_re ) do |m|
             case rtype
@@ -567,9 +584,8 @@ class RedCloth < String
 
     def docbook_fn_( tag, num, atts, cite, content )
         atts << " id=\"fn#{ num }\""
-        content = "<superscript>#{ num }</superscript> #{ content }"
         atts = shelve( atts ) if atts
-        "<para>#{ content }</para>"
+        "<footnote#{atts}><para>#{ content }</para></footnote>"
     end
 
     def block_docbook_prefix( text ) 
@@ -688,15 +704,9 @@ class RedCloth < String
         end
     end
 
-    def docbook_footnote_ref( text ) 
-        text.gsub!( /\b\[([0-9]+?)\](\s)?/,
-            '<superscript><link linkend="#fn\1">\1</link></superscript>\2' )
-    end
-
     def inline_docbook_glyphs( text, level = 0 )
         if text !~ HASTAG_MATCH
             docbook_pgl text
-            docbook_footnote_ref text
         else
             codepre = 0
             text.gsub!( ALLTAG_MATCH ) do |line|
