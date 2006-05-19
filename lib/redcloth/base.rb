@@ -391,7 +391,7 @@ class RedCloth < String
     end
 
     def hard_break( text )
-        text.gsub!( /(.)\n(?!\Z| *([#*=]+(\s|$)|[{|]))/, "\\1<br />" ) if hard_breaks
+        text.gsub!( /(.)\n(?!\n|\Z| *([#*=]+(\s|$)|[{|]))/, "\\1<br />" ) if hard_breaks
     end
 
     def lT( text ) 

@@ -10,15 +10,19 @@ puts
 Dir["test/*.yml"].each do |testfile|
     errors = []
     tests = 0
+    options = (testfile =~ /hardbreaks/) ? [:hard_breaks] : []
+    
     print File.basename(testfile)+":\n\t"
     YAML::load_documents( File.open( testfile ) ) do |doc|
         if doc['in'] and doc['out']
             tests += 1
-            red = RedCloth.new( doc['in'] )
+            red = RedCloth.new( doc['in'], options )
             html = if testfile =~ /markdown/
                        red.to_html( :markdown )
                    elsif testfile =~ /docbook/
 											 red.to_docbook
+                   elsif testfile =~ /textile/
+                       red.to_html( :textile )
                    else
                        red.to_html
                    end
