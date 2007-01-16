@@ -45,33 +45,33 @@ class RedCloth < String
         end
     
     def textile_pre_process(text)
-			{'w' => 'warning', 'n' => 'note', 'c' => 'comment', 'pro' => 'production', 'dt' => 'dt', 'dd' => 'dd'}.each do |char, word|
-			  parts = text.split(/^\s*#{char}\./)
-			  text.replace(parts.first + "\n" + parts[1..-1].map do |part|
-				  if part =~ /\.#{char}\s*$/
-  				  "div(#{word})." + part.sub(/\.#{char}\s*$/, "div(#{word}). \n")
-			    else
-			      "#{char}.#{part}"
-			    end
-				end.join("\n"))
-				
-				self.class.class_eval %!
-  				def textile_#{char}(tag, atts, cite, content)
+      {'w' => 'warning', 'n' => 'note', 'c' => 'comment', 'pro' => 'production', 'dt' => 'dt', 'dd' => 'dd'}.each do |char, word|
+        parts = text.split(/^\s*#{char}\./)
+        text.replace(parts.first + "\n" + parts[1..-1].map do |part|
+          if part =~ /\.#{char}\s*$/
+            "div(#{word})." + part.sub(/\.#{char}\s*$/, "div(#{word}). \n")
+          else
+            "#{char}.#{part}"
+          end
+        end.join("\n"))
+        
+        self.class.class_eval %!
+          def textile_#{char}(tag, atts, cite, content)
             textile_p('p', %{ class=#{word.inspect}}, cite, content)
           end
         !
-			end
-			{'bq' => 'blockquote'}.each do |char, word|
-			  parts = text.split(/^\s*#{char}\./)
-				text.replace(parts.first + "\n" + parts[1..-1].map do |part|
-				  if part =~ /\.#{char}\s*$/
-  				  "div(#{word})." + part.sub(/\.#{char}\s*$/, "div(#{word}). ")
-			    else
-			      "#{char}.#{part}"
-			    end
-				end.join("\n"))
-			end
-			
+      end
+      {'bq' => 'blockquote'}.each do |char, word|
+        parts = text.split(/^\s*#{char}\./)
+        text.replace(parts.first + "\n" + parts[1..-1].map do |part|
+          if part =~ /\.#{char}\s*$/
+            "div(#{word})." + part.sub(/\.#{char}\s*$/, "div(#{word}). ")
+          else
+            "#{char}.#{part}"
+          end
+        end.join("\n"))
+      end
+      
       text.gsub!( BACKTICK_CODE_RE ) do |m|
           before,lang,code,after = $~[1..4]
           lang = " lang=\"#{ lang }\"" if lang
@@ -123,13 +123,13 @@ class RedCloth < String
 
     # Parses Textile lists and generates HTML
     def block_textile_lists( text )
-				orig_text = text.dup
-				
-				# Take care of _*'s and _#'s to turn them into paragraphs
-				text.gsub!(/([\*#] )((.*?\n\s*_[\*#].*?)+)/) do |m|
-					"#{$1}<p>"+$2.split(/_[\*#]/).map{|w|w.strip}.delete_if{|w|w.empty?}.join("</p><p>")+"</p>"
-				end
-				
+        orig_text = text.dup
+        
+        # Take care of _*'s and _#'s to turn them into paragraphs
+        text.gsub!(/([\*#] )((.*?\n\s*_[\*#].*?)+)/) do |m|
+          "#{$1}<p>"+$2.split(/_[\*#]/).map{|w|w.strip}.delete_if{|w|w.empty?}.join("</p><p>")+"</p>"
+        end
+        
         @last_line ||= -1
         
         text.gsub!( LISTS_RE ) do |match|
@@ -154,11 +154,11 @@ class RedCloth < String
                                 break if depth[i].length == tl.length
                                 lines[line_id - 1] << "</li>\n#{"\t"*(depth.size-1)}</#{ lT( depth[i] ) }l>"
                                 depth.pop
-																tab_in = true
+                                tab_in = true
                             end
                         end
                         if depth.last && depth.last.length == tl.length
-														lines[line_id - 1] << "</li>"
+                            lines[line_id - 1] << "</li>"
                         end
                     end
                     unless depth.last == tl
@@ -199,11 +199,11 @@ class RedCloth < String
                 end
                 
                 if line_id == lines.length - 1
-										tabs = depth.size-1
+                    tabs = depth.size-1
                     depth.reverse.delete_if do |v|
-												lines[-1] << "</li>\n#{"\t"*tabs}</#{ lT( v ) }l>"
-												tabs -= 1
-										end
+                        lines[-1] << "</li>\n#{"\t"*tabs}</#{ lT( v ) }l>"
+                        tabs -= 1
+                    end
                 end
             end
             lines.join( "\n" )
@@ -214,10 +214,10 @@ class RedCloth < String
 
     # Parses Textile definition lists and generates HTML
     def block_textile_defs( text )
-  			text.gsub!(/^-\s+(.*?):=(.*?)=:\s*$/m) do |m|
-  				"- #{$1.strip} := <p>"+$2.split(/\n/).map{|w|w.strip}.delete_if{|w|w.empty?}.join("</p><p>")+"</p>"
-  			end
-				
+        text.gsub!(/^-\s+(.*?):=(.*?)=:\s*$/m) do |m|
+          "- #{$1.strip} := <p>"+$2.split(/\n/).map{|w|w.strip}.delete_if{|w|w.empty?}.join("</p><p>")+"</p>"
+        end
+        
         text.gsub!( DEFS_RE ) do |match|
             lines = match.split( /\n/ )
             lines.each_with_index do |line, line_id|
@@ -231,7 +231,7 @@ class RedCloth < String
                 end
 
                 if line_id == lines.length - 1
-										lines[-1] << "\n</dl>"
+                    lines[-1] << "\n</dl>"
                 end
             end
             lines.join( "\n" )

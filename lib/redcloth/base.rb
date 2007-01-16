@@ -9,8 +9,8 @@ class RedCloth < String
     MARKDOWN_RULES = [:refs_markdown, :block_markdown_setext, :block_markdown_atx, :block_markdown_rule,
                       :block_markdown_bq, :block_markdown_lists, 
                       :inline_markdown_reflink, :inline_markdown_link]
-		DOCBOOK_RULES = [:refs_docbook, :block_docbook_table, :block_docbook_lists, :block_docbook_simple_lists,
-		                 :block_docbook_defs, :block_docbook_prefix, :inline_docbook_image, :inline_docbook_link,
+    DOCBOOK_RULES = [:refs_docbook, :block_docbook_table, :block_docbook_lists, :block_docbook_simple_lists,
+                     :block_docbook_defs, :block_docbook_prefix, :inline_docbook_image, :inline_docbook_link,
                      :inline_docbook_code, :inline_docbook_glyphs, :inline_docbook_span,
                      :inline_docbook_wiki_words, :inline_docbook_wiki_links, :inline_docbook_autolink_urls,
                      :inline_docbook_autolink_emails]
@@ -97,7 +97,7 @@ class RedCloth < String
         # make our working copy
         text = self.dup
         
-	return "" if text == ""
+        return "" if text == ""
 
         @urlrefs = {}
         @shelf = []
@@ -400,37 +400,37 @@ class RedCloth < String
 
     BLOCK_GROUP_SPLITTER = "XXX_BLOCK_GROUP_XXX\n\n"
     def blocks( text, deep_code = false )
-			@current_class ||= nil
-			
-			# Find all occurences of div(class). and process them as blocks
-			text.gsub!( /^div\((.*?)\)\.\s*(.*?)(?=div\([^\)]+\)\.\s*)/m ) do |blk|
-				block_class = (@current_class == $1) ? nil : %{ class=#{$1.inspect}}
-				@current_class = $1
-				BLOCK_GROUP_SPLITTER + ( ($2.strip.empty? || block_class.nil?) ? $2 : textile_p('div', block_class, nil, "\n\n#{$2.strip}\n\n") )
-			end
-			
-			# Take care of the very last div
-			text.sub!( /div\((.*?)\)\.\s*(.*)/m ) do |blk|
-				block_class = (@current_class == $1) ? nil : %{ class=#{$1.inspect}}
-				@current_class = $1
-				BLOCK_GROUP_SPLITTER + ( ($2.strip.empty? || block_class.nil?) ? $2 : textile_p('div', block_class, nil, "\n\n#{$2.strip}\n\n") )
-			end
+      @current_class ||= nil
+      
+      # Find all occurences of div(class). and process them as blocks
+      text.gsub!( /^div\((.*?)\)\.\s*(.*?)(?=div\([^\)]+\)\.\s*)/m ) do |blk|
+        block_class = (@current_class == $1) ? nil : %{ class=#{$1.inspect}}
+        @current_class = $1
+        BLOCK_GROUP_SPLITTER + ( ($2.strip.empty? || block_class.nil?) ? $2 : textile_p('div', block_class, nil, "\n\n#{$2.strip}\n\n") )
+      end
+      
+      # Take care of the very last div
+      text.sub!( /div\((.*?)\)\.\s*(.*)/m ) do |blk|
+        block_class = (@current_class == $1) ? nil : %{ class=#{$1.inspect}}
+        @current_class = $1
+        BLOCK_GROUP_SPLITTER + ( ($2.strip.empty? || block_class.nil?) ? $2 : textile_p('div', block_class, nil, "\n\n#{$2.strip}\n\n") )
+      end
       
       # Handle the text now that the placeholders for divs are set, splitting at BLOCK_GROUP_SPLITTER
       text.replace(text.strip.split(BLOCK_GROUP_SPLITTER.strip).map do |chunk|
         block_groups(chunk, deep_code)
       end.join)
     end
-		
-		def block_groups( text, deep_code = false )
-		  text.replace text.split( BLOCKS_GROUP_RE ).collect { |blk| blk(blk, deep_code) }.join("\n")
-		end
+    
+    def block_groups( text, deep_code = false )
+      text.replace text.split( BLOCKS_GROUP_RE ).collect { |blk| blk(blk, deep_code) }.join("\n")
+    end
 
-		# Surrounds blocks with paragraphs and shelves them when necessary
-		def blk( text, deep_code = false )
-			return text if text =~ /<[0-9]+>/
-			
-		  plain = text !~ /\A[#*> ]/
+    # Surrounds blocks with paragraphs and shelves them when necessary
+    def blk( text, deep_code = false )
+      return text if text =~ /<[0-9]+>/
+      
+      plain = text !~ /\A[#*> ]/
 
       # skip blocks that are complex HTML
       if text =~ /^<\/?(\w+).*>/ and not SIMPLE_HTML_TAGS.include? $1
@@ -466,11 +466,11 @@ class RedCloth < String
               # hard_break text
               text << "\n#{ code_blk }"
           end
-					return text
+          return text
       end
       
     end
-		
+    
     def refs( text )
         @rules.each do |rule_name|
             method( rule_name ).call( text ) if rule_name.to_s.match /^refs_/
@@ -481,16 +481,16 @@ class RedCloth < String
         ret = @urlrefs[text.downcase] if text
         ret || [text, nil]
     end
-		
-		# Puts text in storage and returns is placeholder
-		#  e.g. shelve("some text") => <1>
+    
+    # Puts text in storage and returns is placeholder
+    #  e.g. shelve("some text") => <1>
     def shelve( val ) 
         @shelf << val
         " <#{ @shelf.length }>"
     end
     
-		# Retrieves text from storage using its placeholder
-		#  e.g. retrieve("<1>") => "some text"
+    # Retrieves text from storage using its placeholder
+    #  e.g. retrieve("<1>") => "some text"
     def retrieve( text ) 
         @shelf.each_with_index do |r, i|
             text.gsub!( " <#{ i + 1 }>" ){|m| r }

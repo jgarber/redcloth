@@ -20,7 +20,7 @@ Dir["test/*.yml"].each do |testfile|
             html = if testfile =~ /markdown/
                        red.to_html( :markdown )
                    elsif testfile =~ /docbook/
-											 red.to_docbook
+                       red.to_docbook
                    elsif testfile =~ /textile/
                        red.to_html( :textile )
                    else
@@ -40,7 +40,7 @@ Dir["test/*.yml"].each do |testfile|
     if errors.each do |input, out, expected|
       puts
       puts "---"
-			puts "in: "; p input
+      puts "in: "; p input
       puts "out: "; p out
       puts "expected: "; p expected
       puts "diff: "; puts (out.split-expected.split).join("\n")

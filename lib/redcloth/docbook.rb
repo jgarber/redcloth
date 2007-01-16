@@ -192,33 +192,33 @@ class RedCloth < String
       # Prepare superscripts and subscripts
       text.gsub!( /(\w)(\^[0-9,]+\^)/, '\1 \2' )
       text.gsub!( /(\w)(\~[0-9,]+\~)/, '\1 \2' )
-			
-			{'w' => 'warning', 'n' => 'note', 'c' => 'comment', 'pro' => 'production', 'dt' => 'dt', 'dd' => 'dd'}.each do |char, word|
-			  parts = text.split(/^\s*#{char}\./)
-			  text.replace(parts.first + "\n" + parts[1..-1].map do |part|
-				  if part =~ /\.#{char}\s*$/
-  				  "div(#{word}).\n" + part.sub(/\.#{char}\s*$/, "\ndiv(#{word}). \n")
-			    else
-			      "#{char}.#{part}"
-			    end+"\n"
-				end.join("\n"))
-				
-				self.class.class_eval %!
-  				def docbook_#{char}(tag, atts, cite, content)
+      
+      {'w' => 'warning', 'n' => 'note', 'c' => 'comment', 'pro' => 'production', 'dt' => 'dt', 'dd' => 'dd'}.each do |char, word|
+        parts = text.split(/^\s*#{char}\./)
+        text.replace(parts.first + "\n" + parts[1..-1].map do |part|
+          if part =~ /\.#{char}\s*$/
+            "div(#{word}).\n" + part.sub(/\.#{char}\s*$/, "\ndiv(#{word}). \n")
+          else
+            "#{char}.#{part}"
+          end+"\n"
+        end.join("\n"))
+        
+        self.class.class_eval %!
+          def docbook_#{char}(tag, atts, cite, content)
             docbook_p('p', #{word.inspect}, cite, content)
           end
         !
-			end
+      end
 
-			{'bq' => 'blockquote'}.each do |char, word|
-			  parts = text.split(/^\s*#{char}\./)
-			  text.replace(parts.first + "\n" + parts[1..-1].map do |part|
-				  if part =~ /\.#{char}\s*$/
-  				  "div(#{word}).\n\n<para>" + part.sub(/\.#{char}\s*$/, "</para>\n\ndiv(#{word}). ")
-			    else
-			      "#{char}.#{part}"
-			    end
-				end.join("\n"))
+      {'bq' => 'blockquote'}.each do |char, word|
+        parts = text.split(/^\s*#{char}\./)
+        text.replace(parts.first + "\n" + parts[1..-1].map do |part|
+          if part =~ /\.#{char}\s*$/
+            "div(#{word}).\n\n<para>" + part.sub(/\.#{char}\s*$/, "</para>\n\ndiv(#{word}). ")
+          else
+            "#{char}.#{part}"
+          end
+        end.join("\n"))
       end
 
       text.gsub!(/<br.*?>/i, "&#x00A;")
@@ -239,10 +239,10 @@ class RedCloth < String
       text.gsub!( LB, "\n" )
       text.gsub!( NB, "" )
       text << "</#{@div_atts}>" if @div_atts
-			text.gsub!(%r{<(#{DOCBOOK_PARAS.join("|")})([^>]*)>\s*<para>(.*?)</para>\s*</\1>}mi) { |m| t, c = $~[1..2]; "<#{t}#{c}>" << $3.gsub(/<para>/, "<#{t}#{c}>").gsub(/<\/para>/, "</#{t}>") << "</#{t}>" }
-			text.gsub! %r{<para[^>]*>\s*<para([^>]*)>}i,'<para\1>' # clean multiple paragraphs in a row just in case
-			text.gsub! %r{</para>\s*</para>}i,'</para>' # clean multiple paragraphs in a row just in case
-			text.gsub! %r{<para[^>]*>\s*</para>\s*}i, '' # clean emtpy paras
+      text.gsub!(%r{<(#{DOCBOOK_PARAS.join("|")})([^>]*)>\s*<para>(.*?)</para>\s*</\1>}mi) { |m| t, c = $~[1..2]; "<#{t}#{c}>" << $3.gsub(/<para>/, "<#{t}#{c}>").gsub(/<\/para>/, "</#{t}>") << "</#{t}>" }
+      text.gsub! %r{<para[^>]*>\s*<para([^>]*)>}i,'<para\1>' # clean multiple paragraphs in a row just in case
+      text.gsub! %r{</para>\s*</para>}i,'</para>' # clean multiple paragraphs in a row just in case
+      text.gsub! %r{<para[^>]*>\s*</para>\s*}i, '' # clean emtpy paras
       text.gsub! %r{<(/?)sup>}i,            '<\1superscript>'
       text.gsub! %r{<(/?)sub>}i,            '<\1subscript>'
       text.gsub! %r{</?nodocbook>},         ''
@@ -447,10 +447,10 @@ class RedCloth < String
 
     # Parses docbook definition lists and generates HTML
     def block_docbook_defs( text )
-  			text.gsub!(/^-\s+(.*?):=(.*?)=:\s*$/m) do |m|
-  				"- #{$1.strip} := <para>"+$2.split(/\n/).map{|w|w.strip}.delete_if{|w|w.empty?}.join("</para><para>")+"</para>"
-  			end
-				
+        text.gsub!(/^-\s+(.*?):=(.*?)=:\s*$/m) do |m|
+          "- #{$1.strip} := <para>"+$2.split(/\n/).map{|w|w.strip}.delete_if{|w|w.empty?}.join("</para><para>")+"</para>"
+        end
+        
         text.gsub!( DEFS_RE ) do |match|
             lines = match.split( /\n/ )
             lines.each_with_index do |line, line_id|
@@ -465,7 +465,7 @@ class RedCloth < String
                 end
 
                 if line_id == lines.length - 1
-										lines[-1] << "\n</variablelist>"
+                    lines[-1] << "\n</variablelist>"
                 end
             end
             lines.join( "\n" )
@@ -488,7 +488,7 @@ class RedCloth < String
     def docbook_hard_break( text )
         text.gsub!( /(.)\n(?! *[#*\s|]|$)/, "\\1<sbr />" ) if hard_breaks
     end
-		
+    
     def docbook_bq( tag, atts, cite, content )
         cite, cite_title = check_refs( cite )
         cite = " citetitle=\"#{ cite }\"" if cite
@@ -868,21 +868,21 @@ class RedCloth < String
     
     DOCBOOK_PARAS = ['para', 'remark', 'tip', 'important']
     def docbook_blocks( text, deep_code = false )
-			@current_class ||= nil
-			
-			# Find all occurences of div(class). and process them as blocks
-			text.gsub!( /^div\((.*?)\)\.\s*(.*?)(?=div\([^\)]+\)\.\s*)/m ) do |blk|
-				block_class = (@current_class == $1) ? nil : %{ role=#{$1.inspect}}
-				@current_class = $1
-				BLOCK_GROUP_SPLITTER + ( ($2.strip.empty? || block_class.nil?) ? $2 : docbook_div('div', block_class, nil, "\n\n#{$2.strip}\n\n", false) )
-			end
-			
-			# Take care of the very last div
-			text.sub!( /div\((.*?)\)\.\s*(.*)/m ) do |blk|
-				block_class = (@current_class == $1) ? nil : %{ role=#{$1.inspect}}
-				@current_class = $1
-				BLOCK_GROUP_SPLITTER + ( ($2.strip.empty? || block_class.nil?) ? $2 : docbook_div('div', block_class, nil, "\n\n#{$2.strip}\n\n", false) )
-			end
+      @current_class ||= nil
+      
+      # Find all occurences of div(class). and process them as blocks
+      text.gsub!( /^div\((.*?)\)\.\s*(.*?)(?=div\([^\)]+\)\.\s*)/m ) do |blk|
+        block_class = (@current_class == $1) ? nil : %{ role=#{$1.inspect}}
+        @current_class = $1
+        BLOCK_GROUP_SPLITTER + ( ($2.strip.empty? || block_class.nil?) ? $2 : docbook_div('div', block_class, nil, "\n\n#{$2.strip}\n\n", false) )
+      end
+      
+      # Take care of the very last div
+      text.sub!( /div\((.*?)\)\.\s*(.*)/m ) do |blk|
+        block_class = (@current_class == $1) ? nil : %{ role=#{$1.inspect}}
+        @current_class = $1
+        BLOCK_GROUP_SPLITTER + ( ($2.strip.empty? || block_class.nil?) ? $2 : docbook_div('div', block_class, nil, "\n\n#{$2.strip}\n\n", false) )
+      end
       
       # Handle the text now that the placeholders for divs are set, splitting at BLOCK_GROUP_SPLITTER
       text.replace(text.strip.split(BLOCK_GROUP_SPLITTER.strip).map do |chunk|
@@ -902,15 +902,15 @@ class RedCloth < String
         end
       end.join)
     end
-		
-		def docbook_block_groups( text, deep_code = false )
-		  text.replace text.split( BLOCKS_GROUP_RE ).collect { |blk| docbook_blk(blk, deep_code) }.join("\n")
-		end
+    
+    def docbook_block_groups( text, deep_code = false )
+      text.replace text.split( BLOCKS_GROUP_RE ).collect { |blk| docbook_blk(blk, deep_code) }.join("\n")
+    end
 
-		def docbook_blk( text, deep_code = false )
-			return text if text =~ /<[0-9]+>/
-			
-		  plain = text !~ /\A[#*> ]/
+    def docbook_blk( text, deep_code = false )
+      return text if text =~ /<[0-9]+>/
+      
+      plain = text !~ /\A[#*> ]/
 
       # skip blocks that are complex HTML
       if text =~ /^<\/?(\w+).*>/ and not SIMPLE_DOCBOOK_TAGS.include? $1
