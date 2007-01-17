@@ -122,19 +122,21 @@ class RedCloth < String
         # start processor
         no_textile text
         rip_offtags text
+        clean_html text if filter_html
         hard_break text
         unless @lite_mode
             refs text
             blocks text
         end
         inline text
+
+        escape_html_except_tags text if filter_html
+
         smooth_offtags text
         retrieve text
 
         post_process text
         DEFAULT_RULES.each {|ruleset| send("#{ruleset}_post_process", text) if private_methods.include? "#{ruleset}_post_process"}
-
-        clean_html text if filter_html
 
         return text.strip
 
@@ -382,7 +384,7 @@ class RedCloth < String
     #
     # Flexible HTML escaping
     #
-    def htmlesc( str, mode )
+    def htmlesc( str, mode=nil )
         str.gsub!( '&', '&amp;' )
         str.gsub!( '"', '&quot;' ) if mode != :NoQuotes
         str.gsub!( "'", '&#039;' ) if mode == :Quotes
@@ -626,15 +628,26 @@ class RedCloth < String
         'h6' => nil, 
         'blockquote' => ['cite']
     }
+    
+    # Which tags to accept as input when :filter_html is on
+    ALLOWED_INCOMING_TAGS = {
+        'kbd' => nil,
+        'code' => ['lang'],
+        'notextile' => nil, 
+        'pre' => nil
+    }
 
-    def clean_html( text, tags = BASIC_TAGS )
+    # Escape unauthorized tags
+    def clean_html( text, allowed_tags = ALLOWED_INCOMING_TAGS )
         text.gsub!( /<!\[CDATA\[/, '' )
-        text.gsub!( /<(\/*)(\w+)([^>]*)>/ ) do
+        text.gsub!( /<(\/*)([A-Za-z]\w*)([^>]*)>/ ) do |m|
             raw = $~
             tag = raw[2].downcase
-            if tags.has_key? tag
+            if m =~ /<redpre#\d+>/
+              m # return internal pre markers untouched
+            elsif allowed_tags.has_key? tag
                 pcs = [tag]
-                tags[tag].each do |prop|
+                allowed_tags[tag].each do |prop|
                     ['"', "'", ''].each do |q|
                         q2 = ( q != '' ? q : '\s' )
                         if raw[3] =~ /#{prop}\s*=\s*#{q}([^#{q2}]+)#{q}/i
@@ -644,12 +657,33 @@ class RedCloth < String
                             break
                         end
                     end
-                end if tags[tag]
+                end if allowed_tags[tag]
                 "<#{raw[1]}#{pcs.join " "}>"
             else
-                " "
+                htmlesc(m) # gsub!s m
+                m
             end
         end
+    end
+    
+    def escape_html_except_tags(text)
+      text.gsub!(/
+          ( <!-- (?m:.*?) -->
+            | <\/? 
+              [A-Za-z]\w*\b                               # Tags start with a letter and
+              (?:<\d+>|[^>"']|"[^"]*"|'[^']*')* >         # can have shelved items or attributes.
+            | &(?:[a-zA-Z0-9]+|\#[0-9]+|\#x[0-9a-fA-F]+); # Existing entity.
+          )
+          |([^<&]+|[<&])
+
+        /x) do |m|
+          if $2
+            htmlesc(m)
+            m
+          else
+            m
+          end
+      end
     end
     
     AUTO_LINK_RE = /

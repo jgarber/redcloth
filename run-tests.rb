@@ -10,7 +10,9 @@ puts
 Dir["test/*.yml"].each do |testfile|
     errors = []
     tests = 0
-    options = (testfile =~ /hardbreaks/) ? [:hard_breaks] : []
+    options = []
+    options << :hard_breaks if testfile =~ /hardbreaks/
+    options << :filter_html if testfile =~ /filter_html/
     
     print File.basename(testfile)+":\n\t"
     YAML::load_documents( File.open( testfile ) ) do |doc|
