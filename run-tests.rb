@@ -17,11 +17,12 @@ Dir["test/*.yml"].each do |testfile|
         if doc['in'] and doc['out']
             tests += 1
             red = RedCloth.new( doc['in'], options )
-            html = if testfile =~ /markdown/
+            html = case testfile
+                   when /markdown/
                        red.to_html( :markdown )
-                   elsif testfile =~ /docbook/
+                   when /docbook/
                        red.to_docbook
-                   elsif testfile =~ /textile/
+                   when /textile/
                        red.to_html( :textile )
                    else
                        red.to_html
