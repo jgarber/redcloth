@@ -511,7 +511,7 @@ class RedCloth < String
         ## This uses a negative lookahead for alphanumerics followed by a semicolon,
         ## implying an incoming html entity, to be skipped
 
-        text.gsub!( /&(?![#a-z0-9]+;)/i, "x%x%" )
+        text.gsub!( /&(?!(?:[a-zA-Z0-9]+|\#[0-9]+|\#x[0-9a-fA-F]+);)/i, "x%x%" )
     end
 
     def clean_white_space( text ) 
