@@ -17,7 +17,7 @@ class RedCloth < String
     @@escape_keyword ||= "redcloth"
     
     #
-    # Two accessor for setting security restrictions.
+    # Accessors for setting security restrictions.
     #
     # This is a nice thing if you're using RedCloth for
     # formatting in public places (e.g. Wikis) where you
@@ -25,6 +25,9 @@ class RedCloth < String
     #
     # If +:filter_html+ is set, HTML which wasn't
     # created by the Textile processor will be escaped.
+    # Alternatively, if +:sanitize_html+ is set, 
+    # HTML can pass through the Textile processor but
+    # unauthorized tags and attributes will be removed.
     #
     # If +:filter_styles+ is set, it will also disable
     # the style markup specifier. ('{color: red}')
@@ -35,7 +38,7 @@ class RedCloth < String
     # If +:filter_ids+ is set, it will also disable
     # id attributes. ('!(classname#id)image!')
     #
-    attr_accessor :filter_html, :filter_styles, :filter_classes, :filter_ids
+    attr_accessor :filter_html, :sanitize_html, :filter_styles, :filter_classes, :filter_ids
 
     #
     # Accessor for toggling hard breaks.
@@ -122,7 +125,11 @@ class RedCloth < String
         # start processor
         no_textile text
         rip_offtags text
-        clean_html text if filter_html
+        if filter_html
+          escape_html_tags text
+        elsif sanitize_html
+          clean_html text
+        end
         hard_break text
         unless @lite_mode
             refs text
@@ -130,7 +137,7 @@ class RedCloth < String
         end
         inline text
 
-        escape_html_except_tags text if filter_html
+        escape_html_except_tags text if filter_html || sanitize_html
 
         smooth_offtags text
         retrieve text
@@ -629,18 +636,10 @@ class RedCloth < String
         'blockquote' => ['cite']
     }
     
-    # Which tags to accept as input when :filter_html is on
-    ALLOWED_INCOMING_TAGS = {
-        'kbd' => nil,
-        'code' => ['lang'],
-        'notextile' => nil, 
-        'pre' => nil
-    }
-
-    # Escape unauthorized tags
-    def clean_html( text, allowed_tags = ALLOWED_INCOMING_TAGS )
+    # Clean unauthorized tags.
+    def clean_html( text, allowed_tags = BASIC_TAGS )
         text.gsub!( /<!\[CDATA\[/, '' )
-        text.gsub!( /<(\/*)([A-Za-z]\w*)([^>]*)>/ ) do |m|
+        text.gsub!( /<(\/*)([A-Za-z]\w*)([^>]*?)(\s?\/?)>/ ) do |m|
             raw = $~
             tag = raw[2].downcase
             if m =~ /<redpre#\d+>/
@@ -658,12 +657,30 @@ class RedCloth < String
                         end
                     end
                 end if allowed_tags[tag]
-                "<#{raw[1]}#{pcs.join " "}>"
-            else
-                htmlesc(m) # gsub!s m
-                m
+                "<#{raw[1]}#{pcs.join " "}#{raw[4]}>"
+            else # Unauthorized tag
+              if block_given?
+                yield m
+              else
+                ''
+              end
             end
         end
+    end
+    
+    # Which tags to accept as input when :filter_html is on
+    ALLOWED_INCOMING_TAGS = {
+        'kbd' => nil,
+        'code' => ['lang'],
+        'notextile' => nil, 
+        'pre' => nil
+    }
+    
+    def escape_html_tags(text)
+      clean_html(text, ALLOWED_INCOMING_TAGS) do |m|
+        htmlesc(m) # gsub!s m
+        m
+      end
     end
     
     def escape_html_except_tags(text)
@@ -671,7 +688,7 @@ class RedCloth < String
           ( <!-- (?m:.*?) -->
             | <\/? 
               [A-Za-z]\w*\b                               # Tags start with a letter and
-              (?:<\d+>|[^>"']|"[^"]*"|'[^']*')* >         # can have shelved items or attributes.
+              (?:<\d+>|[^>"']|"[^"]*"|'[^']*')* >         # can have shelved items or HTML attributes.
             | &(?:[a-zA-Z0-9]+|\#[0-9]+|\#x[0-9a-fA-F]+); # Existing entity.
           )
           |([^<&]+|[<&])

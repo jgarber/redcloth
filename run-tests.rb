@@ -11,8 +11,9 @@ Dir["test/*.yml"].each do |testfile|
     errors = []
     tests = 0
     options = []
-    options << :hard_breaks if testfile =~ /hardbreaks/
-    options << :filter_html if testfile =~ /filter_html/
+    [:hard_breaks, :filter_html, :sanitize_html].each do |restriction|
+      options << restriction if testfile =~ Regexp.new(restriction.to_s)
+    end
     
     print File.basename(testfile)+":\n\t"
     YAML::load_documents( File.open( testfile ) ) do |doc|
