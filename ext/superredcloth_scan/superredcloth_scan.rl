@@ -43,6 +43,7 @@ static VALUE super_ParseError, super_RedCloth;
   action A { reg = p; }
   action X { regs = rb_hash_new(); reg = NULL; }
   action cat { rb_str_cat(block, tokstart, tokend-tokstart); }
+  action ignore { BLOCK(para); rb_str_append(html, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
 
   # minor character groups
   CRLF = ( '\r'? '\n' ) ;
@@ -101,8 +102,8 @@ static VALUE super_ParseError, super_RedCloth;
   # images
   image_src = ( uri ) >A %{ STORE(src) } ;
   image_is = ( A2 C dotspace? image_src :> title? ) ;
-  image_link = ( ":" %A uri %{ STORE(href); } ) ;
-  image = ( "!" image_is "!" image_link? ) >X ;
+  image_link = ( ":" uri ) ;
+  image = ( "!" image_is "!" %A image_link? ) >X ;
 
   action T { STORE(text); }
 
@@ -127,6 +128,7 @@ static VALUE super_ParseError, super_RedCloth;
   quote1 = "'" >X %A mtext %T :> "'" ;
   quote2 = '"' >X %A mtext %T :> '"' ;
   apos = "'" ;
+  notextile = "<notextile>" >X %A ( default+ ) %T :> "</notextile>" ;
 
   # glyphs
   ellipsis = ( " "? >A %T "..." ) >X ;
@@ -151,7 +153,7 @@ static VALUE super_ParseError, super_RedCloth;
 
   main := |*
 
-    image { INLINE(image); };
+    image { if ( *reg == ':') { reg += 1; STORE(href); } INLINE(image); };
 
     link { STORE(href); INLINE(link); };
 
@@ -166,9 +168,10 @@ static VALUE super_ParseError, super_RedCloth;
     sub { FORMAT(text, sub); };
     span { FORMAT(text, span); };
     cite { FORMAT(text, cite); };
-    ignore { FORMAT(text, ignore); };
+    ignore => ignore;
     quote1 { FORMAT(text, quote1); };
     quote2 { FORMAT(text, quote2); };
+    notextile => ignore;
 
     ellipsis { INLINE(ellipsis); };
     emdash { INLINE(emdash); };

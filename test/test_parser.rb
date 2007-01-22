@@ -25,7 +25,7 @@ class TestParser < Test::Unit::TestCase
     assert_equal "<p><code>test of <strong><em>this</em></strong></code></p>", red("@test of *_this_*@")
   end
   def test_blocks
-    assert_equal %{<h1>Test\n</h1><p>\nabc <img src=\"/images/redhanded.gif\" alt=\"\" /> and <a href=\"http://google.com\">Google</a></p><p>OK</p>}, 
+    assert_equal %{<h1>Test\n</h1><p>\nabc <a href="/test2"><img src="/images/redhanded.gif" alt="" /></a> and <a href=\"http://google.com\">Google</a></p><p>OK</p>}, 
       red(%{h1. Test\n\nabc !/images/redhanded.gif!:/test2 and "Google(Test!)":http://google.com\n\nOK})
   end
 end
