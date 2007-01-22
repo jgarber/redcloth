@@ -74,7 +74,4 @@ class << SuperRedCloth
   def urlesc txt
     txt.gsub(/&/, '&#38;')
   end
-  def escape txt
-    txt.gsub(/&/, '&amp;').gsub(/'/, "&#8217;").gsub(/</, '&lt;').gsub(/>/, '&gt;').gsub(/"/, '&quot;')
-  end
 end

@@ -42,7 +42,7 @@ static VALUE super_ParseError, super_RedCloth;
 
   action A { reg = p; }
   action X { regs = rb_hash_new(); reg = NULL; }
-  action cat { rb_str_append(block, rb_funcall(super_RedCloth, rb_intern("escape"), 1, rb_str_new(tokstart, tokend-tokstart))); }
+  action cat { rb_str_cat(block, tokstart, tokend-tokstart); }
 
   # minor character groups
   CRLF = ( '\r'? '\n' ) ;
