@@ -59,8 +59,6 @@ static VALUE super_ParseError, super_RedCloth;
   S = ( S_CSPN S_RSPN  | S_RSPN S_CSPN? ) >A %{ STORE(span) } ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
   PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "=" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~" ) ;
-  PUNCT_NOQ = ( "!" | '"' | "#" | "$" | "&" | "'" | "," | "." | "/" | ":" | ";" | "=" | "?" | "@" | "\\" | "`" | "|" ) ;
-  PUNCT_Q = ( "*" | "-" | "_" | "+" | "^" | "~" | "%" ) ;
   dotspace = [. ] ;
 
   # URI tokens (lifted from Mongrel)
@@ -86,9 +84,9 @@ static VALUE super_ParseError, super_RedCloth;
   uri = (target | absolute_uri target? | absolute_path target?) ;
 
   default = ^0 ;
-  trailing = ( "*" | "[" | "**" | "_" | "__" | "^" | "~" | '"' | "..." | "--" | "-" ) ;
+  trailing = PUNCT - ("'" | '"') ;
   chars = (default - space)+ ;
-  phrase = chars -- PUNCT ;
+  phrase = chars -- trailing ;
   EOF = 0 ;
 
   # common
