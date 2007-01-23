@@ -1,0 +1,166 @@
+---
+in: |-
+  div(note). this is a note
+  
+  div(note). and this isn't a note
+  
+  div(synopsis). here is the first paragraph of a synopsis
+  
+  and the second paragraph
+out: |
+  <note>
+  <para>this is a note</para>
+  </note>
+  <para>and this isn&#8217;t a note</para>
+  <para role="hack synopsis">here is the first paragraph of a synopsis</para>
+  <para role="hack synopsis">and the second paragraph</para>
+  
+---
+in: |-
+  n. this is a note
+  
+  w. and a multiparagraph
+  
+  warning. yes! .w
+out: |
+  <note><para>this is a note</para></note>
+  <warning>
+  <para>and a multiparagraph</para>
+  <para>warning. yes!</para>
+  </warning>
+  
+---
+in: |-
+  h1. some title id. 123
+  
+  h2. some header
+  
+  some content
+  
+  h2. some header
+  
+  c. a comment
+  
+  p(tip). here is a tip
+  
+  h1. next section
+out: |
+  <sect1 id="id123"><title>some title</title>
+  <sect2 id="S6ede2841a9427120e9045f8d1da84c8d"><title>some header</title>
+  <para>some content</para>
+  </sect2>
+  <sect2 id="S90e01ac521922e8db71dcff86cc3c5d5"><title>some header</title>
+  <remark>a comment</remark>
+  <tip>here is a tip</tip>
+  </sect2>
+  </sect1>
+  <sect1 id="S5776069460299a979082b2eb9027f31b"><title>next section</title>
+  </sect1>
+---
+in: |-
+  h1. ok
+  
+  h2. End Notes
+
+  # End Notes should be a numbered list
+  # Like this
+  # They must have anchors in the text
+
+  h2. See Also
+
+  * See Also notes should be bullets
+  * Like this
+
+out: |
+  <sect1 id="S444bcb3a3fcf8389296c49467f27e1d6"><title>ok</title>
+  <sect2 id="S861155758b260c9316294984d5070782"><title>End Notes</title>
+  <orderedlist>
+  <listitem><para>End Notes should be a numbered list</para></listitem>
+  <listitem><para>Like this</para></listitem>
+  <listitem><para>They must have anchors in the text</para></listitem>
+  </orderedlist>
+  </sect2>
+  <sect2 id="S6a2cc0034d8f5dcd5e7e6c8321c85946"><title>See Also</title>
+  <itemizedlist>
+  <listitem><para>See Also notes should be bullets</para></listitem>
+  <listitem><para>Like this</para></listitem>
+  </itemizedlist>
+  </sect2>
+  </sect1>
+  
+---
+in: |-
+  h1. ok
+
+  h2. End Notes
+
+  # End Notes should be a numbered list
+  # Like this
+  # They must have anchors in the text
+
+  h2. {{See Also}} New name
+
+  * See Also notes should be bullets
+  * Like this
+
+out: |
+  <sect1 id="S444bcb3a3fcf8389296c49467f27e1d6"><title>ok</title>
+  <sect2 id="S861155758b260c9316294984d5070782"><title>End Notes</title>
+  <orderedlist>
+  <listitem><para>End Notes should be a numbered list</para></listitem>
+  <listitem><para>Like this</para></listitem>
+  <listitem><para>They must have anchors in the text</para></listitem>
+  </orderedlist>
+  </sect2>
+  <sect2 id="S6a2cc0034d8f5dcd5e7e6c8321c85946"><title>New name</title>
+  <itemizedlist>
+  <listitem><para>See Also notes should be bullets</para></listitem>
+  <listitem><para>Like this</para></listitem>
+  </itemizedlist>
+  </sect2>
+  </sect1>
+
+---
+in: |-
+  ch. 1. yes id. 1
+
+  w. yes ok .w
+
+  ch. 2. no id. 2
+
+  no ok
+
+out: |-
+  <chapter label="1" id="id1"><title>yes</title>
+  <warning>
+  <para>yes ok</para>
+  </warning>
+  </chapter>
+  <chapter label="2" id="id2"><title>no</title>
+  <para>no ok</para>
+  </chapter>
+---
+in: |-
+  ```
+  here is some *starred* code
+
+  but I want some redcloth*bold*redcloth code
+  ```
+out: |
+  <programlisting>here is some *starred* code
+
+  but I want some <emphasis role="strong">bold</emphasis> code</programlisting>
+  
+---
+in: |-
+  <pre><code>
+  here is some *starred* code
+
+  but I want some redcloth*bold*redcloth code
+  </code></pre>
+out: |
+  <para><programlisting>here is some *starred* code
+
+  but I want some <emphasis role="strong">bold</emphasis> code</programlisting>
+  </para>
+  

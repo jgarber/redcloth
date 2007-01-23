@@ -1,0 +1,9 @@
+---
+in:  Just a little harmless xss <script src=http://ha.ckers.org/xss.js>stuff</script>.
+out: <p>Just a little harmless xss stuff.</p>
+---
+in: Here's a bad image <img src="JaVaScRiPt:alert('XSS');" />
+out: <p>Here&#8217;s a bad image <img /></p>
+---
+in: Just some random > and < characters, but also a <br/> tag.
+out: <p>Just some random &gt; and &lt; characters, but also a <br/> tag.</p>
