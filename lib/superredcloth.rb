@@ -10,7 +10,7 @@ class << SuperRedCloth
   end
   [:h1, :h2, :h3, :h4, :h5, :h6, :p].each do |m|
     define_method(m) do |opts|
-      "<#{m}#{pba(opts)}>#{opts[:text].strip}</#{m}>"
+      "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>"
     end
   end
   [:strong, :code, :em, :i, :b, :del, :ins, :sup, :sub, :span, :cite, :acronym].each do |m|
@@ -22,7 +22,7 @@ class << SuperRedCloth
     opts[:text]
   end
   def para txt
-    "<p>" + txt.strip + "</p>"
+    "<p>" + txt + "</p>"
   end
   def bq opts
     "<blockquote><p>" + opts[:text] + "</p></blockquote>"

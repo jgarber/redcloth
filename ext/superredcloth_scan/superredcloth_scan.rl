@@ -13,7 +13,15 @@ static VALUE superredcloth_transform2(VALUE str, int top);
 static VALUE super_ParseError, super_RedCloth;
 
 #define INLINE(T)    rb_str_append(block, rb_funcall(super_RedCloth, rb_intern(#T), 1, regs))
-#define BLOCK(T)     if (RSTRING(block)->len > 0) { rb_str_append(html, rb_funcall(super_RedCloth, rb_intern(#T), 1, block)); block = rb_str_new2(""); }
+#define BLOCK(T) \
+  { \
+    VALUE sblock = rb_funcall(block, rb_intern("strip"), 0); \
+    if (RSTRING(sblock)->len > 0) \
+    { \
+      rb_str_append(html, rb_funcall(super_RedCloth, rb_intern(#T), 1, block)); \
+    } \
+    block = rb_str_new2(""); \
+  }
 #define FORMAT(A, T) \
   { \
     rb_hash_aset(regs, ID2SYM(rb_intern(#A)), superredcloth_transform2(rb_hash_aref(regs, ID2SYM(rb_intern(#A))), 1)); \
@@ -30,6 +38,10 @@ static VALUE super_ParseError, super_RedCloth;
   }
 #define STORE(T)  \
   if (p > reg && reg >= tokstart) { \
+    while (reg < p && ( *reg == '\r' || *reg == '\n' ) ) { reg++; } \
+    while (p > reg && ( *(p - 1) == '\r' || *(p - 1) == '\n' ) ) { p--; } \
+  } \
+  if (p > reg && reg >= tokstart) { \
     VALUE str = rb_str_new(reg, p-reg); \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
     /* printf("STORE(" #T ") %s\n", RSTRING(str)->ptr); */ \
@@ -42,7 +54,34 @@ static VALUE super_ParseError, super_RedCloth;
 
   action A { reg = p; }
   action X { regs = rb_hash_new(); reg = NULL; }
-  action cat { rb_str_cat(block, tokstart, tokend-tokstart); }
+  action cat { 
+    if (tokend > tokstart) {
+      char *t = tokstart, *t2 = tokstart, *ch = NULL;
+      while (t2 < tokend) {
+        ch = NULL;
+        switch (*t2)
+        {
+          case '&':  ch = "&amp;"; break;
+          case '>':  ch = "&gt;"; break;
+          case '<':  ch = "&lt;"; break;
+          case '"':  ch = "&quot;"; break;
+          case '\n': ch = "<br />\n"; break;
+        }
+
+        if (ch != NULL)
+        {
+          if (t2 > t)
+            rb_str_cat(block, t, t2-t);
+          rb_str_cat2(block, ch);
+          t = t2 + 1;
+        }
+
+        t2++;
+      }
+      if (t2 > t)
+        rb_str_cat(block, t, t2-t);
+    }
+  }
   action ignore { BLOCK(para); rb_str_append(html, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
 
   # minor character groups
@@ -145,7 +184,7 @@ static VALUE super_ParseError, super_RedCloth;
   copyright = " "? ( "[" cee "]" | "(" cee ")" ) ;
 
   # blocks
-  btext = ( default+ ) -- CRLF{2} ;
+  btext = ( ( default+ ) -- CRLF{2} ) ( CRLF{2} )? ;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" ) >A %{ STORE(type) } ;
   block = ( btype A C ". " %A btext ) >X ;
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
