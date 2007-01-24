@@ -79,11 +79,12 @@ static VALUE super_ParseError, super_RedCloth;
         ch = NULL;
         switch (*t2)
         {
-          case '&':  ch = "&amp;"; break;
-          case '>':  ch = "&gt;"; break;
-          case '<':  ch = "&lt;"; break;
-          case '"':  ch = "&quot;"; break;
+          case '&':  ch = "&amp;";    break;
+          case '>':  ch = "&gt;";     break;
+          case '<':  ch = "&lt;";     break;
+          case '"':  ch = "&quot;";   break;
           case '\n': ch = "<br />\n"; break;
+          case '\'': ch = "&#8217;";  break;
         }
 
         if (ch != NULL)
@@ -100,7 +101,8 @@ static VALUE super_ParseError, super_RedCloth;
         rb_str_cat(block, t, t2-t);
     }
   }
-  action ignore { BLOCK(para); rb_str_append(html, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
+  action ignore { rb_str_append(block, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
+  action notextile { BLOCK(para); rb_str_append(html, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
 
   # minor character groups
   CRLF = ( '\r'? '\n' ) ;
@@ -199,6 +201,7 @@ static VALUE super_ParseError, super_RedCloth;
   span = "%" >X C mtext >A %T :> "%" ;
   cite = "??" >X C mtext >A %T :> "??" ;
   ignore = "==" >X %A mtext %T :> "==" ;
+  snip = "```" >X %A mtext %T :> "```" ;
   quote1 = "'" >X %A mtext %T :> "'" ;
   quote2 = '"' >X %A mtext %T :> '"' ;
   apos = "'" ;
@@ -243,9 +246,10 @@ static VALUE super_ParseError, super_RedCloth;
     span { FORMAT(text, span); };
     cite { FORMAT(text, cite); };
     ignore => ignore;
+    snip { FORMAT(text, snip); };
     quote1 { FORMAT(text, quote1); };
     quote2 { FORMAT(text, quote2); };
-    notextile => ignore;
+    notextile => notextile;
 
     ellipsis { INLINE(ellipsis); };
     emdash { INLINE(emdash); };

@@ -43,6 +43,9 @@ class << SuperRedCloth
   def fn opts
     "<p id=\"fn#{opts[:id]}\"><sup>#{opts[:id]}</sup> #{opts[:text]}</p>"
   end
+  def snip opts
+    "<pre#{pba(opts)}><code>#{opts[:text]}</code></pre>"
+  end
   def quote1 opts
     "&#8216;#{opts[:text]}&#8217;"
   end
