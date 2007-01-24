@@ -69,7 +69,10 @@ static VALUE super_ParseError, super_RedCloth;
 
   action A { reg = p; }
   action X { regs = rb_hash_new(); reg = NULL; }
-  action cat { 
+  action cat {
+    rb_str_cat(block, tokstart, tokend-tokstart);
+  }
+  action esc { 
     if (tokend > tokstart) {
       char *t = tokstart, *t2 = tokstart, *ch = NULL;
       while (t2 < tokend) {
@@ -113,7 +116,7 @@ static VALUE super_ParseError, super_RedCloth;
   A2 = ( A_LIMIT? ) >A %{ STORE(align) } ;
   S = ( S_CSPN S_RSPN  | S_RSPN S_CSPN? ) >A %{ STORE(span) } ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
-  PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "=" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~" ) ;
+  PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "=" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~" | "[" | "(" | "<" ) ;
   dotspace = [. ] ;
 
   # URI tokens (lifted from Mongrel)
@@ -144,6 +147,22 @@ static VALUE super_ParseError, super_RedCloth;
   chars = (default - space)+ ;
   phrase = chars -- trailing ;
   EOF = 0 ;
+
+  # html tags (from Hpricot)
+  NameChar = [\-A-Za-z0-9._:?] ;
+  Name = [A-Za-z_:] NameChar* ;
+  NameAttr = NameChar+ ;
+  Q1Attr = [^']* ;
+  Q2Attr = [^"]* ;
+  UnqAttr = ( space | [^ \t\n<>"'] [^ \t\n<>]* ) ;
+  Nmtoken = NameChar+ ;
+  Attr =  NameAttr space* "=" space* ('"' Q2Attr '"' | "'" Q1Attr "'" | UnqAttr space+ ) space* ;
+  AttrEnd = ( NameAttr space* "=" space* UnqAttr? | Nmtoken ) ;
+  AttrSet = ( Attr | Nmtoken space+ ) ;
+  start_tag = "<" Name space+ AttrSet* (AttrEnd)? ">" | "<" Name ">";
+  empty_tag = "<" Name space+ AttrSet* (AttrEnd)? "/>" | "<" Name "/>" ;
+  end_tag = "</" Name space* ">" ;
+  html_comment = "<!--" (default+) :> "-->";
 
   # common
   title = ( '(' [^)]+ >A %{ STORE(title) } ')' ) ;
@@ -244,9 +263,14 @@ static VALUE super_ParseError, super_RedCloth;
     block { STORE(text); FORMAT_BLOCK(text, type); };
     CRLF{2,} { BLOCK(para); };
 
-    phrase => cat;
-    PUNCT => cat;
-    space => cat;
+    start_tag => cat;
+    end_tag => cat;
+    empty_tag => cat;
+    html_comment => cat;
+
+    phrase => esc;
+    PUNCT => esc;
+    space => esc;
 
     EOF;
 

@@ -36,8 +36,9 @@ class << SuperRedCloth
     img = "<a href=\"#{urlesc opts[:href]}\">#{img}</a>" if opts[:href]
     img
   end
-  def footno num
-    "<sup><a href=\"#fn#{num}\">#{num}</a></sup>"
+  def footno opts
+    opts[:id] ||= opts[:text]
+    "<sup><a href=\"#fn#{opts[:id]}\">#{opts[:text]}</a></sup>"
   end
   def fn opts
     "<p id=\"fn#{opts[:id]}\"><sup>#{opts[:id]}</sup> #{opts[:text]}</p>"
