@@ -109,7 +109,7 @@ static VALUE super_ParseError, super_RedCloth;
   A_HLGN = ( "<>" | "<" | ">" | "=" | [()]+ ) ;
   A_LIMIT = ( "<" | "=" | ">" ) ;
   A_VLGN = ( "-" | "^" | "~" ) ;
-  C_CLAS = ( "(" [^)]+ >A %{ STORE(class) } ")" ) ;
+  C_CLAS = ( "(" ( [^)#]+ >A %{ STORE(class) } )? ("#" [^)]+ >A %{STORE(id)} )? ")" ) ;
   C_LNGE = ( "[" [^\]]+ >A %{ STORE(lang) } "]" ) ;
   C_STYL = ( "{" [^}]+ >A %{ STORE(style) } "}" ) ;
   S_CSPN = ( "\\" [0-9]+ ) ;
