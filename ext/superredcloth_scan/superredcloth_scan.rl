@@ -194,7 +194,7 @@ static VALUE super_ParseError, super_RedCloth;
   b = "**" >X C mtext >A %T :> "**" ;
   em = "_" >X C mtext >A %T :> "_" ;
   i = "__" >X C mtext >A %T :> "__" ;
-  del = "-" >X C mtext >A %T :> "-" ;
+  del = " -" >X C ( mtext -- "-" ) >A %T :> "- " ;
   ins = "+" >X C mtext >A %T :> "+" ;
   sup = "^" >X C mtext >A %T :> "^" ;
   sub = "~" >X C mtext >A %T :> "~" ;
