@@ -9,112 +9,19 @@
 #include <ruby.h>
 #include "superredcloth.h"
 
-static VALUE superredcloth_transform2(VALUE str, int top);
-static VALUE super_ParseError, super_RedCloth;
-
-#define INLINE(T)    rb_str_append(block, rb_funcall(super_RedCloth, rb_intern(#T), 1, regs))
-#define BLOCK(T) \
-  { \
-    VALUE sblock = rb_funcall(block, rb_intern("strip"), 0); \
-    if (RSTRING(sblock)->len > 0) \
-    { \
-      rb_str_append(html, rb_funcall(super_RedCloth, rb_intern(#T), 1, block)); \
-    } \
-    block = rb_str_new2(""); \
-  }
-#define FORMAT(A, T) \
-  { \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#A)), superredcloth_transform2(rb_hash_aref(regs, ID2SYM(rb_intern(#A))), 1)); \
-    rb_str_append(block, rb_funcall(super_RedCloth, rb_intern(#T), 1, regs)); \
-  }
-#define FORMAT_BLOCK(A, T) \
-  { \
-    /* rb_p(regs); */ \
-    VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern(#T))); \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#A)), superredcloth_transform2(rb_hash_aref(regs, ID2SYM(rb_intern(#A))), 1)); \
-    StringValue(btype); \
-    rb_str_append(html, rb_funcall(super_RedCloth, rb_intern(RSTRING(btype)->ptr), 1, regs)); \
-    block = rb_str_new2(""); \
-  }
-#define ASET(T, V)  \
-  rb_hash_aset(regs, ID2SYM(rb_intern(#T)), ID2SYM(rb_intern(#V)));
-#define AINC(T)  \
-  { \
-    int aint = 0; \
-    VALUE aval = rb_hash_aref(regs, ID2SYM(rb_intern(#T))); \
-    if (aval != Qnil) aint = NUM2INT(aval); \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), INT2NUM(aint + 1)); \
-  }
-#define STORE(T)  \
-  if (p > reg && reg >= tokstart) { \
-    while (reg < p && ( *reg == '\r' || *reg == '\n' ) ) { reg++; } \
-    while (p > reg && ( *(p - 1) == '\r' || *(p - 1) == '\n' ) ) { p--; } \
-  } \
-  if (p > reg && reg >= tokstart) { \
-    VALUE str = rb_str_new(reg, p-reg); \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
-    /* printf("STORE(" #T ") %s\n", RSTRING(str)->ptr); */ \
-  } else { \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
-  }
-#define STORE_URL(T) \
-  if (p > reg && reg >= tokstart) { \
-    char punct = 1; \
-    while (p > reg && punct == 1) { \
-      switch (*(p - 1)) { \
-        case '!': case '"': case '#': case '$': case '%': case ']': case '[': case '&': case '\'': \
-        case '*': case '+': case ',': case '-': case '.': case ')': case '(': case ':':  \
-        case ';': case '=': case '?': case '@': case '\\': case '^': case '_': \
-        case '`': case '|': case '~': p--; break; \
-        default: punct = 0; \
-      } \
-    } \
-    tokend = p; \
-  } \
-  STORE(T)
-
 %%{
   machine superredcloth_scan;
 
   action A { reg = p; }
   action X { regs = rb_hash_new(); reg = NULL; }
-  action cat {
-    rb_str_cat(block, tokstart, tokend-tokstart);
-  }
-  action esc { 
-    if (tokend > tokstart) {
-      char *t = tokstart, *t2 = tokstart, *ch = NULL;
-      while (t2 < tokend) {
-        ch = NULL;
-        switch (*t2)
-        {
-          case '&':  ch = "&amp;";    break;
-          case '>':  ch = "&gt;";     break;
-          case '<':  ch = "&lt;";     break;
-          case '"':  ch = "&quot;";   break;
-          case '\n': ch = "<br />\n"; break;
-          case '\'': ch = "&#8217;";  break;
-        }
-
-        if (ch != NULL)
-        {
-          if (t2 > t)
-            rb_str_cat(block, t, t2-t);
-          rb_str_cat2(block, ch);
-          t = t2 + 1;
-        }
-
-        t2++;
-      }
-      if (t2 > t)
-        rb_str_cat(block, t, t2-t);
-    }
-  }
-  action ignore { rb_str_append(block, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
+  action cat { rb_str_cat(block, tokstart, tokend-tokstart); }
   action notextile { BLOCK(para); rb_str_append(html, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
+  action T { STORE(text); }
 
-  # minor character groups
   CRLF = ( '\r'? '\n' ) ;
+  default = ^0 ;
+  EOF = 0 ;
+
   A_LEFT = "<" %{ ASET(align, left) } ;
   A_RIGHT = ">" %{ ASET(align, right) } ;
   A_JUSTIFIED = "<>" %{ ASET(align, justified) } ;
@@ -133,111 +40,11 @@ static VALUE super_ParseError, super_RedCloth;
   A2 = ( A_LIMIT? ) ;
   S = ( S_CSPN S_RSPN  | S_RSPN S_CSPN? ) >A %{ STORE(span) } ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
-  PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "=" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~" | "[" | "(" | "<" ) ;
-  dotspace = [. ] ;
-
-  # URI tokens (lifted from Mongrel)
-  CTL = (cntrl | 127);
-  safe = ("$" | "-" | "_" | ".");
-  extra = ("!" | "*" | "'" | "(" | ")" | ",");
-  reserved = (";" | "/" | "?" | ":" | "@" | "&" | "=" | "+");
-  unsafe = (CTL | " " | "\"" | "#" | "%" | "<" | ">");
-  national = any -- (alpha | digit | reserved | extra | safe | unsafe);
-  unreserved = (alpha | digit | safe | extra | national);
-  escape = ("%" xdigit xdigit);
-  uchar = (unreserved | escape);
-  pchar = (uchar | ":" | "@" | "&" | "=" | "+");
-  scheme = ( alpha | digit | "+" | "-" | "." )+ ;
-  absolute_uri = (scheme ":" (uchar | reserved )*);
-  safepath = (pchar* (alpha | digit | safe) pchar*) ;
-  path = (safepath ( "/" pchar* )*) ;
-  query = ( uchar | reserved )* ;
-  param = ( pchar | "/" )* ;
-  params = (param ( ";" param )*) ;
-  rel_path = (path (";" params)?) ("?" query)?;
-  absolute_path = ("/"+ rel_path?);
-  target = ("#" pchar*) ;
-  uri = (target | absolute_uri target? | absolute_path target? | rel_path target?) ;
-
-  default = ^0 ;
-  trailing = PUNCT - ("'" | '"') ;
-  chars = (default - space)+ ;
-  phrase = chars -- trailing ;
-  EOF = 0 ;
-
-  # html tags (from Hpricot)
-  NameChar = [\-A-Za-z0-9._:?] ;
-  Name = [A-Za-z_:] NameChar* ;
-  NameAttr = NameChar+ ;
-  Q1Attr = [^']* ;
-  Q2Attr = [^"]* ;
-  UnqAttr = ( space | [^ \t\n<>"'] [^ \t\n<>]* ) ;
-  Nmtoken = NameChar+ ;
-  Attr =  NameAttr space* "=" space* ('"' Q2Attr '"' | "'" Q1Attr "'" | UnqAttr space+ ) space* ;
-  AttrEnd = ( NameAttr space* "=" space* UnqAttr? | Nmtoken ) ;
-  AttrSet = ( Attr | Nmtoken space+ ) ;
-  start_tag = "<" Name space+ AttrSet* (AttrEnd)? ">" | "<" Name ">";
-  empty_tag = "<" Name space+ AttrSet* (AttrEnd)? "/>" | "<" Name "/>" ;
-  end_tag = "</" Name space* ">" ;
-  html_comment = "<!--" (default+) :> "-->";
-
-  # common
-  title = ( '(' [^)]+ >A %{ STORE(title) } ')' ) ;
-  word = ( alnum | safe | " " ) ;
-
-  # links
-  link_says = ( word+ ) >A %{ STORE(name) } ;
-  link_is = ( C dotspace? link_says title? ) ;
-  link = ( '"' link_is '":' %A uri ) >X ;
-
-  # images
-  image_src = ( uri ) >A %{ STORE(src) } ;
-  image_is = ( A2 C dotspace? image_src :> title? ) ;
-  image_link = ( ":" uri ) ;
-  image = ( "!" image_is "!" %A image_link? ) >X ;
-
-  action T { STORE(text); }
-
-  # footnotes
-  footno = "[" >X %A digit+ %T "]" ;
-
-  # markup
-  mspace = ( ( " " | "\t" | CRLF )+ ) -- CRLF{2} ;
-  mtext = ( chars (mspace chars)* ) ;
-  code = "@" >X C mtext >A %T :> "@" ;
-  strong = "*" >X C mtext >A %T :> "*" ;
-  b = "**" >X C mtext >A %T :> "**" ;
-  em = "_" >X C mtext >A %T :> "_" ;
-  i = "__" >X C mtext >A %T :> "__" ;
-  del = " -" >X C ( mtext -- "-" ) >A %T :> "- " ;
-  ins = "+" >X C mtext >A %T :> "+" ;
-  sup = "^" >X C mtext >A %T :> "^" ;
-  sub = "~" >X C mtext >A %T :> "~" ;
-  span = "%" >X C mtext >A %T :> "%" ;
-  cite = "??" >X C mtext >A %T :> "??" ;
-  ignore = "==" >X %A mtext %T :> "==" ;
-  snip = "```" >X %A mtext %T :> "```" ;
-  quote1 = "'" >X %A mtext %T :> "'" ;
-  quote2 = '"' >X %A mtext %T :> '"' ;
-  apos = "'" ;
-  notextile = "<notextile>" >X %A ( default+ ) %T :> "</notextile>" ;
-
-  # glyphs
-  ellipsis = ( " "? >A %T "..." ) >X ;
-  emdash = ( " "? "--" " "? ) >X ;
-  arrow = ( " "? "->" " "? ) >X ;
-  endash = ( " "? "-" " "? ) >X ;
-  acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" [^)]+ >A %{ STORE(title) } ")" ) >X ;
-  dim = ( digit+ >A %{ STORE(x) } " x " digit+ >A %{ STORE(y) } ) >X ;
-  tm = [Tt] [Mm] ;
-  trademark = " "? ( "[" tm "]" | "(" tm ")" ) ;
-  reg = [Rr] ;
-  registered = " "? ( "[" reg "]" | "(" reg ")" ) ;
-  cee = [Cc] ;
-  copyright = " "? ( "[" cee "]" | "(" cee ")" ) ;
 
   # blocks
-  btext = ( ( default+ ) -- CRLF{2} ) ( CRLF{2} )? ;
+  notextile = "<notextile>" >X %A ( default+ ) %T :> "</notextile>" ;
+  para = ( default+ ) -- CRLF ;
+  btext = para ( CRLF{2} )? ;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" ) >A %{ STORE(type) } ;
   block = ( btype A C ". " %A btext ) >X ;
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
@@ -245,51 +52,12 @@ static VALUE super_ParseError, super_RedCloth;
 
   main := |*
 
-    image { if ( *reg == ':') { reg += 1; STORE_URL(href); } INLINE(image); };
-
-    link { STORE_URL(href); INLINE(link); };
-
-    code { FORMAT(text, code); };
-    strong { FORMAT(text, strong); };
-    b { FORMAT(text, b); };
-    em { FORMAT(text, em); };
-    i { FORMAT(text, i); };
-    del { FORMAT(text, del); };
-    ins { FORMAT(text, ins); };
-    sup { FORMAT(text, sup); };
-    sub { FORMAT(text, sub); };
-    span { FORMAT(text, span); };
-    cite { FORMAT(text, cite); };
-    ignore => ignore;
-    snip { FORMAT(text, snip); };
-    quote1 { FORMAT(text, quote1); };
-    quote2 { FORMAT(text, quote2); };
     notextile => notextile;
-
-    ellipsis { INLINE(ellipsis); };
-    emdash { INLINE(emdash); };
-    endash { INLINE(endash); };
-    arrow { INLINE(arrow); };
-    acronym { INLINE(acronym); };
-    dim { INLINE(dim); };
-    trademark { INLINE(trademark); };
-    registered { INLINE(registered); };
-    copyright { INLINE(copyright); };
-
-    footno { FORMAT(text, footno); };
     fblock { STORE(text); FORMAT_BLOCK(text, type); };
-
     block { STORE(text); FORMAT_BLOCK(text, type); };
     CRLF{2,} { BLOCK(para); };
-
-    start_tag => cat;
-    end_tag => cat;
-    empty_tag => cat;
-    html_comment => cat;
-
-    phrase => esc;
-    PUNCT => esc;
-    space => esc;
+    CRLF => cat;
+    para => cat;
 
     EOF;
 
@@ -298,10 +66,9 @@ static VALUE super_ParseError, super_RedCloth;
 
 %% write data nofinal;
 
-static VALUE
-superredcloth_transform(p, pe, top)
+VALUE
+superredcloth_transform(p, pe)
   char *p, *pe;
-  int top;
 {
   int cs, act;
   char *tokstart, *tokend, *reg;
@@ -315,26 +82,18 @@ superredcloth_transform(p, pe, top)
 
   if (RSTRING(block)->len > 0)
   {
-    if (top == 1)
-    {
-      BLOCK(para);
-    }
-    else
-    {
-      rb_str_append(html, block);
-    }
+    BLOCK(para);
   }
 
   return html;
 }
 
-static VALUE
-superredcloth_transform2(str, top)
+VALUE
+superredcloth_transform2(str)
   VALUE str;
-  int top;
 {
   StringValue(str);
-  return superredcloth_transform(RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, 0);
+  return superredcloth_transform(RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1);
 }
 
 static VALUE
@@ -345,7 +104,7 @@ superredcloth_to_html(self)
   int len = 0;
 
   StringValue(self);
-  return superredcloth_transform(RSTRING(self)->ptr, RSTRING(self)->ptr + RSTRING(self)->len + 1, 1);
+  return superredcloth_transform2(self);
 }
 
 void Init_superredcloth_scan()

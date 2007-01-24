@@ -112,6 +112,7 @@ end
 desc "Generates the scanner code with Ragel."
 task :ragel do
   sh %{ragel ext/superredcloth_scan/superredcloth_scan.rl | rlcodegen -G2 -o ext/superredcloth_scan/superredcloth_scan.c}
+  sh %{ragel ext/superredcloth_scan/superredcloth_inline.rl | rlcodegen -G2 -o ext/superredcloth_scan/superredcloth_inline.c}
 end
 
 PKG_FILES = FileList[
