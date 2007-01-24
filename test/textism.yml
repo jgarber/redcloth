@@ -91,7 +91,7 @@ out: <p><sub>a phrase</sub></p>
 # out: <p><span class="caps">SPAN</span>
 ---
 in: %{color:red}red%
-out: <p><span style="color:red;">red</span></p>
+out: <p><span style="color:red">red</span></p>
 ---
 in: %[fr]rouge%
 out: <p><span lang="fr">rouge</span></p>
@@ -103,7 +103,7 @@ in: p(bob). A paragraph
 out: <p class="bob">A paragraph</p>
 ---
 in: p{color:#ddd}. A paragraph
-out: <p style="color:#ddd;">A paragraph</p>
+out: <p style="color:#ddd">A paragraph</p>
 ---
 in: p[fr]. A paragraph
 out: <p lang="fr">A paragraph</p>
@@ -118,7 +118,7 @@ in: '!>/image.gif! right-aligned image'
 out: <p style="float:right"><img src="/image.gif" alt="" /> right-aligned image</p>
 ---
 in: p[no]{color:red}. A Norse of a different colour.
-out: <p style="color:red;" lang="no">A Norse of a different colour.</p>
+out: <p style="color:red" lang="no">A Norse of a different colour.</p>
 ---
 in: |-
   |This|is|a|simple|table|

@@ -36,6 +36,15 @@ static VALUE super_ParseError, super_RedCloth;
     rb_str_append(html, rb_funcall(super_RedCloth, rb_intern(RSTRING(btype)->ptr), 1, regs)); \
     block = rb_str_new2(""); \
   }
+#define ASET(T, V)  \
+  rb_hash_aset(regs, ID2SYM(rb_intern(#T)), ID2SYM(rb_intern(#V)));
+#define AINC(T)  \
+  { \
+    int aint = 0; \
+    VALUE aval = rb_hash_aref(regs, ID2SYM(rb_intern(#T))); \
+    if (aval != Qnil) aint = NUM2INT(aval); \
+    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), INT2NUM(aint + 1)); \
+  }
 #define STORE(T)  \
   if (p > reg && reg >= tokstart) { \
     while (reg < p && ( *reg == '\r' || *reg == '\n' ) ) { reg++; } \
@@ -106,16 +115,22 @@ static VALUE super_ParseError, super_RedCloth;
 
   # minor character groups
   CRLF = ( '\r'? '\n' ) ;
-  A_HLGN = ( "<>" | "<" | ">" | "=" | [()]+ ) ;
-  A_LIMIT = ( "<" | "=" | ">" ) ;
-  A_VLGN = ( "-" | "^" | "~" ) ;
+  A_LEFT = "<" %{ ASET(align, left) } ;
+  A_RIGHT = ">" %{ ASET(align, right) } ;
+  A_JUSTIFIED = "<>" %{ ASET(align, justified) } ;
+  A_CENTER = "=" %{ ASET(align, center) } ;
+  A_PADLEFT = "(" >A %{ AINC(padding-left) } ;
+  A_PADRIGHT = ")" >A %{ AINC(padding-right) } ;
+  A_HLGN = ( A_LEFT | A_RIGHT | A_JUSTIFIED | A_CENTER | A_PADLEFT | A_PADRIGHT ) ;
+  A_LIMIT = ( A_LEFT | A_CENTER | A_RIGHT ) ;
+  A_VLGN = ( "-" %{ ASET(valign, middle) } | "^" %{ ASET(valign, top) } | "~" %{ ASET(valign, bottom) } ) ;
   C_CLAS = ( "(" ( [^)#]+ >A %{ STORE(class) } )? ("#" [^)]+ >A %{STORE(id)} )? ")" ) ;
   C_LNGE = ( "[" [^\]]+ >A %{ STORE(lang) } "]" ) ;
   C_STYL = ( "{" [^}]+ >A %{ STORE(style) } "}" ) ;
   S_CSPN = ( "\\" [0-9]+ ) ;
   S_RSPN = ( "/" [0-9]+ ) ;
-  A = ( ( A_HLGN | A_VLGN )* ) >A %{ STORE(align) } ;
-  A2 = ( A_LIMIT? ) >A %{ STORE(align) } ;
+  A = ( ( A_HLGN | A_VLGN )* ) ;
+  A2 = ( A_LIMIT? ) ;
   S = ( S_CSPN S_RSPN  | S_RSPN S_CSPN? ) >A %{ STORE(span) } ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
   PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "=" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~" | "[" | "(" | "<" ) ;

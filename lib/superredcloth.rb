@@ -3,6 +3,17 @@ require 'superredcloth_scan'
 class << SuperRedCloth
   def pba opts
     atts = ''
+    if opts[:block]
+      opts[:float] = opts.delete(:align)
+    else
+      opts[:"text-align"] = opts.delete(:align)
+    end
+    [:float, :"text-align"].each do |a|
+      opts[:style] = "#{a}:#{opts[a]};#{opts[:style]}" if opts[a]
+    end
+    [:"padding-right", :"padding-left"].each do |a|
+      opts[:style] = "#{a}:#{opts[a]}em;#{opts[:style]}" if opts[a]
+    end
     [:style, :class, :lang, :id, :colspan, :rowspan, :title].each do |a|
       atts << " #{a}=\"#{ opts[a] }\"" if opts[a]
     end
@@ -15,6 +26,7 @@ class << SuperRedCloth
   end
   [:strong, :code, :em, :i, :b, :del, :ins, :sup, :sub, :span, :cite, :acronym].each do |m|
     define_method(m) do |opts|
+      opts[:block] = true
       "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>"
     end
   end
@@ -31,9 +43,11 @@ class << SuperRedCloth
     "<a href=\"#{opts[:href].gsub(/&/, '&#38;')}\"#{pba(opts)}>#{opts[:name]}</a>"
   end
   def image opts
+    p_opts = {:block => true, :align => opts.delete(:align)} if opts[:align]
     opts[:alt] = opts[:title]
     img = "<img src=\"#{opts[:src]}\"#{pba(opts)} alt=\"#{opts[:alt]}\" />"  
     img = "<a href=\"#{urlesc opts[:href]}\">#{img}</a>" if opts[:href]
+    img = "<p#{pba(p_opts)}>#{img}</p>" if p_opts
     img
   end
   def footno opts
@@ -41,7 +55,9 @@ class << SuperRedCloth
     "<sup><a href=\"#fn#{opts[:id]}\">#{opts[:text]}</a></sup>"
   end
   def fn opts
-    "<p id=\"fn#{opts[:id]}\"><sup>#{opts[:id]}</sup> #{opts[:text]}</p>"
+    no = opts[:id]
+    opts[:id] = "fn#{no}"
+    "<p#{pba(opts)}><sup>#{no}</sup> #{opts[:text]}</p>"
   end
   def snip opts
     "<pre#{pba(opts)}><code>#{opts[:text]}</code></pre>"
