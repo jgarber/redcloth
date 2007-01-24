@@ -3,7 +3,7 @@ require 'superredcloth_scan'
 class << SuperRedCloth
   def pba opts
     atts = ''
-    [:style, :class, :lang, :id, :colspan, :rowspan].each do |a|
+    [:style, :class, :lang, :id, :colspan, :rowspan, :title].each do |a|
       atts << " #{a}=\"#{ opts[a] }\"" if opts[a]
     end
     atts
@@ -28,10 +28,11 @@ class << SuperRedCloth
     "<blockquote><p>" + opts[:text] + "</p></blockquote>"
   end
   def link opts
-    "<a href=\"#{opts[:href]}\">#{opts[:name]}</a>"
+    "<a href=\"#{opts[:href].gsub(/&/, '&#38;')}\"#{pba(opts)}>#{opts[:name]}</a>"
   end
   def image opts
-    img = "<img src=\"#{opts[:src]}\" alt=\"#{opts[:alt]}\" />"  
+    opts[:alt] = opts[:title]
+    img = "<img src=\"#{opts[:src]}\"#{pba(opts)} alt=\"#{opts[:alt]}\" />"  
     img = "<a href=\"#{urlesc opts[:href]}\">#{img}</a>" if opts[:href]
     img
   end

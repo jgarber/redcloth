@@ -48,6 +48,21 @@ static VALUE super_ParseError, super_RedCloth;
   } else { \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
   }
+#define STORE_URL(T) \
+  if (p > reg && reg >= tokstart) { \
+    char punct = 1; \
+    while (p > reg && punct == 1) { \
+      switch (*(p - 1)) { \
+        case '!': case '"': case '#': case '$': case '%': case ']': case '[': case '&': case '\'': \
+        case '*': case '+': case ',': case '-': case '.': case ')': case '(': case ':':  \
+        case ';': case '=': case '?': case '@': case '\\': case '^': case '_': \
+        case '`': case '|': case '~': p--; break; \
+        default: punct = 0; \
+      } \
+    } \
+    tokend = p; \
+  } \
+  STORE(T)
 
 %%{
   machine superredcloth_scan;
@@ -112,16 +127,17 @@ static VALUE super_ParseError, super_RedCloth;
   escape = ("%" xdigit xdigit);
   uchar = (unreserved | escape);
   pchar = (uchar | ":" | "@" | "&" | "=" | "+");
-  scheme = ( alpha | digit | "+" | "-" | "." )* ;
+  scheme = ( alpha | digit | "+" | "-" | "." )+ ;
   absolute_uri = (scheme ":" (uchar | reserved )*);
-  path = (pchar+ ( "/" pchar* )*) ;
+  safepath = (pchar* (alpha | digit | safe) pchar*) ;
+  path = (safepath ( "/" pchar* )*) ;
   query = ( uchar | reserved )* ;
   param = ( pchar | "/" )* ;
   params = (param ( ";" param )*) ;
-  rel_path = (path? (";" params)?) ("?" query)?;
-  absolute_path = ("/"+ rel_path);
+  rel_path = (path (";" params)?) ("?" query)?;
+  absolute_path = ("/"+ rel_path?);
   target = ("#" pchar*) ;
-  uri = (target | absolute_uri target? | absolute_path target?) ;
+  uri = (target | absolute_uri target? | absolute_path target? | rel_path target?) ;
 
   default = ^0 ;
   trailing = PUNCT - ("'" | '"') ;
@@ -130,7 +146,7 @@ static VALUE super_ParseError, super_RedCloth;
   EOF = 0 ;
 
   # common
-  title = ( '(' [^)]+ ')' ) >A %{ STORE(title) } ;
+  title = ( '(' [^)]+ >A %{ STORE(title) } ')' ) ;
   word = ( alnum | safe | " " ) ;
 
   # links
@@ -192,9 +208,9 @@ static VALUE super_ParseError, super_RedCloth;
 
   main := |*
 
-    image { if ( *reg == ':') { reg += 1; STORE(href); } INLINE(image); };
+    image { if ( *reg == ':') { reg += 1; STORE_URL(href); } INLINE(image); };
 
-    link { STORE(href); INLINE(link); };
+    link { STORE_URL(href); INLINE(link); };
 
     code { FORMAT(text, code); };
     strong { FORMAT(text, strong); };
