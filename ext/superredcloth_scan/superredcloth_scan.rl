@@ -40,6 +40,9 @@
   A2 = ( A_LIMIT? ) ;
   S = ( S_CSPN S_RSPN  | S_RSPN S_CSPN? ) >A %{ STORE(span) } ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
+  N_CONT = "_" %{ ASET(start, continue) };
+  N_NUM = digit+ >A %{ STORE(start) };
+  N = ( N_CONT | N_NUM )? ;
 
   # blocks
   notextile = "<notextile>" >X %A ( default+ ) %T :> "</notextile>" ;
@@ -49,12 +52,17 @@
   block = ( btype A C ". " %A btext ) >X ;
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
   fblock = ( ftype A C ". " %A btext ) >X ;
+  ul = "*" %{ASET(type, ul)} ;
+  ol = "#" %{ASET(type, ol)} ;
+  listtext = btext -- (CRLF (ul | ol)) ;
+  list = ( (ul | ol)+ N A C " " %A listtext ) >X ;
 
   main := |*
 
     notextile => notextile;
     fblock { STORE(text); FORMAT_BLOCK(text, type); };
     block { STORE(text); FORMAT_BLOCK(text, type); };
+    list { STORE(text); FORMAT_BLOCK(text, type); };
     CRLF{2,} { BLOCK(para); };
     CRLF => cat;
     para => cat;

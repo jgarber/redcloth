@@ -37,7 +37,7 @@ VALUE superredcloth_transform2(VALUE str);
     block = rb_str_new2(""); \
   }
 #define ASET(T, V)  \
-  rb_hash_aset(regs, ID2SYM(rb_intern(#T)), ID2SYM(rb_intern(#V)));
+  rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_str_new2(#V));
 #define AINC(T)  \
   { \
     int aint = 0; \

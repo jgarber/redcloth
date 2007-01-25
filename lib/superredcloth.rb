@@ -30,6 +30,11 @@ class << SuperRedCloth
       "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>"
     end
   end
+  [:ol, :ul].each do |m|
+    define_method(m) do |opts|
+      "<#{m}#{pba(opts)}><li>#{opts[:text]}</li></ol>"
+    end
+  end
   def ignore opts
     opts[:text]
   end
