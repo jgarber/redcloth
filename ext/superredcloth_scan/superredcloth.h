@@ -2,7 +2,9 @@
 #define superredcloth_h
 
 /* variable defs */
-VALUE super_ParseError, super_RedCloth;
+#ifndef superredcloth_scan_c
+extern VALUE super_ParseError, super_RedCloth;
+#endif
 
 /* function defs */
 void rb_str_cat_escaped(VALUE str, char *tokstart, char *tokend);

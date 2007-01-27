@@ -6,8 +6,12 @@
  *
  * Copyright (C) 2007 why the lucky stiff
  */
+#define superredcloth_scan_c
+
 #include <ruby.h>
 #include "superredcloth.h"
+
+VALUE super_ParseError, super_RedCloth;
 
 %%{
   machine superredcloth_scan;
