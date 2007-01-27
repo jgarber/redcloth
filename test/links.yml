@@ -62,6 +62,9 @@ out: <p><a href="http://example.com/?foo=bar">link text</a></p>
 in: '"link text":http://example.com/?foo=bar#a'
 out: <p><a href="http://example.com/?foo=bar#a">link text</a></p>
 ---
+in: '"link & text":http://example.com/?foo=bar#a'
+out: <p><a href="http://example.com/?foo=bar#a">link &amp; text</a></p>
+---
 in: '"link text":http://example.com/?foo=bar#1'
 out: <p><a href="http://example.com/?foo=bar#1">link text</a></p>
 ---

@@ -24,7 +24,8 @@ VALUE superredcloth_transform2(VALUE str);
   }
 #define FORMAT(A, T) \
   { \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#A)), superredcloth_inline2(rb_hash_aref(regs, ID2SYM(rb_intern(#A))))); \
+    VALUE txt = rb_hash_aref(regs, ID2SYM(rb_intern(#A))); \
+    if (!NIL_P(txt)) rb_hash_aset(regs, ID2SYM(rb_intern(#A)), superredcloth_inline2(txt)); \
     rb_str_append(block, rb_funcall(super_RedCloth, rb_intern(#T), 1, regs)); \
   }
 #define FORMAT_BLOCK(A, T) \

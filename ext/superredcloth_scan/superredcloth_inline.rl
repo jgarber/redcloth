@@ -90,11 +90,12 @@
   # common
   title = ( '(' [^)]+ >A %{ STORE(title) } ')' ) ;
   word = ( alnum | safe | " " ) ;
+  mspace = ( ( " " | "\t" | CRLF )+ ) -- CRLF{2} ;
+  mtext = ( chars (mspace chars)* ) ;
 
   # links
-  link_says = ( word+ ) >A %{ STORE(name) } ;
-  link_is = ( C dotspace? link_says title? ) ;
-  link = ( '"' link_is '":' %A uri ) >X ;
+  link_says = ( mtext+ ) >A %{ STORE(name) } ;
+  link = ( '"' C dotspace? link_says :> title? :> '":' %A uri ) >X ;
 
   # images
   image_src = ( uri ) >A %{ STORE(src) } ;
@@ -106,8 +107,6 @@
   footno = "[" >X %A digit+ %T "]" ;
 
   # markup
-  mspace = ( ( " " | "\t" | CRLF )+ ) -- CRLF{2} ;
-  mtext = ( chars (mspace chars)* ) ;
   code = "@" >X C mtext >A %T :> "@" ;
   strong = "*" >X C mtext >A %T :> "*" ;
   b = "**" >X C mtext >A %T :> "**" ;
@@ -123,7 +122,6 @@
   snip = "```" >X %A mtext %T :> "```" ;
   quote1 = "'" >X %A mtext %T :> "'" ;
   quote2 = '"' >X %A mtext %T :> '"' ;
-  apos = "'" ;
 
   # glyphs
   ellipsis = ( " "? >A %T "..." ) >X ;
@@ -143,7 +141,7 @@
 
     image { if ( *reg == ':') { reg += 1; STORE_URL(href); } INLINE(image); };
 
-    link { STORE_URL(href); INLINE(link); };
+    link { STORE_URL(href); FORMAT(name, link); };
 
     code { FORMAT(text, code); };
     strong { FORMAT(text, strong); };
