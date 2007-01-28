@@ -39,7 +39,7 @@
   A2 = ( A_LIMIT? ) ;
   S = ( S_CSPN S_RSPN  | S_RSPN S_CSPN? ) >A %{ STORE(span) } ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
-  PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "=" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~" | "[" | "(" | "<" ) ;
+  PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "," | "--" | "." | "/" | ":" | ";" | "=" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~" | "[" | "(" | "<" ) ;
   dotspace = [. ] ;
 
   # URI tokens (lifted from Mongrel)
@@ -139,36 +139,36 @@
 
   main := |*
 
-    image { if ( *reg == ':') { reg += 1; STORE_URL(href); } INLINE(image); };
+    image { if ( *reg == ':') { reg += 1; STORE_URL(href); } INLINE(block, image); };
 
-    link { STORE_URL(href); FORMAT(name, link); };
+    link { STORE_URL(href); PASS(block, name, link); };
 
-    code { FORMAT(text, code); };
-    strong { FORMAT(text, strong); };
-    b { FORMAT(text, b); };
-    em { FORMAT(text, em); };
-    i { FORMAT(text, i); };
-    del { FORMAT(text, del); };
-    ins { FORMAT(text, ins); };
-    sup { FORMAT(text, sup); };
-    sub { FORMAT(text, sub); };
-    span { FORMAT(text, span); };
-    cite { FORMAT(text, cite); };
+    code { PASS(block, text, code); };
+    strong { PASS(block, text, strong); };
+    b { PASS(block, text, b); };
+    em { PASS(block, text, em); };
+    i { PASS(block, text, i); };
+    del { PASS(block, text, del); };
+    ins { PASS(block, text, ins); };
+    sup { PASS(block, text, sup); };
+    sub { PASS(block, text, sub); };
+    span { PASS(block, text, span); };
+    cite { PASS(block, text, cite); };
     ignore => ignore;
-    snip { FORMAT(text, snip); };
-    quote1 { FORMAT(text, quote1); };
-    quote2 { FORMAT(text, quote2); };
+    snip { PASS(block, text, snip); };
+    quote1 { PASS(block, text, quote1); };
+    quote2 { PASS(block, text, quote2); };
 
-    ellipsis { INLINE(ellipsis); };
-    emdash { INLINE(emdash); };
-    endash { INLINE(endash); };
-    arrow { INLINE(arrow); };
-    acronym { INLINE(acronym); };
-    dim { INLINE(dim); };
-    trademark { INLINE(trademark); };
-    registered { INLINE(registered); };
-    copyright { INLINE(copyright); };
-    footno { FORMAT(text, footno); };
+    ellipsis { INLINE(block, ellipsis); };
+    emdash { INLINE(block, emdash); };
+    endash { INLINE(block, endash); };
+    arrow { INLINE(block, arrow); };
+    acronym { INLINE(block, acronym); };
+    dim { INLINE(block, dim); };
+    trademark { INLINE(block, trademark); };
+    registered { INLINE(block, registered); };
+    copyright { INLINE(block, copyright); };
+    footno { PASS(block, text, footno); };
 
     start_tag => cat;
     end_tag => cat;
@@ -185,6 +185,42 @@
 }%%
 
 %% write data nofinal;
+
+VALUE
+red_pass(VALUE regs, VALUE ref, ID meth)
+{
+  VALUE txt = rb_hash_aref(regs, ref);
+  if (!NIL_P(txt)) rb_hash_aset(regs, ref, superredcloth_inline2(txt));
+  return rb_funcall(super_RedCloth, meth, 1, regs);
+}
+
+VALUE
+red_pass2(VALUE regs, VALUE ref, VALUE btype)
+{
+  btype = rb_hash_aref(regs, btype);
+  StringValue(btype);
+  return red_pass(regs, ref, rb_intern(RSTRING(btype)->ptr));
+}
+
+VALUE
+red_block(VALUE block, ID meth)
+{
+  block = rb_funcall(block, rb_intern("strip"), 0);
+  if (RSTRING(block)->len > 0)
+  {
+    block = rb_funcall(super_RedCloth, meth, 1, superredcloth_inline2(block));
+  }
+  return block;
+}
+
+void
+red_inc(VALUE regs, VALUE ref)
+{
+  int aint = 0;
+  VALUE aval = rb_hash_aref(regs, ref);
+  if (aval != Qnil) aint = NUM2INT(aval);
+  rb_hash_aset(regs, ref, INT2NUM(aint + 1));
+}
 
 VALUE
 superredcloth_inline(p, pe)

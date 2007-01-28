@@ -12,42 +12,20 @@ VALUE superredcloth_inline(char *p, char *pe);
 VALUE superredcloth_inline2(VALUE str);
 VALUE superredcloth_transform(char *p, char *pe);
 VALUE superredcloth_transform2(VALUE str);
+void red_inc(VALUE regs, VALUE ref);
+VALUE red_block(VALUE block, ID meth);
+VALUE red_pass2(VALUE regs, VALUE ref, VALUE btype);
+VALUE red_pass(VALUE regs, VALUE ref, ID meth);
 
 /* parser macros */
-#define INLINE(T)    rb_str_append(block, rb_funcall(super_RedCloth, rb_intern(#T), 1, regs))
-#define BLOCK(T) \
-  { \
-    VALUE sblock = rb_funcall(block, rb_intern("strip"), 0); \
-    if (RSTRING(sblock)->len > 0) \
-    { \
-      rb_str_append(html, rb_funcall(super_RedCloth, rb_intern(#T), 1, superredcloth_inline2(sblock))); \
-    } \
-    block = rb_str_new2(""); \
-  }
-#define FORMAT(A, T) \
-  { \
-    VALUE txt = rb_hash_aref(regs, ID2SYM(rb_intern(#A))); \
-    if (!NIL_P(txt)) rb_hash_aset(regs, ID2SYM(rb_intern(#A)), superredcloth_inline2(txt)); \
-    rb_str_append(block, rb_funcall(super_RedCloth, rb_intern(#T), 1, regs)); \
-  }
-#define FORMAT_BLOCK(A, T) \
-  { \
-    /* rb_p(regs); */ \
-    VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern(#T))); \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#A)), superredcloth_inline2(rb_hash_aref(regs, ID2SYM(rb_intern(#A))))); \
-    StringValue(btype); \
-    rb_str_append(html, rb_funcall(super_RedCloth, rb_intern(RSTRING(btype)->ptr), 1, regs)); \
-    block = rb_str_new2(""); \
-  }
-#define ASET(T, V)  \
-  rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_str_new2(#V));
-#define AINC(T)  \
-  { \
-    int aint = 0; \
-    VALUE aval = rb_hash_aref(regs, ID2SYM(rb_intern(#T))); \
-    if (aval != Qnil) aint = NUM2INT(aval); \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), INT2NUM(aint + 1)); \
-  }
+#define CLEAR(H)       H = rb_str_new2("")
+#define INLINE(H, T)   rb_str_append(H, rb_funcall(super_RedCloth, rb_intern(#T), 1, regs))
+#define DONE(H)        rb_str_append(html, H); CLEAR(H)
+#define PASS(H, A, T)  rb_str_append(H, red_pass(regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))
+#define PASS2(H, A, T) rb_str_append(H, red_pass2(regs, ID2SYM(rb_intern(#A)), ID2SYM(rb_intern(#T))))
+#define BLOCK(T)       block = red_block(block, rb_intern(#T)); DONE(block)
+#define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_str_new2(#V));
+#define AINC(T)        red_inc(regs, ID2SYM(rb_intern(#T)));
 #define STORE(T)  \
   if (p > reg && reg >= tokstart) { \
     while (reg < p && ( *reg == '\r' || *reg == '\n' ) ) { reg++; } \

@@ -38,35 +38,46 @@ VALUE super_ParseError, super_RedCloth;
   C_CLAS = ( "(" ( [^)#]+ >A %{ STORE(class) } )? ("#" [^)]+ >A %{STORE(id)} )? ")" ) ;
   C_LNGE = ( "[" [^\]]+ >A %{ STORE(lang) } "]" ) ;
   C_STYL = ( "{" [^}]+ >A %{ STORE(style) } "}" ) ;
-  S_CSPN = ( "\\" [0-9]+ ) ;
-  S_RSPN = ( "/" [0-9]+ ) ;
+  S_CSPN = ( "\\" [0-9]+ >A %{ STORE(colspan) } ) ;
+  S_RSPN = ( "/" [0-9]+ >A %{ STORE(rowspan) } ) ;
   A = ( ( A_HLGN | A_VLGN )* ) ;
   A2 = ( A_LIMIT? ) ;
-  S = ( S_CSPN S_RSPN  | S_RSPN S_CSPN? ) >A %{ STORE(span) } ;
+  S = ( S_CSPN | S_RSPN )* ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
   N_CONT = "_" %{ ASET(start, continue) };
   N_NUM = digit+ >A %{ STORE(start) };
   N = ( N_CONT | N_NUM )? ;
+  dotspace = ("." " "*) ;
 
   # blocks
   notextile = "<notextile>" >X %A ( default+ ) %T :> "</notextile>" ;
   para = ( default+ ) -- CRLF ;
   btext = para ( CRLF{2} )? ;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" ) >A %{ STORE(type) } ;
-  block = ( btype A C ". " %A btext ) >X ;
+  block = ( btype A C :> dotspace %A btext ) >X ;
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
-  fblock = ( ftype A C ". " %A btext ) >X ;
+  fblock = ( ftype A C :> dotspace %A btext ) >X ;
   ul = "*" %{ASET(type, ul)} ;
   ol = "#" %{ASET(type, ol)} ;
   listtext = btext -- (CRLF (ul | ol)) ;
   list = ( (ul | ol)+ N A C " " %A listtext ) >X ;
 
+  # tables
+  tddef = ( S A C :> dotspace ) ;
+  td = ( tddef? btext >A %T :> "|" >{PASS(table, text, td);} ) >X ;
+  trdef = ( A C :> dotspace ) ;
+  tr = ( trdef? "|" %{INLINE(table, tr_open);} td+ ) >X %{INLINE(table, tr_close);} ;
+  trows = ( tr (CRLF >X tr)* ) ;
+  tdef = ( "table" >X A C :> dotspace CRLF ) ;
+  table = ( tdef? trows >{INLINE(table, table_open);} CRLF? ) >{ BLOCK(para); regs = rb_hash_new(); reg = NULL; } ;
+
   main := |*
 
     notextile => notextile;
-    fblock { STORE(text); FORMAT_BLOCK(text, type); };
-    block { STORE(text); FORMAT_BLOCK(text, type); };
-    list { STORE(text); FORMAT_BLOCK(text, type); };
+    fblock { STORE(text); PASS2(html, text, type); };
+    block { STORE(text); PASS2(html, text, type); };
+    list { STORE(text); PASS2(html, text, type); };
+    table { INLINE(table, tr_close); INLINE(table, table_close); DONE(table); };
     CRLF{2,} { BLOCK(para); };
     CRLF => cat;
     para => cat;
@@ -86,6 +97,7 @@ superredcloth_transform(p, pe)
   char *tokstart, *tokend, *reg;
   VALUE html = rb_str_new2("");
   VALUE block = rb_str_new2("");
+  VALUE table = rb_str_new2("");
   VALUE regs = Qnil;
 
   %% write init;

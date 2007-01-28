@@ -146,7 +146,7 @@ in: |-
   |This|is|a|row|
   |This|is|a|row|
 out: |-
-  <table style="border:1px solid black;">
+  <table style="border:1px solid black">
   		<tr>
   			<td>This</td>
   			<td>is</td>
@@ -164,7 +164,7 @@ out: |-
 in: '{background:#ddd}. |This|is|a|row|'
 out: |-
   <table>
-  		<tr style="background:#ddd;">
+  		<tr style="background:#ddd">
   			<td>This</td>
   			<td>is</td>
   			<td>a</td>
@@ -180,7 +180,7 @@ in: |-
 out: |-
   <table>
   		<tr>
-  			<td style="background:#ddd;">Cell with gray background</td>
+  			<td style="background:#ddd">Cell with gray background</td>
   		</tr>
   		<tr>
   			<td colspan="2">Cell spanning 2 columns</td>

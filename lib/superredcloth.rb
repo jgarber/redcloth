@@ -32,7 +32,7 @@ class << SuperRedCloth
   end
   [:ol, :ul].each do |m|
     define_method(m) do |opts|
-      "<#{m}#{pba(opts)}><li>#{opts[:text]}</li></ol>"
+      "<#{m}#{pba(opts)}>\n\t<li>#{opts[:text]}</li>\n</#{m}>"
     end
   end
   def ignore opts
@@ -40,6 +40,21 @@ class << SuperRedCloth
   end
   def para txt
     "<p>" + txt + "</p>"
+  end
+  def td opts
+    "\t\t\t<td#{pba(opts)}>#{opts[:text]}</td>\n"
+  end
+  def tr_open opts
+    "\t\t<tr#{pba(opts)}>\n"
+  end
+  def tr_close opts
+    "\t\t</tr>\n"
+  end
+  def table_open opts
+    "<table#{pba(opts)}>\n"
+  end
+  def table_close opts
+    "\t</table>"
   end
   def bq opts
     "<blockquote><p>" + opts[:text] + "</p></blockquote>"
