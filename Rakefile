@@ -8,8 +8,8 @@ include FileUtils
 
 NAME = "superredcloth"
 SUMMARY = "a fast library for formatting Textile and Markdown as HTML"
-REV = File.read(".svn/entries")[/committed-rev="(\d+)"/, 1] rescue nil
-VERS = ENV['VERSION'] || "0.4" + (REV ? ".#{REV}" : "")
+REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
+VERS = ENV['VERSION'] || "1" + (REV ? ".#{REV}" : "")
 CLEAN.include ['ext/superredcloth_scan/*.{bundle,so,obj,pdb,lib,def,exp}', 'ext/superredcloth_scan/Makefile', 
                '**/.*.sw?', '*.gem', '.config']
 
