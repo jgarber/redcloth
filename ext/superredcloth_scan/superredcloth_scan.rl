@@ -44,6 +44,8 @@ VALUE super_ParseError, super_RedCloth;
       rb_str_append(html, list);
       list = rb_str_new2("");
     }
+
+    regs = rb_hash_new();
   }
   action T { STORE(text); }
 
@@ -85,7 +87,7 @@ VALUE super_ParseError, super_RedCloth;
   ul = "*" %{nest++; list_type = "ul";};
   ol = "#" %{nest++; list_type = "ol";};
   listtext = ( default+ ) -- (CRLF (ul | ol | CRLF));
-  list = ( (ul | ol)+ %lists N A C :> " " %A listtext ) >X %{ nest = 0; STORE(text); PASS(list, text, li); } ;
+  list = ( (ul | ol)+ N %lists A C :> " " %A listtext ) >X %{ nest = 0; STORE(text); PASS(list, text, li); } ;
   lists = (list (CRLF list)* ) >{ nest = 0; list = rb_str_new2(""); list_layout = rb_ary_new(); };
 
   # tables
