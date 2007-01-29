@@ -31,9 +31,15 @@ class << SuperRedCloth
     end
   end
   [:ol, :ul].each do |m|
-    define_method(m) do |opts|
-      "<#{m}#{pba(opts)}>\n\t<li>#{opts[:text]}</li>\n</#{m}>"
+    define_method("#{m}_open") do |opts|
+      "<#{m}#{pba(opts)}>\n"
     end
+    define_method("#{m}_close") do |opts|
+      "</#{m}>"
+    end
+  end
+  def li opts
+    "\t<li#{pba(opts)}>#{opts[:text]}</li>\n"
   end
   def ignore opts
     opts[:text]

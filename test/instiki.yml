@@ -14,7 +14,7 @@ in: '_this <span>span</span> is italic_'
 out: '<p><em>this <span>span</span> is italic</em></p>'
 ---
 in: '%{color:red}nested span because of <span><span class="newWikiWord">Camel Word<a href="../show/CamelWord">?</a></span></span>%'
-out: '<p><span style="color:red;">nested span because of <span><span class="newWikiWord">Camel Word<a href="../show/CamelWord">?</a></span></span></span></p>'
+out: '<p><span style="color:red">nested span because of <span><span class="newWikiWord">Camel Word<a href="../show/CamelWord">?</a></span></span></span></p>'
 ---
 in: |-
   h2. Version History
