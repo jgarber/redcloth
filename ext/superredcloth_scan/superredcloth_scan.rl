@@ -14,11 +14,10 @@
 VALUE super_ParseError, super_RedCloth;
 
 %%{
-  machine superredcloth_scan;
 
-  action A { reg = p; }
-  action X { regs = rb_hash_new(); reg = NULL; }
-  action cat { rb_str_cat(block, tokstart, tokend-tokstart); }
+  machine superredcloth_scan;
+  include superredcloth_common "superredcloth_common.rl";
+
   action notextile { rb_str_append(html, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
   action lists {
     char listm[10] = "";
@@ -47,37 +46,9 @@ VALUE super_ParseError, super_RedCloth;
 
     regs = rb_hash_new();
   }
-  action T { STORE(text); }
-
-  CRLF = ( '\r'? '\n' ) ;
-  default = ^0 ;
-  EOF = 0 ;
-
-  A_LEFT = "<" %{ ASET(align, left) } ;
-  A_RIGHT = ">" %{ ASET(align, right) } ;
-  A_JUSTIFIED = "<>" %{ ASET(align, justified) } ;
-  A_CENTER = "=" %{ ASET(align, center) } ;
-  A_PADLEFT = "(" >A %{ AINC(padding-left) } ;
-  A_PADRIGHT = ")" >A %{ AINC(padding-right) } ;
-  A_HLGN = ( A_LEFT | A_RIGHT | A_JUSTIFIED | A_CENTER | A_PADLEFT | A_PADRIGHT ) ;
-  A_LIMIT = ( A_LEFT | A_CENTER | A_RIGHT ) ;
-  A_VLGN = ( "-" %{ ASET(valign, middle) } | "^" %{ ASET(valign, top) } | "~" %{ ASET(valign, bottom) } ) ;
-  C_CLAS = ( "(" ( [^)#]+ >A %{ STORE(class) } )? ("#" [^)]+ >A %{STORE(id)} )? ")" ) ;
-  C_LNGE = ( "[" [^\]]+ >A %{ STORE(lang) } "]" ) ;
-  C_STYL = ( "{" [^}]+ >A %{ STORE(style) } "}" ) ;
-  S_CSPN = ( "\\" [0-9]+ >A %{ STORE(colspan) } ) ;
-  S_RSPN = ( "/" [0-9]+ >A %{ STORE(rowspan) } ) ;
-  A = ( ( A_HLGN | A_VLGN )* ) ;
-  A2 = ( A_LIMIT? ) ;
-  S = ( S_CSPN | S_RSPN )* ;
-  C = ( C_CLAS | C_STYL | C_LNGE )* ;
-  N_CONT = "_" %{ ASET(start, continue) };
-  N_NUM = digit+ >A %{ STORE(start) };
-  N = ( N_CONT | N_NUM )? ;
-  dotspace = ("." " "*) ;
 
   # blocks
-  notextile = ( "<notextile>" >X %A ( default+ ) %T :> "</notextile>" ) >{ BLOCK(para); } ;
+  notextile = ( "<notextile>" >X %A default+ %T :> "</notextile>" ) >{ BLOCK(para); } ;
   para = ( default+ ) -- CRLF ;
   btext = para ( CRLF{2} )? ;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" ) >A %{ STORE(type) } ;
@@ -88,7 +59,7 @@ VALUE super_ParseError, super_RedCloth;
   ol = "#" %{nest++; list_type = "ol";};
   listtext = ( default+ ) -- (CRLF (ul | ol | CRLF));
   list = ( (ul | ol)+ N %lists A C :> " " %A listtext ) >X %{ nest = 0; STORE(text); PASS(list, text, li); } ;
-  lists = (list (CRLF list)* ) >{ nest = 0; list = rb_str_new2(""); list_layout = rb_ary_new(); };
+  lists = (list (CRLF list)* ) >{ BLOCK(para); nest = 0; list = rb_str_new2(""); list_layout = rb_ary_new(); };
 
   # tables
   tddef = ( S A C :> dotspace ) ;
@@ -113,6 +84,7 @@ VALUE super_ParseError, super_RedCloth;
     EOF;
 
   *|;
+
 }%%
 
 %% write data nofinal;

@@ -10,37 +10,9 @@
 #include "superredcloth.h"
 
 %%{
+
   machine superredcloth_inline;
-
-  action A { reg = p; }
-  action X { regs = rb_hash_new(); reg = NULL; }
-  action cat { rb_str_cat(block, tokstart, tokend-tokstart); }
-  action esc { rb_str_cat_escaped(block, tokstart, tokend); }
-  action ignore { rb_str_append(block, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
-  action T { STORE(text); }
-
-  # minor character groups
-  CRLF = ( '\r'? '\n' ) ;
-  A_LEFT = "<" %{ ASET(align, left) } ;
-  A_RIGHT = ">" %{ ASET(align, right) } ;
-  A_JUSTIFIED = "<>" %{ ASET(align, justified) } ;
-  A_CENTER = "=" %{ ASET(align, center) } ;
-  A_PADLEFT = "(" >A %{ AINC(padding-left) } ;
-  A_PADRIGHT = ")" >A %{ AINC(padding-right) } ;
-  A_HLGN = ( A_LEFT | A_RIGHT | A_JUSTIFIED | A_CENTER | A_PADLEFT | A_PADRIGHT ) ;
-  A_LIMIT = ( A_LEFT | A_CENTER | A_RIGHT ) ;
-  A_VLGN = ( "-" %{ ASET(valign, middle) } | "^" %{ ASET(valign, top) } | "~" %{ ASET(valign, bottom) } ) ;
-  C_CLAS = ( "(" ( [^)#]+ >A %{ STORE(class) } )? ("#" [^)]+ >A %{STORE(id)} )? ")" ) ;
-  C_LNGE = ( "[" [^\]]+ >A %{ STORE(lang) } "]" ) ;
-  C_STYL = ( "{" [^}]+ >A %{ STORE(style) } "}" ) ;
-  S_CSPN = ( "\\" [0-9]+ ) ;
-  S_RSPN = ( "/" [0-9]+ ) ;
-  A = ( ( A_HLGN | A_VLGN )* ) ;
-  A2 = ( A_LIMIT? ) ;
-  S = ( S_CSPN S_RSPN  | S_RSPN S_CSPN? ) >A %{ STORE(span) } ;
-  C = ( C_CLAS | C_STYL | C_LNGE )* ;
-  PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "," | "--" | "." | "/" | ":" | ";" | "=" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~" | "[" | "(" | "<" ) ;
-  dotspace = [. ] ;
+  include superredcloth_common "superredcloth_common.rl";
 
   # URI tokens (lifted from Mongrel)
   CTL = (cntrl | 127);
@@ -64,28 +36,6 @@
   absolute_path = ("/"+ rel_path?);
   target = ("#" pchar*) ;
   uri = (target | absolute_uri target? | absolute_path target? | rel_path target?) ;
-
-  default = ^0 ;
-  trailing = PUNCT - ("'" | '"') ;
-  chars = (default - space)+ ;
-  phrase = chars -- trailing ;
-  EOF = 0 ;
-
-  # html tags (from Hpricot)
-  NameChar = [\-A-Za-z0-9._:?] ;
-  Name = [A-Za-z_:] NameChar* ;
-  NameAttr = NameChar+ ;
-  Q1Attr = [^']* ;
-  Q2Attr = [^"]* ;
-  UnqAttr = ( space | [^ \t\n<>"'] [^ \t\n<>]* ) ;
-  Nmtoken = NameChar+ ;
-  Attr =  NameAttr space* "=" space* ('"' Q2Attr '"' | "'" Q1Attr "'" | UnqAttr space+ ) space* ;
-  AttrEnd = ( NameAttr space* "=" space* UnqAttr? | Nmtoken ) ;
-  AttrSet = ( Attr | Nmtoken space+ ) ;
-  start_tag = "<" Name space+ AttrSet* (AttrEnd)? ">" | "<" Name ">";
-  empty_tag = "<" Name space+ AttrSet* (AttrEnd)? "/>" | "<" Name "/>" ;
-  end_tag = "</" Name space* ">" ;
-  html_comment = "<!--" (default+) :> "-->";
 
   # common
   title = ( '(' [^)]+ >A %{ STORE(title) } ')' ) ;
@@ -182,6 +132,7 @@
     EOF;
 
   *|;
+
 }%%
 
 %% write data nofinal;
