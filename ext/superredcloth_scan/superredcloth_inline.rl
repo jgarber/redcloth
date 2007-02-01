@@ -17,9 +17,9 @@
   # URI tokens (lifted from Mongrel)
   CTL = (cntrl | 127);
   safe = ("$" | "-" | "_" | ".");
-  extra = ("!" | "*" | "'" | "(" | ")" | ",");
+  extra = ("!" | "*" | "'" | "(" | ")" | "," | "#");
   reserved = (";" | "/" | "?" | ":" | "@" | "&" | "=" | "+");
-  unsafe = (CTL | " " | "\"" | "#" | "%" | "<" | ">");
+  unsafe = (CTL | " " | "\"" | "%" | "<" | ">");
   national = any -- (alpha | digit | reserved | extra | safe | unsafe);
   unreserved = (alpha | digit | safe | extra | national);
   escape = ("%" xdigit xdigit);
@@ -35,10 +35,10 @@
   rel_path = (path (";" params)?) ("?" query)?;
   absolute_path = ("/"+ rel_path?);
   target = ("#" pchar*) ;
-  uri = (target | absolute_uri target? | absolute_path target? | rel_path target?) ;
+  uri = (target | absolute_uri | absolute_path | rel_path) ;
 
   # common
-  title = ( '(' [^)]+ >A %{ STORE(title) } ')' ) ;
+  title = ( '(' default+ >A %{ STORE(title) } :> ')' ) ;
   word = ( alnum | safe | " " ) ;
   mspace = ( ( " " | "\t" | CRLF )+ ) -- CRLF{2} ;
   mtext = ( chars (mspace chars)* ) ;

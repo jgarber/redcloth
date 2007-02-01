@@ -118,8 +118,8 @@ VALUE
 superredcloth_transform2(str)
   VALUE str;
 {
-  StringValue(str);
   rb_str_cat2(str, "\n");
+  StringValue(str);
   return superredcloth_transform(RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1);
 }
 
@@ -130,7 +130,6 @@ superredcloth_to_html(self)
   char *pe, *p;
   int len = 0;
 
-  StringValue(self);
   return superredcloth_transform2(self);
 }
 
