@@ -19,70 +19,59 @@ VALUE super_ParseError, super_RedCloth;
   include superredcloth_common "superredcloth_common.rl";
 
   action notextile { rb_str_append(html, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
-  action lists {
-    char listm[10] = "";
-    if (nest > RARRAY(list_layout)->len)
-    {
-      sprintf(listm, "%s_open", list_type);
-      rb_str_append(list, rb_funcall(super_RedCloth, rb_intern(listm), 1, regs));
-      rb_ary_store(list_layout, nest-1, rb_str_new2(list_type));
-    }
-    while (nest < RARRAY(list_layout)->len)
-    {
-      VALUE end_list = rb_ary_pop(list_layout);
-      if (!NIL_P(end_list))
-      {
-        StringValue(end_list);
-        sprintf(listm, "%s_close", RSTRING(end_list)->ptr);
-        rb_str_append(list, rb_funcall(super_RedCloth, rb_intern(listm), 1, regs));
-      }
-    }
-
-    if (nest == 0)
-    {
-      rb_str_append(html, list);
-      list = rb_str_new2("");
-    }
-
-    regs = rb_hash_new();
-  }
 
   # blocks
-  notextile = ( "<notextile>" >X %A default+ %T :> "</notextile>" ) >{ BLOCK(para); } ;
-  para = ( default+ ) -- CRLF ;
-  btext = para ( CRLF{2} )? ;
+  notextile_start = "<notextile>" ;
+  notextile_end = "</notextile>" ;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" ) >A %{ STORE(type) } ;
-  block = ( btype A C :> dotspace %A btext ) >X ;
+  block_start = ( btype A C :> dotspace ) ;
+  block_end = ( CRLF{2} | EOF );
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
-  fblock = ( ftype A C :> dotspace %A btext ) >X ;
+  footnote_start = ( ftype A C :> dotspace ) ;
   ul = "*" %{nest++; list_type = "ul";};
   ol = "#" %{nest++; list_type = "ol";};
-  listtext = ( default+ ) -- (CRLF (ul | ol | CRLF));
-  list = ( (ul | ol)+ N %lists A C :> " " %A listtext ) >X %{ nest = 0; STORE(text); PASS(list, text, li); } ;
-  lists = (list (CRLF list)* ) >{ BLOCK(para); nest = 0; list = rb_str_new2(""); list_layout = rb_ary_new(); };
+  list_start  = ( ( ul | ol )+ N A C :> " " ) >{nest = 0;} ;
 
   # tables
+  para = ( default+ ) -- CRLF ;
+  btext = para ( CRLF{2} )? ;
   tddef = ( S A C :> dotspace ) ;
   td = ( tddef? btext >A %T :> "|" >{PASS(table, text, td);} ) >X ;
   trdef = ( A C :> dotspace ) ;
   tr = ( trdef? "|" %{INLINE(table, tr_open);} td+ ) >X %{INLINE(table, tr_close);} ;
   trows = ( tr (CRLF >X tr)* ) ;
   tdef = ( "table" >X A C :> dotspace CRLF ) ;
-  table = ( tdef? trows >{INLINE(table, table_open);} CRLF? ) >{ BLOCK(para); regs = rb_hash_new(); reg = NULL; } ;
+  table = ( tdef? trows >{INLINE(table, table_open);} ) >{ reg = NULL; } ;
+
+  notextile := |*
+    notextile_end   { DONE(block); fgoto main; };
+    default => cat;
+  *|;
+
+  block := |*
+    block_end       { ADD_BLOCK(); fgoto main; };
+    default => cat;
+  *|;
+
+  footnote := |*
+    block_end       { ADD_BLOCK(); fgoto main; };
+    default => cat;
+  *|;
+
+  list := |*
+    CRLF list_start { ADD_BLOCK(); LIST_ITEM(); };
+    block_end       { ADD_BLOCK(); nest = 0; LIST_ITEM(); fgoto main; };
+    default => cat;
+  *|;
 
   main := |*
-
-    notextile => notextile;
-    fblock { STORE(text); PASS2(html, text, type); };
-    block { STORE(text); PASS2(html, text, type); };
-    lists => lists;
-    table { INLINE(table, tr_close); INLINE(table, table_close); DONE(table); };
-    CRLF{2,} { BLOCK(para); };
-    CRLF => cat;
-    para => cat;
-
+    notextile_start { ASET(type, notextile); fgoto notextile; };
+    block_start     { fgoto block; };
+    footnote_start  { fgoto footnote; };
+    list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
+    table           { INLINE(table, table_close); DONE(table); };
+    default         { ASET(type, p); CAT(block); fgoto block; };
     EOF;
-
   *|;
 
 }%%
@@ -96,10 +85,10 @@ superredcloth_transform(p, pe)
   int cs, act, nest;
   char *tokstart, *tokend, *reg;
   VALUE html = rb_str_new2("");
-  VALUE block = rb_str_new2("");
   VALUE table = rb_str_new2("");
-  VALUE regs = Qnil;
-  VALUE list = Qnil, list_layout = Qnil;
+  VALUE block = rb_str_new2("");
+  VALUE regs = rb_hash_new();
+  VALUE list_layout = Qnil;
   char *list_type = NULL;
 
   %% write init;
@@ -108,7 +97,7 @@ superredcloth_transform(p, pe)
 
   if (RSTRING(block)->len > 0)
   {
-    BLOCK(para);
+    ADD_BLOCK();
   }
 
   return html;

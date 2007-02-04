@@ -45,6 +45,7 @@ class << SuperRedCloth
   def ignore opts
     opts[:text]
   end
+  alias_method :notextile, :ignore
   def para txt
     "<p>" + txt + "</p>"
   end

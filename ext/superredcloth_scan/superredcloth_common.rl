@@ -5,7 +5,7 @@
   action A { reg = p; }
   action T { STORE(text); }
   action X { regs = rb_hash_new(); reg = NULL; }
-  action cat { rb_str_cat(block, tokstart, tokend-tokstart); }
+  action cat { CAT(block); }
   action esc { rb_str_cat_escaped(block, tokstart, tokend); }
   action ignore { rb_str_append(block, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
 

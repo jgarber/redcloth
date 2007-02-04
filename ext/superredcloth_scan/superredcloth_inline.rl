@@ -154,12 +154,14 @@ red_pass2(VALUE regs, VALUE ref, VALUE btype)
 }
 
 VALUE
-red_block(VALUE block, ID meth)
+red_block(VALUE regs, VALUE block)
 {
+  VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
   if (RSTRING(block)->len > 0)
   {
-    block = rb_funcall(super_RedCloth, meth, 1, superredcloth_inline2(block));
+    rb_hash_aset(regs, ID2SYM(rb_intern("text")), superredcloth_inline2(block));
+    block = rb_funcall(super_RedCloth, rb_intern(RSTRING(btype)->ptr), 1, regs);
   }
   return block;
 }
