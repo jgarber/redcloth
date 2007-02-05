@@ -19,7 +19,7 @@ class << SuperRedCloth
     end
     atts
   end
-  [:h1, :h2, :h3, :h4, :h5, :h6, :p].each do |m|
+  [:h1, :h2, :h3, :h4, :h5, :h6, :p, :pre, :div].each do |m|
     define_method(m) do |opts|
       "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>"
     end
@@ -64,8 +64,13 @@ class << SuperRedCloth
   def table_close opts
     "\t</table>"
   end
+  def bc opts
+    opts[:block] = true
+    "<pre#{pba(opts)}><code#{pba(opts)}>#{opts[:text]}</code></pre>"
+  end
   def bq opts
-    "<blockquote><p>" + opts[:text] + "</p></blockquote>"
+    opts[:block] = true
+    "<blockquote#{pba(opts)}><p#{pba(opts)}>#{opts[:text]}</p></blockquote>"
   end
   def link opts
     "<a href=\"#{opts[:href].gsub(/&/, '&#38;')}\"#{pba(opts)}>#{opts[:name]}</a>"

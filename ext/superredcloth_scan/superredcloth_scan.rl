@@ -23,8 +23,8 @@ VALUE super_ParseError, super_RedCloth;
   # blocks
   notextile_start = "<notextile>" ;
   notextile_end = "</notextile>" ;
-  btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" ) >A %{ STORE(type) } ;
-  block_start = ( btype A C :> dotspace ) ;
+  btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" | "bc" | "pre" | "notextile" | "div" ) >A %{ STORE(type) } ;
+  block_start = ( btype A C :> "." ( "."? %{ ASET(block, extended) } ) " "* ) ;
   block_end = ( CRLF{2} | EOF );
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
   footnote_start = ( ftype A C :> dotspace ) ;
@@ -70,7 +70,7 @@ VALUE super_ParseError, super_RedCloth;
     footnote_start  { fgoto footnote; };
     list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
     table           { INLINE(table, table_close); DONE(table); };
-    default         { ASET(type, p); CAT(block); fgoto block; };
+    default         { regs = rb_hash_new(); ASET(type, p); CAT(block); fgoto block; };
     EOF;
   *|;
 
@@ -83,7 +83,7 @@ superredcloth_transform(p, pe)
   char *p, *pe;
 {
   int cs, act, nest;
-  char *tokstart, *tokend, *reg;
+  char *tokstart = NULL, *tokend = NULL, *reg = NULL;
   VALUE html = rb_str_new2("");
   VALUE table = rb_str_new2("");
   VALUE block = rb_str_new2("");

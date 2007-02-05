@@ -57,28 +57,28 @@
   footno = "[" >X %A digit+ %T "]" ;
 
   # markup
-  code = "@" >X C mtext >A %T :> "@" ;
-  strong = "*" >X C mtext >A %T :> "*" ;
-  b = "**" >X C mtext >A %T :> "**" ;
-  em = "_" >X C mtext >A %T :> "_" ;
-  i = "__" >X C mtext >A %T :> "__" ;
-  del = " -" >X C ( mtext -- "-" ) >A %T :> "- " ;
-  ins = "+" >X C mtext >A %T :> "+" ;
-  sup = "^" >X C mtext >A %T :> "^" ;
-  sub = "~" >X C mtext >A %T :> "~" ;
-  span = "%" >X C mtext >A %T :> "%" ;
-  cite = "??" >X C mtext >A %T :> "??" ;
-  ignore = "==" >X %A mtext %T :> "==" ;
-  snip = "```" >X %A mtext %T :> "```" ;
-  quote1 = "'" >X %A mtext %T :> "'" ;
-  quote2 = '"' >X %A mtext %T :> '"' ;
+  code = "["? "@" >X C mtext >A %T :> "@" "]"? ;
+  strong = "["? "*" >X C mtext >A %T :> "*" "]"? ;
+  b = "["? "**" >X C mtext >A %T :> "**" "]"? ;
+  em = "["? "_" >X C mtext >A %T :> "_" "]"? ;
+  i = "["? "__" >X C mtext >A %T :> "__" "]"? ;
+  del = (" "|"[") "-" >X C ( mtext -- "-" ) >A %T :> "-" (" "|"]") ;
+  ins = "["? "+" >X C mtext >A %T :> "+" "]"? ;
+  sup = "["? "^" >X C mtext >A %T :> "^" "]"? ;
+  sub = "["? "~" >X C mtext >A %T :> "~" "]"? ;
+  span = "["? "%" >X C mtext >A %T :> "%" "]"? ;
+  cite = "["? "??" >X C mtext >A %T :> "??" "]"? ;
+  ignore = "["? "==" >X %A mtext %T :> "==" "]"? ;
+  snip = "["? "```" >X %A mtext %T :> "```" "]"? ;
+  quote1 = "["? "'" >X %A mtext %T :> "'" "]"? ;
+  quote2 = "["? '"' >X %A mtext %T :> '"' "]"? ;
 
   # glyphs
   ellipsis = ( " "? >A %T "..." ) >X ;
   emdash = ( " "? "--" " "? ) >X ;
   arrow = ( " "? "->" " "? ) >X ;
   endash = ( " "? "-" " "? ) >X ;
-  acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" [^)]+ >A %{ STORE(title) } ")" ) >X ;
+  acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" default+ >A %{ STORE(title) } :> ")" ) >X ;
   dim = ( digit+ >A %{ STORE(x) } " x " digit+ >A %{ STORE(y) } ) >X ;
   tm = [Tt] [Mm] ;
   trademark = " "? ( "[" tm "]" | "(" tm ")" ) ;
