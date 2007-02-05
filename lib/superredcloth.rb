@@ -3,11 +3,7 @@ require 'superredcloth_scan'
 class << SuperRedCloth
   def pba opts
     atts = ''
-    if opts[:block]
-      opts[:float] = opts.delete(:align)
-    else
-      opts[:"text-align"] = opts.delete(:align)
-    end
+    opts[:"text-align"] = opts.delete(:align)
     [:float, :"text-align"].each do |a|
       opts[:style] = "#{a}:#{opts[a]};#{opts[:style]}" if opts[a]
     end
@@ -76,7 +72,7 @@ class << SuperRedCloth
     "<a href=\"#{opts[:href].gsub(/&/, '&#38;')}\"#{pba(opts)}>#{opts[:name]}</a>"
   end
   def image opts
-    p_opts = {:block => true, :align => opts.delete(:align)} if opts[:align]
+    p_opts = {:float => opts.delete(:align)} if opts[:align]
     opts[:alt] = opts[:title]
     img = "<img src=\"#{opts[:src]}\"#{pba(opts)} alt=\"#{opts[:alt]}\" />"  
     img = "<a href=\"#{urlesc opts[:href]}\">#{img}</a>" if opts[:href]
