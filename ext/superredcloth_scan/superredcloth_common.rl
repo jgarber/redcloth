@@ -36,7 +36,7 @@
   N_CONT = "_" %{ ASET(start, continue) };
   N_NUM = digit+ >A %{ STORE(start) };
   N = ( N_CONT | N_NUM )? ;
-  PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "," | "--" | "." | "/" | ":" | ";" | "=" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~" | "[" | "(" | "<" ) ;
+  PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "," | "--" | "." | "/" | ":" | ";" | "=" | "?" | "\\" | "^" | "`" | "|" | "~" | "[" | "(" | "<" ) ;
   dotspace = ("." " "*) ;
 
   # text blocks
@@ -50,7 +50,7 @@
   NameAttr = NameChar+ ;
   Q1Attr = [^']* ;
   Q2Attr = [^"]* ;
-  UnqAttr = ( space | [^ \t\n<>"'] [^ \t\n<>]* ) ;
+  UnqAttr = ( space | [^ \t\r\n<>"'] [^ \t\r\n<>]* ) ;
   Nmtoken = NameChar+ ;
   Attr =  NameAttr space* "=" space* ('"' Q2Attr '"' | "'" Q1Attr "'" | UnqAttr space+ ) space* ;
   AttrEnd = ( NameAttr space* "=" space* UnqAttr? | Nmtoken ) ;

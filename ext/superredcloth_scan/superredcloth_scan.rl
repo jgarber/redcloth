@@ -23,6 +23,8 @@ VALUE super_ParseError, super_RedCloth;
   # blocks
   notextile_start = "<notextile>" ;
   notextile_end = "</notextile>" ;
+  pre_start = "<pre" [^>]* ">" ;
+  pre_end = "</pre>" ;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" | "bc" | "pre" | "notextile" | "div" ) >A %{ STORE(type) } ;
   block_start = ( btype A C :> "." ( "."? %{ ASET(block, extended) } ) " "* ) ;
   block_end = ( CRLF{2} | EOF );
@@ -42,6 +44,11 @@ VALUE super_ParseError, super_RedCloth;
   trows = ( tr (CRLF >X tr)* ) ;
   tdef = ( "table" >X A C :> dotspace CRLF ) ;
   table = ( tdef? trows >{INLINE(table, table_open);} ) >{ reg = NULL; } ;
+
+  pre := |*
+    pre_end        { DONE(block); fgoto main; };
+    default => cat;
+  *|;
 
   notextile := |*
     notextile_end   { DONE(block); fgoto main; };
@@ -71,6 +78,7 @@ VALUE super_ParseError, super_RedCloth;
     list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
     table           { INLINE(table, table_close); DONE(table); };
     default         { regs = rb_hash_new(); ASET(type, p); CAT(block); fgoto block; };
+    pre_start       { ASET(type, notextile); CAT(block); fgoto pre; };
     EOF;
   *|;
 

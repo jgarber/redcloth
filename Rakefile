@@ -113,7 +113,7 @@ desc "Generates the scanner code with Ragel."
 task :ragel do
   Dir.chdir('ext/superredcloth_scan') do
     ['superredcloth_scan', 'superredcloth_inline'].each do |src|
-      sh %{ragel #{src}.rl | rlcodegen -G2 -o #{src}.c}
+      sh %{ragel #{src}.rl | rlgen-cd -G2 -o #{src}.c}
     end
   end
 end
