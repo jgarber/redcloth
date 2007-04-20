@@ -20,11 +20,15 @@ class << SuperRedCloth
       "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>"
     end
   end
-  [:strong, :code, :em, :i, :b, :del, :ins, :sup, :sub, :span, :cite, :acronym].each do |m|
+  [:strong, :code, :em, :i, :b, :ins, :sup, :sub, :span, :cite, :acronym].each do |m|
     define_method(m) do |opts|
       opts[:block] = true
       "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>"
     end
+  end
+  def del(opts)
+    opts[:block] = true
+    " <del#{pba(opts)}>#{opts[:text]}</del> "
   end
   [:ol, :ul].each do |m|
     define_method("#{m}_open") do |opts|

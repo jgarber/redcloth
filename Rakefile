@@ -109,11 +109,16 @@ file ext_so => ext_files do
   cp ext_so, "lib"
 end
 
+desc "returns the ragel version"
+task :ragel_version do
+  @ragel_v = `ragel -v`[/(version )(\S*)/,2].to_f
+end
+
 desc "Generates the scanner code with Ragel."
-task :ragel do
+task :ragel => [:ragel_version] do
   Dir.chdir('ext/superredcloth_scan') do
     ['superredcloth_scan', 'superredcloth_inline'].each do |src|
-      sh %{ragel #{src}.rl | rlgen-cd -G2 -o #{src}.c}
+      sh %{ragel #{src}.rl | #{@ragel_v >= 5.18 ? 'rlgen-cd' : 'rlcodegen'} -G2 -o #{src}.c}
     end
   end
 end

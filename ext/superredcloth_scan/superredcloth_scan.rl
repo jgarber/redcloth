@@ -19,6 +19,8 @@ VALUE super_ParseError, super_RedCloth;
   include superredcloth_common "superredcloth_common.rl";
 
   action notextile { rb_str_append(html, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
+  action extend { plain_block = rb_hash_aref(regs, ID2SYM(rb_intern("type"))); }
+  action no_extend { plain_block = rb_str_new2("p"); }
 
   # blocks
   notextile_start = "<notextile>" ;
@@ -26,13 +28,13 @@ VALUE super_ParseError, super_RedCloth;
   pre_start = "<pre" [^>]* ">" ;
   pre_end = "</pre>" ;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" | "bc" | "pre" | "notextile" | "div" ) >A %{ STORE(type) } ;
-  block_start = ( btype A C :> "." ( "."? %{ ASET(block, extended) } ) " "* ) ;
+  block_start = ( btype A C :> "." ( "." %extend | "" %no_extend ) " "+ ) ;
   block_end = ( CRLF{2} | EOF );
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
   footnote_start = ( ftype A C :> dotspace ) ;
   ul = "*" %{nest++; list_type = "ul";};
   ol = "#" %{nest++; list_type = "ol";};
-  list_start  = ( ( ul | ol )+ N A C :> " " ) >{nest = 0;} ;
+  list_start  = ( ( ul | ol )+ N A C :> " "+ ) >{nest = 0;} ;
 
   # tables
   para = ( default+ ) -- CRLF ;
@@ -77,7 +79,13 @@ VALUE super_ParseError, super_RedCloth;
     footnote_start  { fgoto footnote; };
     list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
     table           { INLINE(table, table_close); DONE(table); };
-    default         { regs = rb_hash_new(); ASET(type, p); CAT(block); fgoto block; };
+    default
+    { 
+      regs = rb_hash_new();
+      rb_hash_aset(regs, ID2SYM(rb_intern("type")), plain_block);
+      CAT(block);
+      fgoto block;
+    };
     pre_start       { ASET(type, notextile); CAT(block); fgoto pre; };
     EOF;
   *|;
@@ -98,6 +106,7 @@ superredcloth_transform(p, pe)
   VALUE regs = rb_hash_new();
   VALUE list_layout = Qnil;
   char *list_type = NULL;
+  VALUE plain_block = rb_str_new2("p");
 
   %% write init;
 

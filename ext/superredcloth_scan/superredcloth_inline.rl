@@ -49,7 +49,7 @@
 
   # images
   image_src = ( uri ) >A %{ STORE(src) } ;
-  image_is = ( A2 C dotspace? image_src :> title? ) ;
+  image_is = ( A2 C "."* " "* image_src :> title? ) ;
   image_link = ( ":" uri ) ;
   image = ( "!" image_is "!" %A image_link? ) >X ;
 
