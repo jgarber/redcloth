@@ -10,7 +10,7 @@ class << SuperRedCloth
     [:"padding-right", :"padding-left"].each do |a|
       opts[:style] = "#{a}:#{opts[a]}em;#{opts[:style]}" if opts[a]
     end
-    [:style, :class, :lang, :id, :colspan, :rowspan, :title, :start].each do |a|
+    [:style, :class, :lang, :id, :colspan, :rowspan, :title, :start, :valign, :align].each do |a|
       atts << " #{a}=\"#{ opts[a] }\"" if opts[a]
     end
     atts
