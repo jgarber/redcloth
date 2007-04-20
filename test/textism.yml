@@ -76,7 +76,7 @@ in: Nabokov's ??Pnin??
 out: <p>Nabokov&#8217;s <cite>Pnin</cite></p>
 ---
 in: '[-a phrase-]'
-out: <p><del>a phrase</del></p>
+out: <p> <del>a phrase</del> </p>
 ---
 in: +a phrase+
 out: <p><ins>a phrase</ins></p>

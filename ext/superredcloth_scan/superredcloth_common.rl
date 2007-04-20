@@ -29,10 +29,12 @@
   C_STYL = ( "{" [^}]+ >A %{ STORE(style) } "}" ) ;
   S_CSPN = ( "\\" [0-9]+ >A %{ STORE(colspan) } ) ;
   S_RSPN = ( "/" [0-9]+ >A %{ STORE(rowspan) } ) ;
+  D_HEADER = "_" %{ ASET(th, true) } ;
   A = ( ( A_HLGN | A_VLGN )* ) ;
   A2 = ( A_LIMIT? ) ;
   S = ( S_CSPN | S_RSPN )* ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
+  D = ( D_HEADER ) ;
   N_CONT = "_" %{ ASET(start, continue) };
   N_NUM = digit+ >A %{ STORE(start) };
   N = ( N_CONT | N_NUM )? ;

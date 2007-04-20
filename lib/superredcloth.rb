@@ -50,7 +50,8 @@ class << SuperRedCloth
     "<p>" + txt + "</p>"
   end
   def td opts
-    "\t\t\t<td#{pba(opts)}>#{opts[:text]}</td>\n"
+    tdtype = opts[:th] ? 'th' : 'td'
+    "\t\t\t<#{tdtype}#{pba(opts)}>#{opts[:text]}</#{tdtype}>\n"
   end
   def tr_open opts
     "\t\t<tr#{pba(opts)}>\n"
