@@ -39,9 +39,9 @@ VALUE super_ParseError, super_RedCloth;
   # tables
   para = ( default+ ) -- CRLF ;
   btext = para ( CRLF{2} )? ;
-  tddef = ( S A C D :> dotspace ) ;
+  tddef = ( S A C D? :> dotspace ) ;
   td = ( tddef? btext >A %T :> "|" >{PASS(table, text, td);} ) >X ;
-  trdef = ( A C D :> dotspace ) ;
+  trdef = ( A C :> dotspace ) ;
   tr = ( trdef? "|" %{INLINE(table, tr_open);} td+ ) >X %{INLINE(table, tr_close);} ;
   trows = ( tr (CRLF >X tr)* ) ;
   tdef = ( "table" >X A C :> dotspace CRLF ) ;

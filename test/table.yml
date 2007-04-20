@@ -1,3 +1,174 @@
+---
+in: |
+  |a|b|c|
+  |1|2|3|
+out: |-
+  <table>
+  		<tr>
+  			<td>a</td>
+  			<td>b</td>
+  			<td>c</td>
+  		</tr>
+  		<tr>
+  			<td>1</td>
+  			<td>2</td>
+  			<td>3</td>
+  		</tr>
+  	</table>
+
+---
+in: |
+  |_. a|_. b|_. c|
+  |1|2|3|
+out: |-
+  <table>
+  		<tr>
+  			<th>a</th>
+  			<th>b</th>
+  			<th>c</th>
+  		</tr>
+  		<tr>
+  			<td>1</td>
+  			<td>2</td>
+  			<td>3</td>
+  		</tr>
+  	</table>
+
+---
+in: |-
+  |This|is|a|simple|table|
+  |This|is|a|simple|row|
+out: |-
+  <table>
+  		<tr>
+  			<td>This</td>
+  			<td>is</td>
+  			<td>a</td>
+  			<td>simple</td>
+  			<td>table</td>
+  		</tr>
+  		<tr>
+  			<td>This</td>
+  			<td>is</td>
+  			<td>a</td>
+  			<td>simple</td>
+  			<td>row</td>
+  		</tr>
+  	</table>
+
+---
+in: |-
+  table{border:1px solid black}.
+  |This|is|a|row|
+  |This|is|a|row|
+out: |-
+  <table style="border:1px solid black">
+  		<tr>
+  			<td>This</td>
+  			<td>is</td>
+  			<td>a</td>
+  			<td>row</td>
+  		</tr>
+  		<tr>
+  			<td>This</td>
+  			<td>is</td>
+  			<td>a</td>
+  			<td>row</td>
+  		</tr>
+  	</table>
+
+---
+in: '{background:#ddd}. |This|is|a|row|'
+out: |-
+  <table>
+  		<tr style="background:#ddd">
+  			<td>This</td>
+  			<td>is</td>
+  			<td>a</td>
+  			<td>row</td>
+  		</tr>
+  	</table>
+
+---
+in: |-
+  |a|b|c|
+  | |2|3|
+out: |-
+  <table>
+  		<tr>
+  			<td>a</td>
+  			<td>b</td>
+  			<td>c</td>
+  		</tr>
+  		<tr>
+  			<td> </td>
+  			<td>2</td>
+  			<td>3</td>
+  		</tr>
+  	</table>
+  
+---
+in: |-
+  table{width: 200px; border:2px solid gray;}.
+  |=_. Alignment|
+  |=. centered|
+  |=(. a bit right|
+  |=). a bit left|
+  |>). almost right|
+  |<(. almost left|
+  |>. right|
+  |<. left|
+out: |-
+  <table style="width: 200px; border:2px solid gray;">
+  		<tr>
+  			<th style="text-align:center;">Alignment</th>
+  		</tr>
+  		<tr>
+  			<td style="text-align:center;">centered</td>
+  		</tr>
+  		<tr>
+  			<td style="padding-left:1em;text-align:center;">a bit right</td>
+  		</tr>
+  		<tr>
+  			<td style="padding-right:1em;text-align:center;">a bit left</td>
+  		</tr>
+  		<tr>
+  			<td style="padding-right:1em;text-align:right;">almost right</td>
+  		</tr>
+  		<tr>
+  			<td style="padding-left:1em;text-align:left;">almost left</td>
+  		</tr>
+  		<tr>
+  			<td style="text-align:right;">right</td>
+  		</tr>
+  		<tr>
+  			<td style="text-align:left;">left</td>
+  		</tr>
+  	</table>
+  
+---
+in: |-
+  |{background:#ddd}. Cell with gray background|
+  |\2. Cell spanning 2 columns|
+  |/3. Cell spanning 3 rows|
+  |>. Right-aligned cell|
+out: |-
+  <table>
+  		<tr>
+  			<td style="background:#ddd">Cell with gray background</td>
+  		</tr>
+  		<tr>
+  			<td colspan="2">Cell spanning 2 columns</td>
+  		</tr>
+  		<tr>
+  			<td rowspan="3">Cell spanning 3 rows</td>
+  		</tr>
+  		<tr>
+  			<td style="text-align:right;">Right-aligned cell</td>
+  		</tr>
+  	</table>
+
+---
 in: |
   {background:#ddd}. |S|Target|Complete|App|Milestone|
   |!/i/g.gif!|11/18/04|11/18/04|070|XML spec complete|
