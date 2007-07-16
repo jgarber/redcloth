@@ -41,6 +41,7 @@ VALUE red_pass(VALUE regs, VALUE ref, ID meth);
   }
 #define STORE_URL(T) \
   if (p > reg && reg >= tokstart) { \
+    p++; \
     char punct = 1; \
     while (p > reg && punct == 1) { \
       switch (*(p - 1)) { \
@@ -53,7 +54,8 @@ VALUE red_pass(VALUE regs, VALUE ref, ID meth);
     } \
     tokend = p; \
   } \
-  STORE(T)
+  STORE(T); \
+  p--;
 #define LIST_ITEM() \
     char listm[10] = ""; \
     if (nest > RARRAY(list_layout)->len) \
