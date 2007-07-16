@@ -28,9 +28,9 @@ in: |-
 out: |-
   <p>start</p>
   <ul>
-  	<li>one
+  	<li>one<br />
   and one</li>
-  	<li>two
+  	<li>two<br />
   and two</li>
   	<li>three</li>
   </ul>
@@ -59,7 +59,7 @@ out: |-
   			<li>bullet</li>
   		</ul></li>
   		<li>number</li>
-  		<li>number
+  		<li>number<br />
   yeah number</li>
   		<ul>
   			<li>bullet
