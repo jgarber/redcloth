@@ -3,6 +3,7 @@
 require 'test/unit'
 require 'superredcloth'
 require 'yaml'
+require 'helper'
 
 class TestParser < Test::Unit::TestCase
   DIR = File.dirname(__FILE__)
