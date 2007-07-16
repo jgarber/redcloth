@@ -8,6 +8,12 @@ out: '<p>This is an empty dictionary: ```{}```</p>'
 in: 'This is an empty dictionary: ```{}```'
 out: '<p>This is an empty dictionary: <pre><code>{}</code></pre></p>'
 ---
+in: 'Please type @cat file.txt > otherfile.txt@ at the prompt.'
+out: '<p>Please type <code>cat file.txt &gt; otherfile.txt</code> at the prompt.</p>'
+---
+in: 'bc. This is within a block of code, so < and > should be entities.'
+out: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.</code></pre>'
+---
 in: |-
   Testing nested pre tags...
 

@@ -1,4 +1,20 @@
 in: |-
+  here is a real definition list:
+  
+  dl. textile:a cloth, especially one manufactured by weaving or knitting; a fabric
+  format:the arrangement of data for storage or display.
+out: |-
+  <p>here is a real definition list:</p>
+  
+  <dl>
+  	<dt>textile</dt>
+  	<dd>a cloth, especially one manufactured by weaving or knitting; a fabric</dd>
+  
+  	<dt>format</dt>
+  	<dd>the arrangement of data for storage or display.</dd>
+  </dl>
+---
+in: |-
   here is a definition list:
   
   - yes := no
