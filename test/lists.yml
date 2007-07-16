@@ -10,7 +10,7 @@ in: |-
 out: |-
   <ul>
   	<li>first line</li>
-  	<li>second
+  	<li>second<br />
     line</li>
   	<li>third line</li>
   </ul>

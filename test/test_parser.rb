@@ -15,7 +15,7 @@ class TestParser < Test::Unit::TestCase
     num = 0
     YAML::load_documents(File.open(testfile)) do |doc|
       define_method("test_#{testgroup}_#{num}") do 
-        assert_equal doc['out'], red(doc['in'])
+        assert_html_equal doc['out'], red(doc['in'])
       end
       num += 1
     end

@@ -1,13 +1,13 @@
-# module Test
-#   module Unit
-#     module Assertions
-#       # Browsers ignore tabs and newlines (generally), so don't quibble
-#       def assert_html_equal(expected, actual, message=nil)
-#         assert_equal(expected.gsub(/[\n\t]+/, ''), actual.gsub(/[\n\t]+/, ''), message)
-#       end
-#     end
-#   end
-# end
+module Test
+  module Unit
+    module Assertions
+      # Browsers ignore tabs and newlines (generally), so don't quibble
+      def assert_html_equal(expected, actual, message=nil)
+        assert_equal(expected.gsub(/[\n\t]+/, ''), actual.gsub(/[\n\t]+/, ''), message)
+      end
+    end
+  end
+end
 
 # Colorize differences in assert_equal failure messages.
 begin  
