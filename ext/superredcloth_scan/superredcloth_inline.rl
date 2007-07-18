@@ -138,30 +138,30 @@
 %% write data nofinal;
 
 VALUE
-red_pass(VALUE regs, VALUE ref, ID meth)
+red_pass(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth)
 {
   VALUE txt = rb_hash_aref(regs, ref);
-  if (!NIL_P(txt)) rb_hash_aset(regs, ref, superredcloth_inline2(txt));
-  return rb_funcall(super_RedCloth, meth, 1, regs);
+  if (!NIL_P(txt)) rb_hash_aset(regs, ref, superredcloth_inline2(rb_formatter, txt));
+  return rb_funcall(rb_formatter, meth, 1, regs);
 }
 
 VALUE
-red_pass2(VALUE regs, VALUE ref, VALUE btype)
+red_pass2(VALUE rb_formatter, VALUE regs, VALUE ref, VALUE btype)
 {
   btype = rb_hash_aref(regs, btype);
   StringValue(btype);
-  return red_pass(regs, ref, rb_intern(RSTRING(btype)->ptr));
+  return red_pass(rb_formatter, regs, ref, rb_intern(RSTRING(btype)->ptr));
 }
 
 VALUE
-red_block(VALUE regs, VALUE block)
+red_block(VALUE rb_formatter, VALUE regs, VALUE block)
 {
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
   if (RSTRING(block)->len > 0)
   {
-    rb_hash_aset(regs, ID2SYM(rb_intern("text")), superredcloth_inline2(block));
-    block = rb_funcall(super_RedCloth, rb_intern(RSTRING(btype)->ptr), 1, regs);
+    rb_hash_aset(regs, ID2SYM(rb_intern("text")), superredcloth_inline2(rb_formatter, block));
+    block = rb_funcall(rb_formatter, rb_intern(RSTRING(btype)->ptr), 1, regs);
   }
   return block;
 }
@@ -176,7 +176,8 @@ red_inc(VALUE regs, VALUE ref)
 }
 
 VALUE
-superredcloth_inline(p, pe)
+superredcloth_inline(rb_formatter, p, pe)
+  VALUE rb_formatter;
   char *p, *pe;
 {
   int cs, act;
@@ -226,9 +227,9 @@ rb_str_cat_escaped(str, tokstart, tokend)
 }
 
 VALUE
-superredcloth_inline2(str)
-  VALUE str;
+superredcloth_inline2(formatter, str)
+  VALUE formatter, str;
 {
   StringValue(str);
-  return superredcloth_inline(RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1);
+  return superredcloth_inline(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1);
 }

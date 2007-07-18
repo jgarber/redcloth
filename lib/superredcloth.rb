@@ -1,6 +1,6 @@
 require 'superredcloth_scan'
 
-class << SuperRedCloth
+class << SuperRedCloth::HTML
   def pba opts
     atts = ''
     opts[:"text-align"] = opts.delete(:align)

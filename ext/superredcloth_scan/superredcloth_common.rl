@@ -7,7 +7,7 @@
   action X { regs = rb_hash_new(); reg = NULL; }
   action cat { CAT(block); }
   action esc { rb_str_cat_escaped(block, tokstart, tokend); }
-  action ignore { rb_str_append(block, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
+  action ignore { rb_str_append(block, rb_funcall(rb_formatter, rb_intern("ignore"), 1, regs)); }
 
   # simple
   CRLF = ( '\r'? '\n' ) ;

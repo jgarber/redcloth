@@ -11,14 +11,14 @@
 #include <ruby.h>
 #include "superredcloth.h"
 
-VALUE super_ParseError, super_RedCloth;
+VALUE super_ParseError, super_RedCloth, super_HTML;
 
 %%{
 
   machine superredcloth_scan;
   include superredcloth_common "superredcloth_common.rl";
 
-  action notextile { rb_str_append(html, rb_funcall(super_RedCloth, rb_intern("ignore"), 1, regs)); }
+  action notextile { rb_str_append(html, rb_funcall(rb_formatter, rb_intern("ignore"), 1, regs)); }
   action extend { plain_block = rb_hash_aref(regs, ID2SYM(rb_intern("type"))); }
   action no_extend { plain_block = rb_str_new2("p"); }
 
@@ -95,7 +95,8 @@ VALUE super_ParseError, super_RedCloth;
 %% write data nofinal;
 
 VALUE
-superredcloth_transform(p, pe)
+superredcloth_transform(rb_formatter, p, pe)
+  VALUE rb_formatter;
   char *p, *pe;
 {
   int cs, act, nest;
@@ -121,12 +122,12 @@ superredcloth_transform(p, pe)
 }
 
 VALUE
-superredcloth_transform2(str)
-  VALUE str;
+superredcloth_transform2(formatter, str)
+  VALUE formatter, str;
 {
   rb_str_cat2(str, "\n");
   StringValue(str);
-  return superredcloth_transform(RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1);
+  return superredcloth_transform(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1);
 }
 
 static VALUE
@@ -136,12 +137,24 @@ superredcloth_to_html(self)
   char *pe, *p;
   int len = 0;
 
-  return superredcloth_transform2(self);
+  return superredcloth_transform2(super_HTML, self);
+}
+
+static VALUE
+superredcloth_to(self, formatter)
+  VALUE self, formatter;
+{
+  char *pe, *p;
+  int len = 0;
+
+  return superredcloth_transform2(formatter, self);
 }
 
 void Init_superredcloth_scan()
 {
   super_RedCloth = rb_define_class("SuperRedCloth", rb_cString);
   rb_define_method(super_RedCloth, "to_html", superredcloth_to_html, 0);
+  rb_define_method(super_RedCloth, "to", superredcloth_to, 1);
   super_ParseError = rb_define_class_under(super_RedCloth, "ParseError", rb_eException);
+  super_HTML = rb_define_module_under(super_RedCloth, "HTML");
 }
