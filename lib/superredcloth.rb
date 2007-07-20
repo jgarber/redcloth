@@ -36,11 +36,14 @@ class << SuperRedCloth::HTML
       "<#{m}#{pba(opts)}>\n"
     end
     define_method("#{m}_close") do |opts|
-      "</#{m}>"
+      "#{li_close}</#{m}>"
     end
   end
-  def li opts
-    "\t<li#{pba(opts)}>#{opts[:text]}</li>\n"
+  def li_open opts
+    "#{li_close unless opts.delete(:first)}\t<li#{pba(opts)}>#{opts[:text]}"
+  end
+  def li_close(opts=nil)
+    "</li>\n"
   end
   def ignore opts
     opts[:text]
