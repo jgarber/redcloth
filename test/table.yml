@@ -2,6 +2,8 @@
 in: |
   |a|b|c|
   |1|2|3|
+  
+  h3. A header after the table
 out: |-
   <table>
   		<tr>
@@ -15,7 +17,7 @@ out: |-
   			<td>3</td>
   		</tr>
   	</table>
-
+  <h3>A header after the table</h3>
 ---
 in: |
   |_. a|_. b|_. c|

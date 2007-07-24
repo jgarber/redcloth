@@ -78,7 +78,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
     block_start     { fgoto block; };
     footnote_start  { fgoto footnote; };
     list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
-    table           { INLINE(table, table_close); DONE(table); };
+    table           { INLINE(table, table_close); DONE(table); fgoto block; };
     default
     { 
       regs = rb_hash_new();
