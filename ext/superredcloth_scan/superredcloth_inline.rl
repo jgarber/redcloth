@@ -86,6 +86,7 @@
   registered = " "? ( "[" reg "]" | "(" reg ")" ) ;
   cee = [Cc] ;
   copyright = " "? ( "[" cee "]" | "(" cee ")" ) ;
+  entity = ( "&" %A ( '#' digit+ | alpha+ ) %T ';' ) >X ;
 
   main := |*
 
@@ -119,6 +120,7 @@
     registered { INLINE(block, registered); };
     copyright { INLINE(block, copyright); };
     footno { PASS(block, text, footno); };
+    entity { INLINE(block, entity); };
 
     start_tag => cat;
     end_tag => cat;

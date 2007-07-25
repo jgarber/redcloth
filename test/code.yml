@@ -15,6 +15,14 @@ in: 'bc. This is within a block of code, so < and > should be entities.'
 out: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.</code></pre>'
 ---
 in: |-
+  This is a regular paragraph.  AT&T. Barnes &#38; Noble. &pound;38 > $38.
+  
+  bc. This is a block of code.  You might want to write about the > symbol, which in HTML source is &gt;.
+out: |-
+  <p>This is a regular paragraph.  AT&amp;T. Barnes &#38; Noble. &pound;38 &gt; $38.</p>
+  <pre><code>This is a block of code.  You might want to write about the &gt; symbol, which in HTML source is &amp;gt;.</code></pre>
+---
+in: |-
   Testing nested pre tags...
 
   <pre>

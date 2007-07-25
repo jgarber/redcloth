@@ -129,6 +129,9 @@ class << SuperRedCloth::HTML
   def copyright opts
     "&#169;"
   end
+  def entity opts
+    "&#{opts[:text]};"
+  end
   def urlesc txt
     txt.gsub(/&/, '&#38;')
   end
