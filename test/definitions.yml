@@ -1,5 +1,5 @@
 in: |-
-  here is a real definition list:
+  here is a Movable Type-style definition list:
   
   dl. textile:a cloth, especially one manufactured by weaving or knitting; a fabric
   format:the arrangement of data for storage or display.
@@ -15,13 +15,13 @@ out: |-
   </dl>
 ---
 in: |-
-  here is a definition list:
+  here is a RedCloth definition list:
   
   - yes := no
   - no:=no
   - maybe:= yes
 out: |-
-  <p>here is a definition list:</p>
+  <p>here is a RedCloth definition list:</p>
   
   <dl>
   	<dt>yes</dt>
