@@ -2,17 +2,11 @@
 in: 'This is an empty dictionary: @{}@'
 out: '<p>This is an empty dictionary: <code>{}</code></p>'
 ---
-in: 'This is an empty dictionary: ==```=={}==```=='
-out: '<p>This is an empty dictionary: ```{}```</p>'
----
-in: 'This is an empty dictionary: ```{}```'
-out: '<p>This is an empty dictionary: <pre><code>{}</code></pre></p>'
----
 in: 'Please type @cat file.txt > otherfile.txt@ at the prompt.'
 out: '<p>Please type <code>cat file.txt &gt; otherfile.txt</code> at the prompt.</p>'
 ---
-in: 'bc. This is within a block of code, so < and > should be entities.'
-out: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.</code></pre>'
+in: 'bc. This is within a block of code, so < and > should be entities.  You can talk about a <p> tag if you wish and it will be properly escaped.'
+out: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.  You can talk about a &lt;p&gt; tag if you wish and it will be properly escaped.</code></pre>'
 ---
 in: |-
   This is a regular paragraph.  AT&T. Barnes &#38; Noble. &pound;38 > $38.
@@ -24,27 +18,25 @@ out: |-
 ---
 in: |-
   Testing nested pre tags...
-
+  
   <pre>
   <code>
     Good code here.
-
+  
     <pre>
       a = 1
     </pre>
-
+  
     Bad code here.
-
+  
     <script language="JavaScript">
       window.open( "about:blank" );
     </script>
   </code>
   </pre>
-
 out: |-
   <p>Testing nested pre tags&#8230;</p>
   
-
   <pre>
   <code>
     Good code here.
@@ -71,6 +63,23 @@ out: |-
   </pre>
 ---
 in: |-
+  p. Regular paragraph
+
+  ==
+  Escaped portion -- will not be formatted by Textile at all
+  ==
+
+  p. Back to normal.
+out: |-
+  <p>Regular paragraph</p>
+
+  <p>
+  Escaped portion -- will not be formatted by Textile at all
+  </p>
+
+  <p>Back to normal.</p>
+---
+in: |-
   <notextile>
   *** test
   </notextile>
@@ -83,8 +92,14 @@ out: '<p><strong>this <span></span> is strong</strong></p>'
 in: '*this <span>test</span> is strong*'
 out: '<p><strong>this <span>test</span> is strong</strong></p>'
 ---
-in: <pre class="code"> __inline__</pre>
-out: <pre class="code"> __inline__</pre>
+in: |-
+  __italics__
+  
+  bc. __not italics__
+out: |-
+  <p><i>italics</i></p>
+  
+  <pre><code>__not italics__</code></pre>
 ---
 in: |-
   * @foo@
@@ -101,62 +116,46 @@ out: |-
 
 ---
 in: |-
-  <pre class="code"> <hello> </pre>
-  <pre class="code"> <hello> </pre>
+  bc. <hello>
+  <code> <hello> </code>
 out: |-
-  <pre class="code"> &lt;hello&gt; </pre>
-  <pre class="code"> &lt;hello&gt; </pre>
+  <pre><code> &lt;hello&gt; </code></pre>
+  <code> &lt;hello&gt; </code>
 ---
 in: |-
-  Test of Markdown-style indented code.
+  If you have a line or two of code or HTML to embed, use extended block code like so:
 
-    a = [1, 2, 3]
-    a.each do |x|
-      puts "test number", x,
-        "and more!"
-    end
-
-  Paragraph 2.
-
-  Paragraph 3.
-out: |-
-  <p>Test of Markdown-style indented code.</p>
-  
-  	<pre><code>a = [1, 2, 3]
-  a.each do |x|
-    puts "test number", x,
-      "and more!" 
-  end</code></pre>
-  
-  	<p>Paragraph 2.</p>
-  
-  	<p>Paragraph 3.</p>
----
-in: |-
-  If, however, you have a line or two of code or HTML or the like to embed, sandwich it between two sets of triple-backticks, ==```==, like so:
-
-  ```
-  ./foo.pl%
+  bc.. ./foo.pl%
   <p>foo outputs an HTML paragraph</p>
+  
+  <p>block of code keeps going until a different block signature is encountered</p>
 
-  ```
+  p. And then go back with a normal paragraph.
 out: |-
-  <p>If, however, you have a line or two of code or <span class="caps">HTML</span> or the like to embed, sandwich it between two sets of triple-backticks, ```, like so:</p>
+  <p>If you have a line or two of code or <span class="caps">HTML</span> to embed, use extended block code like so:</p>
 
   <pre><code>
   ./foo.pl%
   &lt;p&gt;foo outputs an HTML paragraph&lt;/p&gt;
+
+  &lt;p&gt;block of code keeps going until a different block signature is encountered&lt;/p&gt;
   </code></pre>
+  
+  <p>And then go back with a normal paragraph.</p>
 ---
 in: |-
-  ```
-  here is some *starred* code
-
-  but I want some redcloth*bold*redcloth code
-  ```
+  <ul>
+    <li>You can put HTML code</li>
+    <li>right in Textile</li>
+    <li>and it will not put a break
+    between HTML elements</li>
+    <li>or wrap it in a p tag</li>
+  </ul>
 out: |-
-  <pre><code>
-  here is some *starred* code
-
-  but I want some <strong>bold</strong> code
-  </code></pre>
+  <ul>
+    <li>You can put <span class="caps">HTML</span> code</li>
+    <li>right in Textile</li>
+    <li>and it will not put a break<br />
+    between <span class="caps">HTML</span> elements</li>
+    <li>or wrap it in a p tag</li>
+  </ul>
