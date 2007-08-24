@@ -41,6 +41,28 @@ Rake::TestTask.new do |t|
     t.verbose = true
 end
 
+# Run specific tests or test files
+# 
+# rake test:parser
+# => Runs the full TestParser unit test
+# 
+# rake test:parser:textism
+# => Runs the tests matching /textism/ in the TestParser unit test
+rule "" do |t|
+  # test:file:method
+  if /test:(.*)(:([^.]+))?$/.match(t.name)
+    arguments = t.name.split(":")[1..-1]
+    file_name = arguments.first
+    test_name = arguments[1..-1] 
+    
+    if File.exist?("test/test_#{file_name}.rb")
+      run_file_name = "test_#{file_name}.rb"
+    end
+    
+    sh "ruby -Ilib:test test/#{run_file_name} -n /#{test_name}/" 
+  end
+end
+
 Rake::RDocTask.new do |rdoc|
     rdoc.rdoc_dir = 'doc/rdoc'
     # rdoc.options += RDOC_OPTS

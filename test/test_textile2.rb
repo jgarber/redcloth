@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'helper'
-require 'breakpoint'
 
+# Test SuperRedCloth against the output of Textile 2 (PHP)
 class TestParser < Test::Unit::TestCase
   DIR = File.dirname(__FILE__) unless defined? DIR
   
@@ -11,13 +11,11 @@ class TestParser < Test::Unit::TestCase
   end
   
   def php(str)
-    # breakpoint
-    t2 = IO.popen("php #{DIR}/textile-2.0.0/stdin.php", "r+")
-    t2.puts str
-    t2.close_write
-    output = t2.gets(nil)
-    t2.close
-    return output
+    IO.popen("php #{DIR}/textile-2.0.0/stdin.php", "r+") do |t2|
+      t2.puts str
+      t2.close_write
+      output = t2.gets(nil)
+    end
   end
   
   Dir[File.join(DIR, "*.yml")].each do |testfile|
