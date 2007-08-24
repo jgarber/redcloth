@@ -2,8 +2,8 @@
 
 require 'helper'
 
-# Test SuperRedCloth against the output of Textile 2 (PHP)
-class TestParser < Test::Unit::TestCase
+# Compare SuperRedCloth test fixtures to the output of Textile 2 (PHP)
+class TestTextile2 < Test::Unit::TestCase
   DIR = File.dirname(__FILE__) unless defined? DIR
   
   def red(str)
@@ -23,7 +23,7 @@ class TestParser < Test::Unit::TestCase
     num = 0
     YAML::load_documents(File.open(testfile)) do |doc|
       define_method("test_textile2_compatibility_#{testgroup}_#{num}") do 
-        assert_html_equal php(doc['in']), red(doc['in'])
+        assert_html_equal php(doc['in']), doc['out']
       end
       num += 1
     end
