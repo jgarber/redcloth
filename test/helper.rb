@@ -1,3 +1,7 @@
+require 'test/unit'
+require 'superredcloth'
+require 'yaml'
+
 module Test
   module Unit
     module Assertions

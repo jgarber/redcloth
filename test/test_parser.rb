@@ -1,8 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
-require 'superredcloth'
-require 'yaml'
 require 'helper'
 
 class TestParser < Test::Unit::TestCase
