@@ -82,7 +82,7 @@ class << SuperRedCloth::HTML
   def image opts
     p_opts = {:float => opts.delete(:align)} if opts[:align]
     opts[:alt] = opts[:title]
-    img = "<img src=\"#{opts[:src]}\"#{pba(opts)} alt=\"#{opts[:alt]}\" />"  
+    img = "<img src=\"#{urlesc opts[:src]}\"#{pba(opts)} alt=\"#{opts[:alt]}\" />"  
     img = "<a href=\"#{urlesc opts[:href]}\">#{img}</a>" if opts[:href]
     img = "<p#{pba(p_opts)}>#{img}</p>" if p_opts
     img
@@ -115,7 +115,7 @@ class << SuperRedCloth::HTML
     "&#8211;"
   end
   def arrow opts
-    "&rarr;"
+    "&#8594;"
   end
   def dim opts
     "#{opts[:x]}&#215;#{opts[:y]}"
@@ -133,6 +133,6 @@ class << SuperRedCloth::HTML
     "&#{opts[:text]};"
   end
   def urlesc txt
-    txt.gsub(/&/, '&#38;')
+    txt.gsub(/&/, '&amp;')
   end
 end
