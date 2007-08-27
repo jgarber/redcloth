@@ -264,28 +264,6 @@ out: |-
   </ol>
 ---
 in: |-
-  this is a test
-  
-  * two ninety four
-  _* two ninety five
-  _* yes
-  * ok
-  * two ninety four
-  _* two ninety five
-  _* yes
-  
-  very cool
-
-out: |-
-  <p>this is a test</p>
-  <ul>
-  	<li><p>two ninety four</p><p>two ninety five</p><p>yes</p></li>
-  	<li>ok</li>
-  	<li><p>two ninety four</p><p>two ninety five</p><p>yes</p></li>
-  </ul>
-  	<p>very cool</p>
----
-in: |-
   * ==*== a bulleted list
   * ==*== with two items
   ** ==**== a nested bulleted list
@@ -309,7 +287,6 @@ in: |-
   #_ ==#_== four
   # ==#== five
   # ==#== six
-  _# ==_#== a continuation of six
 
   Ooh, look at that, it continued the list where I left off.
 
@@ -349,7 +326,7 @@ out: |-
   <ol start="4">
   	<li>#_ four</li>
   	<li># five</li>
-  	<li><p># six</p><p>_# a continuation of six</p></li>
+  	<li># six</li>
   </ol>
   	<p>Ooh, look at that, it continued the list where I left off.</p>
   <ol start="7">
