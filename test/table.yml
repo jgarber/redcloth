@@ -177,11 +177,11 @@ in: |
   |!/i/g.gif!|11/22/04|11/22/04|070|Dialog pass 1 builds an index file|
   |!/i/g.gif!|11/24/04|11/24/04|070|Dialog pass 2 98% complete|
   |!/i/g.gif!|11/30/04|11/30/04|070|Feature complete. Passes end-to-end smoke test.|
-  |!/i/w.gif!|12/02/04|.|011|Dialog pass 1 and 2 complete (98+%)|
-  |!/i/w.gif!|12/03/04|.|081|Feature complete|
+  |!/i/w.gif!|12/02/04| |011|Dialog pass 1 and 2 complete (98+%)|
+  |!/i/w.gif!|12/03/04| |081|Feature complete|
 out: |-
   <table>
-  		<tr style="background:#ddd;">
+  		<tr style="background:#ddd">
   			<td>S</td>
   			<td>Target</td>
   			<td>Complete</td>
@@ -219,14 +219,14 @@ out: |-
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/02/04</td>
-  			<td>&nbsp;</td>
+  			<td> </td>
   			<td>011</td>
   			<td>Dialog pass 1 and 2 complete (98+%)</td>
   		</tr>
   		<tr>
   			<td><img src="/i/w.gif" alt="" /></td>
   			<td>12/03/04</td>
-  			<td>&nbsp;</td>
+  			<td> </td>
   			<td>081</td>
   			<td>Feature complete</td>
   		</tr>

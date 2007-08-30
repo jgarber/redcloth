@@ -91,7 +91,7 @@ in: %(caps)SPAN%
 out: <p><span class="caps">SPAN</span>
 ---
 in: %{color:red}red%
-out: <p><span style="color:red;">red</span></p>
+out: <p><span style="color:red">red</span></p>
 ---
 in: %[fr]rouge%
 out: <p><span lang="fr">rouge</span></p>
@@ -103,7 +103,7 @@ in: p(bob). A paragraph
 out: <p class="bob">A paragraph</p>
 ---
 in: p{color:#ddd}. A paragraph
-out: <p style="color:#ddd;">A paragraph</p>
+out: <p style="color:#ddd">A paragraph</p>
 ---
 in: p[fr]. A paragraph
 out: <p lang="fr">A paragraph</p>
@@ -118,7 +118,7 @@ in: '!>/image.gif! right-aligned image'
 out: <p style="float:right"><img src="/image.gif" alt="" /> right-aligned image</p>
 ---
 in: p[no]{color:red}. A Norse of a different colour.
-out: <p style="color:red;" lang="no">A Norse of a different colour.</p>
+out: <p style="color:red" lang="no">A Norse of a different colour.</p>
 ---
 in: |-
   |This|is|a|simple|table|
@@ -146,7 +146,7 @@ in: |-
   |This|is|a|row|
   |This|is|a|row|
 out: |-
-  <table style="border:1px solid black;">
+  <table style="border:1px solid black">
   		<tr>
   			<td>This</td>
   			<td>is</td>
@@ -164,7 +164,7 @@ out: |-
 in: '{background:#ddd}. |This|is|a|row|'
 out: |-
   <table>
-  		<tr style="background:#ddd;">
+  		<tr style="background:#ddd">
   			<td>This</td>
   			<td>is</td>
   			<td>a</td>
@@ -180,7 +180,7 @@ in: |-
 out: |-
   <table>
   		<tr>
-  			<td style="background:#ddd;">Cell with gray background</td>
+  			<td style="background:#ddd">Cell with gray background</td>
   		</tr>
   		<tr>
   			<td colspan="2">Cell spanning 2 columns</td>
@@ -229,14 +229,14 @@ in: |-
   # three
   
 out: |-
-  <h2 style="color:green;">This is a title</h2>
+  <h2 style="color:green">This is a title</h2>
   	<h3>This is a subhead</h3>
-  	<p style="color:red;">This is some text of dubious character. Isn&#8217;t the use of &#8220;quotes&#8221; just lazy writing&#8212;and theft of &#8216;intellectual property&#8217; besides? I think the time has come to see a block quote.</p>
+  	<p style="color:red">This is some text of dubious character. Isn&#8217;t the use of &#8220;quotes&#8221; just lazy writing&#8212;and theft of &#8216;intellectual property&#8217; besides? I think the time has come to see a block quote.</p>
   	<blockquote lang="fr">
   		<p lang="fr">This is a block quote. I&#8217;ll admit it&#8217;s not the most exciting block quote ever devised.</p>
   	</blockquote>
   	<p>Simple list:</p>
-  <ol style="color:blue;">
+  <ol style="color:blue">
   	<li>one</li>
   	<li>two</li>
   	<li>three</li>
@@ -333,17 +333,17 @@ in: |-
   !/common/textist.gif(optional alt text)!
 out: |-
   	<p><a href="http://www.textism.com" title="optional title">This is a link</a></p>
-  	<table style="border:1px solid black;">
+  	<table style="border:1px solid black">
   		<tr>
   			<th>this</th>
   			<th>is</th>
   			<th>a</th>
   			<th>header</th>
   		</tr>
-  		<tr style="background:gray;text-align:left;">
+  		<tr style="text-align:left;background:gray">
   			<td colspan="2">this is</td>
-  			<td style="background:red;width:200px;">a</td>
-  			<td style="vertical-align:top;height:200px;text-align:justify;">row</td>
+  			<td style="background:red;width:200px">a</td>
+  			<td style="vertical-align:top;text-align:justify;height:200px">row</td>
   		</tr>
   		<tr>
   			<td>this</td>
