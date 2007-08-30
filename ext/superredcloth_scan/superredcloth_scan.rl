@@ -68,8 +68,8 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   *|;
 
   list := |*
-    CRLF list_start { LIST_ITEM(); };
-    block_end       { nest = 0; LIST_ITEM(); fgoto main; };
+    CRLF list_start { ADD_BLOCK(); LIST_ITEM(); };
+    block_end       { ADD_BLOCK(); nest = 0; LIST_ITEM(); fgoto main; };
     default => cat;
   *|;
 

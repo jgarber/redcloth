@@ -57,14 +57,14 @@ VALUE red_pass(VALUE, VALUE, VALUE, ID);
   STORE(T); \
   p--;
 #define LIST_ITEM() \
-    ADD_BLOCK(); \
     char listm[10] = ""; \
     if (nest > RARRAY(list_layout)->len) \
     { \
       sprintf(listm, "%s_open", list_type); \
       rb_str_append(html, rb_funcall(rb_formatter, rb_intern(listm), 1, regs)); \
       rb_ary_store(list_layout, nest-1, rb_str_new2(list_type)); \
-      ASET(first, true) \
+      regs = rb_hash_new(); \
+      ASET(first, true); \
     } \
     while (nest < RARRAY(list_layout)->len) \
     { \
