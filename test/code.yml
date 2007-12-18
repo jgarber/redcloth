@@ -96,10 +96,14 @@ in: |-
   __italics__
   
   bc. __not italics__
+  
+  <pre><code>__also not italics__</code></pre>
 out: |-
   <p><i>italics</i></p>
   
   <pre><code>__not italics__</code></pre>
+  
+  <pre><code>__also not italics__</code></pre>
 ---
 in: |-
   * @foo@
@@ -117,10 +121,12 @@ out: |-
 ---
 in: |-
   bc. <hello>
+  
   <code> <hello> </code>
 out: |-
-  <pre><code> &lt;hello&gt; </code></pre>
-  <code> &lt;hello&gt; </code>
+  <pre><code>&lt;hello&gt;</code></pre>
+  
+  <p><code> &lt;hello&gt; </code></p>
 ---
 in: |-
   If you have a line or two of code or HTML to embed, use extended block code like so:
@@ -153,9 +159,9 @@ in: |-
   </ul>
 out: |-
   <ul>
-    <li>You can put <span class="caps">HTML</span> code</li>
+    <li>You can put HTML code</li>
     <li>right in Textile</li>
     <li>and it will not put a break<br />
-    between <span class="caps">HTML</span> elements</li>
+    between HTML elements</li>
     <li>or wrap it in a p tag</li>
   </ul>

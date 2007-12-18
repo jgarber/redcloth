@@ -168,6 +168,19 @@ red_block(VALUE rb_formatter, VALUE regs, VALUE block)
   return block;
 }
 
+VALUE
+red_blockcode(VALUE rb_formatter, VALUE regs, VALUE block)
+{
+  VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
+  block = rb_funcall(block, rb_intern("strip"), 0);
+  if (RSTRING(block)->len > 0)
+  {
+    rb_hash_aset(regs, ID2SYM(rb_intern("text")), block);
+    block = rb_funcall(rb_formatter, rb_intern(RSTRING(btype)->ptr), 1, regs);
+  }
+  return block;
+}
+
 void
 red_inc(VALUE regs, VALUE ref)
 {

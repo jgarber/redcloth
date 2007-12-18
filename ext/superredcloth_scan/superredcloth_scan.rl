@@ -27,6 +27,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   notextile_end = "</notextile>" ;
   pre_start = "<pre" [^>]* ">" ;
   pre_end = "</pre>" ;
+  bc_start = ( "bc" A C :> "." ( "." %extend | "" %no_extend ) " "+ ) ;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" | "bc" | "pre" | "notextile" | "div" ) >A %{ STORE(type) } ;
   block_start = ( btype A C :> "." ( "." %extend | "" %no_extend ) " "+ ) ;
   block_end = ( CRLF{2} | EOF );
@@ -47,8 +48,13 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   tdef = ( "table" >X A C :> dotspace CRLF ) ;
   table = ( tdef? trows >{INLINE(table, table_open);} ) >{ reg = NULL; } ;
 
+  bc := |*
+    block_end       { ADD_BLOCKCODE(); fgoto main; };
+    default => cat;
+  *|;
+
   pre := |*
-    pre_end        { DONE(block); fgoto main; };
+    pre_end         { DONE(block); fgoto main; };
     default => cat;
   *|;
 
@@ -75,6 +81,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
 
   main := |*
     notextile_start { ASET(type, notextile); fgoto notextile; };
+    bc_start        { ASET(type, bc); fgoto bc; };
     block_start     { fgoto block; };
     footnote_start  { fgoto footnote; };
     list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
