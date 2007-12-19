@@ -138,7 +138,7 @@ in: |-
 
   p. And then go back with a normal paragraph.
 out: |-
-  <p>If you have a line or two of code or <span class="caps">HTML</span> to embed, use extended block code like so:</p>
+  <p>If you have a line or two of code or HTML to embed, use extended block code like so:</p>
 
   <pre><code>
   ./foo.pl%
@@ -161,24 +161,37 @@ out: |-
   <ul>
     <li>You can put HTML code</li>
     <li>right in Textile</li>
-    <li>and it will not put a break<br />
+    <li>and it will not put a break
     between HTML elements</li>
     <li>or wrap it in a p tag</li>
   </ul>
 ---
 in: |-
-  <div>
+  <img src="test.jpg" />
+  
+  Regular paragraph.
+  
+  <div class="test">
     This is one paragraph.
   
     This is another.
   
     !an/image.jpg!
+        
   </div>
+  
+  Another paragraph.
 out: |-
-  <div>
-    <p>This is one paragraph.</p>
+  <img src="test.jpg" />
   
-    <p>This is another.</p>
+  <p>Regular paragraph.</p>
   
-    <img src="an/image.jpg" alt="" />
+  <div class="test">
+  <p>This is one paragraph.</p>
+  
+  <p>This is another.</p>
+  
+  <p><img src="an/image.jpg" alt="" /></p>
   </div>
+  
+  <p>Another paragraph.</p>

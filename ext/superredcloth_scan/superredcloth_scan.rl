@@ -36,6 +36,8 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   ul = "*" %{nest++; list_type = "ul";};
   ol = "#" %{nest++; list_type = "ol";};
   list_start  = ( ( ul | ol )+ N A C :> " "+ ) >{nest = 0;} ;
+  html_start = indent (start_tag | empty_tag | end_tag) indent ;
+  html_end = indent (end_tag indent CRLF | CRLF | EOF) ;
 
   # tables
   para = ( default+ ) -- CRLF ;
@@ -62,6 +64,11 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
     notextile_end   { DONE(block); fgoto main; };
     default => cat;
   *|;
+ 
+  html := |*
+    html_end        { CAT(block); DONE(block); fgoto main; };
+    default => cat;
+  *|;
 
   block := |*
     block_end       { ADD_BLOCK(); fgoto main; };
@@ -81,6 +88,8 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
 
   main := |*
     notextile_start { ASET(type, notextile); fgoto notextile; };
+    pre_start       { ASET(type, notextile); CAT(block); fgoto pre; };
+    html_start      { ASET(type, notextile); CAT(block); fgoto html; };
     bc_start        { ASET(type, bc); fgoto bc; };
     block_start     { fgoto block; };
     footnote_start  { fgoto footnote; };
@@ -93,7 +102,6 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
       CAT(block);
       fgoto block;
     };
-    pre_start       { ASET(type, notextile); CAT(block); fgoto pre; };
     EOF;
   *|;
 
