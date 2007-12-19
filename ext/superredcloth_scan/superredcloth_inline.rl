@@ -12,7 +12,7 @@
 %%{
 
   machine superredcloth_inline;
-  include superredcloth_common "superredcloth_common.rl";
+  include superredcloth_common "ext/superredcloth_scan/superredcloth_common.rl";
 
   # URI tokens (lifted from Mongrel)
   CTL = (cntrl | 127);

@@ -26,7 +26,6 @@ task :compile => [:superredcloth_scan] do
     exit(1)
   end
 end
-task :superredcloth_scan => [:ragel]
 
 desc "Packages up SuperRedCloth."
 task :package => [:clean, :ragel]
@@ -105,9 +104,8 @@ extension = "superredcloth_scan"
 ext = "ext/superredcloth_scan"
 ext_so = "#{ext}/#{extension}.#{Config::CONFIG['DLEXT']}"
 ext_files = FileList[
-  "#{ext}/*.c",
-  "#{ext}/*.h",
-  "#{ext}/*.rl",
+  "#{ext}/superredcloth_scan.c",
+  "#{ext}/superredcloth_inline.c",
   "#{ext}/extconf.rb",
   "#{ext}/Makefile",
   "lib"
@@ -115,6 +113,14 @@ ext_files = FileList[
 
 task "lib" do
   directory "lib"
+end
+
+["#{ext}/superredcloth_scan.c","#{ext}/superredcloth_inline.c"].each do |name|
+  source = name.sub(/\.c$/, '.rl')
+  file name => [source, "#{ext}/superredcloth_common.rl", "#{ext}/superredcloth.h"] do
+    @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].to_f
+    sh %{ragel #{source} | #{@ragel_v >= 5.18 ? 'rlgen-cd' : 'rlcodegen'} -G2 -o #{name}}
+  end
 end
 
 desc "Builds just the #{extension} extension"
@@ -129,20 +135,6 @@ file ext_so => ext_files do
     sh(PLATFORM =~ /win32/ ? 'nmake' : 'make')
   end
   cp ext_so, "lib"
-end
-
-desc "returns the ragel version"
-task :ragel_version do
-  @ragel_v = `ragel -v`[/(version )(\S*)/,2].to_f
-end
-
-desc "Generates the scanner code with Ragel."
-task :ragel => [:ragel_version] do
-  Dir.chdir('ext/superredcloth_scan') do
-    ['superredcloth_scan', 'superredcloth_inline'].each do |src|
-      sh %{ragel #{src}.rl | #{@ragel_v >= 5.18 ? 'rlgen-cd' : 'rlcodegen'} -G2 -o #{src}.c}
-    end
-  end
 end
 
 PKG_FILES = FileList[

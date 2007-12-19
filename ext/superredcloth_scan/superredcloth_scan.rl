@@ -16,7 +16,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
 %%{
 
   machine superredcloth_scan;
-  include superredcloth_common "superredcloth_common.rl";
+  include superredcloth_common "ext/superredcloth_scan/superredcloth_common.rl";
 
   action notextile { rb_str_append(html, rb_funcall(rb_formatter, rb_intern("ignore"), 1, regs)); }
   action extend { plain_block = rb_hash_aref(regs, ID2SYM(rb_intern("type"))); }
