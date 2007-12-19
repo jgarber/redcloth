@@ -54,7 +54,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   *|;
 
   pre := |*
-    pre_end         { DONE(block); fgoto main; };
+    pre_end         { CAT(block); DONE(block); fgoto main; };
     default => cat;
   *|;
 
