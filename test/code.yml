@@ -165,3 +165,20 @@ out: |-
     between HTML elements</li>
     <li>or wrap it in a p tag</li>
   </ul>
+---
+in: |-
+  <div>
+    This is one paragraph.
+  
+    This is another.
+  
+    !an/image.jpg!
+  </div>
+out: |-
+  <div>
+    <p>This is one paragraph.</p>
+  
+    <p>This is another.</p>
+  
+    <img src="an/image.jpg" alt="" />
+  </div>
