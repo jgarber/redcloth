@@ -256,8 +256,6 @@ rb_str_cat_escaped_for_preformatted(str, tokstart, tokend)
       case '&':  ch = "&amp;";    break;
       case '>':  ch = "&gt;";     break;
       case '<':  ch = "&lt;";     break;
-      case '"':  ch = "&quot;";   break;
-      case '\'': ch = "&#8217;";  break;
     }
 
     if (ch != NULL)

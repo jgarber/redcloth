@@ -8,8 +8,12 @@ in: 'Please type @cat file.txt > otherfile.txt@ at the prompt.'
 out: '<p>Please type <code>cat file.txt &gt; otherfile.txt</code> at the prompt.</p>'
 ---
 name: escaping in blockcode
-in: 'bc. This is within a block of code, so < and > should be entities.  You can talk about a <p> tag if you wish and it will be properly escaped.'
-out: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.  You can talk about a &lt;p&gt; tag if you wish and it will be properly escaped.</code></pre>'
+in: 'bc. This is within a block of code, so < and > should be entities.  You can talk about a <p class="foo"> tag if you wish and it will be properly escaped.'
+out: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.  You can talk about a &lt;p class="foo"&gt; tag if you wish and it will be properly escaped.</code></pre>'
+---
+name: escaping in pre
+in: '<pre><code>This is within a block of code, so < and > should be entities.  You can talk about a <p class="foo"> tag in pre tags too.</code></pre>'
+out: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.  You can talk about a &lt;p class="foo"&gt; tag in pre tags too.</code></pre>'
 ---
 name: escaping in normal text
 in: |-
