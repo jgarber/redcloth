@@ -18,7 +18,7 @@
   # textile modifiers
   A_LEFT = "<" %{ ASET(align, left) } ;
   A_RIGHT = ">" %{ ASET(align, right) } ;
-  A_JUSTIFIED = "<>" %{ ASET(align, justified) } ;
+  A_JUSTIFIED = "<>" %{ ASET(align, justify) } ;
   A_CENTER = "=" %{ ASET(align, center) } ;
   A_PADLEFT = "(" >A %{ AINC(padding-left) } ;
   A_PADRIGHT = ")" >A %{ AINC(padding-right) } ;
