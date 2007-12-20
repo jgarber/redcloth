@@ -1,7 +1,9 @@
 ---
+name: code in bullet list
 in: "* command run: @time ruby run-tests.rb > toto@"
 out: "<ul>\n\t<li>command run: <code>time ruby run-tests.rb &gt; toto</code></li>\n</ul>"
 --- # Bret Pettichord, Thanks.
+name: hard break in list
 in: |-
   * first line
   * second
@@ -15,137 +17,49 @@ out: |-
   	<li>third line</li>
   </ul>
 ---
+name: mixed nesting
 in: |-
-  p. start
-
-  * one
-  and one
-  * two
-  and two
-  * three
-
-  p. end
+  * bullet
+  *# number
+  *# number
+  *#* bullet
+  *# number
+  *# number with
+  a break
+  * bullet
+  ** okay
 out: |-
-  <p>start</p>
   <ul>
-  	<li>one<br />
-  and one</li>
-  	<li>two<br />
-  and two</li>
-  	<li>three</li>
-  </ul>
-  
-  	<p>end</p>
----
-in: |-
-  Funky:
-
-  * Testing
-  *# number
-  *##* bullet
-  *# number
-  *# number
-  yeah number
-  #* bullet
-  *** okay
-  ****# what
-out: |-
-  <p>Funky:</p>
-  <ul>
-  	<li>Testing
+  	<li>bullet
   	<ol>
-  		<li>number
-  		<ul>
-  			<li>bullet</li>
-  		</ul></li>
   		<li>number</li>
-  		<li>number<br />
-  yeah number</li>
-  		<ul>
-  			<li>bullet
+  		<li>number
   			<ul>
-  				<li>okay
-  				<ol>
-  					<li>what</li>
-  				</ol></li>
+  				<li>bullet</li>
   			</ul></li>
-  		</ul></li>
+  		<li>number</li>
+  		<li>number with<br />
+  a break</li>
   	</ol></li>
+  		<li>bullet
+  	<ul>
+  	<li>okay</li>
+  	</ul></li>
   </ul>
-
 ---
-in: |-
-  #_ one
-  # two
-  # three
-
-  # four
-  # five
-  # six
-
-  #_ seven
-  # eight
-  # nine
-out: |- 
-  <ol>
-  	<li>one</li>
-  	<li>two</li>
-  	<li>three</li>
-  </ol>
-  <ol>
-  	<li>four</li>
-  	<li>five</li>
-  	<li>six</li>
-  </ol>
-  <ol start="4">
-  	<li>seven</li>
-  	<li>eight</li>
-  	<li>nine</li>
-  </ol>
-
----
+name: list continuation
 in: |-
   # one
   # two
   # three
 
-  # four
-  # five
-  # six
-
-  #_ seven
-  # eight
-  # nine
-out: |- 
-  <ol>
-  	<li>one</li>
-  	<li>two</li>
-  	<li>three</li>
-  </ol>
-  <ol>
-  	<li>four</li>
-  	<li>five</li>
-  	<li>six</li>
-  </ol>
-  <ol start="4">
-  	<li>seven</li>
-  	<li>eight</li>
-  	<li>nine</li>
-  </ol>
-
----
-in: |-
   # one
   # two
   # three
 
-  # four
-  _# five
+  #_ four
+  # five
   # six
-
-  #_ seven
-  # eight
-  # nine
 out: |- 
   <ol>
   	<li>one</li>
@@ -153,16 +67,17 @@ out: |-
   	<li>three</li>
   </ol>
   <ol>
-  	<li><p>four</p><p>five</p></li>
+  	<li>one</li>
+  	<li>two</li>
+  	<li>three</li>
+  </ol>
+  <ol start="4">
+  	<li>four</li>
+  	<li>five</li>
   	<li>six</li>
   </ol>
-  <ol start="3">
-  	<li>seven</li>
-  	<li>eight</li>
-  	<li>nine</li>
-  </ol>
-
 ---
+name: continue list after break
 in: |-
   # one
   # two
@@ -199,6 +114,7 @@ out: |-
   </ol>
 
 ---
+name: continue list when prior list contained nested list
 in: |-
   # one
   # two
@@ -234,6 +150,7 @@ out: |-
   	<li>nine</li>
   </ol>
 ---
+name: list start number
 in: |-
   #293 two ninety three
   # two ninety four
@@ -242,10 +159,6 @@ in: |-
   #9 nine
   # ten
   # eleven
-
-  #_ twelve
-  # thirteen
-  # fourteen
 out: |-
   <ol start="293">
   	<li>two ninety three</li>
@@ -257,85 +170,29 @@ out: |-
   	<li>ten</li>
   	<li>eleven</li>
   </ol>
+---
+name: continue list after started list
+in: |-
+  #9 nine
+  # ten
+  # eleven
+
+  #_ twelve
+  # thirteen
+  # fourteen
+out: |-
+  <ol start="9">
+  	<li>nine</li>
+  	<li>ten</li>
+  	<li>eleven</li>
+  </ol>
   <ol start="12">
   	<li>twelve</li>
   	<li>thirteen</li>
   	<li>fourteen</li>
   </ol>
 ---
-in: |-
-  * ==*== a bulleted list
-  * ==*== with two items
-  ** ==**== a nested bulleted list
-  ** ==**== living within the first
-  * ==*== back to the first list
-  ** ==**== and a new nested list
-
-  # ==#== a numbered list
-  # ==#== with this being the second item
-  ## ==##== a nested numbered list
-  ## ==##== living within the first
-
-  Continuing lists after a break is just a matter of using ==#_== for the first item, like so:
-
-  # ==#== one
-  # ==#== two
-  # ==#== three
-
-  Let's take a break from all those numbers, shall we?
-
-  #_ ==#_== four
-  # ==#== five
-  # ==#== six
-
-  Ooh, look at that, it continued the list where I left off.
-
-  #_ ==#_== seven
-  # ==#== eight
-  # ==#== nine
-
-  It did it again!
-out: |-
-  <ul>
-  	<li>* a bulleted list</li>
-  	<li>* with two items
-  	<ul>
-  		<li>** a nested bulleted list</li>
-  		<li>** living within the first</li>
-  	</ul></li>
-  	<li>* back to the first list
-  	<ul>
-  		<li>** and a new nested list</li>
-  	</ul></li>
-  </ul>
-  <ol>
-  	<li># a numbered list</li>
-  	<li># with this being the second item
-  	<ol>
-  		<li>## a nested numbered list</li>
-  		<li>## living within the first</li>
-  	</ol></li>
-  </ol>
-  	<p>Continuing lists after a break is just a matter of using #_ for the first item, like so:</p>
-  <ol>
-  	<li># one</li>
-  	<li># two</li>
-  	<li># three</li>
-  </ol>
-  	<p>Let&#8217;s take a break from all those numbers, shall we?</p>
-  <ol start="4">
-  	<li>#_ four</li>
-  	<li># five</li>
-  	<li># six</li>
-  </ol>
-  	<p>Ooh, look at that, it continued the list where I left off.</p>
-  <ol start="7">
-  	<li>#_ seven</li>
-  	<li># eight</li>
-  	<li># nine</li>
-  </ol>
-  	<p>It did it again!</p>
----
+name: end notes
 in: |-
   h2. End Notes
 
