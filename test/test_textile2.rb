@@ -34,7 +34,7 @@ class TestTextile2 < Test::Unit::TestCase
     testgroup = File.basename(testfile, '.yml')
     num = 0
     YAML::load_documents(File.open(testfile)) do |doc|
-      name = doc['name'] ? doc['name'].downcase.gsub(/[- ]/, '_') : "#{testgroup}_#{num}"
+      name = doc['name'] ? doc['name'].downcase.gsub(/[- ]/, '_') : num
       define_method("test_textile2_compatibility_#{testgroup}_#{name}") do 
         assert_html_equal php(doc['in']), doc['out']
       end
