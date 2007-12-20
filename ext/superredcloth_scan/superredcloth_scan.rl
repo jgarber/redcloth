@@ -25,8 +25,8 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   # blocks
   notextile_start = "<notextile>" ;
   notextile_end = "</notextile>" ;
-  pre_start = "<pre" [^>]* ">" ;
-  pre_end = "</pre>" ;
+  pre_start = "<pre" [^>]* ">" (space* "<code>")? ;
+  pre_end = ("</code>" space*)? "</pre>" ;
   bc_start = ( "bc" A C :> "." ( "." %extend | "" %no_extend ) " "+ ) ;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" | "bc" | "pre" | "notextile" | "div" ) >A %{ STORE(type) } ;
   block_start = ( btype A C :> "." ( "." %extend | "" %no_extend ) " "+ ) ;
@@ -52,12 +52,12 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
 
   bc := |*
     block_end       { ADD_BLOCKCODE(); fgoto main; };
-    default => cat;
+    default => esc_pre;
   *|;
 
   pre := |*
     pre_end         { CAT(block); DONE(block); fgoto main; };
-    default => cat;
+    default => esc_pre;
   *|;
 
   notextile := |*

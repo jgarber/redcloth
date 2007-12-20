@@ -241,6 +241,39 @@ rb_str_cat_escaped(str, tokstart, tokend)
     rb_str_cat(str, t, t2-t);
 }
 
+void
+rb_str_cat_escaped_for_preformatted(str, tokstart, tokend)
+  VALUE str;
+  char *tokstart, *tokend;
+{
+  char *t = tokstart, *t2 = tokstart, *ch = NULL;
+  if (tokend <= tokstart) return;
+
+  while (t2 < tokend) {
+    ch = NULL;
+    switch (*t2)
+    {
+      case '&':  ch = "&amp;";    break;
+      case '>':  ch = "&gt;";     break;
+      case '<':  ch = "&lt;";     break;
+      case '"':  ch = "&quot;";   break;
+      case '\'': ch = "&#8217;";  break;
+    }
+
+    if (ch != NULL)
+    {
+      if (t2 > t)
+        rb_str_cat(str, t, t2-t);
+      rb_str_cat2(str, ch);
+      t = t2 + 1;
+    }
+
+    t2++;
+  }
+  if (t2 > t)
+    rb_str_cat(str, t, t2-t);
+}
+
 VALUE
 superredcloth_inline2(formatter, str)
   VALUE formatter, str;

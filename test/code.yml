@@ -56,13 +56,19 @@ out: |-
 name: no formatting within pre
 in: |-
   <pre>
+  <code>
   # *test*
   __not italics__
+  no hard breaks
+  </code>
   </pre>
 out: |-
   <pre>
+  <code>
   # *test*
   __not italics__
+  no hard breaks
+  </code>
   </pre>
 ---
 name: no formatting within blockcode
@@ -73,7 +79,7 @@ out: |-
   __not italics__
   </code></pre>
 ---
-name: double-equals means notextile
+name: double-equals as notextile block
 in: |-
   p. Regular paragraph
 
@@ -143,19 +149,19 @@ out: |-
 name: no breaks between HTML elements
 in: |-
   <ul>
-    <li>You can put HTML code</li>
-    <li>right in Textile</li>
-    <li>and it will not put a break
-    between HTML elements</li>
-    <li>or wrap it in a p tag</li>
+    <li>You can put HTML code right in Textile.</li>
+    <li>It will not insert a break between elements</li>
+    <li>or wrap it all in a p tag.</li>
+    <li>It should insert a hard break
+    if you break.</li>
   </ul>
 out: |-
   <ul>
-    <li>You can put HTML code</li>
-    <li>right in Textile</li>
-    <li>and it will not put a break
-    between HTML elements</li>
-    <li>or wrap it in a p tag</li>
+    <li>You can put HTML code right in Textile.</li>
+    <li>It will not insert a break between elements</li>
+    <li>or wrap it all in a p tag.</li>
+    <li>It should insert a hard break<br />
+    if you break.</li>
   </ul>
 ---
 name: mixing of textile and HTML
