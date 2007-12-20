@@ -28,7 +28,7 @@ out: |-
   <h2>Version History</h2>
   <ul>
   	<li><a href="http://www.threewordslong.com/render-0-8-9b.patch">Version<br />
-  0.0</a>&#8211;Early version using <span class="caps">MD5</span> hashes.</li>
+  0.0</a>&#8211;Early version using MD5 hashes.</li>
   	<li><a href="http://www.threewordslong.com/chunk-0-1.patch.gz">Version<br />
   0.1</a>&#8211;First cut of new system. Much cleaner.</li>
   	<li><a href="http://www.threewordslong.com/chunk-0-2.patch.gz">Version 0.2</a>&#8211;Fixed problem with &#8220;authors&#8221; page and some tests.</li>
@@ -37,8 +37,26 @@ out: |-
 in: "--richSeymour --whyTheLuckyStiff"
 out: "<p>&#8212;richSeymour&#8212;whyTheLuckyStiff</p>"
 ---
-in: "div(foo). bar\n\nok\n\ndiv(foo).\n here is a test\ndiv(bar). done."
-out: "<div class=\"foo\">\n\n\t<p>bar</p>\n\n\n\t<p>ok</p>\n\n\n</div>\n\n\t<p>here is a test</p>\n\n\n\t<div class=\"bar\">\n\n\t<p>done.</p>\n\n\n</div>"
+in: |-
+  div(foo). bar
+  
+  ok
+  
+  div(foo).
+   here is a test
+   div(bar). done.
+out: |-
+  <div class=\"foo\">
+  	<p>bar</p>
+  
+  	<p>ok</p>  
+  </div>
+  
+  <p>here is a test</p>
+  
+  <div class=\"bar\">
+    <p>done.</p>  
+  </div>
 ---
 in: |-
   a ==div(foo).== bar
@@ -51,11 +69,14 @@ in: |-
 
 out: |-
   <p>a div(foo). bar</p>
-  	<p>ok</p>
-  	<div class="foo">
+  
+  <p>ok</p>
+  
+  <div class="foo">
   	<p>here is a test</p>
   </div>
-  	<div class="bar">
+  
+  <div class="bar">
   	<p>done.</p>
   </div>
 
