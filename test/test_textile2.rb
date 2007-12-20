@@ -6,19 +6,14 @@ require 'helper'
 class TestTextile2 < Test::Unit::TestCase
   DIR = File.dirname(__FILE__) unless defined? DIR
   
-  # Adapted from TextMate HTML bundle
-  $char_to_entity = { }
-  File.open("#{DIR}/textile-2.0.0/entities.txt").read.scan(/^(\d+)\t(.+)$/) do |key, value|
-    $char_to_entity[[key.to_i].pack('U')] = value
-  end
-  
   def convert_numeric_entities_to_named(str)
-    # Adapted from TextMate HTML bundle
-    str.gsub(/&#([0-9]+);/i) do |m|
-      ch = [$1.to_i].pack("U")
-      ent = $char_to_entity[ch]
-      ent ? "&#{ent};" : sprintf("&#x%02X;", ch.unpack("U")[0])
-    end
+    # Only these should be named for XML compliance.
+    # See: http://rubyforge.org/pipermail/redcloth-upwards/2007-August/000161.html
+    str.gsub!(/&#38;/, "&amp;")
+    str.gsub!(/&#60;/, "&lt;")
+    str.gsub!(/&#62;/, "&gt;")
+    str.gsub!(/&#8220;/, "&quot;")
+    str
   end
   
   def red(str)
