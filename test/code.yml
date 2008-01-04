@@ -198,3 +198,7 @@ out: |-
   </div>
   
   <p>Another paragraph.</p>
+---
+name: inline HTML in paragraphs
+in: '<em>asd</em> blabla "google":http://google.com'
+out: '<p><em>asd</em> blabla <a href="http://google.com">google</a></p>'
