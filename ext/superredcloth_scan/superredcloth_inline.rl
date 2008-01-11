@@ -62,7 +62,8 @@
   b = "["? "**" >X C mtext >A %T :> "**" "]"? ;
   em = "["? "_" >X C mtext >A %T :> "_" "]"? ;
   i = "["? "__" >X C mtext >A %T :> "__" "]"? ;
-  del = (" "|"[") "-" >X C ( mtext -- "-" ) >A %T :> "-" (" "|"]") ;
+  del = "[-" >X C ( mtext ) >A %T :>> "-]" ;
+  del_phrase = " -" >X C ( mtext ) >A %T :>> "- " ;
   ins = "["? "+" >X C mtext >A %T :> "+" "]"? ;
   sup = "["? "^" >X C mtext >A %T :> "^" "]"? ;
   sub = "["? "~" >X C mtext >A %T :> "~" "]"? ;
@@ -100,6 +101,7 @@
     em { PASS(block, text, em); };
     i { PASS(block, text, i); };
     del { PASS(block, text, del); };
+    del_phrase { PASS(block, text, del_phrase); };
     ins { PASS(block, text, ins); };
     sup { PASS(block, text, sup); };
     sub { PASS(block, text, sub); };

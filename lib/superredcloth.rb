@@ -31,7 +31,11 @@ class << SuperRedCloth::HTML
   
   def del(opts)
     opts[:block] = true
-    " <del#{pba(opts)}>#{opts[:text]}</del> "
+    "<del#{pba(opts)}>#{opts[:text]}</del>"
+  end
+  
+  def del_phrase(opts)
+    " #{del(opts)} "
   end
   
   [:ol, :ul].each do |m|

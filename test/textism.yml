@@ -73,8 +73,21 @@ out: <p><b>a phrase</b></p>
 in: Nabokov's ??Pnin??
 out: <p>Nabokov&#8217;s <cite>Pnin</cite></p>
 ---
-in: '[-a phrase-]'
-out: <p><del>a phrase</del></p>
+name: del part of word
+in: 'A very [-extra-]ordinary day.'
+out: <p>A very <del>extra</del>ordinary day.</p>
+---
+name: del part of word that contains a hyphen
+in: 'An [-extra-extra-]ordinary day.'
+out: <p>An <del>extra-extra</del>ordinary day.</p>
+---
+name: del a phrase
+in: 'Delete -a phrase- this way.'
+out: <p>Delete <del>a phrase</del> this way.</p>
+---
+name: del a phrase that contains hyphens
+in: 'Delete -a no-nonsense phrase- this way.'
+out: <p>Delete <del>a no-nonsense phrase</del> this way.</p>
 ---
 in: +a phrase+
 out: <p><ins>a phrase</ins></p>
