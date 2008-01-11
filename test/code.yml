@@ -83,21 +83,17 @@ out: |-
   __not italics__
   </code></pre>
 ---
-name: double-equals as notextile block
+name: double-equals as inline notextile
 in: |-
   p. Regular paragraph
 
-  ==
-  Escaped portion -- will not be formatted by Textile at all
-  ==
+  ==Escaped portion -- will not be formatted by Textile at all==
 
   p. Back to normal.
 out: |-
   <p>Regular paragraph</p>
 
-  <p>
-  Escaped portion -- will not be formatted by Textile at all
-  </p>
+  <p>Escaped portion -- will not be formatted by Textile at all</p>
 
   <p>Back to normal.</p>
 ---
