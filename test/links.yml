@@ -138,9 +138,14 @@ out: <p><a href="http://example.com/" title="link title">link text</a></p>
 # out: <p>&#8220;link text(link title) &#8220;:http://example.com/</p>
 # comments: this is a real test and should pass
 ---
+name: link with title attribute
 in: '"(link) text(link title)":http://example.com/'
 out: <p><a href="http://example.com/" class="link" title="link title">text</a></p>
 comments: link text can not contain parentheses
+---
+name: link with space between link text and title attribute
+in: '"text (link title)":http://example.com/'
+out: <p><a href="http://example.com/" title="link title">text</a></p>
 ---
 in: '"Dive Into XML":http://www.xml.com/pub/au/164'
 out: <p><a href="http://www.xml.com/pub/au/164">Dive Into XML</a></p>

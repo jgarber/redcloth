@@ -45,7 +45,7 @@
 
   # links
   link_says = ( mtext+ ) >A %{ STORE(name) } ;
-  link = ( '"' C "."* " "* link_says :> title? :> '":' %A uri ) >X ;
+  link = ( '"' C "."* " "* link_says " "* :> title? :> '":' %A uri ) >X ;
 
   # images
   image_src = ( uri ) >A %{ STORE(src) } ;
