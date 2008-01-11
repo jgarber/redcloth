@@ -424,3 +424,7 @@ out: |-
   	<li>second<br />  line</li>
   	<li>third line</li>
   </ul>
+---
+name: copyright symbol at line start
+in: "(C) copyright conversion (C) test."
+out: "<p>&#169; copyright conversion &#169; test.</p>"

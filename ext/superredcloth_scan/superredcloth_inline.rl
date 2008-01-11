@@ -85,7 +85,7 @@
   reg = [Rr] ;
   registered = " "? ( "[" reg "]" | "(" reg ")" ) ;
   cee = [Cc] ;
-  copyright = " "? ( "[" cee "]" | "(" cee ")" ) ;
+  copyright = ( "[" cee "]" | "(" cee ")" ) ;
   entity = ( "&" %A ( '#' digit+ | alpha+ ) %T ';' ) >X ;
 
   main := |*
