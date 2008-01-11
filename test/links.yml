@@ -159,3 +159,23 @@ out: <p>The ION coding style document found at <a href="http://perforce:8081/@md
 ---
 in: '"testing":'
 out: "<p>&#8220;testing&#8221;:</p>"
+---
+name: trailing space not absorbed by link
+in: '"Link":/foo.html me'
+out: "<p><a href=\"/foo.html\">Link</a> me</p>"
+---
+name: trailing comma stays outside link
+in: '"Link":/foo.html, me'
+out: "<p><a href=\"/foo.html\">Link</a>, me</p>"
+---
+name: trailing exclamation stays outside link
+in: '"Link":/foo.html! me'
+out: "<p><a href=\"/foo.html\">Link</a>! me</p>"
+---
+name: trailing semicolon stays outside link
+in: '"Link":/foo.html; me'
+out: "<p><a href=\"/foo.html\">Link</a>; me</p>"
+---
+name: trailing period stays outside link
+in: '"Link":/foo.html.'
+out: "<p><a href=\"/foo.html\">Link</a>.</p>"
