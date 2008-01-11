@@ -231,3 +231,24 @@ out: |-
   			<td>Feature complete</td>
   		</tr>
   	</table>
+---
+name: combined table header and colspan
+in: |-
+  table(my_class).
+  |_\2. a |_. b |_. c |
+  | 1 | 2 | 3 | 4 |
+out: |-
+  <table class="my_class">
+  	<tr>
+  		<th colspan="2">a </th>
+  		<th>b </th>
+  		<th>c </th>
+  	</tr>
+  
+  	<tr>
+  		<td> 1 </td>
+  		<td> 2 </td>
+  		<td> 3 </td>
+  		<td> 4 </td>
+  	</tr>
+  </table>

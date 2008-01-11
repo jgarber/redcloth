@@ -49,7 +49,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   # tables
   para = ( default+ ) -- CRLF ;
   btext = para ( CRLF{2} )? ;
-  tddef = ( S A C D? :> dotspace ) ;
+  tddef = ( D? S A C :> dotspace ) ;
   td = ( tddef? btext >A %T :> "|" >{PASS(table, text, td);} ) >X ;
   trdef = ( A C :> dotspace ) ;
   tr = ( trdef? "|" %{INLINE(table, tr_open);} td+ ) >X %{INLINE(table, tr_close);} ;
