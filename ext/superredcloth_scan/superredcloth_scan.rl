@@ -36,8 +36,15 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   ul = "*" %{nest++; list_type = "ul";};
   ol = "#" %{nest++; list_type = "ol";};
   list_start  = ( ( ul | ol )+ N A C :> " "+ ) >{nest = 0;} ;
-  html_start = indent (start_tag | empty_tag | end_tag) indent ;
-  html_end = indent (end_tag indent CRLF | CRLF | EOF) ;
+  
+  # html blocks
+  BlockTagName = Name* - ("pre" | "notextile" | "a" | "applet" | "basefont" | "bdo" | "br" | "font" | "iframe" | "img" | "map" | "object" | "param" | "q" | "script" | "span" | "sub" | "sup" | "abbr" | "acronym" | "cite" | "code" | "del" | "dfn" | "em" | "ins" | "kbd" | "samp" | "strong" | "var" | "b" | "big" | "i" | "s" | "small" | "strike" | "tt" | "u");
+  block_start_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? ">" | "<" BlockTagName ">";
+  block_empty_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? "/>" | "<" BlockTagName "/>" ;
+  block_end_tag = "</" BlockTagName space* ">" ;
+  html_start = indent (block_start_tag | empty_tag) indent ;
+  html_end = indent (block_end_tag indent CRLF* | EOF) ;
+  standalone_html = indent (block_start_tag | block_empty_tag | end_tag) indent CRLF+;
 
   # tables
   para = ( default+ ) -- CRLF ;
@@ -66,7 +73,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   *|;
  
   html := |*
-    html_end        { CAT(block); DONE(block); fgoto main; };
+    html_end        { CAT(block); ADD_BLOCK(); fgoto main; };
     default => cat;
   *|;
 
@@ -89,6 +96,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   main := |*
     notextile_start { ASET(type, notextile); fgoto notextile; };
     pre_start       { ASET(type, notextile); CAT(block); fgoto pre; };
+    standalone_html { CAT(block); DONE(block); };
     html_start      { ASET(type, notextile); CAT(block); fgoto html; };
     bc_start        { ASET(type, bc); fgoto bc; };
     block_start     { fgoto block; };

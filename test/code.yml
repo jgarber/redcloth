@@ -153,19 +153,19 @@ out: |-
 name: no breaks between HTML elements
 in: |-
   <ul>
-    <li>You can put HTML code right in Textile.</li>
-    <li>It will not insert a break between elements</li>
-    <li>or wrap it all in a p tag.</li>
-    <li>It should insert a hard break
-    if you break.</li>
+  	<li>You can put HTML code right in Textile.</li>
+  	<li>It will not insert a break between elements</li>
+  	<li>or wrap it all in a p tag.</li>
+  	<li>It should insert a hard break
+  if you break.</li>
   </ul>
 out: |-
   <ul>
-    <li>You can put HTML code right in Textile.</li>
-    <li>It will not insert a break between elements</li>
-    <li>or wrap it all in a p tag.</li>
-    <li>It should insert a hard break<br />
-    if you break.</li>
+  	<li>You can put HTML code right in Textile.</li>
+  	<li>It will not insert a break between elements</li>
+  	<li>or wrap it all in a p tag.</li>
+  	<li>It should insert a hard break<br />
+  if you break.</li>
   </ul>
 ---
 name: mixing of textile and HTML
@@ -180,12 +180,15 @@ in: |-
     This is another.
   
     !an/image.jpg!
+    
+    * A list
+    * in a div.
         
   </div>
   
   Another paragraph.
 out: |-
-  <img src="test.jpg" />
+  <p><img src="test.jpg" /></p>
   
   <p>Regular paragraph.</p>
   
@@ -195,10 +198,29 @@ out: |-
   <p>This is another.</p>
   
   <p><img src="an/image.jpg" alt="" /></p>
+  
+  <ul>
+    <li>A list</li>
+    <li>in a div.</li>
+  </ul>
   </div>
   
   <p>Another paragraph.</p>
 ---
-name: inline HTML in paragraphs
+name: wraps inline HTML in paragraphs
 in: '<em>asd</em> blabla "google":http://google.com'
 out: '<p><em>asd</em> blabla <a href="http://google.com">google</a></p>'
+---
+name: preserves block standalone
+in: |-
+  <div>123 Anystreet</div>
+  
+  <p foo="bar">Explicit paragraph</p>
+out: |-
+  <div>123 Anystreet</div>
+  
+  <p foo="bar">Explicit paragraph</p>
+---
+name: preserves empty block standalone elements
+in: "<hr />"
+out: "<hr />"
