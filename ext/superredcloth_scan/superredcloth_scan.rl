@@ -42,9 +42,9 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   block_start_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? ">" | "<" BlockTagName ">";
   block_empty_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? "/>" | "<" BlockTagName "/>" ;
   block_end_tag = "</" BlockTagName space* ">" ;
-  html_start = indent (block_start_tag | empty_tag) indent ;
-  html_end = indent (block_end_tag indent CRLF* | EOF) ;
-  standalone_html = indent (block_start_tag | block_empty_tag | end_tag) indent CRLF+;
+  html_start = indent (block_start_tag | block_empty_tag) indent ;
+  html_end = indent block_end_tag indent CRLF* ;
+  standalone_html = indent (block_start_tag | block_empty_tag | block_end_tag) indent CRLF+;
 
   # tables
   para = ( default+ ) -- CRLF ;

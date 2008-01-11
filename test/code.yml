@@ -175,14 +175,14 @@ in: |-
   Regular paragraph.
   
   <div class="test">
-    This is one paragraph.
+  This is one paragraph.
   
-    This is another.
+  This is another.
   
-    !an/image.jpg!
+  !an/image.jpg!
     
-    * A list
-    * in a div.
+  * A list
+  * in a div.
         
   </div>
   
@@ -200,8 +200,8 @@ out: |-
   <p><img src="an/image.jpg" alt="" /></p>
   
   <ul>
-    <li>A list</li>
-    <li>in a div.</li>
+  	<li>A list</li>
+  	<li>in a div.</li>
   </ul>
   </div>
   
