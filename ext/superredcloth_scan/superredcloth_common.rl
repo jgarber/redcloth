@@ -36,7 +36,7 @@
   S = ( S_CSPN | S_RSPN )* ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
   D = ( D_HEADER ) ;
-  N_CONT = "_" %{ ASET(start, continue) };
+  N_CONT = "_" %{ list_continue = 1; };
   N_NUM = digit+ >A %{ STORE(start) };
   N = ( N_CONT | N_NUM )? ;
   PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "," | "--" | "." | "/" | ":" | ";" | "=" | "?" | "\\" | "^" | "`" | "|" | "~" | "[" | "(" | "<" ) ;

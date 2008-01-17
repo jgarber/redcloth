@@ -89,7 +89,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
 
   list := |*
     CRLF list_start { ADD_BLOCK(); LIST_ITEM(); };
-    block_end       { ADD_BLOCK(); nest = 0; LIST_ITEM(); fgoto main; };
+    block_end       { ADD_BLOCK(); nest = 0; LIST_CLOSE(); fgoto main; };
     default => cat;
   *|;
 
@@ -130,7 +130,10 @@ superredcloth_transform(rb_formatter, p, pe)
   VALUE regs = rb_hash_new();
   VALUE list_layout = Qnil;
   char *list_type = NULL;
+  VALUE list_index = rb_ary_new();
+  int list_continue = 0;
   VALUE plain_block = rb_str_new2("p");
+  char listm[10] = "";
 
   %% write init;
 

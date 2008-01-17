@@ -58,15 +58,42 @@ VALUE red_pass(VALUE, VALUE, VALUE, ID);
   STORE(T); \
   p--;
 #define LIST_ITEM() \
-    char listm[10] = ""; \
+    int aint = 0; \
+    VALUE aval = rb_ary_entry(list_index, nest-1); \
+    if (aval != Qnil) aint = NUM2INT(aval); \
+    if (strcmp(list_type, "ol") == 0) \
+    { \
+      rb_ary_store(list_index, nest-1, INT2NUM(aint + 1)); \
+    } \
     if (nest > RARRAY(list_layout)->len) \
     { \
       sprintf(listm, "%s_open", list_type); \
+      if (list_continue == 1) \
+      { \
+        list_continue = 0; \
+        rb_hash_aset(regs, ID2SYM(rb_intern("start")), rb_ary_entry(list_index, nest-1)); \
+      } \
+      else \
+      { \
+        VALUE start = rb_hash_aref(regs, ID2SYM(rb_intern("start"))); \
+        if (NIL_P(start) ) \
+        { \
+          rb_ary_store(list_index, nest-1, INT2NUM(1)); \
+        } \
+        else \
+        { \
+          VALUE start_num = rb_funcall(start,rb_intern("to_i"),0); \
+          rb_ary_store(list_index, nest-1, start_num); \
+        } \
+      } \
       rb_str_append(html, rb_funcall(rb_formatter, rb_intern(listm), 1, regs)); \
       rb_ary_store(list_layout, nest-1, rb_str_new2(list_type)); \
       regs = rb_hash_new(); \
       ASET(first, true); \
     } \
+    LIST_CLOSE(); \
+    ASET(type, li_open)
+#define LIST_CLOSE() \
     while (nest < RARRAY(list_layout)->len) \
     { \
       VALUE end_list = rb_ary_pop(list_layout); \
@@ -76,7 +103,6 @@ VALUE red_pass(VALUE, VALUE, VALUE, ID);
         sprintf(listm, "%s_close", RSTRING(end_list)->ptr); \
         rb_str_append(html, rb_funcall(rb_formatter, rb_intern(listm), 1, regs)); \
       } \
-    } \
-    ASET(type, li_open)
+    }
 
 #endif
