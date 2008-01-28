@@ -144,6 +144,10 @@ class << SuperRedCloth::HTML
     "&#8211;"
   end
   
+  def endash_spaces(opts)
+    " #{endash(opts)} "
+  end
+  
   def arrow(opts)
     "&#8594;"
   end
