@@ -81,7 +81,7 @@
   endash = ( "-" ) >X ;
   endash_spaces = ( " - "? ) >X ;
   acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" default+ >A %{ STORE(title) } :> ")" ) >X ;
-  dim = ( digit+ >A %{ STORE(x) } " x " digit+ >A %{ STORE(y) } ) >X ;
+  dim = ( digit+ >A %{ STORE(x) } (" x " | "x") digit+ >A %*{ STORE(y) } ) >X ;
   tm = [Tt] [Mm] ;
   trademark = " "? ( "[" tm "]" | "(" tm ")" ) ;
   reg = [Rr] ;
