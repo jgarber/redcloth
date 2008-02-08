@@ -36,7 +36,7 @@ VALUE red_pass(VALUE, VALUE, VALUE, ID);
   if (p > reg && reg >= tokstart) { \
     VALUE str = rb_str_new(reg, p-reg); \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
-    /* printf("STORE(" #T ") %s\n", RSTRING(str)->ptr); */ \
+  /*  printf("STORE(" #T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
   } else { \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
   }

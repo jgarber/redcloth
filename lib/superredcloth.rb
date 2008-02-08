@@ -141,11 +141,7 @@ class << SuperRedCloth::HTML
   end
   
   def endash(opts)
-    "&#8211;"
-  end
-  
-  def endash_spaces(opts)
-    " #{endash(opts)} "
+    " &#8211; "
   end
   
   def arrow(opts)

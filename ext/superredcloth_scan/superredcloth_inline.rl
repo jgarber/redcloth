@@ -76,10 +76,9 @@
 
   # glyphs
   ellipsis = ( " "? >A %T "..." ) >X ;
-  emdash = ( " "? "--" " "? ) >X ;
-  arrow = ( " "? "->" " "? ) >X ;
-  endash = ( "-" ) >X ;
-  endash_spaces = ( " - "? ) >X ;
+  emdash = "--" ;
+  arrow = "->" ;
+  endash = " - " ;
   acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" default+ >A %{ STORE(title) } :> ")" ) >X ;
   dim = ( digit+ >A %{ STORE(x) } (" x " | "x") digit+ >A %*{ STORE(y) } ) >X ;
   tm = [Tt] [Mm] ;

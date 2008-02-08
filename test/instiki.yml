@@ -28,11 +28,11 @@ out: |-
   <h2>Version History</h2>
   <ul>
   	<li><a href="http://www.threewordslong.com/render-0-8-9b.patch">Version<br />
-  0.0</a>&#8211;Early version using MD5 hashes.</li>
+  0.0</a> &#8211; Early version using MD5 hashes.</li>
   	<li><a href="http://www.threewordslong.com/chunk-0-1.patch.gz">Version<br />
-  0.1</a>&#8211;First cut of new system. Much cleaner.</li>
-  	<li><a href="http://www.threewordslong.com/chunk-0-2.patch.gz">Version 0.2</a>&#8211;Fixed problem with &#8220;authors&#8221; page and some tests.</li>
+  0.1</a> &#8211; First cut of new system. Much cleaner.</li>
+  	<li><a href="http://www.threewordslong.com/chunk-0-2.patch.gz">Version 0.2</a> &#8211; Fixed problem with &#8220;authors&#8221; page and some tests.</li>
   </ul>
 ---
 in: "--richSeymour --whyTheLuckyStiff"
-out: "<p>&#8212;richSeymour&#8212;whyTheLuckyStiff</p>"
+out: "<p>&#8212;richSeymour &#8212;whyTheLuckyStiff</p>"

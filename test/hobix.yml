@@ -42,13 +42,23 @@ out: <p>&#8220;Observe!&#8221;</p>
 --- 
 name: double hyphens
 desc: Double hyphens are replaced with an em-dash.
-in: Observe -- very nice!
+in: Observe--very nice!
 out: <p>Observe&#8212;very nice!</p>
 --- 
-name: single hyphens
-desc: Single hyphens are replaced with en-dashes.
+name: double hyphens with spaces
+desc: Double hyphens are replaced with an em-dash and surrounding spaces are preserved.
+in: Observe -- very nice!
+out: <p>Observe &#8212; very nice!</p>
+--- 
+name: single hyphens with spaces
+desc: Single hyphens are replaced with en-dashes if they are surrounded by spaces.
 in: Observe - tiny and brief.
 out: <p>Observe &#8211; tiny and brief.</p>
+--- 
+name: midword hyphens 
+desc: Single hyphens are left alone if not surrounded by spaces.
+in: Observe the nicely-done hyphen.
+out: <p>Observe the nicely-done hyphen.</p>
 --- 
 name: ellipses
 desc: Triplets of periods become an ellipsis.
