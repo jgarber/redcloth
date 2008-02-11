@@ -24,7 +24,7 @@
   A_PADRIGHT = ")" >A %{ AINC(padding-right) } ;
   A_HLGN = ( A_LEFT | A_RIGHT | A_JUSTIFIED | A_CENTER | A_PADLEFT | A_PADRIGHT ) ;
   A_LIMIT = ( A_LEFT | A_CENTER | A_RIGHT ) ;
-  A_VLGN = ( "-" %{ ASET(valign, middle) } | "^" %{ ASET(valign, top) } | "~" %{ ASET(valign, bottom) } ) ;
+  A_VLGN = ( "-" %{ ASET(vertical-align, middle) } | "^" %{ ASET(vertical-align, top) } | "~" %{ ASET(vertical-align, bottom) } ) ;
   C_CLAS = ( "(" ( [^)#]+ >A %{ STORE(class) } )? ("#" [^)]+ >A %{STORE(id)} )? ")" ) ;
   C_LNGE = ( "[" [^\]]+ >A %{ STORE(lang) } "]" ) ;
   C_STYL = ( "{" [^}]+ >A %{ STORE(style) } "}" ) ;
