@@ -129,7 +129,7 @@ in: |-
 
   p. And then go back with a normal paragraph.
 out: |-
-  <p>If you have a line or two of code or HTML to embed, use extended block code like so:</p>
+  <p>If you have a line or two of code or <span class="caps">HTML</span> to embed, use extended block code like so:</p>
 
   <pre><code>
   ./foo.pl%

@@ -16,7 +16,7 @@ in: |-
   </ul>
 out: |-
   <ul>
-  	<li>You can put HTML code right in Textile.</li>
+  	<li>You can put <span class="caps">HTML</span> code right in Textile.</li>
   	<li>It will not insert a break between elements</li>
   	<li>or wrap it all in a p tag.</li>
   	<li>It should insert a hard break<br />

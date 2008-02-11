@@ -401,7 +401,7 @@ out: |-
 name: acronym definitions
 desc: Definitions for acronyms can be provided by following an acronym with its definition in parens.
 in: We use CSS(Cascading Style Sheets).
-out: <p>We use <acronym title="Cascading Style Sheets">CSS</acronym>.</p>
+out: <p>We use <acronym title="Cascading Style Sheets"><span class="caps">CSS</span></acronym>.</p>
 --- 
 name: tables
 desc: Simple tables can be built by separating fields with pipe characters

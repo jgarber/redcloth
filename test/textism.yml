@@ -370,8 +370,8 @@ out: |-
   	<li>Yes they do</li>
   	<li>But you knew that</li>
   </ol>
-  	<p>Some more text of dubious character. Here is a noisome string of CAPITAL letters. Here is something we want to <em>emphasize</em>.<br />
-  That was a linebreak. And something to indicate <strong>strength</strong>. Of course I could use <em>my own HTML tags</em> if I <strong>felt</strong> like it.</p>
+  	<p>Some more text of dubious character. Here is a noisome string of <span class="caps">CAPITAL</span> letters. Here is something we want to <em>emphasize</em>.<br />
+  That was a linebreak. And something to indicate <strong>strength</strong>. Of course I could use <em>my own <span class="caps">HTML</span> tags</em> if I <strong>felt</strong> like it.</p>
 ---
 name: code
 in: |-

@@ -80,6 +80,7 @@
   arrow = "->" ;
   endash = " - " ;
   acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" default+ >A %{ STORE(title) } :> ")" ) >X ;
+  caps = ( upper{3,} >A %*T ) >X ;
   dim = ( digit+ >A %{ STORE(x) } (" x " | "x") digit+ >A %*{ STORE(y) } ) >X ;
   tm = [Tt] [Mm] ;
   trademark = " "? ( "[" tm "]" | "(" tm ")" ) ;
@@ -116,6 +117,7 @@
     emdash { INLINE(block, emdash); };
     endash { INLINE(block, endash); };
     arrow { INLINE(block, arrow); };
+    caps { INLINE(block, caps); };
     acronym { INLINE(block, acronym); };
     dim { INLINE(block, dim); };
     trademark { INLINE(block, trademark); };

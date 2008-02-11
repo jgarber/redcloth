@@ -22,11 +22,21 @@ class << SuperRedCloth::HTML
     end
   end
   
-  [:strong, :code, :em, :i, :b, :ins, :sup, :sub, :span, :cite, :acronym].each do |m|
+  [:strong, :code, :em, :i, :b, :ins, :sup, :sub, :span, :cite].each do |m|
     define_method(m) do |opts|
       opts[:block] = true
       "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>"
     end
+  end
+  
+  def acronym(opts)
+    opts[:block] = true
+    "<acronym#{pba(opts)}>#{caps(:text => opts[:text])}</acronym>"
+  end
+  
+  def caps(opts)
+    opts[:class] = 'caps'
+    span(opts)
   end
   
   def del(opts)
