@@ -175,7 +175,7 @@ in: |-
   I'm %{color:red}unaware%
   of most soft drinks.
 out: |-
-  <p>I&#8217;m <span style="color:red">unaware</span><br />
+  <p>I&#8217;m <span style="color:red;">unaware</span><br />
   of most soft drinks.</p>
 --- 
 name: css class
@@ -196,7 +196,7 @@ out: <p class="example1" id="big-red2">Red here</p>
 name: css style
 desc: Style settings can be provided directly by surrounding them in curly braces.
 in: p{color:blue;margin:30px}. Spacey blue
-out: <p style="color:blue;margin:30px">Spacey blue</p>
+out: <p style="color:blue;margin:30px;">Spacey blue</p>
 --- 
 name: language designations
 desc: Language designations can be given between angel brackets.
@@ -211,7 +211,7 @@ in: |-
   corn stalk from my
   %[es]cabeza%.
 out: |-
-  <p>I seriously <strong style="color:red">blushed</strong><br />
+  <p>I seriously <strong style="color:red;">blushed</strong><br />
   when I <em class="big">sprouted</em> that<br />
   corn stalk from my<br />
   <span lang="es">cabeza</span>.</p>
@@ -234,7 +234,7 @@ out: <h2 style="padding-left:1em;padding-right:1em;text-align:right;">Bingo.</h2
 name: many modifiers combined
 desc: And, furthermore, coupled with language settings and CSS styles.
 in: h3()>[no]{color:red}. Bingo
-out: <h3 style="padding-left:1em;padding-right:1em;text-align:right;color:red" lang="no">Bingo</h3>
+out: <h3 style="padding-left:1em;padding-right:1em;text-align:right;color:red;" lang="no">Bingo</h3>
 --- 
 name: code blocks
 desc: For example, long code blocks belong between <code>pre</code> and <code>code</code> tags.  Please also indent your code inside the tags to be sure that all Textile processors out there will ignore the contents.
@@ -393,7 +393,7 @@ in: |-
   And others sat all round the small
   machine and paid it to sing to them.
 out: |-
-  <p style="float:right"><img src="obake.gif" alt="" /></p>
+  <p style="float:right;"><img src="obake.gif" alt="" /></p>
   
   	<p>And others sat all round the small<br />
   machine and paid it to sing to them.</p>
@@ -542,7 +542,7 @@ in: "|{background:#ddd}. Grey cell|"
 out: |-
   <table>
   		<tr>
-  			<td style="background:#ddd">Grey cell</td>
+  			<td style="background:#ddd;">Grey cell</td>
   		</tr>
   	</table>
 --- 
@@ -553,7 +553,7 @@ in: |-
   |This|is|a|row|
   |This|is|a|row|
 out: |-
-  <table style="border:1px solid black">
+  <table style="border:1px solid black;">
   		<tr>
   			<td>This</td>
   			<td>is</td>
@@ -581,7 +581,7 @@ out: |-
   			<td>a</td>
   			<td>row</td>
   		</tr>
-  		<tr style="background:#ddd">
+  		<tr style="background:#ddd;">
   			<td>This</td>
   			<td>is</td>
   			<td>grey</td>

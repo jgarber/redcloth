@@ -4,6 +4,7 @@ class << SuperRedCloth::HTML
   def pba(opts)
     atts = ''
     opts[:"text-align"] = opts.delete(:align)
+    opts[:style] += ';' if opts[:style] && (opts[:style][-1..-1] != ';')
     [:float, :"text-align", :"vertical-align"].each do |a|
       opts[:style] = "#{a}:#{opts[a]};#{opts[:style]}" if opts[a]
     end
