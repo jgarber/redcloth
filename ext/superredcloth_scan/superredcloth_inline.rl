@@ -81,7 +81,7 @@
   endash = " - " ;
   acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" default+ >A %{ STORE(title) } :> ")" ) >X ;
   caps = ( upper{3,} >A %*T ) >X ;
-  dim = ( digit+ >A %{ STORE(x) } (" x " | "x") digit+ >A %*{ STORE(y) } ) >X ;
+  dim = ( digit+ >A %{ STORE(x) } (" x " @{ ASET(space, true)} | "x") digit @{ fhold; } ) >X ;
   tm = [Tt] [Mm] ;
   trademark = " "? ( "[" tm "]" | "(" tm ")" ) ;
   reg = [Rr] ;
@@ -89,6 +89,9 @@
   cee = [Cc] ;
   copyright = ( "[" cee "]" | "(" cee ")" ) ;
   entity = ( "&" %A ( '#' digit+ | alpha+ ) %T ';' ) >X ;
+
+  other_phrase = phrase -- dim;
+
 
   main := |*
 
@@ -131,7 +134,7 @@
     empty_tag => cat;
     html_comment => cat;
 
-    phrase => esc;
+    other_phrase => esc;
     PUNCT => esc;
     space => esc;
 

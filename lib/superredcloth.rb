@@ -160,7 +160,8 @@ class << SuperRedCloth::HTML
   end
   
   def dim(opts)
-    "#{opts[:x]} &#215; #{opts[:y]}"
+    space = opts[:space] ? " " : ''
+    "#{opts[:x]}#{space}&#215;#{space}"
   end
   
   def trademark(opts)

@@ -68,7 +68,7 @@ out: <p>Observe&#8230;</p>
 name: dimension sign
 desc: The letter 'x' becomes a dimension sign when used between digits.
 in: "Observe: 2x3."
-out: "<p>Observe: 2 &#215; 3.</p>"
+out: "<p>Observe: 2&#215;3.</p>"
 --- 
 name: dimension sign with spaces
 in: "Observe: 2 x 4."
@@ -76,7 +76,7 @@ out: "<p>Observe: 2 &#215; 4.</p>"
 --- 
 name: dimension signs chained
 in: "Observe: 2x3x4."
-out: "<p>Observe: 2 &#215; 3 &#215; 4.</p>"
+out: "<p>Observe: 2&#215;3&#215;4.</p>"
 --- 
 name: trademark and copyright
 desc: Conversion of trademark and copyright symbols.
