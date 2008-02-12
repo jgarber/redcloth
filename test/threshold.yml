@@ -191,7 +191,7 @@ out: <p><img src="/img.gif" title="alt text" alt="alt text" /></p>
 name: image links
 desc: Images may be combined with links by using an !image! in place of the link text.
 in: "!/img.gif!:http://textpattern.com/"
-out: <p><a href="http://textpattern.com/"><img src="/img.gif" title="" alt="" /></a></p>
+out: <p><a href="http://textpattern.com/"><img src="/img.gif" alt="" /></a></p>
 ---
 name: headers
 desc: Headers are represented by h1., h2., … h6..
