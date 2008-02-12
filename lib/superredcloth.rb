@@ -46,7 +46,7 @@ class << SuperRedCloth::HTML
   end
   
   def del_phrase(opts)
-    " #{del(opts)} "
+    " #{del(opts)}"
   end
   
   [:ol, :ul].each do |m|
