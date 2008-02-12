@@ -435,14 +435,8 @@ out: <p><div>inside</div> and outside.</p>
 ---
 name: complex xhtml blocks
 desc: Textile can’t always identify the beginning and end of long or complex blocks of XHTML. To prevent Textile from enclosing complex XHTML blocks in paragraph tags, either use a space at the beginning of each line...
-in: |-
-   <div>
-   <span>My div</span>
-   </div>
-out: |-
-   <div>
-   <span>My div</span>
-   </div>
+in: " <div>\n <span>My div</span>\n </div>"
+out: " <div>\n <span>My div</span>\n </div>"
 ---
 name: complex xhtml blocks 2
 desc: ...or a notexile.. extended block.

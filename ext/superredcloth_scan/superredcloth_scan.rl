@@ -25,6 +25,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   # blocks
   notextile_start = "<notextile>" ;
   notextile_end = "</notextile>" ;
+  notextile_line = " " (( default+ ) -- CRLF) CRLF ;
   pre_start = "<pre" [^>]* ">" (space* "<code>")? ;
   pre_end = ("</code>" space*)? "</pre>" ;
   bc_start = ( "bc" A C :> "." ( "." %extend | "" %no_extend ) " "+ ) ;
@@ -94,6 +95,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   *|;
 
   main := |*
+    notextile_line  { CAT(block); DONE(block); };
     notextile_start { ASET(type, notextile); fgoto notextile; };
     pre_start       { ASET(type, notextile); CAT(block); fgoto pre; };
     standalone_html { CAT(block); DONE(block); };
