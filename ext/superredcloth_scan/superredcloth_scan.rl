@@ -19,8 +19,9 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   include superredcloth_common "ext/superredcloth_scan/superredcloth_common.rl";
 
   action notextile { rb_str_append(html, rb_funcall(rb_formatter, rb_intern("ignore"), 1, regs)); }
-  action extend { plain_block = rb_hash_aref(regs, ID2SYM(rb_intern("type"))); }
-  action no_extend { plain_block = rb_str_new2("p"); }
+  action extend { extend = 1; }
+  action no_extend { extend = 0; }
+  action add_unless_extended { if (extend == 0) { ADD_BLOCK(); fgoto main; } else { ADD_EXTENDED_BLOCK(); } }
 
   # blocks
   notextile_start = "<notextile>" ;
@@ -32,6 +33,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" | "bc" | "pre" | "notextile" | "div" ) >A %{ STORE(type) } ;
   block_start = ( btype A C :> "." ( "." %extend | "" %no_extend ) " "+ ) ;
   block_end = ( CRLF{2} | EOF );
+  extended_block_end = block_end . block_start >A @{ p = reg - 1; };
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
   footnote_start = ( ftype A C :> dotspace ) ;
   ul = "*" %{nest++; list_type = "ul";};
@@ -79,7 +81,8 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   *|;
 
   block := |*
-    block_end       { ADD_BLOCK(); fgoto main; };
+    block_end => add_unless_extended;
+    extended_block_end { ADD_BLOCK(); fgoto main; };
     default => cat;
   *|;
 
@@ -135,6 +138,7 @@ superredcloth_transform(rb_formatter, p, pe)
   VALUE list_index = rb_ary_new();
   int list_continue = 0;
   VALUE plain_block = rb_str_new2("p");
+  int extend = 0;
   char listm[10] = "";
 
   %% write init;

@@ -25,6 +25,7 @@ VALUE red_pass(VALUE, VALUE, VALUE, ID);
 #define PASS(H, A, T)  rb_str_append(H, red_pass(rb_formatter, regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))
 #define PASS2(H, A, T) rb_str_append(H, red_pass2(rb_formatter, regs, ID2SYM(rb_intern(#A)), ID2SYM(rb_intern(#T))))
 #define ADD_BLOCK()    rb_str_append(html, red_block(rb_formatter, regs, block)); CLEAR(block); regs = rb_hash_new()
+#define ADD_EXTENDED_BLOCK()    rb_str_append(html, red_block(rb_formatter, regs, block)); CLEAR(block);
 #define ADD_BLOCKCODE()    rb_str_append(html, red_blockcode(rb_formatter, regs, block)); CLEAR(block); regs = rb_hash_new()
 #define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_str_new2(#V));
 #define AINC(T)        red_inc(regs, ID2SYM(rb_intern(#T)));
