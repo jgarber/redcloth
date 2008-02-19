@@ -18,10 +18,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   machine superredcloth_scan;
   include superredcloth_common "ext/superredcloth_scan/superredcloth_common.rl";
 
-  action notextile { rb_str_append(html, rb_funcall(rb_formatter, rb_intern("ignore"), 1, regs)); }
-  action extend { extend = 1; }
-  action no_extend { extend = 0; }
-  action add_unless_extended { if (extend == 0) { ADD_BLOCK(); fgoto main; } else { ADD_EXTENDED_BLOCK(); } }
+  action extend { extend = rb_hash_aref(regs, ID2SYM(rb_intern("type"))); }
 
   # blocks
   notextile_start = "<notextile>" ;
@@ -29,11 +26,14 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   notextile_line = " " (( default+ ) -- CRLF) CRLF ;
   pre_start = "<pre" [^>]* ">" (space* "<code>")? ;
   pre_end = ("</code>" space*)? "</pre>" ;
-  bc_start = ( "bc" A C :> "." ( "." %extend | "" %no_extend ) " "+ ) ;
-  btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "bq" | "bc" | "pre" | "notextile" | "div" ) >A %{ STORE(type) } ;
-  block_start = ( btype A C :> "." ( "." %extend | "" %no_extend ) " "+ ) ;
-  block_end = ( CRLF{2} | EOF );
-  extended_block_end = block_end . block_start >A @{ p = reg - 1; };
+  bc_start = ( "bc" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  bq_start = ( "bq" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "pre" | "notextile" | "div" ) ;
+  block_start = ( btype >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  next_block_start = ( btype A C :> "." ) ;
+  double_return = CRLF{2} ;
+  block_end = ( double_return | EOF );
+  extended_block_end = double_return . next_block_start >A @{ p = reg - 1; } ;
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
   footnote_start = ( ftype A C :> dotspace ) ;
   ul = "*" %{nest++; list_type = "ul";};
@@ -60,11 +60,6 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   tdef = ( "table" >X A C :> dotspace CRLF ) ;
   table = ( tdef? trows >{INLINE(table, table_open);} ) >{ reg = NULL; } ;
 
-  bc := |*
-    block_end       { ADD_BLOCKCODE(); fgoto main; };
-    default => esc_pre;
-  *|;
-
   pre := |*
     pre_end         { CAT(block); DONE(block); fgoto main; };
     default => esc_pre;
@@ -80,9 +75,24 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
     default => cat;
   *|;
 
+  bc := |*
+    EOF                { ADD_BLOCKCODE(); INLINE(html, bc_close); plain_block = rb_str_new2("p"); fgoto main; };
+    extended_block_end { ADD_BLOCKCODE(); INLINE(html, bc_close); plain_block = rb_str_new2("p"); fgoto main; };
+    double_return      { if (NIL_P(extend)) { ADD_BLOCKCODE(); INLINE(html, bc_close); plain_block = rb_str_new2("p"); fgoto main; } else { ADD_EXTENDED_BLOCKCODE(); } };
+    default => esc_pre;
+  *|;
+
+  bq := |*
+    EOF                { ADD_BLOCK(); INLINE(html, bq_close); fgoto main; };
+    extended_block_end { ADD_BLOCK(); INLINE(html, bq_close); fgoto main; };
+    double_return      { if (NIL_P(extend)) { ADD_BLOCK(); INLINE(html, bq_close); fgoto main; } else { ADD_EXTENDED_BLOCK(); } };
+    default => cat;
+  *|;
+
   block := |*
-    block_end => add_unless_extended;
+    EOF                { ADD_BLOCK(); fgoto main; };
     extended_block_end { ADD_BLOCK(); fgoto main; };
+    double_return      { if (NIL_P(extend)) { ADD_BLOCK(); fgoto main; } else { ADD_EXTENDED_BLOCK(); } };
     default => cat;
   *|;
 
@@ -103,7 +113,8 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
     pre_start       { ASET(type, notextile); CAT(block); fgoto pre; };
     standalone_html { CAT(block); DONE(block); };
     html_start      { ASET(type, notextile); CAT(block); fgoto html; };
-    bc_start        { ASET(type, bc); fgoto bc; };
+    bc_start        { INLINE(html, bc_open); ASET(type, code); plain_block = rb_str_new2("code"); fgoto bc; };
+    bq_start        { INLINE(html, bq_open); ASET(type, p); fgoto bq; };
     block_start     { fgoto block; };
     footnote_start  { fgoto footnote; };
     list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
@@ -138,7 +149,7 @@ superredcloth_transform(rb_formatter, p, pe)
   VALUE list_index = rb_ary_new();
   int list_continue = 0;
   VALUE plain_block = rb_str_new2("p");
-  int extend = 0;
+  VALUE extend = Qnil;
   char listm[10] = "";
 
   %% write init;

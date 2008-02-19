@@ -97,14 +97,22 @@ class << SuperRedCloth::HTML
     "\t</table>"
   end
   
-  def bc(opts)
+  def bc_open(opts)
     opts[:block] = true
-    "<pre#{pba(opts)}><code#{pba(opts)}>#{opts[:text]}</code></pre>"
+    "<pre#{pba(opts)}>"
   end
   
-  def bq(opts)
+  def bc_close(opts)
+    "</pre>"
+  end
+  
+  def bq_open(opts)
     opts[:block] = true
-    "<blockquote#{pba(opts)}><p#{pba(opts)}>#{opts[:text]}</p></blockquote>"
+    "<blockquote#{pba(opts)}>"
+  end
+  
+  def bq_close(opts)
+    "</blockquote>"
   end
   
   def link(opts)
