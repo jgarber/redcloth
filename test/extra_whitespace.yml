@@ -28,15 +28,12 @@ in: |-
   
   h1. Header
 out: <p>text</p><h1>Header</h1>
-#r236-out: <p>text</p><p>h1. Header</p>
-# {2} -> {2,} change fixes
 ---
 name: header with 1 blank line above and with no text
 in: |-
 
   h1. Header
 out: <h1>Header</h1>
-#r236-out: <p>h1. Header</p>
 ---
 name: header with 2 blank lines above and with no text
 in: |-
@@ -44,7 +41,6 @@ in: |-
 
   h1. Header
 out: <h1>Header</h1>
-#r236-out: <p>h1. Header</p>
 ---
 name: header with 1 blank line below and with no text
 in: |+
