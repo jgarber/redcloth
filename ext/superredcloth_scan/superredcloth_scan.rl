@@ -21,14 +21,16 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   action extend { extend = rb_hash_aref(regs, ID2SYM(rb_intern("type"))); }
 
   # blocks
-  notextile_start = "<notextile>" ;
-  notextile_end = "</notextile>" ;
+  notextile_tag_start = "<notextile>" ;
+  notextile_tag_end = "</notextile>" ;
   notextile_line = " " (( default+ ) -- CRLF) CRLF ;
-  pre_start = "<pre" [^>]* ">" (space* "<code>")? ;
-  pre_end = ("</code>" space*)? "</pre>" ;
+  notextile_block_start = ( "notextile" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  pre_tag_start = "<pre" [^>]* ">" (space* "<code>")? ;
+  pre_tag_end = ("</code>" space*)? "</pre>" ;
+  pre_block_start = ( "pre" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   bc_start = ( "bc" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   bq_start = ( "bq" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
-  btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "pre" | "notextile" | "div" ) ;
+  btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div" ) ;
   block_start = ( btype >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   next_block_start = ( btype A C :> "." ) ;
   double_return = CRLF{2,} ;
@@ -61,13 +63,27 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   tdef = ( "table" >X A C :> dotspace CRLF ) ;
   table = ( tdef? trows >{INLINE(table, table_open);} ) >{ reg = NULL; } ;
 
-  pre := |*
-    pre_end         { CAT(block); DONE(block); fgoto main; };
+  pre_tag := |*
+    pre_tag_end         { CAT(block); DONE(block); fgoto main; };
+    default => esc_pre;
+  *|;
+  
+  pre_block := |*
+    EOF                { ADD_BLOCKCODE(); fgoto main; };
+    extended_block_end { ADD_BLOCKCODE(); fgoto main; };
+    double_return      { if (NIL_P(extend)) { ADD_BLOCKCODE(); fgoto main; } else { ADD_EXTENDED_BLOCKCODE(); } };
     default => esc_pre;
   *|;
 
-  notextile := |*
-    notextile_end   { DONE(block); fgoto main; };
+  notextile_tag := |*
+    notextile_tag_end   { DONE(block); fgoto main; };
+    default => cat;
+  *|;
+  
+  notextile_block := |*
+    EOF                { DONE(block); fgoto main; };
+    extended_block_end { DONE(block); fgoto main; };
+    double_return      { if (NIL_P(extend)) { DONE(block); fgoto main; } else { DONE(block); } };
     default => cat;
   *|;
  
@@ -110,8 +126,10 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
 
   main := |*
     notextile_line  { CAT(block); DONE(block); };
-    notextile_start { ASET(type, notextile); fgoto notextile; };
-    pre_start       { ASET(type, notextile); CAT(block); fgoto pre; };
+    notextile_tag_start { ASET(type, notextile); fgoto notextile_tag; };
+    notextile_block_start { fgoto notextile_block; };
+    pre_tag_start       { ASET(type, notextile); CAT(block); fgoto pre_tag; };
+    pre_block_start { fgoto pre_block; };
     standalone_html { CAT(block); DONE(block); };
     html_start      { ASET(type, notextile); CAT(block); fgoto html; };
     bc_start        { INLINE(html, bc_open); ASET(type, code); plain_block = rb_str_new2("code"); fgoto bc; };
