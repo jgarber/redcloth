@@ -31,7 +31,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "pre" | "notextile" | "div" ) ;
   block_start = ( btype >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   next_block_start = ( btype A C :> "." ) ;
-  double_return = CRLF{2} ;
+  double_return = CRLF{2,} ;
   block_end = ( double_return | EOF );
   extended_block_end = double_return . next_block_start >A @{ p = reg - 1; } ;
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
@@ -39,6 +39,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   ul = "*" %{nest++; list_type = "ul";};
   ol = "#" %{nest++; list_type = "ol";};
   list_start  = ( ( ul | ol )+ N A C :> " "+ ) >{nest = 0;} ;
+  blank_line = CRLF;
   
   # html blocks
   BlockTagName = Name* - ("pre" | "notextile" | "a" | "applet" | "basefont" | "bdo" | "br" | "font" | "iframe" | "img" | "map" | "object" | "param" | "q" | "script" | "span" | "sub" | "sup" | "abbr" | "acronym" | "cite" | "code" | "del" | "dfn" | "em" | "ins" | "kbd" | "samp" | "strong" | "var" | "b" | "big" | "i" | "s" | "small" | "strike" | "tt" | "u");
@@ -119,6 +120,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
     footnote_start  { fgoto footnote; };
     list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
     table           { INLINE(table, table_close); DONE(table); fgoto block; };
+    blank_line => cat;
     default
     { 
       regs = rb_hash_new();
