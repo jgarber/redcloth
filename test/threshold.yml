@@ -146,7 +146,7 @@ out: <p>The <span>underlying</span> cause.</p>
 name: code
 desc: To include a short snippet of code such as XHTML or Javascript, surround it with @ “at” symbols. XHTML significant characters within a code phrase will be escaped for display to the reader.
 in: About the @<hr />@ tag.
-out: <p>About the <code>&#60;hr /&#62;</code> tag.</p>
+out: <p>About the <code>&lt;hr /&gt;</code> tag.</p>
 ---
 name: links
 desc: Links are represented by double quotes and a colon.
@@ -259,10 +259,10 @@ in: |-
   alert("Hello World");
   </script>
 out: |-
-  <pre><code>&#60;script&#62;
+  <pre><code>&lt;script&gt;
   // a Javascript example
-  alert(&#34;Hello World&#34;);
-  &#60;/script&#62;
+  alert("Hello World");
+  &lt;/script&gt;
   </code></pre>
 ---
 name: preformatted text
@@ -362,13 +362,13 @@ in: |-
   p. Following paragraph.
 out: |-
   <p>A <span class="caps">PHP</span> code example.</p>
-  <pre><code>&#60;?php
+  <pre><code>&lt;?php
   function hello() {
   // display a hello message
   </code>
-  <code>	 print &#34;Hello, World&#34;;
+  <code>	 print "Hello, World";
   }
-  ?&#62;
+  ?&gt;
   </code></pre>
   <p>Following paragraph.</p>
 ---
@@ -459,7 +459,7 @@ in: |-
   </pre>
 out: |-
   <pre>
-  A HTML &#60;b&#62;example&#60;/b&#62;
+  A HTML &lt;b&gt;example&lt;/b&gt;
   </pre>
 note: This syntax is supported for backwards compatibility only, and doesn’t always work as expected. The block modifier pre. should be used instead.
 ---
@@ -471,7 +471,7 @@ in: |-
   </code>
 out: |-
   <p><code>
-  Another HTML &#60;b&#62;example&#60;/b&#62;
+  Another HTML &lt;b&gt;example&lt;/b&gt;
   </code></p>
 note: This syntax is supported for backwards compatibility only, and doesn’t always work as expected. The block modifier bc. should be used instead.
 ---
