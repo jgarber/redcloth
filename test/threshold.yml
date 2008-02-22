@@ -366,7 +366,7 @@ out: |-
   function hello() {
   // display a hello message
   </code>
-  <code>	 print "Hello, World";
+  <code>	print "Hello, World";
   }
   ?&gt;
   </code></pre>

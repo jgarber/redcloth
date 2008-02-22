@@ -58,6 +58,7 @@
 
   # markup
   code = "["? "@" >X C mtext >A %T :> "@" "]"? ;
+  code_tag = ("<code>" mspace?) >X (( mtext ) >A %T) :>> (mspace? "</code>") ;
   strong = "["? "*" >X C mtext >A %T :> "*" "]"? ;
   b = "["? "**" >X C mtext >A %T :> "**" "]"? ;
   em = "["? "_" >X C mtext >A %T :> "_" "]"? ;
@@ -99,7 +100,8 @@
 
     link { STORE_URL(href); PASS(block, name, link); };
 
-    code { PASS(block, text, code); };
+    code { PASS_CODE(block, text, code); };
+    code_tag { PASS_CODE(block, text, code); };
     strong { PASS(block, text, strong); };
     b { PASS(block, text, b); };
     em { PASS(block, text, em); };
@@ -151,6 +153,18 @@ red_pass(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth)
 {
   VALUE txt = rb_hash_aref(regs, ref);
   if (!NIL_P(txt)) rb_hash_aset(regs, ref, superredcloth_inline2(rb_formatter, txt));
+  return rb_funcall(rb_formatter, meth, 1, regs);
+}
+
+VALUE
+red_pass_code(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth)
+{
+  VALUE txt = rb_hash_aref(regs, ref);
+  if (!NIL_P(txt)) {
+    VALUE txt2 = rb_str_new2("");
+    rb_str_cat_escaped_for_preformatted(txt2, RSTRING(txt)->ptr, RSTRING(txt)->ptr + RSTRING(txt)->len);
+    rb_hash_aset(regs, ref, txt2);
+  }
   return rb_funcall(rb_formatter, meth, 1, regs);
 }
 

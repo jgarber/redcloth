@@ -8,6 +8,7 @@ extern VALUE super_ParseError, super_RedCloth;
 
 /* function defs */
 void rb_str_cat_escaped(VALUE str, char *tokstart, char *tokend);
+void rb_str_cat_escaped_for_preformatted(VALUE str, char *tokstart, char *tokend);
 VALUE superredcloth_inline(VALUE, char *, char *);
 VALUE superredcloth_inline2(VALUE, VALUE);
 VALUE superredcloth_transform(VALUE, char *, char *);
@@ -16,6 +17,7 @@ void red_inc(VALUE, VALUE);
 VALUE red_block(VALUE, VALUE, ID);
 VALUE red_pass2(VALUE, VALUE, VALUE, VALUE);
 VALUE red_pass(VALUE, VALUE, VALUE, ID);
+VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 
 /* parser macros */
 #define CAT(H)         rb_str_cat(H, tokstart, tokend-tokstart)
@@ -24,6 +26,7 @@ VALUE red_pass(VALUE, VALUE, VALUE, ID);
 #define DONE(H)        rb_str_append(html, H); CLEAR(H); regs = rb_hash_new()
 #define PASS(H, A, T)  rb_str_append(H, red_pass(rb_formatter, regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))
 #define PASS2(H, A, T) rb_str_append(H, red_pass2(rb_formatter, regs, ID2SYM(rb_intern(#A)), ID2SYM(rb_intern(#T))))
+#define PASS_CODE(H, A, T) rb_str_append(H, red_pass_code(rb_formatter, regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))
 #define ADD_BLOCK() \
   rb_str_append(html, red_block(rb_formatter, regs, block)); \
   extend = Qnil; \
