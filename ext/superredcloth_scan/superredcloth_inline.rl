@@ -217,7 +217,7 @@ superredcloth_inline(rb_formatter, p, pe)
   char *p, *pe;
 {
   int cs, act;
-  char *tokstart, *tokend, *reg;
+  char *ts, *te, *reg, *eof;
   VALUE block = rb_str_new2("");
   VALUE regs = Qnil;
 
@@ -229,14 +229,14 @@ superredcloth_inline(rb_formatter, p, pe)
 }
 
 void
-rb_str_cat_escaped(str, tokstart, tokend)
+rb_str_cat_escaped(str, ts, te)
   VALUE str;
-  char *tokstart, *tokend;
+  char *ts, *te;
 {
-  char *t = tokstart, *t2 = tokstart, *ch = NULL;
-  if (tokend <= tokstart) return;
+  char *t = ts, *t2 = ts, *ch = NULL;
+  if (te <= ts) return;
 
-  while (t2 < tokend) {
+  while (t2 < te) {
     ch = NULL;
     switch (*t2)
     {
@@ -263,14 +263,14 @@ rb_str_cat_escaped(str, tokstart, tokend)
 }
 
 void
-rb_str_cat_escaped_for_preformatted(str, tokstart, tokend)
+rb_str_cat_escaped_for_preformatted(str, ts, te)
   VALUE str;
-  char *tokstart, *tokend;
+  char *ts, *te;
 {
-  char *t = tokstart, *t2 = tokstart, *ch = NULL;
-  if (tokend <= tokstart) return;
+  char *t = ts, *t2 = ts, *ch = NULL;
+  if (te <= ts) return;
 
-  while (t2 < tokend) {
+  while (t2 < te) {
     ch = NULL;
     switch (*t2)
     {

@@ -118,8 +118,13 @@ end
 ["#{ext}/superredcloth_scan.c","#{ext}/superredcloth_inline.c"].each do |name|
   source = name.sub(/\.c$/, '.rl')
   file name => [source, "#{ext}/superredcloth_common.rl", "#{ext}/superredcloth.h"] do
-    @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].to_f
-    sh %{ragel #{source} | #{@ragel_v >= 5.18 ? 'rlgen-cd' : 'rlcodegen'} -G2 -o #{name}}
+    @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].split('.').map{|s| s.to_i}
+    if @ragel_v[0] >= 6
+      sh %{ragel #{source} -G2 -o #{name}}
+    else
+      STDERR.puts "Ragel 6.0 or greater is required to generate #{name}."
+      exit(1)
+    end
   end
 end
 

@@ -159,7 +159,7 @@ superredcloth_transform(rb_formatter, p, pe)
   char *p, *pe;
 {
   int cs, act, nest;
-  char *tokstart = NULL, *tokend = NULL, *reg = NULL;
+  char *ts = NULL, *te = NULL, *reg = NULL, *eof = NULL;
   VALUE html = rb_str_new2("");
   VALUE table = rb_str_new2("");
   VALUE block = rb_str_new2("");

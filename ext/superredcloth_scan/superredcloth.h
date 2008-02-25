@@ -7,8 +7,8 @@ extern VALUE super_ParseError, super_RedCloth;
 #endif
 
 /* function defs */
-void rb_str_cat_escaped(VALUE str, char *tokstart, char *tokend);
-void rb_str_cat_escaped_for_preformatted(VALUE str, char *tokstart, char *tokend);
+void rb_str_cat_escaped(VALUE str, char *ts, char *te);
+void rb_str_cat_escaped_for_preformatted(VALUE str, char *ts, char *te);
 VALUE superredcloth_inline(VALUE, char *, char *);
 VALUE superredcloth_inline2(VALUE, VALUE);
 VALUE superredcloth_transform(VALUE, char *, char *);
@@ -20,7 +20,7 @@ VALUE red_pass(VALUE, VALUE, VALUE, ID);
 VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 
 /* parser macros */
-#define CAT(H)         rb_str_cat(H, tokstart, tokend-tokstart)
+#define CAT(H)         rb_str_cat(H, ts, te-ts)
 #define CLEAR(H)       H = rb_str_new2("")
 #define INLINE(H, T)   rb_str_append(H, rb_funcall(rb_formatter, rb_intern(#T), 1, regs))
 #define DONE(H)        rb_str_append(html, H); CLEAR(H); regs = rb_hash_new()
@@ -38,11 +38,11 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_str_new2(#V));
 #define AINC(T)        red_inc(regs, ID2SYM(rb_intern(#T)));
 #define STORE(T)  \
-  if (p > reg && reg >= tokstart) { \
+  if (p > reg && reg >= ts) { \
     while (reg < p && ( *reg == '\r' || *reg == '\n' ) ) { reg++; } \
     while (p > reg && ( *(p - 1) == '\r' || *(p - 1) == '\n' ) ) { p--; } \
   } \
-  if (p > reg && reg >= tokstart) { \
+  if (p > reg && reg >= ts) { \
     VALUE str = rb_str_new(reg, p-reg); \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
   /*  printf("STORE(" #T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
@@ -50,7 +50,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
   }
 #define STORE_URL(T) \
-  if (p > reg && reg >= tokstart) { \
+  if (p > reg && reg >= ts) { \
     p++; \
     char punct = 1; \
     while (p > reg && punct == 1) { \
@@ -62,7 +62,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
         default: punct = 0; \
       } \
     } \
-    tokend = p; \
+    te = p; \
   } \
   STORE(T); \
   p--;
