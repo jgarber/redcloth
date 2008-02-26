@@ -111,6 +111,13 @@ ext_files = FileList[
   "lib"
 ] 
 
+file ext_so => ext_files do
+  Dir.chdir(ext) do
+    sh(PLATFORM =~ /win32/ ? 'nmake' : 'make')
+  end
+  cp ext_so, "lib"
+end
+
 task "lib" do
   directory "lib"
 end
@@ -131,15 +138,8 @@ end
 desc "Builds just the #{extension} extension"
 task extension.to_sym => ["#{ext}/Makefile", ext_so ]
 
-file "#{ext}/Makefile" => ["#{ext}/extconf.rb"] do
+file "#{ext}/Makefile" => ["#{ext}/extconf.rb", "#{ext}/superredcloth_scan.c","#{ext}/superredcloth_inline.c"] do
   Dir.chdir(ext) do ruby "extconf.rb" end
-end
-
-file ext_so => ext_files do
-  Dir.chdir(ext) do
-    sh(PLATFORM =~ /win32/ ? 'nmake' : 'make')
-  end
-  cp ext_so, "lib"
 end
 
 PKG_FILES = FileList[
