@@ -64,4 +64,27 @@
   end_tag = "</" Name space* ">" ;
   html_comment = "<!--" (default+) :> "-->";
 
+  # URI tokens (lifted from Mongrel)
+  CTL = (cntrl | 127);
+  safe = ("$" | "-" | "_" | ".");
+  extra = ("!" | "*" | "'" | "(" | ")" | "," | "#");
+  reserved = (";" | "/" | "?" | ":" | "@" | "&" | "=" | "+");
+  unsafe = (CTL | " " | "\"" | "%" | "<" | ">");
+  national = any -- (alpha | digit | reserved | extra | safe | unsafe);
+  unreserved = (alpha | digit | safe | extra | national);
+  escape = ("%" xdigit xdigit);
+  uchar = (unreserved | escape);
+  pchar = (uchar | ":" | "@" | "&" | "=" | "+");
+  scheme = ( alpha | digit | "+" | "-" | "." )+ ;
+  absolute_uri = (scheme ":" (uchar | reserved )*);
+  safepath = (pchar* (alpha | digit | safe) pchar*) ;
+  path = (safepath ( "/" pchar* )*) ;
+  query = ( uchar | reserved )* ;
+  param = ( pchar | "/" )* ;
+  params = (param ( ";" param )*) ;
+  rel_path = (path (";" params)?) ("?" query)?;
+  absolute_path = ("/"+ rel_path?);
+  target = ("#" pchar*) ;
+  uri = (target | absolute_uri | absolute_path | rel_path) ;
+
 }%%;

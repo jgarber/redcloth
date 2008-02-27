@@ -14,29 +14,6 @@
   machine superredcloth_inline;
   include superredcloth_common "ext/superredcloth_scan/superredcloth_common.rl";
 
-  # URI tokens (lifted from Mongrel)
-  CTL = (cntrl | 127);
-  safe = ("$" | "-" | "_" | ".");
-  extra = ("!" | "*" | "'" | "(" | ")" | "," | "#");
-  reserved = (";" | "/" | "?" | ":" | "@" | "&" | "=" | "+");
-  unsafe = (CTL | " " | "\"" | "%" | "<" | ">");
-  national = any -- (alpha | digit | reserved | extra | safe | unsafe);
-  unreserved = (alpha | digit | safe | extra | national);
-  escape = ("%" xdigit xdigit);
-  uchar = (unreserved | escape);
-  pchar = (uchar | ":" | "@" | "&" | "=" | "+");
-  scheme = ( alpha | digit | "+" | "-" | "." )+ ;
-  absolute_uri = (scheme ":" (uchar | reserved )*);
-  safepath = (pchar* (alpha | digit | safe) pchar*) ;
-  path = (safepath ( "/" pchar* )*) ;
-  query = ( uchar | reserved )* ;
-  param = ( pchar | "/" )* ;
-  params = (param ( ";" param )*) ;
-  rel_path = (path (";" params)?) ("?" query)?;
-  absolute_path = ("/"+ rel_path?);
-  target = ("#" pchar*) ;
-  uri = (target | absolute_uri | absolute_path | rel_path) ;
-
   # common
   title = ( '(' default+ >A %{ STORE(title) } :> ')' ) ;
   word = ( alnum | safe | " " ) ;
@@ -149,10 +126,10 @@
 %% write data nofinal;
 
 VALUE
-red_pass(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth)
+red_pass(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth, VALUE refs)
 {
   VALUE txt = rb_hash_aref(regs, ref);
-  if (!NIL_P(txt)) rb_hash_aset(regs, ref, superredcloth_inline2(rb_formatter, txt));
+  if (!NIL_P(txt)) rb_hash_aset(regs, ref, superredcloth_inline2(rb_formatter, txt, refs));
   return rb_funcall(rb_formatter, meth, 1, regs);
 }
 
@@ -169,21 +146,21 @@ red_pass_code(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth)
 }
 
 VALUE
-red_pass2(VALUE rb_formatter, VALUE regs, VALUE ref, VALUE btype)
+red_pass2(VALUE rb_formatter, VALUE regs, VALUE ref, VALUE btype, VALUE refs)
 {
   btype = rb_hash_aref(regs, btype);
   StringValue(btype);
-  return red_pass(rb_formatter, regs, ref, rb_intern(RSTRING(btype)->ptr));
+  return red_pass(rb_formatter, regs, ref, rb_intern(RSTRING(btype)->ptr), refs);
 }
 
 VALUE
-red_block(VALUE rb_formatter, VALUE regs, VALUE block)
+red_block(VALUE rb_formatter, VALUE regs, VALUE block, VALUE refs)
 {
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
   if ((RSTRING(block)->len > 0) && !NIL_P(btype))
   {
-    rb_hash_aset(regs, ID2SYM(rb_intern("text")), superredcloth_inline2(rb_formatter, block));
+    rb_hash_aset(regs, ID2SYM(rb_intern("text")), superredcloth_inline2(rb_formatter, block, refs));
     block = rb_funcall(rb_formatter, rb_intern(RSTRING(btype)->ptr), 1, regs);
   }
   return block;
@@ -212,9 +189,10 @@ red_inc(VALUE regs, VALUE ref)
 }
 
 VALUE
-superredcloth_inline(rb_formatter, p, pe)
+superredcloth_inline(rb_formatter, p, pe, refs)
   VALUE rb_formatter;
   char *p, *pe;
+  VALUE refs;
 {
   int cs, act;
   char *ts, *te, *reg, *eof;
@@ -294,9 +272,9 @@ rb_str_cat_escaped_for_preformatted(str, ts, te)
 }
 
 VALUE
-superredcloth_inline2(formatter, str)
-  VALUE formatter, str;
+superredcloth_inline2(formatter, str, refs)
+  VALUE formatter, str, refs;
 {
   StringValue(str);
-  return superredcloth_inline(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1);
+  return superredcloth_inline(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, refs);
 }

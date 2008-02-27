@@ -9,14 +9,15 @@ extern VALUE super_ParseError, super_RedCloth;
 /* function defs */
 void rb_str_cat_escaped(VALUE str, char *ts, char *te);
 void rb_str_cat_escaped_for_preformatted(VALUE str, char *ts, char *te);
-VALUE superredcloth_inline(VALUE, char *, char *);
-VALUE superredcloth_inline2(VALUE, VALUE);
-VALUE superredcloth_transform(VALUE, char *, char *);
+VALUE superredcloth_inline(VALUE, char *, char *, VALUE);
+VALUE superredcloth_inline2(VALUE, VALUE, VALUE);
+VALUE superredcloth_transform(VALUE, char *, char *, VALUE);
 VALUE superredcloth_transform2(VALUE, VALUE);
 void red_inc(VALUE, VALUE);
-VALUE red_block(VALUE, VALUE, ID);
-VALUE red_pass2(VALUE, VALUE, VALUE, VALUE);
-VALUE red_pass(VALUE, VALUE, VALUE, ID);
+VALUE red_block(VALUE, VALUE, ID, VALUE);
+VALUE red_blockcode(VALUE, VALUE, VALUE);
+VALUE red_pass2(VALUE, VALUE, VALUE, VALUE, VALUE);
+VALUE red_pass(VALUE, VALUE, VALUE, ID, VALUE);
 VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 
 /* parser macros */
@@ -24,15 +25,15 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define CLEAR(H)       H = rb_str_new2("")
 #define INLINE(H, T)   rb_str_append(H, rb_funcall(rb_formatter, rb_intern(#T), 1, regs))
 #define DONE(H)        rb_str_append(html, H); CLEAR(H); regs = rb_hash_new()
-#define PASS(H, A, T)  rb_str_append(H, red_pass(rb_formatter, regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))
-#define PASS2(H, A, T) rb_str_append(H, red_pass2(rb_formatter, regs, ID2SYM(rb_intern(#A)), ID2SYM(rb_intern(#T))))
+#define PASS(H, A, T)  rb_str_append(H, red_pass(rb_formatter, regs, ID2SYM(rb_intern(#A)), rb_intern(#T), refs))
+#define PASS2(H, A, T) rb_str_append(H, red_pass2(rb_formatter, regs, ID2SYM(rb_intern(#A)), ID2SYM(rb_intern(#T)), refs))
 #define PASS_CODE(H, A, T) rb_str_append(H, red_pass_code(rb_formatter, regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))
 #define ADD_BLOCK() \
-  rb_str_append(html, red_block(rb_formatter, regs, block)); \
+  rb_str_append(html, red_block(rb_formatter, regs, block, refs)); \
   extend = Qnil; \
   CLEAR(block); \
   regs = rb_hash_new()
-#define ADD_EXTENDED_BLOCK()    rb_str_append(html, red_block(rb_formatter, regs, block)); CLEAR(block);
+#define ADD_EXTENDED_BLOCK()    rb_str_append(html, red_block(rb_formatter, regs, block, refs)); CLEAR(block);
 #define ADD_BLOCKCODE()    rb_str_append(html, red_blockcode(rb_formatter, regs, block)); CLEAR(block); regs = rb_hash_new()
 #define ADD_EXTENDED_BLOCKCODE()    rb_str_append(html, red_blockcode(rb_formatter, regs, block)); CLEAR(block);
 #define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_str_new2(#V));
@@ -65,7 +66,10 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
     te = p; \
   } \
   STORE(T); \
-  p--;
+  p--; \
+  if ( !NIL_P(refs) && rb_funcall(refs, rb_intern("has_key?"), 1, rb_hash_aref(regs, ID2SYM(rb_intern(#T)))) ) { \
+    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_hash_aref(refs, rb_hash_aref(regs, ID2SYM(rb_intern(#T))))); \
+  }
 #define LIST_ITEM() \
     int aint = 0; \
     VALUE aval = rb_ary_entry(list_index, nest-1); \

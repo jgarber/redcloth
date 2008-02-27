@@ -42,6 +42,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   ol = "#" %{nest++; list_type = "ol";};
   list_start  = ( ( ul | ol )+ N A C :> " "+ ) >{nest = 0;} ;
   blank_line = CRLF;
+  link_alias = ( "[" >{ ASET(type, ignore) } %A phrase %T "]" %A uri ) ;
   
   # html blocks
   BlockTagName = Name* - ("pre" | "notextile" | "a" | "applet" | "basefont" | "bdo" | "br" | "font" | "iframe" | "img" | "map" | "object" | "param" | "q" | "script" | "span" | "sub" | "sup" | "abbr" | "acronym" | "cite" | "code" | "del" | "dfn" | "em" | "ins" | "kbd" | "samp" | "strong" | "var" | "b" | "big" | "i" | "s" | "small" | "strike" | "tt" | "u");
@@ -138,6 +139,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
     footnote_start  { fgoto footnote; };
     list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
     table           { INLINE(table, table_close); DONE(table); fgoto block; };
+    link_alias      { STORE_URL(href); rb_hash_aset(refs_found, rb_hash_aref(regs, ID2SYM(rb_intern("text"))), rb_hash_aref(regs, ID2SYM(rb_intern("href")))); DONE(block); };
     blank_line => cat;
     default
     { 
@@ -154,10 +156,12 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
 %% write data nofinal;
 
 VALUE
-superredcloth_transform(rb_formatter, p, pe)
+superredcloth_transform(rb_formatter, p, pe, refs)
   VALUE rb_formatter;
   char *p, *pe;
+  VALUE refs;
 {
+  char *orig_p = p, *orig_pe = pe;
   int cs, act, nest;
   char *ts = NULL, *te = NULL, *reg = NULL, *eof = NULL;
   VALUE html = rb_str_new2("");
@@ -171,6 +175,7 @@ superredcloth_transform(rb_formatter, p, pe)
   VALUE plain_block = rb_str_new2("p");
   VALUE extend = Qnil;
   char listm[10] = "";
+  VALUE refs_found = rb_hash_new();
 
   %% write init;
 
@@ -181,7 +186,11 @@ superredcloth_transform(rb_formatter, p, pe)
     ADD_BLOCK();
   }
 
-  return html;
+  if ( NIL_P(refs) && rb_funcall(refs_found, rb_intern("empty?"), 0) == Qfalse ) {
+    return superredcloth_transform(rb_formatter, orig_p, orig_pe, refs_found);
+  } else {
+    return html;
+  }
 }
 
 VALUE
@@ -190,7 +199,7 @@ superredcloth_transform2(formatter, str)
 {
   rb_str_cat2(str, "\n");
   StringValue(str);
-  return superredcloth_transform(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1);
+  return superredcloth_transform(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, Qnil);
 }
 
 static VALUE
