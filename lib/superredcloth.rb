@@ -108,7 +108,8 @@ class << SuperRedCloth::HTML
   
   def bq_open(opts)
     opts[:block] = true
-    "<blockquote#{pba(opts)}>"
+    cite = opts[:cite] ? " cite=\"#{ opts[:cite] }\"" : ''
+    "<blockquote#{cite}#{pba(opts)}>"
   end
   
   def bq_close(opts)

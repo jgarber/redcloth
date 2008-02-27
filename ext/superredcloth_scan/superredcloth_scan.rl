@@ -29,7 +29,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   pre_tag_end = ("</code>" space*)? "</pre>" ;
   pre_block_start = ( "pre" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   bc_start = ( "bc" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
-  bq_start = ( "bq" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  bq_start = ( "bq" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE(cite) } )? " "+ ) ;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div" ) ;
   block_start = ( btype >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   next_block_start = ( btype A C :> "." ) ;
