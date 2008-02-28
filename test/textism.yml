@@ -345,7 +345,7 @@ out: |-
   		</tr>
   		<tr>
   			<td>this</td>
-  			<td style="padding:10px;text-align:justify;">is</td>
+  			<td style="text-align:justify;padding:10px;">is</td>
   			<td style="vertical-align:top;">another</td>
   			<td class="bob" id="bob">row</td>
   		</tr>
