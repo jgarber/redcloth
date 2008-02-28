@@ -98,8 +98,8 @@ out: <p><sup>a phrase</sup></p>
 in: ~a phrase~
 out: <p><sub>a phrase</sub></p>
 ---
-in: %(caps)SPAN%
-out: <p><span class="caps">SPAN</span></p>
+in: %(myclass)SPAN%
+out: <p><span class="myclass"><span class="caps">SPAN</span></span></p>
 ---
 in: %{color:red}red%
 out: <p><span style="color:red;">red</span></p>
