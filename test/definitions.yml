@@ -1,19 +1,4 @@
-in: |-
-  here is a Movable Type-style definition list:
-  
-  dl. textile:a cloth, especially one manufactured by weaving or knitting; a fabric
-  format:the arrangement of data for storage or display.
-out: |-
-  <p>here is a Movable Type-style definition list:</p>
-  
-  <dl>
-  	<dt>textile</dt>
-  	<dd>a cloth, especially one manufactured by weaving or knitting; a fabric</dd>
-  
-  	<dt>format</dt>
-  	<dd>the arrangement of data for storage or display.</dd>
-  </dl>
----
+name: redcloth definition list
 in: |-
   here is a RedCloth definition list:
   
@@ -34,13 +19,53 @@ out: |-
   	<dd>yes</dd>
   </dl>
 ---
+name: definition lists with line breaks
+in: |-
+  - term :=
+  you can span multiple lines
+  just like other lists
+  - line-spanning
+  term := hey, slick!
+out: |-
+  <dl>
+  	<dt>term</dt>
+  	<dd>you can span multiple lines<br />
+  just like other lists</dd>
+  	<dt>line-spanning<br />
+  term</dt>
+  	<dd>hey, slick!</dd>
+  </dl>
+---
+name: double terms
+in: |-
+  You can have multiple terms before a definition:
+
+  - textile
+  - fabric
+  - cloth := woven threads
+out: |-
+  <p>You can have multiple terms before a definition:</p>
+
+  <dl>
+  	<dt>textile</dt>
+  	<dt>fabric</dt>
+  	<dt>cloth</dt>
+  	<dd>woven threads</dd>
+  </dl>
+---
+name: long definition list
 in: |-
   here is a long definition
   
-  - some term :=
+  - some term := 
   *sweet*
+  
   yes
+  
   ok =:
+  - another term :=
+  you can span multiple lines
+  just like other lists
   - regular term := no
 out: |-
   <p>here is a long definition</p>

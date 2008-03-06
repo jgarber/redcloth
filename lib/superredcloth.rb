@@ -17,7 +17,7 @@ class << SuperRedCloth::HTML
     atts
   end
   
-  [:h1, :h2, :h3, :h4, :h5, :h6, :p, :pre, :div].each do |m|
+  [:h1, :h2, :h3, :h4, :h5, :h6, :p, :pre, :div, :dt, :dd].each do |m|
     define_method(m) do |opts|
       "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>"
     end
@@ -65,6 +65,15 @@ class << SuperRedCloth::HTML
   
   def li_close(opts=nil)
     "</li>\n"
+  end
+  
+  def dl_open(opts)
+    opts[:block] = true
+    "<dl#{pba(opts)}>\n"
+  end
+  
+  def dl_close(opts=nil)
+    "</dl>"
   end
   
   def ignore(opts)

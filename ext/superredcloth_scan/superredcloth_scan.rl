@@ -41,6 +41,8 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   ul = "*" %{nest++; list_type = "ul";};
   ol = "#" %{nest++; list_type = "ol";};
   list_start  = ( ( ul | ol )+ N A C :> " "+ ) >{nest = 0;} ;
+  dl_start = ( "-" N A C :> " "+ ) ;
+  dd_start = ":=" ;
   blank_line = CRLF;
   link_alias = ( "[" >{ ASET(type, ignore) } %A phrase %T "]" %A uri ) ;
   
@@ -125,6 +127,13 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
     default => cat;
   *|;
 
+  dl := |*
+    CRLF dl_start   { ADD_BLOCK(); ASET(type, dt); };
+    dd_start        { ADD_BLOCK(); ASET(type, dd); };
+    block_end       { ADD_BLOCK(); INLINE(html, dl_close);  fgoto main; };
+    default => cat;
+  *|;
+
   main := |*
     notextile_line  { CAT(block); DONE(block); };
     notextile_tag_start { ASET(type, notextile); fgoto notextile_tag; };
@@ -138,6 +147,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
     block_start     { fgoto block; };
     footnote_start  { fgoto footnote; };
     list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
+    dl_start        { INLINE(html, dl_open); ASET(type, dt); fgoto dl; };
     table           { INLINE(table, table_close); DONE(table); fgoto block; };
     link_alias      { STORE_URL(href); rb_hash_aset(refs_found, rb_hash_aref(regs, ID2SYM(rb_intern("text"))), rb_hash_aref(regs, ID2SYM(rb_intern("href")))); DONE(block); };
     blank_line => cat;
