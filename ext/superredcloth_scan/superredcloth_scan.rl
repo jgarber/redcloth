@@ -41,7 +41,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   ul = "*" %{nest++; list_type = "ul";};
   ol = "#" %{nest++; list_type = "ol";};
   list_start  = ( ( ul | ol )+ N A C :> " "+ ) >{nest = 0;} ;
-  dl_start = ( "-" N A C :> " "+ ) ;
+  dl_start = "-" . " "+ ;
   dd_start = ":=" ;
   blank_line = CRLF;
   link_alias = ( "[" >{ ASET(type, ignore) } %A phrase %T "]" %A uri ) ;
