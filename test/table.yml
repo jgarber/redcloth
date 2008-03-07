@@ -112,7 +112,7 @@ out: |-
 ---
 in: |-
   table{width: 200px; border:2px solid gray;}.
-  |=_. Alignment|
+  |_=. Alignment|
   |=. centered|
   |=(. a bit right|
   |=). a bit left|
