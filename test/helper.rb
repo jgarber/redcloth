@@ -24,7 +24,6 @@ begin
   DEFAULT_COLOR = "\e[0m" unless defined?(DEFAULT_COLOR)
   
   def highlight_differences(a, b)
-    return a,b if a.length > 1000 # Don't get bogged down with huge strings
     sdiff = Diff::LCS.sdiff(a, b, Diff::LCS::ContextDiffCallbacks)
     return highlight_string(sdiff, :old, a), highlight_string(sdiff, :new, b)
   end
