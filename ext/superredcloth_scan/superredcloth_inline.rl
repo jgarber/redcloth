@@ -22,13 +22,13 @@
 
   # links
   link_says = ( mtext+ ) >A %{ STORE(name) } ;
-  link = ( '"' C "."* " "* link_says " "* :> title? :> '":' %A uri ) >X ;
+  link = ( "["? '"' C "."* " "* link_says " "* :> title? :> '":' %A uri %{ STORE_URL(href); } :> "]"? ) >X ;
 
   # images
   image_src = ( uri ) >A %{ STORE(src) } ;
   image_is = ( A2 C "."* image_src :> title? ) ;
-  image_link = ( ":" uri ) ;
-  image = ( "!" image_is "!" %A image_link? ) >X ;
+  image_link = ( ":" uri >A %{ STORE_URL(href); } ) ;
+  image = ( "["? "!" image_is "!" %A image_link? "]"? ) >X ;
 
   # footnotes
   footno = "[" >X %A digit+ %T "]" ;
@@ -73,9 +73,9 @@
 
   main := |*
 
-    image { if ( *reg == ':') { reg += 1; STORE_URL(href); } INLINE(block, image); };
+    image { INLINE(block, image); };
 
-    link { STORE_URL(href); PASS(block, name, link); };
+    link { PASS(block, name, link); };
 
     code { PASS_CODE(block, text, code); };
     code_tag { PASS_CODE(block, text, code); };

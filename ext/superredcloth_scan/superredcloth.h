@@ -52,7 +52,6 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
   }
 #define STORE_URL(T) \
   if (p > reg && reg >= ts) { \
-    p++; \
     char punct = 1; \
     while (p > reg && punct == 1) { \
       switch (*(p - 1)) { \
@@ -66,7 +65,6 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
     te = p; \
   } \
   STORE(T); \
-  p--; \
   if ( !NIL_P(refs) && rb_funcall(refs, rb_intern("has_key?"), 1, rb_hash_aref(regs, ID2SYM(rb_intern(#T)))) ) { \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_hash_aref(refs, rb_hash_aref(regs, ID2SYM(rb_intern(#T))))); \
   }
