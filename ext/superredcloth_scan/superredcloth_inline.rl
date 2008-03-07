@@ -41,7 +41,7 @@
   em = "["? "_" >X C mtext >A %T :> "_" "]"? ;
   i = "["? "__" >X C mtext >A %T :> "__" "]"? ;
   del = "[-" >X C ( mtext ) >A %T :>> "-]" ;
-  del_phrase = (" -") >X C ( mtext ) >A %T :>> "-" (" " | PUNCT) @{ fhold; } ;
+  del_phrase = (" -") >X C ( mtext ) >A %T :>> ( "-" (" " | PUNCT) @{ fhold; } ) ;
   ins = "["? "+" >X C mtext >A %T :> "+" "]"? ;
   sup = "["? "^" >X C mtext >A %T :> "^" "]"? ;
   sub = "["? "~" >X C mtext >A %T :> "~" "]"? ;
