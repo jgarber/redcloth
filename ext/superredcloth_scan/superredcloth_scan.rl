@@ -44,7 +44,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   dl_start = "-" . " "+ ;
   dd_start = ":=" ;
   blank_line = CRLF;
-  link_alias = ( "[" >{ ASET(type, ignore) } %A phrase %T "]" %A uri ) ;
+  link_alias = ( "[" >{ ASET(type, ignore) } %A phrase %T "]" %A uri %{ STORE_URL(href); } ) ;
   
   # html blocks
   BlockTagName = Name* - ("pre" | "notextile" | "a" | "applet" | "basefont" | "bdo" | "br" | "font" | "iframe" | "img" | "map" | "object" | "param" | "q" | "script" | "span" | "sub" | "sup" | "abbr" | "acronym" | "cite" | "code" | "del" | "dfn" | "em" | "ins" | "kbd" | "samp" | "strong" | "var" | "b" | "big" | "i" | "s" | "small" | "strike" | "tt" | "u");
@@ -149,7 +149,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
     list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
     dl_start        { INLINE(html, dl_open); ASET(type, dt); fgoto dl; };
     table           { INLINE(table, table_close); DONE(table); fgoto block; };
-    link_alias      { STORE_URL(href); rb_hash_aset(refs_found, rb_hash_aref(regs, ID2SYM(rb_intern("text"))), rb_hash_aref(regs, ID2SYM(rb_intern("href")))); DONE(block); };
+    link_alias      { rb_hash_aset(refs_found, rb_hash_aref(regs, ID2SYM(rb_intern("text"))), rb_hash_aref(regs, ID2SYM(rb_intern("href")))); DONE(block); };
     blank_line => cat;
     default
     { 
