@@ -248,7 +248,7 @@ in: |-
   fn1. The footnote.
 out: |-
   <p>A footnote reference<sup class="footnote"><a href="#fn1216642796463b1223ae29d">1</a></sup>.</p>
-  <p id="fn1216642796463b1223ae29d" class="footnote"><sup>1</sup> The footnote.</p>
+  <p class="footnote" id="fn1216642796463b1223ae29d"><sup>1</sup> The footnote.</p>
 ---
 name: block code
 desc: Code such as XHTML, Javascript or PHP may be displayed using the bc. “block code” modifier. XHTML significant characters such as < and > will be escaped within code blocks – bc is used for displaying code to the reader, not for executing it.
