@@ -134,8 +134,8 @@ out: |-
   <pre><code>
   ./foo.pl%
   &lt;p&gt;foo outputs an HTML paragraph&lt;/p&gt;
-
-  &lt;p&gt;block of code keeps going until a different block signature is encountered&lt;/p&gt;
+  </code>
+  <code>&lt;p&gt;block of code keeps going until a different block signature is encountered&lt;/p&gt;
   </code></pre>
   
   <p>And then go back with a normal paragraph.</p>
