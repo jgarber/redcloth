@@ -34,6 +34,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
   CLEAR(block); \
   regs = rb_hash_new()
 #define ADD_EXTENDED_BLOCK()    rb_str_append(html, red_block(rb_formatter, regs, block, refs)); CLEAR(block);
+#define END_EXTENDED()     extend = Qnil; regs = rb_hash_new();
 #define ADD_BLOCKCODE()    rb_str_append(html, red_blockcode(rb_formatter, regs, block)); CLEAR(block); regs = rb_hash_new()
 #define ADD_EXTENDED_BLOCKCODE()    rb_str_append(html, red_blockcode(rb_formatter, regs, block)); CLEAR(block);
 #define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_str_new2(#V));

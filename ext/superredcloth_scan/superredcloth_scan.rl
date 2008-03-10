@@ -32,10 +32,9 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   bq_start = ( "bq" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE(cite) } )? " "+ ) ;
   btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div" ) ;
   block_start = ( btype >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
-  next_block_start = ( btype A C :> "." ) ;
+  next_block_start = ( btype A C :> "."+ " " ) >A @{ p = reg - 1; } ;
   double_return = CRLF{2,} ;
   block_end = ( double_return | EOF );
-  extended_block_end = double_return . next_block_start >A @{ p = reg - 1; } ;
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
   footnote_start = ( ftype A C :> dotspace ) ;
   ul = "*" %{nest++; list_type = "ul";};
@@ -74,8 +73,8 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   
   pre_block := |*
     EOF                { ADD_BLOCKCODE(); fgoto main; };
-    extended_block_end { ADD_BLOCKCODE(); fgoto main; };
     double_return      { if (NIL_P(extend)) { ADD_BLOCKCODE(); fgoto main; } else { ADD_EXTENDED_BLOCKCODE(); } };
+    next_block_start   { END_EXTENDED(); fgoto main; };
     default => esc_pre;
   *|;
 
@@ -86,8 +85,8 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   
   notextile_block := |*
     EOF                { DONE(block); fgoto main; };
-    extended_block_end { DONE(block); fgoto main; };
     double_return      { if (NIL_P(extend)) { DONE(block); fgoto main; } else { DONE(block); } };
+    next_block_start   { END_EXTENDED(); fgoto main; };
     default => cat;
   *|;
  
@@ -98,22 +97,22 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
 
   bc := |*
     EOF                { ADD_BLOCKCODE(); INLINE(html, bc_close); plain_block = rb_str_new2("p"); fgoto main; };
-    extended_block_end { ADD_BLOCKCODE(); INLINE(html, bc_close); plain_block = rb_str_new2("p"); fgoto main; };
     double_return      { if (NIL_P(extend)) { ADD_BLOCKCODE(); INLINE(html, bc_close); plain_block = rb_str_new2("p"); fgoto main; } else { ADD_EXTENDED_BLOCKCODE(); } };
+    next_block_start   { INLINE(html, bc_close); plain_block = rb_str_new2("p");  END_EXTENDED(); fgoto main; };
     default => esc_pre;
   *|;
 
   bq := |*
     EOF                { ADD_BLOCK(); INLINE(html, bq_close); fgoto main; };
-    extended_block_end { ADD_BLOCK(); INLINE(html, bq_close); fgoto main; };
     double_return      { if (NIL_P(extend)) { ADD_BLOCK(); INLINE(html, bq_close); fgoto main; } else { ADD_EXTENDED_BLOCK(); } };
     default => cat;
+    next_block_start   { INLINE(html, bq_close); END_EXTENDED(); fgoto main; };
   *|;
 
   block := |*
     EOF                { ADD_BLOCK(); fgoto main; };
-    extended_block_end { ADD_BLOCK(); fgoto main; };
     double_return      { if (NIL_P(extend)) { ADD_BLOCK(); fgoto main; } else { ADD_EXTENDED_BLOCK(); } };
+    next_block_start   { END_EXTENDED(); fgoto main; };
     default => cat;
   *|;
 
