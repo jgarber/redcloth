@@ -21,15 +21,14 @@ out: |-
 ---
 name: definition lists with line breaks
 in: |-
-  - term :=
-  you can span multiple lines
+  - term := you can have line breaks
   just like other lists
   - line-spanning
   term := hey, slick!
 out: |-
   <dl>
   	<dt>term</dt>
-  	<dd>you can span multiple lines<br />
+  	<dd>you can have line breaks<br />
   just like other lists</dd>
   	<dt>line-spanning<br />
   term</dt>
@@ -63,9 +62,6 @@ in: |-
   yes
   
   ok =:
-  - another term :=
-  you can span multiple lines
-  just like other lists
   - regular term := no
 out: |-
   <p>here is a long definition</p>

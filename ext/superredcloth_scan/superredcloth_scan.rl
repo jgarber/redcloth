@@ -43,6 +43,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   list_start  = ( ( ul | ol )+ N A C :> " "+ ) >{nest = 0;} ;
   dl_start = "-" . " "+ ;
   dd_start = ":=" ;
+  long_dd  = dd_start " "* CRLF %{ ADD_BLOCK(); ASET(type, dd); } any+ >A %{ TRANSFORM(text) } :>> "=:" ;
   blank_line = CRLF;
   link_alias = ( "[" >{ ASET(type, ignore) } %A phrase %T "]" %A uri %{ STORE_URL(href); } ) ;
   
@@ -130,6 +131,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   dl := |*
     CRLF dl_start   { ADD_BLOCK(); ASET(type, dt); };
     dd_start        { ADD_BLOCK(); ASET(type, dd); };
+    long_dd         { INLINE(html, dd); };
     block_end       { ADD_BLOCK(); INLINE(html, dl_close);  fgoto main; };
     default => cat;
   *|;

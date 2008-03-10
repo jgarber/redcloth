@@ -38,6 +38,18 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define ADD_EXTENDED_BLOCKCODE()    rb_str_append(html, red_blockcode(rb_formatter, regs, block)); CLEAR(block);
 #define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_str_new2(#V));
 #define AINC(T)        red_inc(regs, ID2SYM(rb_intern(#T)));
+#define TRANSFORM(T) \
+  if (p > reg && reg >= ts) { \
+    while (reg < p && ( *reg == '\r' || *reg == '\n' ) ) { reg++; } \
+    while (p > reg && ( *(p - 1) == '\r' || *(p - 1) == '\n' ) ) { p--; } \
+  } \
+  if (p > reg && reg >= ts) { \
+    VALUE str = superredcloth_transform(rb_formatter, reg, p, refs); \
+    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
+  /*  printf("TRANSFORM(" #T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
+  } else { \
+    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
+  }
 #define STORE(T)  \
   if (p > reg && reg >= ts) { \
     while (reg < p && ( *reg == '\r' || *reg == '\n' ) ) { reg++; } \
