@@ -130,11 +130,10 @@ class << SuperRedCloth::HTML
   end
   
   def image(opts)
-    p_opts = {:float => opts.delete(:align)} if opts[:align]
+    opts.delete(:align)
     opts[:alt] = opts[:title]
     img = "<img src=\"#{urlesc opts[:src]}\"#{pba(opts)} alt=\"#{opts[:alt]}\" />"  
     img = "<a href=\"#{urlesc opts[:href]}\">#{img}</a>" if opts[:href]
-    img = "<p#{pba(p_opts)}>#{img}</p>" if p_opts
     img
   end
   

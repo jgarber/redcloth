@@ -46,6 +46,11 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
   blank_line = CRLF;
   link_alias = ( "[" >{ ASET(type, ignore) } %A phrase %T "]" %A uri %{ STORE_URL(href); } ) ;
   
+  # image lookahead
+  IMG_A_LEFT = "<" %{ ASET(float, left) } ;
+  IMG_A_RIGHT = ">" %{ ASET(float, right) } ;
+  aligned_image = ( "["? "!" (IMG_A_LEFT | IMG_A_RIGHT) ) >A @{ p = reg - 1; } ;
+  
   # html blocks
   BlockTagName = Name* - ("pre" | "notextile" | "a" | "applet" | "basefont" | "bdo" | "br" | "font" | "iframe" | "img" | "map" | "object" | "param" | "q" | "script" | "span" | "sub" | "sup" | "abbr" | "acronym" | "cite" | "code" | "del" | "dfn" | "em" | "ins" | "kbd" | "samp" | "strong" | "var" | "b" | "big" | "i" | "s" | "small" | "strike" | "tt" | "u");
   block_start_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? ">" | "<" BlockTagName ">";
@@ -151,6 +156,7 @@ VALUE super_ParseError, super_RedCloth, super_HTML;
     dl_start        { INLINE(html, dl_open); ASET(type, dt); fgoto dl; };
     table           { INLINE(table, table_close); DONE(table); fgoto block; };
     link_alias      { rb_hash_aset(refs_found, rb_hash_aref(regs, ID2SYM(rb_intern("text"))), rb_hash_aref(regs, ID2SYM(rb_intern("href")))); DONE(block); };
+    aligned_image   { rb_hash_aset(regs, ID2SYM(rb_intern("type")), plain_block); fgoto block; };
     blank_line => cat;
     default
     { 
