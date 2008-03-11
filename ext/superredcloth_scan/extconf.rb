@@ -1,7 +1,6 @@
 require 'mkmf'
 
-# do not optimize (takes too much memory and performance gain is negligeable)
-$CFLAGS << " -O0 "
+$CFLAGS << " -O0 " # do not optimize (takes too much memory and performance gain is negligeable)
 
 dir_config("superredcloth_scan")
 have_library("c", "main")

@@ -77,8 +77,8 @@
 
     link { PASS(block, name, link); };
 
-    code { PASS_CODE(block, text, code); };
-    code_tag { PASS_CODE(block, text, code); };
+    code { PASS_CODE(block, text, code, opts); };
+    code_tag { PASS_CODE(block, text, code, opts); };
     strong { PASS(block, text, strong); };
     b { PASS(block, text, b); };
     em { PASS(block, text, em); };
@@ -134,12 +134,12 @@ red_pass(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth, VALUE refs)
 }
 
 VALUE
-red_pass_code(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth)
+red_pass_code(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth, unsigned int opts)
 {
   VALUE txt = rb_hash_aref(regs, ref);
   if (!NIL_P(txt)) {
     VALUE txt2 = rb_str_new2("");
-    rb_str_cat_escaped_for_preformatted(txt2, RSTRING(txt)->ptr, RSTRING(txt)->ptr + RSTRING(txt)->len);
+    rb_str_cat_escaped_for_preformatted(txt2, RSTRING(txt)->ptr, RSTRING(txt)->ptr + RSTRING(txt)->len, opts);
     rb_hash_aset(regs, ref, txt2);
   }
   return rb_funcall(rb_formatter, meth, 1, regs);
@@ -198,7 +198,12 @@ superredcloth_inline(rb_formatter, p, pe, refs)
   char *ts, *te, *reg, *eof;
   VALUE block = rb_str_new2("");
   VALUE regs = Qnil;
-
+  unsigned int opts = 0;
+  
+  VALUE options = rb_funcall(rb_formatter, rb_intern("options"), 0);
+  Check_Type(options, T_HASH);
+  if (rb_hash_aref(options, SYM_html_escape_entities) == Qtrue) opts |= SR_HTML_ESCAPE_ENTITIES;
+  
   %% write init;
 
   %% write exec;
@@ -206,24 +211,34 @@ superredcloth_inline(rb_formatter, p, pe, refs)
   return block;
 }
 
+/** Append characters to a string, escaping (&, <, >, ", ') to their html entities.
+  * @param str ruby string
+  * @param ts  start of character buffer to append
+  * @param te  end of character buffer
+  * @param opts integer with parsing options created by ORing. If SR_HTML_ESCAPE_ENTITIES is not set,
+                escaping will not be performed.
+  */
 void
-rb_str_cat_escaped(str, ts, te)
+rb_str_cat_escaped(str, ts, te, opts)
   VALUE str;
   char *ts, *te;
+  unsigned int opts;
 {
   char *t = ts, *t2 = ts, *ch = NULL;
   if (te <= ts) return;
 
   while (t2 < te) {
     ch = NULL;
-    switch (*t2)
-    {
-      case '&':  ch = "&amp;";    break;
-      case '>':  ch = "&gt;";     break;
-      case '<':  ch = "&lt;";     break;
-      case '"':  ch = "&quot;";   break;
-      case '\n': ch = "<br />\n"; break;
-      case '\'': ch = "&#8217;";  break;
+    if (opts & SR_HTML_ESCAPE_ENTITIES) {
+      switch (*t2)
+      {
+        case '&':  ch = "&amp;";    break;
+        case '>':  ch = "&gt;";     break;
+        case '<':  ch = "&lt;";     break;
+        case '"':  ch = "&quot;";   break;
+        case '\n': ch = "<br />\n"; break;
+        case '\'': ch = "&#8217;";  break;
+      }
     }
 
     if (ch != NULL)
@@ -240,21 +255,31 @@ rb_str_cat_escaped(str, ts, te)
     rb_str_cat(str, t, t2-t);
 }
 
+/** Append characters to a string, escaping (&, <, >) to their html entities.
+  * @param str ruby string
+  * @param ts  start of character buffer to append
+  * @param te  end of character buffer
+  * @param opts integer with parsing options created by ORing. If SR_HTML_ESCAPE_ENTITIES is not set,
+                escaping will not be performed.
+  */
 void
-rb_str_cat_escaped_for_preformatted(str, ts, te)
+rb_str_cat_escaped_for_preformatted(str, ts, te, opts)
   VALUE str;
   char *ts, *te;
+  unsigned int opts;
 {
   char *t = ts, *t2 = ts, *ch = NULL;
   if (te <= ts) return;
 
   while (t2 < te) {
     ch = NULL;
-    switch (*t2)
-    {
-      case '&':  ch = "&amp;";    break;
-      case '>':  ch = "&gt;";     break;
-      case '<':  ch = "&lt;";     break;
+    if (opts & SR_HTML_ESCAPE_ENTITIES) {
+      switch (*t2)
+      {
+        case '&':  ch = "&amp;";    break;
+        case '>':  ch = "&gt;";     break;
+        case '<':  ch = "&lt;";     break;
+      }
     }
 
     if (ch != NULL)

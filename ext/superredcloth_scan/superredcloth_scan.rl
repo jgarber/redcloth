@@ -11,7 +11,8 @@
 #include <ruby.h>
 #include "superredcloth.h"
 
-VALUE super_ParseError, super_RedCloth, super_HTML;
+VALUE super_ParseError, super_RedCloth, super_HTML, super_LATEX;
+int SYM_html_escape_entities;
 
 %%{
 
@@ -193,6 +194,11 @@ superredcloth_transform(rb_formatter, p, pe, refs)
   VALUE extend = Qnil;
   char listm[10] = "";
   VALUE refs_found = rb_hash_new();
+  unsigned int opts = 0;
+  
+  VALUE options = rb_funcall(rb_formatter, rb_intern("options"), 0);
+  Check_Type(options, T_HASH);
+  if (rb_hash_aref(options, SYM_html_escape_entities) == Qtrue) opts |= SR_HTML_ESCAPE_ENTITIES;
 
   %% write init;
 
@@ -230,6 +236,16 @@ superredcloth_to_html(self)
 }
 
 static VALUE
+superredcloth_to_latex(self)
+  VALUE self;
+{
+  char *pe, *p;
+  int len = 0;
+
+  return superredcloth_transform2(super_LATEX, self);
+}
+
+static VALUE
 superredcloth_to(self, formatter)
   VALUE self, formatter;
 {
@@ -243,7 +259,10 @@ void Init_superredcloth_scan()
 {
   super_RedCloth = rb_define_class("SuperRedCloth", rb_cString);
   rb_define_method(super_RedCloth, "to_html", superredcloth_to_html, 0);
+  rb_define_method(super_RedCloth, "to_latex", superredcloth_to_latex, 0);
   rb_define_method(super_RedCloth, "to", superredcloth_to, 1);
   super_ParseError = rb_define_class_under(super_RedCloth, "ParseError", rb_eException);
-  super_HTML = rb_define_module_under(super_RedCloth, "HTML");
+  super_HTML  = rb_define_module_under(super_RedCloth, "HTML");
+  super_LATEX = rb_define_module_under(super_RedCloth, "LATEX");
+  SYM_html_escape_entities = ID2SYM(rb_intern("html_escape_entities"));
 }

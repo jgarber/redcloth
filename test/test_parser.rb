@@ -7,13 +7,19 @@ class TestParser < Test::Unit::TestCase
   def red str
     SuperRedCloth.new(str).to_html
   end
+  
+  def red_latex str
+    SuperRedCloth.new(str).to_latex
+  end
+  
   Dir[File.join(DIR, "*.yml")].each do |testfile|
     testgroup = File.basename(testfile, '.yml')
     num = 0
     YAML::load_documents(File.open(testfile)) do |doc|
       name = doc['name'] ? doc['name'].downcase.gsub(/[- ]/, '_') : num
-      define_method("test_#{testgroup}_#{name}") do 
-        assert_html_equal doc['out'], red(doc['in'])
+      define_method("test_#{testgroup}_#{name}") do
+        assert_html_equal doc['out'],  red(doc['in']) if doc['out']
+        assert_equal doc['latex'], red_latex(doc['in']) if doc['latex']
       end
       num += 1
     end

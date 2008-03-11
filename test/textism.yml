@@ -2,14 +2,17 @@
 name: header one
 in: h1. Header 1
 out: <h1>Header 1</h1>
+latex: \section*{Header 1}
 ---
 name: header two
 in: h2. Header 2
 out: <h2>Header 2</h2>
+latex: \subsection*{Header 2}
 ---
 name: header three
 in: h3. Header 3
 out: <h3>Header 3</h3>
+latex: \subsubsection*{Header 3}
 ---
 name: blockquote
 in: |-
@@ -28,6 +31,16 @@ out: |-
   
   	<p>Any old text.</p>
 
+latex: |+
+  Any old text.
+  
+  \begin{quotation}
+  A block quotation.
+  
+  \end{quotation}
+
+  Any old text.
+
 ---
 in: |-
   # A first item
@@ -41,7 +54,14 @@ out: |-
   	<li>A third item</li>
   	<li>A fourth item</li>
   </ol>
-
+latex: |+
+  \begin{enumerate}
+  	\item A first item
+  	\item A second item
+  	\item A third item
+  	\item A fourth item
+  \end{enumerate}
+  
 ---
 in: |-
   * A first item
@@ -56,44 +76,62 @@ out: |-
   	<li>A third item</li>
   	<li>A fourth item</li>
   </ul>
-
+latex: |+
+  \begin{itemize}
+  	\item A first item
+  	\item A second item
+  	\item A third item
+  	\item A fourth item
+  \end{itemize}
+  
 ---
 in: _a phrase_
 out: <p><em>a phrase</em></p>
+latex: "\\emph{a phrase}\n\n"
 ---
 in: __a phrase__
 out: <p><i>a phrase</i></p>
+latex: "\\emph{a phrase}\n\n"
 ---
 in: '*a phrase*'
 out: <p><strong>a phrase</strong></p>
+latex: "\\textbf{a phrase}\n\n"
 ---
 in: '**a phrase**'
 out: <p><b>a phrase</b></p>
+latex: "\\textbf{a phrase}\n\n"
 ---
 in: Nabokov's ??Pnin??
 out: <p>Nabokov&#8217;s <cite>Pnin</cite></p>
+latex: "Nabokov's \\begin{quote}Pnin\\end{quote}\n\n"
 ---
 name: del part of word
 in: 'A very [-extra-]ordinary day.'
-out: <p>A very <del>extra</del>ordinary day.</p>
+out: "<p>A very <del>extra</del>ordinary day.</p>"
+latex: "A very \\sout{extra}ordinary day.\n\n"
 ---
 name: del part of word that contains a hyphen
 in: 'An [-extra-extra-]ordinary day.'
 out: <p>An <del>extra-extra</del>ordinary day.</p>
+latex: "An \\sout{extra-extra}ordinary day.\n\n"
 ---
 name: del a phrase
 in: 'Delete -a phrase- this way.'
 out: <p>Delete <del>a phrase</del> this way.</p>
+latex: "Delete \\sout{a phrase} this way.\n\n"
 ---
 name: del a phrase that contains hyphens
 in: 'Delete -a no-nonsense phrase- this way.'
 out: <p>Delete <del>a no-nonsense phrase</del> this way.</p>
+latex: "Delete \\sout{a no-nonsense phrase} this way.\n\n"
 ---
 in: +a phrase+
 out: <p><ins>a phrase</ins></p>
+latex: "\\underline{a phrase}\n\n"
 ---
 in: ^a phrase^
 out: <p><sup>a phrase</sup></p>
+latex: "\\ensuremath{^\\textrm{a phrase}}\n\n"
 ---
 in: ~a phrase~
 out: <p><sub>a phrase</sub></p>
