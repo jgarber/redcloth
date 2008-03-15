@@ -31,32 +31,6 @@ in: "bc. Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;5 &#62; $5.
 "
 html: "<pre><code>Math fact: 3 &amp;lt; 5 &amp;amp; 5 &amp;gt; 3 but &amp;pound;5 &amp;#62; $5.</code></pre>"
 ---
-name: nested pre tags
-in: |-
-  <pre>
-  <code>
-    Properly escaped here.
-  
-    <pre>
-      a = 1
-    </pre>
-  
-    Still in the pre.
-  </code>
-  </pre>
-html: |-  
-  <pre>
-  <code>
-    Properly escaped here.
-  
-    &lt;pre&gt;
-      a = 1
-    &lt;/pre&gt;
-  
-    Still in the pre.
-  </code>
-  </pre>
----
 name: no formatting within pre
 in: |-
   <pre>
