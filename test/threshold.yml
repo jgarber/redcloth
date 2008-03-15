@@ -432,7 +432,8 @@ html: '<p><span class="myspan">I&#8217;ll make my own way.</span></p>'
 name: paragraphs partly enclosed in xhtml block tags
 desc: Paragraphs that are only partly enclosed in block tags will be enclosed in <p>...</p> tags.
 in: <div>inside</div> and outside.
-html: <p><div>inside</div> and outside.</p>
+html: <div>inside</div> <p>and outside.</p>
+# html: <p><div>inside</div> and outside.</p>
 ---
 name: complex xhtml blocks
 desc: Textile can’t always identify the beginning and end of long or complex blocks of XHTML. To prevent Textile from enclosing complex XHTML blocks in paragraph tags, either use a space at the beginning of each line...
