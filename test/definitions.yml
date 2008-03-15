@@ -7,14 +7,11 @@ in: |-
   - maybe:= yes
 out: |-
   <p>here is a RedCloth definition list:</p>
-  
   <dl>
   	<dt>yes</dt>
   	<dd>no</dd>
-  
   	<dt>no</dt>
   	<dd>no</dd>
-  
   	<dt>maybe</dt>
   	<dd>yes</dd>
   </dl>
@@ -44,7 +41,6 @@ in: |-
   - cloth := woven threads
 out: |-
   <p>You can have multiple terms before a definition:</p>
-
   <dl>
   	<dt>textile</dt>
   	<dt>fabric</dt>
@@ -67,7 +63,9 @@ out: |-
   <p>here is a long definition</p>
   <dl>
   	<dt>some term</dt>
-  	<dd><p><strong>sweet</strong></p><p>yes</p><p>ok</p></dd>
+  	<dd><p><strong>sweet</strong></p>
+  <p>yes</p>
+  <p>ok</p></dd>
   	<dt>regular term</dt>
   	<dd>no</dd>
   </dl>

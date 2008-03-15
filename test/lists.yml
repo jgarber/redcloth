@@ -34,16 +34,16 @@ out: |-
   	<ol>
   		<li>number</li>
   		<li>number
-  			<ul>
-  				<li>bullet</li>
-  			</ul></li>
+  		<ul>
+  			<li>bullet</li>
+  		</ul></li>
   		<li>number</li>
   		<li>number with<br />
   a break</li>
   	</ol></li>
-  		<li>bullet
+  	<li>bullet
   	<ul>
-  	<li>okay</li>
+  		<li>okay</li>
   	</ul></li>
   </ul>
 ---
@@ -100,19 +100,18 @@ out: |-
   	<li>two</li>
   	<li>three</li>
   </ol>
-  	<p>test</p>
+  <p>test</p>
   <ol start="4">
   	<li>four</li>
   	<li>five</li>
   	<li>six</li>
   </ol>
-  	<p>test</p>
+  <p>test</p>
   <ol start="7">
   	<li>seven</li>
   	<li>eight</li>
   	<li>nine</li>
   </ol>
-
 ---
 name: continue list when prior list contained nested list
 in: |-
@@ -212,7 +211,7 @@ out: |-
   	<li>Like this</li>
   	<li>They must have anchors in the text</li>
   </ol>
-  	<h2>See Also</h2>
+  <h2>See Also</h2>
   <ul>
   	<li>See Also notes should be bullets</li>
   	<li>Like this</li>

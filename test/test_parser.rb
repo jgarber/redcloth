@@ -18,7 +18,7 @@ class TestParser < Test::Unit::TestCase
     YAML::load_documents(File.open(testfile)) do |doc|
       name = doc['name'] ? doc['name'].downcase.gsub(/[- ]/, '_') : num
       define_method("test_#{testgroup}_#{name}") do
-        assert_html_equal doc['out'],  red(doc['in']) if doc['out']
+        assert_equal doc['out'],  red(doc['in']) if doc['out']
         assert_equal doc['latex'], red_latex(doc['in']) if doc['latex']
       end
       num += 1

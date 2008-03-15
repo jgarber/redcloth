@@ -79,9 +79,7 @@ name: no formatting within blockcode
 in: |-
   bc. __not italics__
 out: |-
-  <pre><code>
-  __not italics__
-  </code></pre>
+  <pre><code>__not italics__</code></pre>
 ---
 name: double-equals as inline notextile
 in: |-
@@ -92,9 +90,7 @@ in: |-
   p. Back to normal.
 out: |-
   <p>Regular paragraph</p>
-
   <p>Escaped portion -- will not be formatted by Textile at all</p>
-
   <p>Back to normal.</p>
 ---
 name: notextile tags
@@ -103,6 +99,7 @@ in: |-
   # *test*
   </notextile>
 out: |-
+  
   # *test*
 ---
 name: code in list items
@@ -130,12 +127,10 @@ in: |-
   p. And then go back with a normal paragraph.
 out: |-
   <p>If you have a line or two of code or <span class="caps">HTML</span> to embed, use extended block code like so:</p>
+  <pre><code>./foo.pl%
+  &lt;p&gt;foo outputs an HTML paragraph&lt;/p&gt;</code>
 
-  <pre><code>
-  ./foo.pl%
-  &lt;p&gt;foo outputs an HTML paragraph&lt;/p&gt;
-  </code>
-  <code>&lt;p&gt;block of code keeps going until a different block signature is encountered&lt;/p&gt;
-  </code></pre>
-  
+  <code>&lt;p&gt;block of code keeps going until a different block signature is encountered&lt;/p&gt;</code>
+
+  </pre>
   <p>And then go back with a normal paragraph.</p>

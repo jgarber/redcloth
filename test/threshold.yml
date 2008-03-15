@@ -262,8 +262,7 @@ out: |-
   <pre><code>&lt;script&gt;
   // a Javascript example
   alert("Hello World");
-  &lt;/script&gt;
-  </code></pre>
+  &lt;/script&gt;</code></pre>
 ---
 name: preformatted text
 desc: Use the pre. block modifier for pre-formatted text. XHTML significant characters within the block will be escaped.
@@ -273,8 +272,7 @@ in: |-
   text
 out: |-
   <pre>Pre-formatted
-  text
-  </pre>
+  text</pre>
 ---
 name: notextile
 desc: The notextile. block modifier applies no Textile processing at all to a block. Raw XHTML characters are passed through untouched, so this may be used to insert explicit XHTML markup, or execute Javascript or PHP code.
@@ -364,12 +362,13 @@ out: |-
   <p>A <span class="caps">PHP</span> code example.</p>
   <pre><code>&lt;?php
   function hello() {
-  // display a hello message
-  </code>
-  <code>	print "Hello, World";
+  // display a hello message</code>
+
+  <code>print "Hello, World";
   }
-  ?&gt;
-  </code></pre>
+  ?&gt;</code>
+
+  </pre>
   <p>Following paragraph.</p>
 ---
 name: extended block attributes
@@ -404,10 +403,9 @@ in: |-
   
   Code block 2.
 out: |-
-  <pre class="myclass"><code class="myclass">Code block 1.
-  </code>
-  <code class="myclass">Code block 2.
-  </code></pre>
+  <pre class="myclass"><code class="myclass">Code block 1.</code>
+
+  <code class="myclass">Code block 2.</code></pre>
 ---
 name: raw xhtml left in tact
 desc: Raw XHTML tags are generally left untouched by Textile. Span tags that enclose only part of a block of text will be left intact, while the block itself is treated normally.
@@ -448,7 +446,9 @@ in: |-
   </div>
 out: |-
   <div>
+
   <span>My div</span>
+
   </div>
 ---
 name: explicit pre escapement
@@ -528,9 +528,9 @@ in: |-
   # Item three
 out: |-
   <ol>
-  <li>Item one</li>
-  <li>Item two</li>
-  <li>Item three</li>
+  	<li>Item one</li>
+  	<li>Item two</li>
+  	<li>Item three</li>
   </ol>
 ---
 name: bulleted lists
@@ -541,9 +541,9 @@ in: |-
   * Item C
 out: |-
   <ul>
-  <li>Item A</li>
-  <li>Item B</li>
-  <li>Item C</li>
+  	<li>Item A</li>
+  	<li>Item B</li>
+  	<li>Item C</li>
   </ul>
 ---
 name: list attributes
@@ -554,9 +554,9 @@ in: |-
   * Item three
 out: |-
   <ul style="color:red;">
-  <li>Item one</li>
-  <li>Item two</li>
-  <li>Item three</li>
+  	<li>Item one</li>
+  	<li>Item two</li>
+  	<li>Item three</li>
   </ul>
 ---
 name: nested lists
@@ -569,15 +569,15 @@ in: |-
   # Item two
 out: |-
   <ol>
-  <li>Item one
-  <ol>
-  <li>Item one-A</li>
-  <li>Item one-B
-  <ol>
-  <li>Item one-B-a</li>
-  </ol></li>
-  </ol></li>
-  <li>Item two</li>
+  	<li>Item one
+  	<ol>
+  		<li>Item one-A</li>
+  		<li>Item one-B
+  		<ol>
+  			<li>Item one-B-a</li>
+  		</ol></li>
+  	</ol></li>
+  	<li>Item two</li>
   </ol>
 ---
 name: tables
@@ -585,11 +585,11 @@ desc: Tables can be constructed using | “pipe” symbols to separate cells.
 in: |a|simple|table|
 out: |-
   <table>
-  <tr>
-  <td>a</td>
-  <td>simple</td>
-  <td>table</td>
-  </tr>
+  	<tr>
+  		<td>a</td>
+  		<td>simple</td>
+  		<td>table</td>
+  	</tr>
   </table>
 ---
 name: table heading cells
@@ -599,16 +599,16 @@ in: |-
   |a|table|row|
 out: |-
   <table>
-  <tr>
-  <th>a</th>
-  <th>table</th>
-  <th>heading</th>
-  </tr>
-  <tr>
-  <td>a</td>
-  <td>table</td>
-  <td>row</td>
-  </tr>
+  	<tr>
+  		<th>a</th>
+  		<th>table</th>
+  		<th>heading</th>
+  	</tr>
+  	<tr>
+  		<td>a</td>
+  		<td>table</td>
+  		<td>row</td>
+  	</tr>
   </table>
 ---
 name: cell attributes
@@ -616,11 +616,11 @@ desc: Attributes may be applied separately to individual cells, rows, and entire
 in: |a|{color:red}. styled|cell|
 out: |-
   <table>
-  <tr>
-  <td>a</td>
-  <td style="color:red;">styled</td>
-  <td>cell</td>
-  </tr>
+  	<tr>
+  		<td>a</td>
+  		<td style="color:red;">styled</td>
+  		<td>cell</td>
+  	</tr>
   </table>
 ---
 name: row attributes
@@ -628,11 +628,11 @@ desc: Row attributes are placed at the beginning of a row, followed by a dot and
 in: (rowclass). |a|classy|row|
 out: |-
   <table>
-  <tr class="rowclass">
-  <td>a</td>
-  <td>classy</td>
-  <td>row</td>
-  </tr>
+  	<tr class="rowclass">
+  		<td>a</td>
+  		<td>classy</td>
+  		<td>row</td>
+  	</tr>
   </table>
 ---
 name: table attributes
@@ -643,16 +643,16 @@ in: |-
   |a|classy|table|
 out: |-
   <table class="tableclass">
-  <tr>
-  <td>a</td>
-  <td>classy</td>
-  <td>table</td>
-  </tr>
-  <tr>
-  <td>a</td>
-  <td>classy</td>
-  <td>table</td>
-  </tr>
+  	<tr>
+  		<td>a</td>
+  		<td>classy</td>
+  		<td>table</td>
+  	</tr>
+  	<tr>
+  		<td>a</td>
+  		<td>classy</td>
+  		<td>table</td>
+  	</tr>
   </table>
 ---
 name: vertical alignment
@@ -660,9 +660,9 @@ desc: Special alignment symbols are available for vertical alignment within tabl
 in: |^. top alignment|
 out: |-
   <table>
-  <tr>
-  <td style="vertical-align:top;">top alignment</td>
-  </tr>
+  	<tr>
+  		<td style="vertical-align:top;">top alignment</td>
+  	</tr>
   </table>
 ---
 name: vertical alignment 2
@@ -670,9 +670,9 @@ in: |-
   |-. middle alignment|
 out: |-
   <table>
-  <tr>
-  <td style="vertical-align:middle;">middle alignment</td>
-  </tr>
+  	<tr>
+  		<td style="vertical-align:middle;">middle alignment</td>
+  	</tr>
   </table>
 ---
 name: vertical alignment 3
@@ -680,9 +680,9 @@ in: |-
   |~. bottom alignment|
 out: |-
   <table>
-  <tr>
-  <td style="vertical-align:bottom;">bottom alignment</td>
-  </tr>
+  	<tr>
+  		<td style="vertical-align:bottom;">bottom alignment</td>
+  	</tr>
   </table>
 ---
 name: column span
@@ -692,13 +692,13 @@ in: |-
   | col 1 | col 2 |
 out: |-
   <table>
-  <tr>
-  <td colspan="2">spans two cols </td>
-  </tr>
-  <tr>
-  <td> col 1 </td>
-  <td> col 2 </td>
-  </tr>
+  	<tr>
+  		<td colspan="2">spans two cols </td>
+  	</tr>
+  	<tr>
+  		<td> col 1 </td>
+  		<td> col 2 </td>
+  	</tr>
   </table>
 ---
 name: row span
@@ -709,16 +709,16 @@ in: |-
   | row c |
 out: |-
   <table>
-  <tr>
-  <td rowspan="3">spans 3 rows </td>
-  <td> row a </td>
-  </tr>
-  <tr>
-  <td> row b </td>
-  </tr>
-  <tr>
-  <td> row c </td>
-  </tr>
+  	<tr>
+  		<td rowspan="3">spans 3 rows </td>
+  		<td> row a </td>
+  	</tr>
+  	<tr>
+  		<td> row b </td>
+  	</tr>
+  	<tr>
+  		<td> row c </td>
+  	</tr>
   </table>
 ---
 name: whitespace required

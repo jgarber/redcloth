@@ -35,7 +35,8 @@
 
   # markup
   code = "["? "@" >X C mtext >A %T :> "@" "]"? ;
-  code_tag = ("<code>" mspace?) >X (( mtext ) >A %T) :>> (mspace? "</code>") ;
+  code_tag_start = "<code>" ;
+  code_tag_end = "</code>" ;
   strong = "["? "*" >X C mtext >A %T :> "*" "]"? ;
   b = "["? "**" >X C mtext >A %T :> "**" "]"? ;
   em = "["? "_" >X C mtext >A %T :> "_" "]"? ;
@@ -70,6 +71,10 @@
 
   other_phrase = phrase -- dim;
 
+  code_tag := |*
+    code_tag_end { CAT(block); fgoto main; };
+    default => esc_pre;
+  *|;
 
   main := |*
 
@@ -78,7 +83,7 @@
     link { PASS(block, name, link); };
 
     code { PASS_CODE(block, text, code, opts); };
-    code_tag { PASS_CODE(block, text, code, opts); };
+    code_tag_start { CAT(block); fgoto code_tag; };
     strong { PASS(block, text, strong); };
     b { PASS(block, text, b); };
     em { PASS(block, text, em); };

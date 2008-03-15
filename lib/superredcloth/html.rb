@@ -3,6 +3,10 @@ class << SuperRedCloth::HTML
     {:html_escape_entities => true}
   end
   
+  def after_transform(text)
+    text.chomp!
+  end
+  
   def pba(opts)
     atts = ''
     opts[:"text-align"] = opts.delete(:align)
@@ -19,9 +23,9 @@ class << SuperRedCloth::HTML
     atts
   end
   
-  [:h1, :h2, :h3, :h4, :h5, :h6, :p, :pre, :div, :dt, :dd].each do |m|
+  [:h1, :h2, :h3, :h4, :h5, :h6, :p, :pre, :div].each do |m|
     define_method(m) do |opts|
-      "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>"
+      "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>\n"
     end
   end
   
@@ -54,15 +58,15 @@ class << SuperRedCloth::HTML
   [:ol, :ul].each do |m|
     define_method("#{m}_open") do |opts|
       opts[:block] = true
-      "<#{m}#{pba(opts)}>\n"
+      "#{"\n" if opts[:nest] > 1}#{"\t" * (opts[:nest] - 1)}<#{m}#{pba(opts)}>\n"
     end
     define_method("#{m}_close") do |opts|
-      "#{li_close}</#{m}>"
+      "#{li_close}#{"\t" * (opts[:nest] - 1)}</#{m}>#{"\n" if opts[:nest] <= 1}"
     end
   end
   
   def li_open(opts)
-    "#{li_close unless opts.delete(:first)}\t<li#{pba(opts)}>#{opts[:text]}"
+    "#{li_close unless opts.delete(:first)}#{"\t" * opts[:nest]}<li#{pba(opts)}>#{opts[:text]}"
   end
   
   def li_close(opts=nil)
@@ -75,7 +79,13 @@ class << SuperRedCloth::HTML
   end
   
   def dl_close(opts=nil)
-    "</dl>"
+    "</dl>\n"
+  end
+  
+  [:dt, :dd].each do |m|
+    define_method(m) do |opts|
+      "\t<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>\n"
+    end
   end
   
   def ignore(opts)
@@ -84,20 +94,20 @@ class << SuperRedCloth::HTML
   alias_method :notextile, :ignore
   
   def para(txt)
-    "<p>" + txt + "</p>"
+    "<p>" + txt + "</p>\n"
   end
   
   def td(opts)
     tdtype = opts[:th] ? 'th' : 'td'
-    "\t\t\t<#{tdtype}#{pba(opts)}>#{opts[:text]}</#{tdtype}>\n"
+    "\t\t<#{tdtype}#{pba(opts)}>#{opts[:text]}</#{tdtype}>\n"
   end
   
   def tr_open(opts)
-    "\t\t<tr#{pba(opts)}>\n"
+    "\t<tr#{pba(opts)}>\n"
   end
   
   def tr_close(opts)
-    "\t\t</tr>\n"
+    "\t</tr>\n"
   end
   
   def table_open(opts)
@@ -105,7 +115,7 @@ class << SuperRedCloth::HTML
   end
   
   def table_close(opts)
-    "\t</table>"
+    "</table>\n"
   end
   
   def bc_open(opts)
@@ -114,17 +124,17 @@ class << SuperRedCloth::HTML
   end
   
   def bc_close(opts)
-    "</pre>"
+    "</pre>\n"
   end
   
   def bq_open(opts)
     opts[:block] = true
     cite = opts[:cite] ? " cite=\"#{ opts[:cite] }\"" : ''
-    "<blockquote#{cite}#{pba(opts)}>"
+    "<blockquote#{cite}#{pba(opts)}>\n"
   end
   
   def bq_close(opts)
-    "</blockquote>"
+    "</blockquote>\n"
   end
   
   def link(opts)
@@ -148,11 +158,11 @@ class << SuperRedCloth::HTML
     no = opts[:id]
     opts[:id] = "fn#{no}"
     opts[:class] = ["footnote", opts[:class]].compact.join(" ")
-    "<p#{pba(opts)}><sup>#{no}</sup> #{opts[:text]}</p>"
+    "<p#{pba(opts)}><sup>#{no}</sup> #{opts[:text]}</p>\n"
   end
   
   def snip(opts)
-    "<pre#{pba(opts)}><code>#{opts[:text]}</code></pre>"
+    "<pre#{pba(opts)}><code>#{opts[:text]}</code></pre>\n"
   end
   
   def quote1(opts)

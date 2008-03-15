@@ -91,7 +91,7 @@ int SYM_html_escape_entities;
   
   notextile_block := |*
     EOF                { DONE(block); fgoto main; };
-    double_return      { if (NIL_P(extend)) { DONE(block); fgoto main; } else { DONE(block); } };
+    double_return      { if (NIL_P(extend)) { DONE(block); fgoto main; } else { CAT(block); DONE(block); } };
     next_block_start   { END_EXTENDED(); fgoto main; };
     default => cat;
   *|;
@@ -103,8 +103,7 @@ int SYM_html_escape_entities;
 
   bc := |*
     EOF                { ADD_BLOCKCODE(); INLINE(html, bc_close); plain_block = rb_str_new2("p"); fgoto main; };
-    double_return      { if (NIL_P(extend)) { ADD_BLOCKCODE(); INLINE(html, bc_close); plain_block = rb_str_new2("p"); fgoto main; } else { ADD_EXTENDED_BLOCKCODE(); } };
-    next_block_start   { INLINE(html, bc_close); plain_block = rb_str_new2("p");  END_EXTENDED(); fgoto main; };
+    double_return      { if (NIL_P(extend)) { ADD_BLOCKCODE(); INLINE(html, bc_close); plain_block = rb_str_new2("p"); fgoto main; } else { ADD_EXTENDED_BLOCKCODE(); CAT(html); } };    next_block_start   { INLINE(html, bc_close); plain_block = rb_str_new2("p");  END_EXTENDED(); fgoto main; };
     default => esc_pre;
   *|;
 
@@ -212,6 +211,7 @@ superredcloth_transform(rb_formatter, p, pe, refs)
   if ( NIL_P(refs) && rb_funcall(refs_found, rb_intern("empty?"), 0) == Qfalse ) {
     return superredcloth_transform(rb_formatter, orig_p, orig_pe, refs_found);
   } else {
+    rb_funcall(rb_formatter, rb_intern("after_transform"), 1, html);
     return html;
   }
 }

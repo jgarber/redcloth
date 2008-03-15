@@ -3,6 +3,10 @@ class << SuperRedCloth::LATEX
     {:html_escape_entities => false}
   end
   
+  def after_transform(text)
+    
+  end
+  
   def pba(opts)
     atts = ''
     opts[:"text-align"] = opts.delete(:align)

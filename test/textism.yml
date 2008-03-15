@@ -24,12 +24,10 @@ in: |-
 
 out: |-
   <p>Any old text.</p>
-  
-  	<blockquote>
-  		<p>A block quotation.</p>
-  	</blockquote>
-  
-  	<p>Any old text.</p>
+  <blockquote>
+  <p>A block quotation.</p>
+  </blockquote>
+  <p>Any old text.</p>
 
 latex: |+
   Any old text.
@@ -174,21 +172,21 @@ in: |-
   |This|is|a|simple|row|
 out: |-
   <table>
-  		<tr>
-  			<td>This</td>
-  			<td>is</td>
-  			<td>a</td>
-  			<td>simple</td>
-  			<td>table</td>
-  		</tr>
-  		<tr>
-  			<td>This</td>
-  			<td>is</td>
-  			<td>a</td>
-  			<td>simple</td>
-  			<td>row</td>
-  		</tr>
-  	</table>
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>simple</td>
+  		<td>table</td>
+  	</tr>
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>simple</td>
+  		<td>row</td>
+  	</tr>
+  </table>
 ---
 in: |-
   table{border:1px solid black}.
@@ -196,30 +194,30 @@ in: |-
   |This|is|a|row|
 out: |-
   <table style="border:1px solid black;">
-  		<tr>
-  			<td>This</td>
-  			<td>is</td>
-  			<td>a</td>
-  			<td>row</td>
-  		</tr>
-  		<tr>
-  			<td>This</td>
-  			<td>is</td>
-  			<td>a</td>
-  			<td>row</td>
-  		</tr>
-  	</table>
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>row</td>
+  	</tr>
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>row</td>
+  	</tr>
+  </table>
 ---
 in: '{background:#ddd}. |This|is|a|row|'
 out: |-
   <table>
-  		<tr style="background:#ddd;">
-  			<td>This</td>
-  			<td>is</td>
-  			<td>a</td>
-  			<td>row</td>
-  		</tr>
-  	</table>
+  	<tr style="background:#ddd;">
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>row</td>
+  	</tr>
+  </table>
 ---
 in: |-
   |{background:#ddd}. Cell with gray background|
@@ -228,19 +226,19 @@ in: |-
   |>. Right-aligned cell|
 out: |-
   <table>
-  		<tr>
-  			<td style="background:#ddd;">Cell with gray background</td>
-  		</tr>
-  		<tr>
-  			<td colspan="2">Cell spanning 2 columns</td>
-  		</tr>
-  		<tr>
-  			<td rowspan="3">Cell spanning 3 rows</td>
-  		</tr>
-  		<tr>
-  			<td style="text-align:right;">Right-aligned cell</td>
-  		</tr>
-  	</table>
+  	<tr>
+  		<td style="background:#ddd;">Cell with gray background</td>
+  	</tr>
+  	<tr>
+  		<td colspan="2">Cell spanning 2 columns</td>
+  	</tr>
+  	<tr>
+  		<td rowspan="3">Cell spanning 3 rows</td>
+  	</tr>
+  	<tr>
+  		<td style="text-align:right;">Right-aligned cell</td>
+  	</tr>
+  </table>
 ---
 name: basics
 in: |-
@@ -271,18 +269,18 @@ in: |-
   
 out: |-
   <h2 style="color:green;">This is a title</h2>
-  	<h3>This is a subhead</h3>
-  	<p style="color:red;">This is some text of dubious character. Isn&#8217;t the use of &#8220;quotes&#8221; just lazy writing &#8212; and theft of &#8216;intellectual property&#8217; besides? I think the time has come to see a block quote.</p>
-  	<blockquote lang="fr">
-  		<p lang="fr">This is a block quote. I&#8217;ll admit it&#8217;s not the most exciting block quote ever devised.</p>
-  	</blockquote>
-  	<p>Simple list:</p>
+  <h3>This is a subhead</h3>
+  <p style="color:red;">This is some text of dubious character. Isn&#8217;t the use of &#8220;quotes&#8221; just lazy writing &#8212; and theft of &#8216;intellectual property&#8217; besides? I think the time has come to see a block quote.</p>
+  <blockquote lang="fr">
+  <p lang="fr">This is a block quote. I&#8217;ll admit it&#8217;s not the most exciting block quote ever devised.</p>
+  </blockquote>
+  <p>Simple list:</p>
   <ol style="color:blue;">
   	<li>one</li>
   	<li>two</li>
   	<li>three</li>
   </ol>
-  	<p>Multi-level list:</p>
+  <p>Multi-level list:</p>
   <ol>
   	<li>one
   	<ol>
@@ -329,7 +327,7 @@ in: |-
   "This is a link (optional title)":http://www.textism.com
 
 out: |-
-  	<p>Multi-level list:</p>
+  <p>Multi-level list:</p>
   <ol>
   	<li>one
   	<ol>
@@ -344,7 +342,7 @@ out: |-
   	</ol></li>
   	<li>three</li>
   </ol>
-  	<p>Mixed list:</p>
+  <p>Mixed list:</p>
   <ul>
   	<li>Point one</li>
   	<li>Point two
@@ -359,8 +357,8 @@ out: |-
   		<li>Sub point 2</li>
   	</ul></li>
   </ul>
-  	<p>Well, that went well. How about we insert an <a href="/" title="watch out">old-fashioned hypertext link</a>? Will the quote marks in the tags get messed up? No!</p>
-  	<p><a href="http://www.textism.com" title="optional title">This is a link</a></p>
+  <p>Well, that went well. How about we insert an <a href="/" title="watch out">old-fashioned hypertext link</a>? Will the quote marks in the tags get messed up? No!</p>
+  <p><a href="http://www.textism.com" title="optional title">This is a link</a></p>
 ---
 name: table
 in: |-
@@ -369,25 +367,25 @@ in: |-
   <{background:gray}. |\2. this is|{background:red;width:200px}. a|^<>{height:200px}. row|
   |this|<>{padding:10px}. is|^. another|(bob#bob). row|
 out: |-
-  	<table style="border:1px solid black;">
-  		<tr>
-  			<th>this</th>
-  			<th>is</th>
-  			<th>a</th>
-  			<th>header</th>
-  		</tr>
-  		<tr style="text-align:left;background:gray;">
-  			<td colspan="2">this is</td>
-  			<td style="background:red;width:200px;">a</td>
-  			<td style="vertical-align:top;text-align:justify;height:200px;">row</td>
-  		</tr>
-  		<tr>
-  			<td>this</td>
-  			<td style="text-align:justify;padding:10px;">is</td>
-  			<td style="vertical-align:top;">another</td>
-  			<td class="bob" id="bob">row</td>
-  		</tr>
-  	</table>
+  <table style="border:1px solid black;">
+  	<tr>
+  		<th>this</th>
+  		<th>is</th>
+  		<th>a</th>
+  		<th>header</th>
+  	</tr>
+  	<tr style="text-align:left;background:gray;">
+  		<td colspan="2">this is</td>
+  		<td style="background:red;width:200px;">a</td>
+  		<td style="vertical-align:top;text-align:justify;height:200px;">row</td>
+  	</tr>
+  	<tr>
+  		<td>this</td>
+  		<td style="text-align:justify;padding:10px;">is</td>
+  		<td style="vertical-align:top;">another</td>
+  		<td class="bob" id="bob">row</td>
+  	</tr>
+  </table>
 ---
 in: |-
   An image:
@@ -401,14 +399,14 @@ in: |-
   Some more text of dubious character. Here is a noisome string of CAPITAL letters. Here is something we want to _emphasize_.
   That was a linebreak. And something to indicate *strength*. Of course I could use <em>my own HTML tags</em> if I <strong>felt</strong> like it.
 out: |-
-  	<p>An image:</p>
-  	<p><img src="/common/textist.gif" title="optional alt text" alt="optional alt text" /></p>
+  <p>An image:</p>
+  <p><img src="/common/textist.gif" title="optional alt text" alt="optional alt text" /></p>
   <ol>
   	<li>Librarians rule</li>
   	<li>Yes they do</li>
   	<li>But you knew that</li>
   </ol>
-  	<p>Some more text of dubious character. Here is a noisome string of <span class="caps">CAPITAL</span> letters. Here is something we want to <em>emphasize</em>.<br />
+  <p>Some more text of dubious character. Here is a noisome string of <span class="caps">CAPITAL</span> letters. Here is something we want to <em>emphasize</em>.<br />
   That was a linebreak. And something to indicate <strong>strength</strong>. Of course I could use <em>my own <span class="caps">HTML</span> tags</em> if I <strong>felt</strong> like it.</p>
 ---
 name: code
@@ -430,16 +428,16 @@ in: |-
   
   
 out: |-
-  	<h3>Coding</h3>
-  	<p>This <code>is some code, "isn't it"</code>. Watch those quote marks! Now for some preformatted text:</p>
+  <h3>Coding</h3>
+  <p>This <code>is some code, "isn't it"</code>. Watch those quote marks! Now for some preformatted text:</p>
   <pre>
   <code>
       $text = str_replace("&lt;p&gt;%::%&lt;/p&gt;","",$text);
       $text = str_replace("%::%&lt;/p&gt;","",$text);
       $text = str_replace("%::%","",$text);
+  
   </code>
   </pre>
-  
   <p>This isn&#8217;t code.</p>
 ---
 name: hard break
@@ -449,9 +447,9 @@ in: |-
   
   next
 out: |-
-  <p>trivial<br />break</p>
-  
-  	<p>next</p>
+  <p>trivial<br />
+  break</p>
+  <p>next</p>
 ---
 name: normal paragraphs
 in: |-
@@ -460,19 +458,19 @@ in: |-
   paragraphs
 out: |-
   <p>trivial</p>
-
-  	<p>paragraphs</p>
+  <p>paragraphs</p>
 ---
 name: hard break in a list
 in: |-
   * first line
   * second
-    line
+  line
   * third line
 out: |-
   <ul>
   	<li>first line</li>
-  	<li>second<br />  line</li>
+  	<li>second<br />
+  line</li>
   	<li>third line</li>
   </ul>
 ---

@@ -4,7 +4,9 @@ in: |-
   h1. Header
 
   text
-out: <h1>Header</h1><p>text</p>
+out: |-
+  <h1>Header</h1>
+  <p>text</p>
 ---
 name: header with 2 blank lines below
 in: |-
@@ -12,14 +14,18 @@ in: |-
   
   
   text
-out: <h1>Header</h1><p>text</p>
+out: |-
+  <h1>Header</h1>
+  <p>text</p>
 ---
 name: header with 1 blank line above
 in: |-
   text
 
   h1. Header
-out: <p>text</p><h1>Header</h1>
+out: |-
+  <p>text</p>
+  <h1>Header</h1>
 ---
 name: header with 2 blank lines above
 in: |-
@@ -27,7 +33,9 @@ in: |-
   
   
   h1. Header
-out: <p>text</p><h1>Header</h1>
+out: |-
+  <p>text</p>
+  <h1>Header</h1>
 ---
 name: header with 1 blank line above and with no text
 in: |-

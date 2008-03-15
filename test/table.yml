@@ -6,17 +6,17 @@ in: |
   h3. A header after the table
 out: |-
   <table>
-  		<tr>
-  			<td>a</td>
-  			<td>b</td>
-  			<td>c</td>
-  		</tr>
-  		<tr>
-  			<td>1</td>
-  			<td>2</td>
-  			<td>3</td>
-  		</tr>
-  	</table>
+  	<tr>
+  		<td>a</td>
+  		<td>b</td>
+  		<td>c</td>
+  	</tr>
+  	<tr>
+  		<td>1</td>
+  		<td>2</td>
+  		<td>3</td>
+  	</tr>
+  </table>
   <h3>A header after the table</h3>
 ---
 in: |
@@ -24,40 +24,38 @@ in: |
   |1|2|3|
 out: |-
   <table>
-  		<tr>
-  			<th>a</th>
-  			<th>b</th>
-  			<th>c</th>
-  		</tr>
-  		<tr>
-  			<td>1</td>
-  			<td>2</td>
-  			<td>3</td>
-  		</tr>
-  	</table>
-
+  	<tr>
+  		<th>a</th>
+  		<th>b</th>
+  		<th>c</th>
+  	</tr>
+  	<tr>
+  		<td>1</td>
+  		<td>2</td>
+  		<td>3</td>
+  	</tr>
+  </table>
 ---
 in: |-
   |This|is|a|simple|table|
   |This|is|a|simple|row|
 out: |-
   <table>
-  		<tr>
-  			<td>This</td>
-  			<td>is</td>
-  			<td>a</td>
-  			<td>simple</td>
-  			<td>table</td>
-  		</tr>
-  		<tr>
-  			<td>This</td>
-  			<td>is</td>
-  			<td>a</td>
-  			<td>simple</td>
-  			<td>row</td>
-  		</tr>
-  	</table>
-
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>simple</td>
+  		<td>table</td>
+  	</tr>
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>simple</td>
+  		<td>row</td>
+  	</tr>
+  </table>
 ---
 in: |-
   table{border:1px solid black}.
@@ -65,50 +63,47 @@ in: |-
   |This|is|a|row|
 out: |-
   <table style="border:1px solid black;">
-  		<tr>
-  			<td>This</td>
-  			<td>is</td>
-  			<td>a</td>
-  			<td>row</td>
-  		</tr>
-  		<tr>
-  			<td>This</td>
-  			<td>is</td>
-  			<td>a</td>
-  			<td>row</td>
-  		</tr>
-  	</table>
-
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>row</td>
+  	</tr>
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>row</td>
+  	</tr>
+  </table>
 ---
 in: '{background:#ddd}. |This|is|a|row|'
 out: |-
   <table>
-  		<tr style="background:#ddd;">
-  			<td>This</td>
-  			<td>is</td>
-  			<td>a</td>
-  			<td>row</td>
-  		</tr>
-  	</table>
-
+  	<tr style="background:#ddd;">
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>row</td>
+  	</tr>
+  </table>
 ---
 in: |-
   |a|b|c|
   | |2|3|
 out: |-
   <table>
-  		<tr>
-  			<td>a</td>
-  			<td>b</td>
-  			<td>c</td>
-  		</tr>
-  		<tr>
-  			<td> </td>
-  			<td>2</td>
-  			<td>3</td>
-  		</tr>
-  	</table>
-  
+  	<tr>
+  		<td>a</td>
+  		<td>b</td>
+  		<td>c</td>
+  	</tr>
+  	<tr>
+  		<td> </td>
+  		<td>2</td>
+  		<td>3</td>
+  	</tr>
+  </table>
 ---
 in: |-
   table{width: 200px; border:2px solid gray;}.
@@ -122,32 +117,31 @@ in: |-
   |<. left|
 out: |-
   <table style="width: 200px; border:2px solid gray;">
-  		<tr>
-  			<th style="text-align:center;">Alignment</th>
-  		</tr>
-  		<tr>
-  			<td style="text-align:center;">centered</td>
-  		</tr>
-  		<tr>
-  			<td style="padding-left:1em;text-align:center;">a bit right</td>
-  		</tr>
-  		<tr>
-  			<td style="padding-right:1em;text-align:center;">a bit left</td>
-  		</tr>
-  		<tr>
-  			<td style="padding-right:1em;text-align:right;">almost right</td>
-  		</tr>
-  		<tr>
-  			<td style="padding-left:1em;text-align:left;">almost left</td>
-  		</tr>
-  		<tr>
-  			<td style="text-align:right;">right</td>
-  		</tr>
-  		<tr>
-  			<td style="text-align:left;">left</td>
-  		</tr>
-  	</table>
-  
+  	<tr>
+  		<th style="text-align:center;">Alignment</th>
+  	</tr>
+  	<tr>
+  		<td style="text-align:center;">centered</td>
+  	</tr>
+  	<tr>
+  		<td style="padding-left:1em;text-align:center;">a bit right</td>
+  	</tr>
+  	<tr>
+  		<td style="padding-right:1em;text-align:center;">a bit left</td>
+  	</tr>
+  	<tr>
+  		<td style="padding-right:1em;text-align:right;">almost right</td>
+  	</tr>
+  	<tr>
+  		<td style="padding-left:1em;text-align:left;">almost left</td>
+  	</tr>
+  	<tr>
+  		<td style="text-align:right;">right</td>
+  	</tr>
+  	<tr>
+  		<td style="text-align:left;">left</td>
+  	</tr>
+  </table>
 ---
 in: |-
   |{background:#ddd}. Cell with gray background|
@@ -156,20 +150,19 @@ in: |-
   |>. Right-aligned cell|
 out: |-
   <table>
-  		<tr>
-  			<td style="background:#ddd;">Cell with gray background</td>
-  		</tr>
-  		<tr>
-  			<td colspan="2">Cell spanning 2 columns</td>
-  		</tr>
-  		<tr>
-  			<td rowspan="3">Cell spanning 3 rows</td>
-  		</tr>
-  		<tr>
-  			<td style="text-align:right;">Right-aligned cell</td>
-  		</tr>
-  	</table>
-
+  	<tr>
+  		<td style="background:#ddd;">Cell with gray background</td>
+  	</tr>
+  	<tr>
+  		<td colspan="2">Cell spanning 2 columns</td>
+  	</tr>
+  	<tr>
+  		<td rowspan="3">Cell spanning 3 rows</td>
+  	</tr>
+  	<tr>
+  		<td style="text-align:right;">Right-aligned cell</td>
+  	</tr>
+  </table>
 ---
 in: |
   {background:#ddd}. |S|Target|Complete|App|Milestone|
@@ -181,56 +174,56 @@ in: |
   |!/i/w.gif!|12/03/04| |081|Feature complete|
 out: |-
   <table>
-  		<tr style="background:#ddd;">
-  			<td>S</td>
-  			<td>Target</td>
-  			<td>Complete</td>
-  			<td>App</td>
-  			<td>Milestone</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/29/04</td>
-  			<td>11/29/04</td>
-  			<td>011</td>
-  			<td><span class="caps">XML</span> spec complete (KH is on schedule)</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/22/04</td>
-  			<td>11/22/04</td>
-  			<td>070</td>
-  			<td>Dialog pass 1 builds an index file</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/24/04</td>
-  			<td>11/24/04</td>
-  			<td>070</td>
-  			<td>Dialog pass 2 98% complete</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/30/04</td>
-  			<td>11/30/04</td>
-  			<td>070</td>
-  			<td>Feature complete. Passes end-to-end smoke test.</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/02/04</td>
-  			<td> </td>
-  			<td>011</td>
-  			<td>Dialog pass 1 and 2 complete (98+%)</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/03/04</td>
-  			<td> </td>
-  			<td>081</td>
-  			<td>Feature complete</td>
-  		</tr>
-  	</table>
+  	<tr style="background:#ddd;">
+  		<td>S</td>
+  		<td>Target</td>
+  		<td>Complete</td>
+  		<td>App</td>
+  		<td>Milestone</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/g.gif" alt="" /></td>
+  		<td>11/29/04</td>
+  		<td>11/29/04</td>
+  		<td>011</td>
+  		<td><span class="caps">XML</span> spec complete (KH is on schedule)</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/g.gif" alt="" /></td>
+  		<td>11/22/04</td>
+  		<td>11/22/04</td>
+  		<td>070</td>
+  		<td>Dialog pass 1 builds an index file</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/g.gif" alt="" /></td>
+  		<td>11/24/04</td>
+  		<td>11/24/04</td>
+  		<td>070</td>
+  		<td>Dialog pass 2 98% complete</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/g.gif" alt="" /></td>
+  		<td>11/30/04</td>
+  		<td>11/30/04</td>
+  		<td>070</td>
+  		<td>Feature complete. Passes end-to-end smoke test.</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/w.gif" alt="" /></td>
+  		<td>12/02/04</td>
+  		<td> </td>
+  		<td>011</td>
+  		<td>Dialog pass 1 and 2 complete (98+%)</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/w.gif" alt="" /></td>
+  		<td>12/03/04</td>
+  		<td> </td>
+  		<td>081</td>
+  		<td>Feature complete</td>
+  	</tr>
+  </table>
 ---
 name: combined table header and colspan
 in: |-
@@ -244,7 +237,6 @@ out: |-
   		<th>b </th>
   		<th>c </th>
   	</tr>
-  
   	<tr>
   		<td> 1 </td>
   		<td> 2 </td>

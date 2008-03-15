@@ -44,22 +44,16 @@ in: |-
   Another paragraph.
 out: |-
   <p><img src="test.jpg" /></p>
-
   <p>Regular paragraph.</p>
-
   <div class="test">
   <p>This is one paragraph.</p>
-
   <p>This is another.</p>
-
   <p><img src="an/image.jpg" alt="" /></p>
-
   <ul>
   	<li>A list</li>
   	<li>in a div.</li>
   </ul>
   </div>
-
   <p>Another paragraph.</p>
 ---
 name: wraps inline HTML in paragraphs

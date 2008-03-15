@@ -114,16 +114,19 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID, unsigned int opts);
           rb_ary_store(list_index, nest-1, start_num); \
         } \
       } \
+      rb_hash_aset(regs, ID2SYM(rb_intern("nest")), INT2NUM(nest)); \
       rb_str_append(html, rb_funcall(rb_formatter, rb_intern(listm), 1, regs)); \
       rb_ary_store(list_layout, nest-1, rb_str_new2(list_type)); \
       regs = rb_hash_new(); \
       ASET(first, true); \
     } \
     LIST_CLOSE(); \
+    rb_hash_aset(regs, ID2SYM(rb_intern("nest")), INT2NUM(RARRAY(list_layout)->len)); \
     ASET(type, li_open)
 #define LIST_CLOSE() \
     while (nest < RARRAY(list_layout)->len) \
     { \
+      rb_hash_aset(regs, ID2SYM(rb_intern("nest")), INT2NUM(RARRAY(list_layout)->len)); \
       VALUE end_list = rb_ary_pop(list_layout); \
       if (!NIL_P(end_list)) \
       { \
