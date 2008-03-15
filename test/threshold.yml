@@ -247,8 +247,8 @@ in: |-
   
   fn1. The footnote.
 html: |-
-  <p>A footnote reference<sup class="footnote"><a href="#fn1216642796463b1223ae29d">1</a></sup>.</p>
-  <p class="footnote" id="fn1216642796463b1223ae29d"><sup>1</sup> The footnote.</p>
+  <p>A footnote reference<sup class="footnote"><a href="#fn1">1</a></sup>.</p>
+  <p class="footnote" id="fn1"><sup>1</sup> The footnote.</p>
 ---
 name: block code
 desc: Code such as XHTML, Javascript or PHP may be displayed using the bc. “block code” modifier. XHTML significant characters such as < and > will be escaped within code blocks – bc is used for displaying code to the reader, not for executing it.
@@ -749,4 +749,4 @@ in: |-
 html: |-
   <p>A close<img src="/img.gif" alt="" />image.<br />
   A tight<a href="http://thresholdstate.com/">text</a>link.<br />
-  A <a href="http://thresholdstate.com/">footnoted link</a><sup class="footnote"><a href="#fn1216642796463b1223ae29d">1</a></sup>.</p>
+  A <a href="http://thresholdstate.com/">footnoted link</a><sup class="footnote"><a href="#fn1">1</a></sup>.</p>
