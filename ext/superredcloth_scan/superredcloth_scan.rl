@@ -23,11 +23,11 @@ int SYM_html_escape_entities;
 
   # blocks
   notextile_tag_start = "<notextile>" ;
-  notextile_tag_end = "</notextile>" ;
+  notextile_tag_end = "</notextile>" CRLF? ;
   notextile_line = " " (( default+ ) -- CRLF) CRLF ;
   notextile_block_start = ( "notextile" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   pre_tag_start = "<pre" [^>]* ">" (space* "<code>")? ;
-  pre_tag_end = ("</code>" space*)? "</pre>" ;
+  pre_tag_end = ("</code>" space*)? "</pre>" CRLF? ;
   pre_block_start = ( "pre" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   bc_start = ( "bc" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   bq_start = ( "bq" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE(cite) } )? " "+ ) ;
@@ -58,7 +58,7 @@ int SYM_html_escape_entities;
   block_empty_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? "/>" | "<" BlockTagName "/>" ;
   block_end_tag = "</" BlockTagName space* ">" ;
   html_start = indent (block_start_tag | block_empty_tag) indent ;
-  html_end = indent block_end_tag indent CRLF* ;
+  html_end = indent block_end_tag indent CRLF? ;
   standalone_html = indent (block_start_tag | block_empty_tag | block_end_tag) indent CRLF+;
 
   # tables
@@ -97,7 +97,7 @@ int SYM_html_escape_entities;
   *|;
  
   html := |*
-    html_end        { CAT(block); ADD_BLOCK(); fgoto main; };
+    html_end        { ADD_BLOCK(); CAT(html); fgoto main; };
     default => cat;
   *|;
 
@@ -147,7 +147,7 @@ int SYM_html_escape_entities;
     pre_tag_start       { ASET(type, notextile); CAT(block); fgoto pre_tag; };
     pre_block_start { fgoto pre_block; };
     standalone_html { CAT(block); DONE(block); };
-    html_start      { ASET(type, notextile); CAT(block); fgoto html; };
+    html_start      { ASET(type, notextile); CAT(html); fgoto html; };
     bc_start        { INLINE(html, bc_open); ASET(type, code); plain_block = rb_str_new2("code"); fgoto bc; };
     bq_start        { INLINE(html, bq_open); ASET(type, p); fgoto bq; };
     block_start     { fgoto block; };

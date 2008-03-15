@@ -54,20 +54,20 @@ out: |-
   	<li>in a div.</li>
   </ul>
   </div>
+  
   <p>Another paragraph.</p>
 ---
 name: wraps inline HTML in paragraphs
 in: '<em>asd</em> blabla "google":http://google.com'
 out: '<p><em>asd</em> blabla <a href="http://google.com">google</a></p>'
 ---
-name: preserves block standalone
+name: preserves block html
 in: |-
   <div>123 Anystreet</div>
 
   <p foo="bar">Explicit paragraph</p>
 out: |-
   <div>123 Anystreet</div>
-
   <p foo="bar">Explicit paragraph</p>
 ---
 name: preserves empty block standalone elements
