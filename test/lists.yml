@@ -1,7 +1,7 @@
 ---
 name: code in bullet list
 in: "* command run: @time ruby run-tests.rb > toto@"
-out: "<ul>\n\t<li>command run: <code>time ruby run-tests.rb &gt; toto</code></li>\n</ul>"
+html: "<ul>\n\t<li>command run: <code>time ruby run-tests.rb &gt; toto</code></li>\n</ul>"
 --- # Bret Pettichord, Thanks.
 name: hard break in list
 in: |-
@@ -9,7 +9,7 @@ in: |-
   * second
     line
   * third line
-out: |-
+html: |-
   <ul>
   	<li>first line</li>
   	<li>second<br />
@@ -28,7 +28,7 @@ in: |-
   a break
   * bullet
   ** okay
-out: |-
+html: |-
   <ul>
   	<li>bullet
   	<ol>
@@ -60,7 +60,7 @@ in: |-
   #_ four
   # five
   # six
-out: |- 
+html: |- 
   <ol>
   	<li>one</li>
   	<li>two</li>
@@ -94,7 +94,7 @@ in: |-
   #_ seven
   # eight
   # nine
-out: |-
+html: |-
   <ol>
   	<li>one</li>
   	<li>two</li>
@@ -128,7 +128,7 @@ in: |-
   #_ seven
   # eight
   # nine
-out: |-
+html: |-
   <ol>
   	<li>one</li>
   	<li>two</li>
@@ -158,7 +158,7 @@ in: |-
   #9 nine
   # ten
   # eleven
-out: |-
+html: |-
   <ol start="293">
   	<li>two ninety three</li>
   	<li>two ninety four</li>
@@ -179,7 +179,7 @@ in: |-
   #_ twelve
   # thirteen
   # fourteen
-out: |-
+html: |-
   <ol start="9">
   	<li>nine</li>
   	<li>ten</li>
@@ -204,7 +204,7 @@ in: |-
   * See Also notes should be bullets
   * Like this
 
-out: |-
+html: |-
   <h2>End Notes</h2>
   <ol>
   	<li>End Notes should be a numbered list</li>

@@ -1,17 +1,17 @@
 ---
 name: header one
 in: h1. Header 1
-out: <h1>Header 1</h1>
+html: <h1>Header 1</h1>
 latex: \section*{Header 1}
 ---
 name: header two
 in: h2. Header 2
-out: <h2>Header 2</h2>
+html: <h2>Header 2</h2>
 latex: \subsection*{Header 2}
 ---
 name: header three
 in: h3. Header 3
-out: <h3>Header 3</h3>
+html: <h3>Header 3</h3>
 latex: \subsubsection*{Header 3}
 ---
 name: blockquote
@@ -22,7 +22,7 @@ in: |-
 
   Any old text.
 
-out: |-
+html: |-
   <p>Any old text.</p>
   <blockquote>
   <p>A block quotation.</p>
@@ -45,7 +45,7 @@ in: |-
   # A second item
   # A third item
   # A fourth item
-out: |-
+html: |-
   <ol>
   	<li>A first item</li>
   	<li>A second item</li>
@@ -67,7 +67,7 @@ in: |-
   * A third item
   * A fourth item
 
-out: |-
+html: |-
   <ul>
   	<li>A first item</li>
   	<li>A second item</li>
@@ -84,93 +84,93 @@ latex: |+
   
 ---
 in: _a phrase_
-out: <p><em>a phrase</em></p>
+html: <p><em>a phrase</em></p>
 latex: "\\emph{a phrase}\n\n"
 ---
 in: __a phrase__
-out: <p><i>a phrase</i></p>
+html: <p><i>a phrase</i></p>
 latex: "\\emph{a phrase}\n\n"
 ---
 in: '*a phrase*'
-out: <p><strong>a phrase</strong></p>
+html: <p><strong>a phrase</strong></p>
 latex: "\\textbf{a phrase}\n\n"
 ---
 in: '**a phrase**'
-out: <p><b>a phrase</b></p>
+html: <p><b>a phrase</b></p>
 latex: "\\textbf{a phrase}\n\n"
 ---
 in: Nabokov's ??Pnin??
-out: <p>Nabokov&#8217;s <cite>Pnin</cite></p>
+html: <p>Nabokov&#8217;s <cite>Pnin</cite></p>
 latex: "Nabokov's \\begin{quote}Pnin\\end{quote}\n\n"
 ---
 name: del part of word
 in: 'A very [-extra-]ordinary day.'
-out: "<p>A very <del>extra</del>ordinary day.</p>"
+html: "<p>A very <del>extra</del>ordinary day.</p>"
 latex: "A very \\sout{extra}ordinary day.\n\n"
 ---
 name: del part of word that contains a hyphen
 in: 'An [-extra-extra-]ordinary day.'
-out: <p>An <del>extra-extra</del>ordinary day.</p>
+html: <p>An <del>extra-extra</del>ordinary day.</p>
 latex: "An \\sout{extra-extra}ordinary day.\n\n"
 ---
 name: del a phrase
 in: 'Delete -a phrase- this way.'
-out: <p>Delete <del>a phrase</del> this way.</p>
+html: <p>Delete <del>a phrase</del> this way.</p>
 latex: "Delete \\sout{a phrase} this way.\n\n"
 ---
 name: del a phrase that contains hyphens
 in: 'Delete -a no-nonsense phrase- this way.'
-out: <p>Delete <del>a no-nonsense phrase</del> this way.</p>
+html: <p>Delete <del>a no-nonsense phrase</del> this way.</p>
 latex: "Delete \\sout{a no-nonsense phrase} this way.\n\n"
 ---
 in: +a phrase+
-out: <p><ins>a phrase</ins></p>
+html: <p><ins>a phrase</ins></p>
 latex: "\\underline{a phrase}\n\n"
 ---
 in: ^a phrase^
-out: <p><sup>a phrase</sup></p>
+html: <p><sup>a phrase</sup></p>
 latex: "\\ensuremath{^\\textrm{a phrase}}\n\n"
 ---
 in: ~a phrase~
-out: <p><sub>a phrase</sub></p>
+html: <p><sub>a phrase</sub></p>
 ---
 in: %(myclass)SPAN%
-out: <p><span class="myclass"><span class="caps">SPAN</span></span></p>
+html: <p><span class="myclass"><span class="caps">SPAN</span></span></p>
 ---
 in: %{color:red}red%
-out: <p><span style="color:red;">red</span></p>
+html: <p><span style="color:red;">red</span></p>
 ---
 in: %[fr]rouge%
-out: <p><span lang="fr">rouge</span></p>
+html: <p><span lang="fr">rouge</span></p>
 ---
 in: _(big)red_
-out: <p><em class="big">red</em></p>
+html: <p><em class="big">red</em></p>
 ---
 in: p(bob). A paragraph
-out: <p class="bob">A paragraph</p>
+html: <p class="bob">A paragraph</p>
 ---
 in: p{color:#ddd}. A paragraph
-out: <p style="color:#ddd;">A paragraph</p>
+html: <p style="color:#ddd;">A paragraph</p>
 ---
 in: p[fr]. A paragraph
-out: <p lang="fr">A paragraph</p>
+html: <p lang="fr">A paragraph</p>
 ---
 in: h2()>. right-aligned header2, indented 1em both side
-out: <h2 style="padding-left:1em;padding-right:1em;text-align:right;">right-aligned header2, indented 1em both side</h2>
+html: <h2 style="padding-left:1em;padding-right:1em;text-align:right;">right-aligned header2, indented 1em both side</h2>
 ---
 in: h3=. centered header
-out: <h3 style="text-align:center;">centered header</h3>
+html: <h3 style="text-align:center;">centered header</h3>
 ---
 in: '!>/image.gif! right-aligned image'
-out: <p style="float:right;"><img src="/image.gif" alt="" /> right-aligned image</p>
+html: <p style="float:right;"><img src="/image.gif" alt="" /> right-aligned image</p>
 ---
 in: p[no]{color:red}. A Norse of a different colour.
-out: <p style="color:red;" lang="no">A Norse of a different colour.</p>
+html: <p style="color:red;" lang="no">A Norse of a different colour.</p>
 ---
 in: |-
   |This|is|a|simple|table|
   |This|is|a|simple|row|
-out: |-
+html: |-
   <table>
   	<tr>
   		<td>This</td>
@@ -192,7 +192,7 @@ in: |-
   table{border:1px solid black}.
   |This|is|a|row|
   |This|is|a|row|
-out: |-
+html: |-
   <table style="border:1px solid black;">
   	<tr>
   		<td>This</td>
@@ -209,7 +209,7 @@ out: |-
   </table>
 ---
 in: '{background:#ddd}. |This|is|a|row|'
-out: |-
+html: |-
   <table>
   	<tr style="background:#ddd;">
   		<td>This</td>
@@ -224,7 +224,7 @@ in: |-
   |\2. Cell spanning 2 columns|
   |/3. Cell spanning 3 rows|
   |>. Right-aligned cell|
-out: |-
+html: |-
   <table>
   	<tr>
   		<td style="background:#ddd;">Cell with gray background</td>
@@ -267,7 +267,7 @@ in: |-
   ## y
   # three
   
-out: |-
+html: |-
   <h2 style="color:green;">This is a title</h2>
   <h3>This is a subhead</h3>
   <p style="color:red;">This is some text of dubious character. Isn&#8217;t the use of &#8220;quotes&#8221; just lazy writing &#8212; and theft of &#8216;intellectual property&#8217; besides? I think the time has come to see a block quote.</p>
@@ -326,7 +326,7 @@ in: |-
 
   "This is a link (optional title)":http://www.textism.com
 
-out: |-
+html: |-
   <p>Multi-level list:</p>
   <ol>
   	<li>one
@@ -366,7 +366,7 @@ in: |-
   |_. this|_. is|_. a|_. header|
   <{background:gray}. |\2. this is|{background:red;width:200px}. a|^<>{height:200px}. row|
   |this|<>{padding:10px}. is|^. another|(bob#bob). row|
-out: |-
+html: |-
   <table style="border:1px solid black;">
   	<tr>
   		<th>this</th>
@@ -398,7 +398,7 @@ in: |-
   
   Some more text of dubious character. Here is a noisome string of CAPITAL letters. Here is something we want to _emphasize_.
   That was a linebreak. And something to indicate *strength*. Of course I could use <em>my own HTML tags</em> if I <strong>felt</strong> like it.
-out: |-
+html: |-
   <p>An image:</p>
   <p><img src="/common/textist.gif" title="optional alt text" alt="optional alt text" /></p>
   <ol>
@@ -427,7 +427,7 @@ in: |-
   This isn't code.
   
   
-out: |-
+html: |-
   <h3>Coding</h3>
   <p>This <code>is some code, "isn't it"</code>. Watch those quote marks! Now for some preformatted text:</p>
   <pre>
@@ -446,7 +446,7 @@ in: |-
   break
   
   next
-out: |-
+html: |-
   <p>trivial<br />
   break</p>
   <p>next</p>
@@ -456,7 +456,7 @@ in: |-
   trivial
 
   paragraphs
-out: |-
+html: |-
   <p>trivial</p>
   <p>paragraphs</p>
 ---
@@ -466,7 +466,7 @@ in: |-
   * second
   line
   * third line
-out: |-
+html: |-
   <ul>
   	<li>first line</li>
   	<li>second<br />
@@ -476,4 +476,4 @@ out: |-
 ---
 name: copyright symbol at line start
 in: "(C) copyright conversion (C) test."
-out: "<p>&#169; copyright conversion &#169; test.</p>"
+html: "<p>&#169; copyright conversion &#169; test.</p>"

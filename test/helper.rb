@@ -3,6 +3,10 @@ $:.unshift File.dirname(__FILE__) + "/../lib"
 require 'superredcloth'
 require 'yaml'
 
+def red(formatter, str)
+  SuperRedCloth.new(str).send("to_#{formatter}")
+end
+
 module Test
   module Unit
     module Assertions

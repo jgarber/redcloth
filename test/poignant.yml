@@ -61,7 +61,7 @@ in: >
 
   Now that you've met @false@, I'm sure you can see what's on next.
 
-out: |-
+html: |-
   <h3>False</h3>
   <p style="float:left;"><img src="i/blix-neg.gif" title="Shape of a cat." alt="Shape of a cat." /></p>
   <p><em>The cat Trady Blix.  Frozen in emptiness.  Immaculate whiskers rigid.  Placid eyes of lake.  Tail of warm icicle.  Sponsored by a Very Powerful Pause Button.</em></p>

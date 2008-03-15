@@ -5,7 +5,7 @@ in: |-
   - yes := no
   - no:=no
   - maybe:= yes
-out: |-
+html: |-
   <p>here is a RedCloth definition list:</p>
   <dl>
   	<dt>yes</dt>
@@ -22,7 +22,7 @@ in: |-
   just like other lists
   - line-spanning
   term := hey, slick!
-out: |-
+html: |-
   <dl>
   	<dt>term</dt>
   	<dd>you can have line breaks<br />
@@ -39,7 +39,7 @@ in: |-
   - textile
   - fabric
   - cloth := woven threads
-out: |-
+html: |-
   <p>You can have multiple terms before a definition:</p>
   <dl>
   	<dt>textile</dt>
@@ -59,7 +59,7 @@ in: |-
   
   ok =:
   - regular term := no
-out: |-
+html: |-
   <p>here is a long definition</p>
   <dl>
   	<dt>some term</dt>

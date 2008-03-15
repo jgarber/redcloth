@@ -1,35 +1,35 @@
 ---
 name: inline code
 in: 'This is an empty dictionary: @{}@'
-out: '<p>This is an empty dictionary: <code>{}</code></p>'
+html: '<p>This is an empty dictionary: <code>{}</code></p>'
 ---
 name: inline code escapement
 in: 'Please type @cat "file.txt" > otherfile.txt@ at the prompt.'
-out: '<p>Please type <code>cat "file.txt" &gt; otherfile.txt</code> at the prompt.</p>'
+html: '<p>Please type <code>cat "file.txt" &gt; otherfile.txt</code> at the prompt.</p>'
 ---
 name: escaping in blockcode
 in: 'bc. This is within a block of code, so < and > should be entities.  You can talk about a <p class="foo"> tag if you wish and it will be properly escaped.'
-out: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.  You can talk about a &lt;p class="foo"&gt; tag if you wish and it will be properly escaped.</code></pre>'
+html: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.  You can talk about a &lt;p class="foo"&gt; tag if you wish and it will be properly escaped.</code></pre>'
 ---
 name: escaping in pre
 in: '<pre><code>This is within a block of code, so < and > should be entities.  You can talk about a <p class="foo"> tag in pre tags too.</code></pre>'
-out: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.  You can talk about a &lt;p class="foo"&gt; tag in pre tags too.</code></pre>'
+html: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.  You can talk about a &lt;p class="foo"&gt; tag in pre tags too.</code></pre>'
 ---
 name: escaping in normal text
 in: |-
   This is a regular paragraph.  AT&T. &pound;38 > $38.
-out: |-
+html: |-
   <p>This is a regular paragraph.  AT&amp;T. &pound;38 &gt; $38.</p>
 ---
 name: preservation of existing entities
 in: "Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;6 &#62; $6.
 "
-out: "<p>Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;6 &#62; $6.</p>"
+html: "<p>Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;6 &#62; $6.</p>"
 ---
 name: escaping of existing entities in blockcode
 in: "bc. Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;5 &#62; $5.
 "
-out: "<pre><code>Math fact: 3 &amp;lt; 5 &amp;amp; 5 &amp;gt; 3 but &amp;pound;5 &amp;#62; $5.</code></pre>"
+html: "<pre><code>Math fact: 3 &amp;lt; 5 &amp;amp; 5 &amp;gt; 3 but &amp;pound;5 &amp;#62; $5.</code></pre>"
 ---
 name: nested pre tags
 in: |-
@@ -44,7 +44,7 @@ in: |-
     Still in the pre.
   </code>
   </pre>
-out: |-  
+html: |-  
   <pre>
   <code>
     Properly escaped here.
@@ -66,7 +66,7 @@ in: |-
   no hard breaks
   </code>
   </pre>
-out: |-
+html: |-
   <pre>
   <code>
   # *test*
@@ -78,7 +78,7 @@ out: |-
 name: no formatting within blockcode
 in: |-
   bc. __not italics__
-out: |-
+html: |-
   <pre><code>__not italics__</code></pre>
 ---
 name: double-equals as inline notextile
@@ -88,7 +88,7 @@ in: |-
   ==Escaped portion -- will not be formatted by Textile at all==
 
   p. Back to normal.
-out: |-
+html: |-
   <p>Regular paragraph</p>
   <p>Escaped portion -- will not be formatted by Textile at all</p>
   <p>Back to normal.</p>
@@ -98,7 +98,7 @@ in: |-
   <notextile>
   # *test*
   </notextile>
-out: |-
+html: |-
   
   # *test*
 ---
@@ -108,7 +108,7 @@ in: |-
   * @bar@
   * and @x@ is also.
 
-out: |-
+html: |-
   <ul>
   	<li><code>foo</code></li>
   	<li><code>bar</code></li>
@@ -125,7 +125,7 @@ in: |-
   <p>block of code keeps going until a different block signature is encountered</p>
 
   p. And then go back with a normal paragraph.
-out: |-
+html: |-
   <p>If you have a line or two of code or <span class="caps">HTML</span> to embed, use extended block code like so:</p>
   <pre><code>./foo.pl%
   &lt;p&gt;foo outputs an HTML paragraph&lt;/p&gt;</code>

@@ -4,7 +4,7 @@ in: |
   |1|2|3|
   
   h3. A header after the table
-out: |-
+html: |-
   <table>
   	<tr>
   		<td>a</td>
@@ -22,7 +22,7 @@ out: |-
 in: |
   |_. a|_. b|_. c|
   |1|2|3|
-out: |-
+html: |-
   <table>
   	<tr>
   		<th>a</th>
@@ -39,7 +39,7 @@ out: |-
 in: |-
   |This|is|a|simple|table|
   |This|is|a|simple|row|
-out: |-
+html: |-
   <table>
   	<tr>
   		<td>This</td>
@@ -61,7 +61,7 @@ in: |-
   table{border:1px solid black}.
   |This|is|a|row|
   |This|is|a|row|
-out: |-
+html: |-
   <table style="border:1px solid black;">
   	<tr>
   		<td>This</td>
@@ -78,7 +78,7 @@ out: |-
   </table>
 ---
 in: '{background:#ddd}. |This|is|a|row|'
-out: |-
+html: |-
   <table>
   	<tr style="background:#ddd;">
   		<td>This</td>
@@ -91,7 +91,7 @@ out: |-
 in: |-
   |a|b|c|
   | |2|3|
-out: |-
+html: |-
   <table>
   	<tr>
   		<td>a</td>
@@ -115,7 +115,7 @@ in: |-
   |<(. almost left|
   |>. right|
   |<. left|
-out: |-
+html: |-
   <table style="width: 200px; border:2px solid gray;">
   	<tr>
   		<th style="text-align:center;">Alignment</th>
@@ -148,7 +148,7 @@ in: |-
   |\2. Cell spanning 2 columns|
   |/3. Cell spanning 3 rows|
   |>. Right-aligned cell|
-out: |-
+html: |-
   <table>
   	<tr>
   		<td style="background:#ddd;">Cell with gray background</td>
@@ -172,7 +172,7 @@ in: |
   |!/i/g.gif!|11/30/04|11/30/04|070|Feature complete. Passes end-to-end smoke test.|
   |!/i/w.gif!|12/02/04| |011|Dialog pass 1 and 2 complete (98+%)|
   |!/i/w.gif!|12/03/04| |081|Feature complete|
-out: |-
+html: |-
   <table>
   	<tr style="background:#ddd;">
   		<td>S</td>
@@ -230,7 +230,7 @@ in: |-
   table(my_class).
   |_\2. a |_. b |_. c |
   | 1 | 2 | 3 | 4 |
-out: |-
+html: |-
   <table class="my_class">
   	<tr>
   		<th colspan="2">a </th>

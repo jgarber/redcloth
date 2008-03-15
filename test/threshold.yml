@@ -5,7 +5,7 @@ in: |-
   A paragraph.
   
   Another paragraph.
-out: |-
+html: |-
   <p>A paragraph.</p>
   <p>Another paragraph.</p>
 ---
@@ -14,154 +14,154 @@ desc: Line breaks within paragraphs are transformed into XHTML line breaks.
 in: |-
   A paragraph with
   a line break.
-out: |-
+html: |-
   <p>A paragraph with<br />
   a line break.</p>
 ---
 name: xhtml tags
 desc: Simple XHTML tags may be included in a paragraph.
 in: Here's some <b>bold</b> text.
-out: <p>Here&#8217;s some <b>bold</b> text.</p>
+html: <p>Here&#8217;s some <b>bold</b> text.</p>
 ---
 name: no paragraph tags
 desc: A line beginning with a space will be left untouched, and not wrapped in <p> tags.
 in: " No paragraph tags here."
-out: " No paragraph tags here."
+html: " No paragraph tags here."
 ---
 name: smart quotes
 desc: Single and double typewriter quotation marks ' and " are transformed into typographically correct “curly” quote marks.
 in: '"Proceed!" said he to the host.'
-out: '<p>&#8220;Proceed!&#8221; said he to the host.</p>'
+html: '<p>&#8220;Proceed!&#8221; said he to the host.</p>'
 ---
 name: smart quotes 2
 in: "'Proceed!' said he to the host."
-out: "<p>&#8216;Proceed!&#8217; said he to the host.</p>"
+html: "<p>&#8216;Proceed!&#8217; said he to the host.</p>"
 ---
 name: nested quotation marks
 desc: Single and double quotation marks may be nested one inside the other.
 in: |-
   "'I swear, captain,' replied I."
-out: |-
+html: |-
   <p>&#8220;&#8216;I swear, captain,&#8217; replied I.&#8221;</p>
 ---
 name: nested quotation marks 2
 in: |-
   '"I swear, captain," replied I.'
-out: |-
+html: |-
   <p>&#8216;&#8220;I swear, captain,&#8221; replied I.&#8217;</p>
 ---
 name: apostrophe glyphs
 desc: Single quotation marks ' will be turned into apostrophe glyphs when used as such.
 in: Greengrocers' apostrophe's.
-out: <p>Greengrocers&#8217; apostrophe&#8217;s.</p>
+html: <p>Greengrocers&#8217; apostrophe&#8217;s.</p>
 ---
 name: em-dash glyphs
 desc: Double -- dashes become an em-dash glyph.
 in: You know the Italian proverb -- Chi ha compagno ha padrone.
-out: <p>You know the Italian proverb &#8212; Chi ha compagno ha padrone.</p>
+html: <p>You know the Italian proverb &#8212; Chi ha compagno ha padrone.</p>
 ---
 name: em-dash glyphs 2
 in: You know the Italian proverb--Chi ha compagno ha padrone.
-out: <p>You know the Italian proverb&#8212;Chi ha compagno ha padrone.</p>
+html: <p>You know the Italian proverb&#8212;Chi ha compagno ha padrone.</p>
 ---
 name: en-dash glyphs
 desc: Single - dashes are replaced with en-dashes.
 in: You know the Italian proverb - Chi ha compagno ha padrone.
-out: <p>You know the Italian proverb &#8211; Chi ha compagno ha padrone.</p>
+html: <p>You know the Italian proverb &#8211; Chi ha compagno ha padrone.</p>
 ---
 name: ellipsis character
 desc: Three period marks become an ellipsis character.
 in: Meanwhile...
-out: <p>Meanwhile&#8230;</p>
+html: <p>Meanwhile&#8230;</p>
 ---
 name: dimension character
 desc: An “x” is replaced with the dimension character when used between numbers.
 in: 1 x 2 x 3 = 6
-out: <p>1 &#215; 2 &#215; 3 = 6</p>
+html: <p>1 &#215; 2 &#215; 3 = 6</p>
 ---
 name: dimension character 2
 in: 1x2x3 = 6
-out: <p>1&#215;2&#215;3 = 6</p>
+html: <p>1&#215;2&#215;3 = 6</p>
 ---
 name: trademark register copyright
 desc: Trademark, Registered and Copyright symbols are represented by their common plain text equivalents.
 in: Registered(r) Trademark(tm) Copyright (c).
-out: <p>Registered&#174; Trademark&#8482; Copyright &#169;.</p>
+html: <p>Registered&#174; Trademark&#8482; Copyright &#169;.</p>
 ---
 name: acronyms
 desc: Acronyms consist of three or more uppercase characters, followed immediately by words in parentheses.
 in: ABC(Always Be Closing)
-out: <p><acronym title="Always Be Closing"><span class="caps">ABC</span></acronym></p>
+html: <p><acronym title="Always Be Closing"><span class="caps">ABC</span></acronym></p>
 ---
 name: uppercase
 desc: Uppercase words of three or more characters are enclosed with a special span element.
 in: IBM or HAL
-out: <p><span class="caps">IBM</span> or <span class="caps">HAL</span></p>
+html: <p><span class="caps">IBM</span> or <span class="caps">HAL</span></p>
 ---
 name: emphasis
 desc: Emphasis is added with _ underscores.
 in: The _underlying_ cause.
-out: <p>The <em>underlying</em> cause.</p>
+html: <p>The <em>underlying</em> cause.</p>
 ---
 name: strong text
 desc: Strong text is indicated by * asterisks.
 in: The *underlying* cause.
-out: <p>The <strong>underlying</strong> cause.</p>
+html: <p>The <strong>underlying</strong> cause.</p>
 ---
 name: italic text
 desc: em is a semantic tag, usually represented by browsers as italic text. To produce italic tags instead, use double underscores.
 in: The __underlying__ cause.
-out: <p>The <i>underlying</i> cause.</p>
+html: <p>The <i>underlying</i> cause.</p>
 ---
 name: bold text
 desc: strong is a semantic tag, usually represented by browsers as bold text. To produce bold tags instead, use double asterisks.
 in: The **underlying** cause.
-out: <p>The <b>underlying</b> cause.</p>
+html: <p>The <b>underlying</b> cause.</p>
 ---
 name: citation
 desc: Double question marks represent a citation, like the title of a book.
 in: ??The Count of Monte Cristo??, by Dumas.
-out: <p><cite>The Count of Monte Cristo</cite>, by Dumas.</p>
+html: <p><cite>The Count of Monte Cristo</cite>, by Dumas.</p>
 ---
 name: inserted and deleted text
 desc: Inserted and deleted text is represented by + plus and - minus symbols.
 in: Scratch -that-, replace with +this+.
-out: <p>Scratch <del>that</del>, replace with <ins>this</ins>.</p>
+html: <p>Scratch <del>that</del>, replace with <ins>this</ins>.</p>
 ---
 name: subscript
 desc: Subscript text is indicated by ~ tilde characters.
 in: log ~2~ n
-out: <p>log <sub>2</sub> n</p>
+html: <p>log <sub>2</sub> n</p>
 ---
 name: superscript
 desc: Superscript text is indicated by ^ caret characters.
 in: 2 ^x^
-out: <p>2 <sup>x</sup></p>
+html: <p>2 <sup>x</sup></p>
 ---
 name: span tag
 desc: Percentage marks will enclose text with a XHTML span tag.
 in: The %underlying% cause.
-out: <p>The <span>underlying</span> cause.</p>
+html: <p>The <span>underlying</span> cause.</p>
 ---
 name: code
 desc: To include a short snippet of code such as XHTML or Javascript, surround it with @ “at” symbols. XHTML significant characters within a code phrase will be escaped for display to the reader.
 in: About the @<hr />@ tag.
-out: <p>About the <code>&lt;hr /&gt;</code> tag.</p>
+html: <p>About the <code>&lt;hr /&gt;</code> tag.</p>
 ---
 name: links
 desc: Links are represented by double quotes and a colon.
 in: '"link text":http://example.com/'
-out: <p><a href="http://example.com/">link text</a></p>
+html: <p><a href="http://example.com/">link text</a></p>
 ---
 name: local links
 desc: The host name may be ommitted for local links.
 in: '"link text":/example'
-out: <p><a href="/example">link text</a></p>
+html: <p><a href="/example">link text</a></p>
 ---
 name: link title
 desc: A title may be placed in () parentheses.
 in: '"link text(with title)":http://example.com/'
-out: <p><a href="http://example.com/" title="with title">link text</a></p>
+html: <p><a href="http://example.com/" title="with title">link text</a></p>
 ---
 name: link alias
 desc: For frequent linking to a single URL, you can specify a link alias with [] square brackets.
@@ -170,41 +170,41 @@ in: |-
   "another link":tstate to the same site.
   
   [tstate]http://thresholdstate.com/
-out: |-
+html: |-
   <p>Here&#8217;s <a href="http://thresholdstate.com/">a link</a>, and<br />
   <a href="http://thresholdstate.com/">another link</a> to the same site.</p>
 ---
 name: image
 desc: Use ! exclamation marks to insert an image tag.
 in: "!/img.gif!"
-out: <p><img src="/img.gif" alt="" /></p>
+html: <p><img src="/img.gif" alt="" /></p>
 ---
 name: image 2
 in: "!http://thresholdstate.com/img.gif!"
-out: <p><img src="http://thresholdstate.com/img.gif" alt="" /></p>
+html: <p><img src="http://thresholdstate.com/img.gif" alt="" /></p>
 ---
 name: image alt
 desc: Use () parentheses to include “alt” text.
 in: "!/img.gif(alt text)!"
-out: <p><img src="/img.gif" title="alt text" alt="alt text" /></p>
+html: <p><img src="/img.gif" title="alt text" alt="alt text" /></p>
 ---
 name: image links
 desc: Images may be combined with links by using an !image! in place of the link text.
 in: "!/img.gif!:http://textpattern.com/"
-out: <p><a href="http://textpattern.com/"><img src="/img.gif" alt="" /></a></p>
+html: <p><a href="http://textpattern.com/"><img src="/img.gif" alt="" /></a></p>
 ---
 name: headers
 desc: Headers are represented by h1., h2., … h6..
 in: h1. Heading 1
-out: <h1>Heading 1</h1>
+html: <h1>Heading 1</h1>
 ---
 name: headers 2
 in: h2. Heading 2
-out: <h2>Heading 2</h2>
+html: <h2>Heading 2</h2>
 ---
 name: headers 3
 in: h6. Heading 6
-out: <h6>Heading 6</h6>
+html: <h6>Heading 6</h6>
 ---
 name: paragraph text
 desc: "Paragraph p text is represented by p.. This is the default block type: any paragraph without a block modifier will automatically be enclosed with p tags."
@@ -213,7 +213,7 @@ in: |-
   Continued.
   
   Also a paragraph.
-out: |-
+html: |-
   <p>A paragraph.<br />
   Continued.</p>
   <p>Also a paragraph.</p>
@@ -225,7 +225,7 @@ in: |-
   Continued.
   
   Regular paragraph.
-out: |-
+html: |-
   <blockquote>
   <p>A quotation.<br />
   Continued.</p>
@@ -235,7 +235,7 @@ out: |-
 name: block quote citation
 desc: Block quotes may include a citation URL immediately following the period.
 in: bq.:http://thresholdstate.com/ A cited quotation.
-out: |-
+html: |-
   <blockquote cite="http://thresholdstate.com/">
   <p>A cited quotation.</p>
   </blockquote>
@@ -246,7 +246,7 @@ in: |-
   A footnote reference[1].
   
   fn1. The footnote.
-out: |-
+html: |-
   <p>A footnote reference<sup class="footnote"><a href="#fn1216642796463b1223ae29d">1</a></sup>.</p>
   <p class="footnote" id="fn1216642796463b1223ae29d"><sup>1</sup> The footnote.</p>
 ---
@@ -258,7 +258,7 @@ in: |-
   // a Javascript example
   alert("Hello World");
   </script>
-out: |-
+html: |-
   <pre><code>&lt;script&gt;
   // a Javascript example
   alert("Hello World");
@@ -270,7 +270,7 @@ note: pre. is almost identical to bc., with the exception that <code>...</code> 
 in: |-
   pre. Pre-formatted
   text
-out: |-
+html: |-
   <pre>Pre-formatted
   text</pre>
 ---
@@ -281,7 +281,7 @@ in: |-
   document.write("Hello World!");
   </script>
   <noscript>Your browser doesn't support Javascript</noscript>
-out: |-
+html: |-
   <script type="text/javascript">
   document.write("Hello World!");
   </script>
@@ -290,44 +290,44 @@ out: |-
 name: class attribute
 desc: CSS classes are specified with () parentheses.
 in: p(myclass). My classy paragraph.
-out: <p class="myclass">My classy paragraph.</p>
+html: <p class="myclass">My classy paragraph.</p>
 ---
 name: id attribute
 desc: CSS IDs are specified with () parentheses.
 in: p(#myid). My ID paragraph.
-out: <p id="myid">My ID paragraph.</p>
+html: <p id="myid">My ID paragraph.</p>
 ---
 name: style attribute
 desc: CSS styles are specified with {} braces.
 in: p{color:red}. Red rum.
-out: <p style="color:red;">Red rum.</p>
+html: <p style="color:red;">Red rum.</p>
 ---
 name: lang attribute
 desc: Languages are specified with [] brackets.
 in: p[fr-fr]. En français.
-out: <p lang="fr-fr">En français.</p>
+html: <p lang="fr-fr">En français.</p>
 ---
 name: phrase modifiers
 desc: The same syntax may be applied to phrase modifiers.
 in: A *(myclass)classy* phrase.
-out: <p>A <strong class="myclass">classy</strong> phrase.</p>
+html: <p>A <strong class="myclass">classy</strong> phrase.</p>
 ---
 name: phrase modifiers 2
 in: An _(#myid2)ID_ phrase.
-out: <p>An <em id="myid2">ID</em> phrase.</p>
+html: <p>An <em id="myid2">ID</em> phrase.</p>
 ---
 name: phrase modifiers 3
 in: The %{color:blue}blue% room.
-out: <p>The <span style="color:blue;">blue</span> room.</p>
+html: <p>The <span style="color:blue;">blue</span> room.</p>
 ---
 name: block and phrase attributes combined
 desc: Block and phrase attributes may be combined.
 in: p(myclass#myid3){color:green}[de-de]. A complex paragraph.
-out: <p style="color:green;" class="myclass" lang="de-de" id="myid3">A complex paragraph.</p>
+html: <p style="color:green;" class="myclass" lang="de-de" id="myid3">A complex paragraph.</p>
 ---
 name: block and phrase attributes combined 2
 in: A ??(myclass#myid4){color:green}[de-de]complex?? phrase.
-out: <p>A <cite style="color:green;" class="myclass" lang="de-de" id="myid4">complex</cite> phrase.</p>
+html: <p>A <cite style="color:green;" class="myclass" lang="de-de" id="myid4">complex</cite> phrase.</p>
 ---
 name: extended blocks
 desc: Normally a block modifier covers a single block of text, and ends at the first blank line. To extend a block over multiple paragraphs that include blank lines, use a block modifier with two period marks instead of one. To close the extended block, use a different block modifier on the next paragraph.
@@ -337,7 +337,7 @@ in: |-
   The quote continued.
   
   p. Back to paragraph text.
-out: |-
+html: |-
   <blockquote>
   <p>A quote.</p>
   <p>The quote continued.</p>
@@ -358,7 +358,7 @@ in: |-
   ?>
   
   p. Following paragraph.
-out: |-
+html: |-
   <p>A <span class="caps">PHP</span> code example.</p>
   <pre><code>&lt;?php
   function hello() {
@@ -379,7 +379,7 @@ in: |-
   Another classy paragraph.
   
   p. Not so classy.
-out: |-
+html: |-
   <p class="myclass">A classy paragraph.</p>
   <p class="myclass">Another classy paragraph.</p>
   <p>Not so classy.</p>
@@ -390,7 +390,7 @@ in: |-
   bq(myclass).. Quote paragraph 1.
 
   Paragraph 2.
-out: |-
+html: |-
   <blockquote class="myclass">
   <p class="myclass">Quote paragraph 1.</p>
   <p class="myclass">Paragraph 2.</p>
@@ -402,7 +402,7 @@ in: |-
   bc(myclass).. Code block 1.
   
   Code block 2.
-out: |-
+html: |-
   <pre class="myclass"><code class="myclass">Code block 1.</code>
 
   <code class="myclass">Code block 2.</code></pre>
@@ -410,31 +410,31 @@ out: |-
 name: raw xhtml left in tact
 desc: Raw XHTML tags are generally left untouched by Textile. Span tags that enclose only part of a block of text will be left intact, while the block itself is treated normally.
 in: <b>bold</b> and <i>italic</i>, the hard way.
-out: <p><b>bold</b> and <i>italic</i>, the hard way.</p>
+html: <p><b>bold</b> and <i>italic</i>, the hard way.</p>
 ---
 name: paragraphs entirely raw xhtml
 desc: Paragraphs that consist entirely of raw XHTML block tags will not be enclosed in <p>...</p> tags.
 in: <div class="mydiv">My div</div>
-out: <div class="mydiv">My div</div>
+html: <div class="mydiv">My div</div>
 ---
 name: paragraphs with inline xhtml
 desc: Paragraphs that consist only of inline XHTML tags, will be enclosed in <p>...</p> tags.
 in: <img src="/img.gif" />
-out: <p><img src="/img.gif" /></p>
+html: <p><img src="/img.gif" /></p>
 ---
 name: paragraphs with inline xhtml 2
 in: <span class="myspan">I'll make my own way.</span>
-out: '<p><span class="myspan">I&#8217;ll make my own way.</span></p>'
+html: '<p><span class="myspan">I&#8217;ll make my own way.</span></p>'
 ---
 name: paragraphs partly enclosed in xhtml block tags
 desc: Paragraphs that are only partly enclosed in block tags will be enclosed in <p>...</p> tags.
 in: <div>inside</div> and outside.
-out: <p><div>inside</div> and outside.</p>
+html: <p><div>inside</div> and outside.</p>
 ---
 name: complex xhtml blocks
 desc: Textile can’t always identify the beginning and end of long or complex blocks of XHTML. To prevent Textile from enclosing complex XHTML blocks in paragraph tags, either use a space at the beginning of each line...
 in: " <div>\n <span>My div</span>\n </div>"
-out: " <div>\n <span>My div</span>\n </div>"
+html: " <div>\n <span>My div</span>\n </div>"
 ---
 name: complex xhtml blocks 2
 desc: ...or a notexile.. extended block.
@@ -444,7 +444,7 @@ in: |-
   <span>My div</span>
   
   </div>
-out: |-
+html: |-
   <div>
 
   <span>My div</span>
@@ -457,7 +457,7 @@ in: |-
   <pre>
   A HTML <b>example</b>
   </pre>
-out: |-
+html: |-
   <pre>
   A HTML &lt;b&gt;example&lt;/b&gt;
   </pre>
@@ -469,7 +469,7 @@ in: |-
   <code>
   Another HTML <b>example</b>
   </code>
-out: |-
+html: |-
   <p><code>
   Another HTML &lt;b&gt;example&lt;/b&gt;
   </code></p>
@@ -481,7 +481,7 @@ in: |-
   <notextile>
   p. Leave me alone
   </notextile>
-out: |-
+html: |-
   <p>
   p. Leave me alone
   </p>
@@ -490,35 +490,35 @@ note: This syntax is supported for backwards compatibility only, and doesn’t a
 name: left aligned text
 desc: Left alignment is specified with a < less than symbol.
 in: p<. Left-aligned paragraph.
-out: <p style="text-align:left;">Left-aligned paragraph.</p>
+html: <p style="text-align:left;">Left-aligned paragraph.</p>
 ---
 name: right aligned text
 desc: Right alignment is specified with a > greater than symbol.
 in: h3>. Right-aligned heading.
-out: <h3 style="text-align:right;">Right-aligned heading.</h3>
+html: <h3 style="text-align:right;">Right-aligned heading.</h3>
 ---
 name: justified text
 desc: Use both <> symbols for justified text.
 in: p<>. Justified paragraph.
-out: <p style="text-align:justify;">Justified paragraph.</p>
+html: <p style="text-align:justify;">Justified paragraph.</p>
 ---
 name: centered text
 desc: An = equals symbol represents centered text.
 in: h3=. Centered heading.
-out: <h3 style="text-align:center;">Centered heading.</h3>
+html: <h3 style="text-align:center;">Centered heading.</h3>
 ---
 name: padding
 desc: Use empty ( and ) parentheses to add padding to blocks, in multiples of 1 em.
 in: p(. Left pad 1em.
-out: <p style="padding-left:1em;">Left pad 1em.</p>
+html: <p style="padding-left:1em;">Left pad 1em.</p>
 ---
 name: padding 2
 in: p)). Right pad 2em.
-out: <p style="padding-right:2em;">Right pad 2em.</p>
+html: <p style="padding-right:2em;">Right pad 2em.</p>
 ---
 name: padding 3
 in: p(). Left and right pad 1em.
-out: <p style="padding-left:1em;padding-right:1em;">Left and right pad 1em.</p>
+html: <p style="padding-left:1em;padding-right:1em;">Left and right pad 1em.</p>
 ---
 name: numeric lists
 desc: Numeric lists are represented by lines beginning with #.
@@ -526,7 +526,7 @@ in: |-
   # Item one
   # Item two
   # Item three
-out: |-
+html: |-
   <ol>
   	<li>Item one</li>
   	<li>Item two</li>
@@ -539,7 +539,7 @@ in: |-
   * Item A
   * Item B
   * Item C
-out: |-
+html: |-
   <ul>
   	<li>Item A</li>
   	<li>Item B</li>
@@ -552,7 +552,7 @@ in: |-
   *{color:red} Item one
   * Item two
   * Item three
-out: |-
+html: |-
   <ul style="color:red;">
   	<li>Item one</li>
   	<li>Item two</li>
@@ -567,7 +567,7 @@ in: |-
   ## Item one-B
   ### Item one-B-a
   # Item two
-out: |-
+html: |-
   <ol>
   	<li>Item one
   	<ol>
@@ -583,7 +583,7 @@ out: |-
 name: tables
 desc: Tables can be constructed using | “pipe” symbols to separate cells.
 in: |a|simple|table|
-out: |-
+html: |-
   <table>
   	<tr>
   		<td>a</td>
@@ -597,7 +597,7 @@ desc: Use _. to indicate table heading cells.
 in: |-
   |_. a|_. table|_. heading|
   |a|table|row|
-out: |-
+html: |-
   <table>
   	<tr>
   		<th>a</th>
@@ -614,7 +614,7 @@ out: |-
 name: cell attributes
 desc: Attributes may be applied separately to individual cells, rows, and entire tables. Cell attributes are placed within each cell.
 in: |a|{color:red}. styled|cell|
-out: |-
+html: |-
   <table>
   	<tr>
   		<td>a</td>
@@ -626,7 +626,7 @@ out: |-
 name: row attributes
 desc: Row attributes are placed at the beginning of a row, followed by a dot and a space.
 in: (rowclass). |a|classy|row|
-out: |-
+html: |-
   <table>
   	<tr class="rowclass">
   		<td>a</td>
@@ -641,7 +641,7 @@ in: |-
   table(tableclass).
   |a|classy|table|
   |a|classy|table|
-out: |-
+html: |-
   <table class="tableclass">
   	<tr>
   		<td>a</td>
@@ -658,7 +658,7 @@ out: |-
 name: vertical alignment
 desc: Special alignment symbols are available for vertical alignment within table cells.
 in: |^. top alignment|
-out: |-
+html: |-
   <table>
   	<tr>
   		<td style="vertical-align:top;">top alignment</td>
@@ -668,7 +668,7 @@ out: |-
 name: vertical alignment 2
 in: |-
   |-. middle alignment|
-out: |-
+html: |-
   <table>
   	<tr>
   		<td style="vertical-align:middle;">middle alignment</td>
@@ -678,7 +678,7 @@ out: |-
 name: vertical alignment 3
 in: |-
   |~. bottom alignment|
-out: |-
+html: |-
   <table>
   	<tr>
   		<td style="vertical-align:bottom;">bottom alignment</td>
@@ -690,7 +690,7 @@ desc: Use a \ backslash to indicate a column span.
 in: |-
   |\2. spans two cols |
   | col 1 | col 2 |
-out: |-
+html: |-
   <table>
   	<tr>
   		<td colspan="2">spans two cols </td>
@@ -707,7 +707,7 @@ in: |-
   |/3. spans 3 rows | row a |
   | row b |
   | row c |
-out: |-
+html: |-
   <table>
   	<tr>
   		<td rowspan="3">spans 3 rows </td>
@@ -724,21 +724,21 @@ out: |-
 name: whitespace required
 desc: Links, images and phrase modifiers normally require surrounding whitespace.
 in: this*won't*work
-out: <p>this*won&#8217;t*work</p>
+html: <p>this*won&#8217;t*work</p>
 ---
 name: modifier without whitespace
 desc: To use these without whitespace, surround the modifier with [] square brackets.
 in: this[*will*]work
-out: <p>this<strong>will</strong>work</p>
+html: <p>this<strong>will</strong>work</p>
 ---
 name: modifier without whitespace 2
 desc: This is particularly useful in conjunction with superscript and subscript.
 in: 1[^st^], 2[^nd^], 3[^rd^].
-out: <p>1<sup>st</sup>, 2<sup>nd</sup>, 3<sup>rd</sup>.</p>
+html: <p>1<sup>st</sup>, 2<sup>nd</sup>, 3<sup>rd</sup>.</p>
 ---
 name: modifier without whitespace 3
 in: 2 log[~n~]
-out: <p>2 log<sub>n</sub></p>
+html: <p>2 log<sub>n</sub></p>
 ---
 name: modifier without whitespace 4
 desc: It can also be used to include links and images without surrounding whitespace.
@@ -746,7 +746,7 @@ in: |-
   A close[!/img.gif!]image.
   A tight["text":http://thresholdstate.com/]link.
   A ["footnoted link":http://thresholdstate.com/][1].
-out: |-
+html: |-
   <p>A close<img src="/img.gif" alt="" />image.<br />
   A tight<a href="http://thresholdstate.com/">text</a>link.<br />
   A <a href="http://thresholdstate.com/">footnoted link</a><sup class="footnote"><a href="#fn1216642796463b1223ae29d">1</a></sup>.</p>

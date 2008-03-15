@@ -1,9 +1,9 @@
 ---
 in: '*this <span></span> is strong*'
-out: '<p><strong>this <span></span> is strong</strong></p>'
+html: '<p><strong>this <span></span> is strong</strong></p>'
 ---
 in: '*this <span>test</span> is strong*'
-out: '<p><strong>this <span>test</span> is strong</strong></p>'
+html: '<p><strong>this <span>test</span> is strong</strong></p>'
 ---
 name: no breaks between HTML elements
 in: |-
@@ -14,7 +14,7 @@ in: |-
   	<li>It should insert a hard break
   if you break.</li>
   </ul>
-out: |-
+html: |-
   <ul>
   	<li>You can put <span class="caps">HTML</span> code right in Textile.</li>
   	<li>It will not insert a break between elements</li>
@@ -42,7 +42,7 @@ in: |-
   </div>
 
   Another paragraph.
-out: |-
+html: |-
   <p><img src="test.jpg" /></p>
   <p>Regular paragraph.</p>
   <div class="test">
@@ -59,17 +59,17 @@ out: |-
 ---
 name: wraps inline HTML in paragraphs
 in: '<em>asd</em> blabla "google":http://google.com'
-out: '<p><em>asd</em> blabla <a href="http://google.com">google</a></p>'
+html: '<p><em>asd</em> blabla <a href="http://google.com">google</a></p>'
 ---
 name: preserves block html
 in: |-
   <div>123 Anystreet</div>
 
   <p foo="bar">Explicit paragraph</p>
-out: |-
+html: |-
   <div>123 Anystreet</div>
   <p foo="bar">Explicit paragraph</p>
 ---
 name: preserves empty block standalone elements
 in: "<hr />"
-out: "<hr />"
+html: "<hr />"
