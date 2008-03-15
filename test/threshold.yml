@@ -249,6 +249,9 @@ in: |-
 html: |-
   <p>A footnote reference<sup class="footnote"><a href="#fn1">1</a></sup>.</p>
   <p class="footnote" id="fn1"><sup>1</sup> The footnote.</p>
+# html: |-
+#   <p>A footnote reference<sup class="footnote"><a href="#fn1216642796463b1223ae29d">1</a></sup>.</p>
+#   <p class="footnote" id="fn1216642796463b1223ae29d"><sup>1</sup> The footnote.</p>
 ---
 name: block code
 desc: Code such as XHTML, Javascript or PHP may be displayed using the bc. “block code” modifier. XHTML significant characters such as < and > will be escaped within code blocks – bc is used for displaying code to the reader, not for executing it.
@@ -482,9 +485,12 @@ in: |-
   p. Leave me alone
   </notextile>
 html: |-
-  <p>
+  
   p. Leave me alone
-  </p>
+# html: |-
+#   <p>
+#   p. Leave me alone
+#   </p>
 note: This syntax is supported for backwards compatibility only, and doesn’t always work as expected. The block modifier notextile. should be used instead.
 ---
 name: left aligned text
@@ -750,3 +756,7 @@ html: |-
   <p>A close<img src="/img.gif" alt="" />image.<br />
   A tight<a href="http://thresholdstate.com/">text</a>link.<br />
   A <a href="http://thresholdstate.com/">footnoted link</a><sup class="footnote"><a href="#fn1">1</a></sup>.</p>
+# html: |-
+#   <p>A close<img src="/img.gif" alt="" />image.<br />
+#   A tight<a href="http://thresholdstate.com/">text</a>link.<br />
+#   A <a href="http://thresholdstate.com/">footnoted link</a><sup class="footnote"><a href="#fn1216642796463b1223ae29d">1</a></sup>.</p>
