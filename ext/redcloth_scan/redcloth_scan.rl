@@ -1,23 +1,23 @@
 /*
- * superredcloth_scan.rl
+ * redcloth_scan.rl
  *
  * $Author: why $
  * $Date$
  *
  * Copyright (C) 2007 why the lucky stiff
  */
-#define superredcloth_scan_c
+#define redcloth_scan_c
 
 #include <ruby.h>
-#include "superredcloth.h"
+#include "redcloth.h"
 
 VALUE super_ParseError, super_RedCloth, super_HTML, super_LATEX;
 int SYM_html_escape_entities;
 
 %%{
 
-  machine superredcloth_scan;
-  include superredcloth_common "ext/superredcloth_scan/superredcloth_common.rl";
+  machine redcloth_scan;
+  include redcloth_common "ext/redcloth_scan/redcloth_common.rl";
 
   action extend { extend = rb_hash_aref(regs, ID2SYM(rb_intern("type"))); }
 
@@ -173,7 +173,7 @@ int SYM_html_escape_entities;
 %% write data nofinal;
 
 VALUE
-superredcloth_transform(rb_formatter, p, pe, refs)
+redcloth_transform(rb_formatter, p, pe, refs)
   VALUE rb_formatter;
   char *p, *pe;
   VALUE refs;
@@ -209,7 +209,7 @@ superredcloth_transform(rb_formatter, p, pe, refs)
   }
 
   if ( NIL_P(refs) && rb_funcall(refs_found, rb_intern("empty?"), 0) == Qfalse ) {
-    return superredcloth_transform(rb_formatter, orig_p, orig_pe, refs_found);
+    return redcloth_transform(rb_formatter, orig_p, orig_pe, refs_found);
   } else {
     rb_funcall(rb_formatter, rb_intern("after_transform"), 1, html);
     return html;
@@ -217,50 +217,50 @@ superredcloth_transform(rb_formatter, p, pe, refs)
 }
 
 VALUE
-superredcloth_transform2(formatter, str)
+redcloth_transform2(formatter, str)
   VALUE formatter, str;
 {
   rb_str_cat2(str, "\n");
   StringValue(str);
-  return superredcloth_transform(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, Qnil);
+  return redcloth_transform(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, Qnil);
 }
 
 static VALUE
-superredcloth_to_html(self)
+redcloth_to_html(self)
   VALUE self;
 {
   char *pe, *p;
   int len = 0;
 
-  return superredcloth_transform2(super_HTML, self);
+  return redcloth_transform2(super_HTML, self);
 }
 
 static VALUE
-superredcloth_to_latex(self)
+redcloth_to_latex(self)
   VALUE self;
 {
   char *pe, *p;
   int len = 0;
 
-  return superredcloth_transform2(super_LATEX, self);
+  return redcloth_transform2(super_LATEX, self);
 }
 
 static VALUE
-superredcloth_to(self, formatter)
+redcloth_to(self, formatter)
   VALUE self, formatter;
 {
   char *pe, *p;
   int len = 0;
 
-  return superredcloth_transform2(formatter, self);
+  return redcloth_transform2(formatter, self);
 }
 
-void Init_superredcloth_scan()
+void Init_redcloth_scan()
 {
-  super_RedCloth = rb_define_class("SuperRedCloth", rb_cString);
-  rb_define_method(super_RedCloth, "to_html", superredcloth_to_html, 0);
-  rb_define_method(super_RedCloth, "to_latex", superredcloth_to_latex, 0);
-  rb_define_method(super_RedCloth, "to", superredcloth_to, 1);
+  super_RedCloth = rb_define_class("RedCloth", rb_cString);
+  rb_define_method(super_RedCloth, "to_html", redcloth_to_html, 0);
+  rb_define_method(super_RedCloth, "to_latex", redcloth_to_latex, 0);
+  rb_define_method(super_RedCloth, "to", redcloth_to, 1);
   super_ParseError = rb_define_class_under(super_RedCloth, "ParseError", rb_eException);
   super_HTML  = rb_define_module_under(super_RedCloth, "HTML");
   super_LATEX = rb_define_module_under(super_RedCloth, "LATEX");

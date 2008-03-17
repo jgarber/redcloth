@@ -1,4 +1,4 @@
-class << SuperRedCloth::LATEX
+class << RedCloth::LATEX
   def options
     {:html_escape_entities => false}
   end

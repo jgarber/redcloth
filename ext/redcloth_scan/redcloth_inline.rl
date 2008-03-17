@@ -1,5 +1,5 @@
 /*
- * superredcloth_inline.rl
+ * redcloth_inline.rl
  *
  * $Author: why $
  * $Date$
@@ -7,12 +7,12 @@
  * Copyright (C) 2007 why the lucky stiff
  */
 #include <ruby.h>
-#include "superredcloth.h"
+#include "redcloth.h"
 
 %%{
 
-  machine superredcloth_inline;
-  include superredcloth_common "ext/superredcloth_scan/superredcloth_common.rl";
+  machine redcloth_inline;
+  include redcloth_common "ext/redcloth_scan/redcloth_common.rl";
 
   # common
   title = ( '(' default+ >A %{ STORE(title) } :> ')' ) ;
@@ -134,7 +134,7 @@ VALUE
 red_pass(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth, VALUE refs)
 {
   VALUE txt = rb_hash_aref(regs, ref);
-  if (!NIL_P(txt)) rb_hash_aset(regs, ref, superredcloth_inline2(rb_formatter, txt, refs));
+  if (!NIL_P(txt)) rb_hash_aset(regs, ref, redcloth_inline2(rb_formatter, txt, refs));
   return rb_funcall(rb_formatter, meth, 1, regs);
 }
 
@@ -165,7 +165,7 @@ red_block(VALUE rb_formatter, VALUE regs, VALUE block, VALUE refs)
   block = rb_funcall(block, rb_intern("strip"), 0);
   if ((RSTRING(block)->len > 0) && !NIL_P(btype))
   {
-    rb_hash_aset(regs, ID2SYM(rb_intern("text")), superredcloth_inline2(rb_formatter, block, refs));
+    rb_hash_aset(regs, ID2SYM(rb_intern("text")), redcloth_inline2(rb_formatter, block, refs));
     block = rb_funcall(rb_formatter, rb_intern(RSTRING(btype)->ptr), 1, regs);
   }
   return block;
@@ -194,7 +194,7 @@ red_inc(VALUE regs, VALUE ref)
 }
 
 VALUE
-superredcloth_inline(rb_formatter, p, pe, refs)
+redcloth_inline(rb_formatter, p, pe, refs)
   VALUE rb_formatter;
   char *p, *pe;
   VALUE refs;
@@ -302,9 +302,9 @@ rb_str_cat_escaped_for_preformatted(str, ts, te, opts)
 }
 
 VALUE
-superredcloth_inline2(formatter, str, refs)
+redcloth_inline2(formatter, str, refs)
   VALUE formatter, str, refs;
 {
   StringValue(str);
-  return superredcloth_inline(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, refs);
+  return redcloth_inline(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, refs);
 }

@@ -1,4 +1,4 @@
-class << SuperRedCloth::HTML
+class << RedCloth::HTML
   def options
     {:html_escape_entities => true}
   end

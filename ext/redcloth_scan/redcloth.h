@@ -1,8 +1,8 @@
-#ifndef superredcloth_h
-#define superredcloth_h
+#ifndef redcloth_h
+#define redcloth_h
 
 /* variable defs */
-#ifndef superredcloth_scan_c
+#ifndef redcloth_scan_c
 extern VALUE super_ParseError, super_RedCloth;
 extern int SYM_html_escape_entities;
 #endif
@@ -10,10 +10,10 @@ extern int SYM_html_escape_entities;
 /* function defs */
 void rb_str_cat_escaped(VALUE str, char *ts, char *te, unsigned int opts);
 void rb_str_cat_escaped_for_preformatted(VALUE str, char *ts, char *te, unsigned int opts);
-VALUE superredcloth_inline(VALUE, char *, char *, VALUE);
-VALUE superredcloth_inline2(VALUE, VALUE, VALUE);
-VALUE superredcloth_transform(VALUE, char *, char *, VALUE);
-VALUE superredcloth_transform2(VALUE, VALUE);
+VALUE redcloth_inline(VALUE, char *, char *, VALUE);
+VALUE redcloth_inline2(VALUE, VALUE, VALUE);
+VALUE redcloth_transform(VALUE, char *, char *, VALUE);
+VALUE redcloth_transform2(VALUE, VALUE);
 void red_inc(VALUE, VALUE);
 VALUE red_block(VALUE, VALUE, ID, VALUE);
 VALUE red_blockcode(VALUE, VALUE, VALUE);
@@ -49,7 +49,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID, unsigned int opts);
     while (p > reg && ( *(p - 1) == '\r' || *(p - 1) == '\n' ) ) { p--; } \
   } \
   if (p > reg && reg >= ts) { \
-    VALUE str = superredcloth_transform(rb_formatter, reg, p, refs); \
+    VALUE str = redcloth_transform(rb_formatter, reg, p, refs); \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
   /*  printf("TRANSFORM(" #T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
   } else { \

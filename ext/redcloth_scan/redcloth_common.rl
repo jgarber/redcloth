@@ -1,6 +1,6 @@
 %%{
 
-  machine superredcloth_common;
+  machine redcloth_common;
 
   action A { reg = p; }
   action T { STORE(text); }
