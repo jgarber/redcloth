@@ -6,31 +6,31 @@ require 'rake/testtask'
 require 'fileutils'
 include FileUtils
 
-NAME = "superredcloth"
+NAME = "redcloth"
 SUMMARY = "a fast library for formatting Textile and Markdown as HTML"
 REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
 VERS = ENV['VERSION'] || "1" + (REV ? ".#{REV}" : "")
-CLEAN.include ['ext/superredcloth_scan/*.{bundle,so,obj,pdb,lib,def,exp}', 'ext/superredcloth_scan/Makefile', 
+CLEAN.include ['ext/redcloth_scan/*.{bundle,so,obj,pdb,lib,def,exp}', 'ext/redcloth_scan/Makefile', 
                '**/.*.sw?', '*.gem', '.config']
 
 desc "Does a full compile, test run"
 task :default => [:compile, :test]
 
 desc "Compiles all extensions"
-task :compile => [:superredcloth_scan] do
-  if Dir.glob(File.join("lib","superredcloth_scan.*")).length == 0
+task :compile => [:redcloth_scan] do
+  if Dir.glob(File.join("lib","redcloth_scan.*")).length == 0
     STDERR.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     STDERR.puts "Gem actually failed to build.  Your system is"
-    STDERR.puts "NOT configured properly to build superredcloth."
+    STDERR.puts "NOT configured properly to build redcloth."
     STDERR.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     exit(1)
   end
 end
 
-desc "Packages up SuperRedCloth."
+desc "Packages up RedCloth."
 task :package => [:clean, :ragel]
 
-desc "Releases packages for all SuperRedCloth packages and platforms."
+desc "Releases packages for all RedCloth packages and platforms."
 task :release => [:package, :rubygems_win32]
 
 desc "Run all the tests"
@@ -67,7 +67,7 @@ Rake::RDocTask.new do |rdoc|
     # rdoc.options += RDOC_OPTS
     # rdoc.template = "extras/flipbook_rdoc.rb"
     rdoc.main = "README"
-    rdoc.title = "SuperRedCloth Documentation"
+    rdoc.title = "RedCloth Documentation"
     rdoc.rdoc_files.add ['README', 'CHANGELOG', 'COPYING', 'lib/**/*.rb']
 end
 
@@ -87,10 +87,10 @@ spec =
         s.files = %w(COPYING README Rakefile) +
           Dir.glob("{bin,doc,test,lib,extras}/**/*") + 
           Dir.glob("ext/**/*.{h,c,rb,rl}") + 
-          %w[ext/superredcloth_scan/superredcloth_scan.c] # needed because it's generated later
+          %w[ext/redcloth_scan/redcloth_scan.c] # needed because it's generated later
         
         s.require_path = "lib"
-        #s.autorequire = "superredcloth"  # no no no this is tHe 3v1l
+        #s.autorequire = "redcloth"  # no no no this is tHe 3v1l
         s.extensions = FileList["ext/**/extconf.rb"].to_a
         s.bindir = "bin"
     end
@@ -100,12 +100,12 @@ Rake::GemPackageTask.new(spec) do |p|
     p.gem_spec = spec
 end
 
-extension = "superredcloth_scan"
-ext = "ext/superredcloth_scan"
+extension = "redcloth_scan"
+ext = "ext/redcloth_scan"
 ext_so = "#{ext}/#{extension}.#{Config::CONFIG['DLEXT']}"
 ext_files = FileList[
-  "#{ext}/superredcloth_scan.c",
-  "#{ext}/superredcloth_inline.c",
+  "#{ext}/redcloth_scan.c",
+  "#{ext}/redcloth_inline.c",
   "#{ext}/extconf.rb",
   "#{ext}/Makefile",
   "lib"
@@ -122,9 +122,9 @@ task "lib" do
   directory "lib"
 end
 
-["#{ext}/superredcloth_scan.c","#{ext}/superredcloth_inline.c"].each do |name|
+["#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c"].each do |name|
   source = name.sub(/\.c$/, '.rl')
-  file name => [source, "#{ext}/superredcloth_common.rl", "#{ext}/superredcloth.h"] do
+  file name => [source, "#{ext}/redcloth_common.rl", "#{ext}/redcloth.h"] do
     @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].split('.').map{|s| s.to_i}
     if @ragel_v[0] >= 6
       sh %{ragel #{source} -G2 -o #{name}}
@@ -138,7 +138,7 @@ end
 desc "Builds just the #{extension} extension"
 task extension.to_sym => ["#{ext}/Makefile", ext_so ]
 
-file "#{ext}/Makefile" => ["#{ext}/extconf.rb", "#{ext}/superredcloth_scan.c","#{ext}/superredcloth_inline.c"] do
+file "#{ext}/Makefile" => ["#{ext}/extconf.rb", "#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c"] do
   Dir.chdir(ext) do ruby "extconf.rb" end
 end
 
@@ -147,7 +147,7 @@ PKG_FILES = FileList[
   "lib/**/*.rb",
   "ext/**/*.{c,rb,h,rl}",
   "CHANGELOG", "README", "Rakefile", "COPYING",
-  "extras/**/*", "lib/superredcloth_scan.so"]
+  "extras/**/*", "lib/redcloth_scan.so"]
 
 Win32Spec = Gem::Specification.new do |s|
   s.name = NAME
@@ -164,30 +164,30 @@ Win32Spec = Gem::Specification.new do |s|
   s.files = PKG_FILES
 
   s.require_path = "lib"
-  #s.autorequire = "superredcloth"  # no no no this is tHe 3v1l
+  #s.autorequire = "redcloth"  # no no no this is tHe 3v1l
   s.extensions = []
   s.bindir = "bin"
 end
   
-WIN32_PKG_DIR = "superredcloth-" + VERS
+WIN32_PKG_DIR = "redcloth-" + VERS
 
 file WIN32_PKG_DIR => [:package] do
   sh "tar zxf pkg/#{WIN32_PKG_DIR}.tgz"
 end
 
-desc "Cross-compile the superredcloth_scan extension for win32"
-file "superredcloth_scan_win32" => [WIN32_PKG_DIR] do
-  cp "extras/mingw-rbconfig.rb", "#{WIN32_PKG_DIR}/ext/superredcloth_scan/rbconfig.rb"
-  sh "cd #{WIN32_PKG_DIR}/ext/superredcloth_scan/ && ruby -I. extconf.rb && make"
-  mv "#{WIN32_PKG_DIR}/ext/superredcloth_scan/superredcloth_scan.so", "#{WIN32_PKG_DIR}/lib"
+desc "Cross-compile the redcloth_scan extension for win32"
+file "redcloth_scan_win32" => [WIN32_PKG_DIR] do
+  cp "extras/mingw-rbconfig.rb", "#{WIN32_PKG_DIR}/ext/redcloth_scan/rbconfig.rb"
+  sh "cd #{WIN32_PKG_DIR}/ext/redcloth_scan/ && ruby -I. extconf.rb && make"
+  mv "#{WIN32_PKG_DIR}/ext/redcloth_scan/redcloth_scan.so", "#{WIN32_PKG_DIR}/lib"
 end
 
 desc "Build the binary RubyGems package for win32"
-task :rubygems_win32 => ["superredcloth_scan_win32"] do
+task :rubygems_win32 => ["redcloth_scan_win32"] do
   Dir.chdir("#{WIN32_PKG_DIR}") do
     Gem::Builder.new(Win32Spec).build
     verbose(true) {
-      mv Dir["*.gem"].first, "../pkg/superredcloth-#{VERS}-mswin32.gem"
+      mv Dir["*.gem"].first, "../pkg/redcloth-#{VERS}-mswin32.gem"
     }
   end
 end
