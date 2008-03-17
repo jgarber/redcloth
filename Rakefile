@@ -7,9 +7,10 @@ require 'fileutils'
 include FileUtils
 
 NAME = "redcloth"
+OLD_NAME = "RedCloth"
 SUMMARY = "a fast library for formatting Textile and Markdown as HTML"
 REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
-VERS = ENV['VERSION'] || "1" + (REV ? ".#{REV}" : "")
+VERS = ENV['VERSION'] || "3" + (REV ? ".#{REV}" : "")
 CLEAN.include ['ext/redcloth_scan/*.{bundle,so,obj,pdb,lib,def,exp}', 'ext/redcloth_scan/Makefile', 
                '**/.*.sw?', '*.gem', '.config']
 
@@ -73,7 +74,7 @@ end
 
 spec =
     Gem::Specification.new do |s|
-        s.name = NAME
+        s.name = OLD_NAME
         s.version = VERS
         s.platform = Gem::Platform::RUBY
         s.has_rdoc = true
@@ -150,9 +151,9 @@ PKG_FILES = FileList[
   "extras/**/*", "lib/redcloth_scan.so"]
 
 Win32Spec = Gem::Specification.new do |s|
-  s.name = NAME
+  s.name = OLD_NAME
   s.version = VERS
-  s.platform = Gem::Platform::CURRENT
+  s.platform = Gem::Platform::WIN32
   s.has_rdoc = false
   s.extra_rdoc_files = ["README", "CHANGELOG", "COPYING"]
   s.summary = SUMMARY 
@@ -169,7 +170,7 @@ Win32Spec = Gem::Specification.new do |s|
   s.bindir = "bin"
 end
   
-WIN32_PKG_DIR = "redcloth-" + VERS
+WIN32_PKG_DIR = "#{OLD_NAME}-#{VERS}"
 
 file WIN32_PKG_DIR => [:package] do
   sh "tar zxf pkg/#{WIN32_PKG_DIR}.tgz"
@@ -187,7 +188,7 @@ task :rubygems_win32 => ["redcloth_scan_win32"] do
   Dir.chdir("#{WIN32_PKG_DIR}") do
     Gem::Builder.new(Win32Spec).build
     verbose(true) {
-      mv Dir["*.gem"].first, "../pkg/redcloth-#{VERS}-mswin32.gem"
+      mv Dir["*.gem"].first, "../pkg/#{OLD_NAME}-#{VERS}-mswin32.gem"
     }
   end
 end
