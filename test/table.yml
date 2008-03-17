@@ -1,212 +1,246 @@
+---
+in: |
+  |a|b|c|
+  |1|2|3|
+  
+  h3. A header after the table
+html: |-
+  <table>
+  	<tr>
+  		<td>a</td>
+  		<td>b</td>
+  		<td>c</td>
+  	</tr>
+  	<tr>
+  		<td>1</td>
+  		<td>2</td>
+  		<td>3</td>
+  	</tr>
+  </table>
+  <h3>A header after the table</h3>
+---
+in: |
+  |_. a|_. b|_. c|
+  |1|2|3|
+html: |-
+  <table>
+  	<tr>
+  		<th>a</th>
+  		<th>b</th>
+  		<th>c</th>
+  	</tr>
+  	<tr>
+  		<td>1</td>
+  		<td>2</td>
+  		<td>3</td>
+  	</tr>
+  </table>
+---
+in: |-
+  |This|is|a|simple|table|
+  |This|is|a|simple|row|
+html: |-
+  <table>
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>simple</td>
+  		<td>table</td>
+  	</tr>
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>simple</td>
+  		<td>row</td>
+  	</tr>
+  </table>
+---
+in: |-
+  table{border:1px solid black}.
+  |This|is|a|row|
+  |This|is|a|row|
+html: |-
+  <table style="border:1px solid black;">
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>row</td>
+  	</tr>
+  	<tr>
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>row</td>
+  	</tr>
+  </table>
+---
+in: '{background:#ddd}. |This|is|a|row|'
+html: |-
+  <table>
+  	<tr style="background:#ddd;">
+  		<td>This</td>
+  		<td>is</td>
+  		<td>a</td>
+  		<td>row</td>
+  	</tr>
+  </table>
+---
+in: |-
+  |a|b|c|
+  | |2|3|
+html: |-
+  <table>
+  	<tr>
+  		<td>a</td>
+  		<td>b</td>
+  		<td>c</td>
+  	</tr>
+  	<tr>
+  		<td> </td>
+  		<td>2</td>
+  		<td>3</td>
+  	</tr>
+  </table>
+---
+in: |-
+  table{width: 200px; border:2px solid gray;}.
+  |_=. Alignment|
+  |=. centered|
+  |=(. a bit right|
+  |=). a bit left|
+  |>). almost right|
+  |<(. almost left|
+  |>. right|
+  |<. left|
+html: |-
+  <table style="width: 200px; border:2px solid gray;">
+  	<tr>
+  		<th style="text-align:center;">Alignment</th>
+  	</tr>
+  	<tr>
+  		<td style="text-align:center;">centered</td>
+  	</tr>
+  	<tr>
+  		<td style="padding-left:1em;text-align:center;">a bit right</td>
+  	</tr>
+  	<tr>
+  		<td style="padding-right:1em;text-align:center;">a bit left</td>
+  	</tr>
+  	<tr>
+  		<td style="padding-right:1em;text-align:right;">almost right</td>
+  	</tr>
+  	<tr>
+  		<td style="padding-left:1em;text-align:left;">almost left</td>
+  	</tr>
+  	<tr>
+  		<td style="text-align:right;">right</td>
+  	</tr>
+  	<tr>
+  		<td style="text-align:left;">left</td>
+  	</tr>
+  </table>
+---
+in: |-
+  |{background:#ddd}. Cell with gray background|
+  |\2. Cell spanning 2 columns|
+  |/3. Cell spanning 3 rows|
+  |>. Right-aligned cell|
+html: |-
+  <table>
+  	<tr>
+  		<td style="background:#ddd;">Cell with gray background</td>
+  	</tr>
+  	<tr>
+  		<td colspan="2">Cell spanning 2 columns</td>
+  	</tr>
+  	<tr>
+  		<td rowspan="3">Cell spanning 3 rows</td>
+  	</tr>
+  	<tr>
+  		<td style="text-align:right;">Right-aligned cell</td>
+  	</tr>
+  </table>
+---
 in: |
   {background:#ddd}. |S|Target|Complete|App|Milestone|
-  |!/i/g.gif!|11/18/04|11/18/04|070|XML spec complete|
   |!/i/g.gif!|11/29/04|11/29/04|011|XML spec complete (KH is on schedule)|
-  |!/i/g.gif!|11/29/04|11/29/04|051|XML spec complete (KH is on schedule)|
-  |!/i/g.gif!|11/29/04|11/29/04|081|XML spec complete (KH is on schedule)|
-  |!/i/g.gif!|11/19/04|11/22/04|070|Preprocessor complete|
   |!/i/g.gif!|11/22/04|11/22/04|070|Dialog pass 1 builds an index file|
   |!/i/g.gif!|11/24/04|11/24/04|070|Dialog pass 2 98% complete|
   |!/i/g.gif!|11/30/04|11/30/04|070|Feature complete. Passes end-to-end smoke test.|
-  |!/i/g.gif!|11/30/04|11/30/04|011|Preprocessor updates complete|
-  |!/i/g.gif!|11/30/04|11/30/04|051|Preprocessor updates complete|
-  |!/i/g.gif!|11/30/04|11/29/04|081|Preprocessor updates complete|
-  |!/i/w.gif!|12/02/04|.|011|Dialog pass 1 and 2 complete (98+%)|
-  |!/i/w.gif!|12/02/04|.|051|Dialog pass 1 and 2 complete (98+%)|
-  |!/i/w.gif!|12/02/04|.|081|Dialog pass 1 and 2 complete (98+%)|
-  |!/i/w.gif!|12/03/04|.|011|Feature complete|
-  |!/i/w.gif!|12/03/04|.|051|Feature complete|
-  |!/i/w.gif!|12/03/04|.|081|Feature complete|
-  |!/i/w.gif!|12/10/04|.|011|Deployed to Napa test workstation. Passes smoke test.|
-  |!/i/w.gif!|12/10/04|.|051|Deployed to Napa test workstation. Passes smoke test.|
-  |!/i/w.gif!|12/10/04|.|081|Deployed to Napa test workstation. Passes smoke test.|
-  |!/i/w.gif!|12/10/04|.|070|Deployed to Napa test workstation. Passes smoke test.|
-  |!/i/w.gif!|12/17/04|.|011|System testing complete. Begin testing with live customer data.|
-  |!/i/w.gif!|12/17/04|.|051|System testing complete. Begin testing with live customer data.|
-  |!/i/w.gif!|12/17/04|.|081|System testing complete. Begin testing with live customer data.|
-  |!/i/w.gif!|12/17/04|.|070|System testing complete. Begin testing with live customer data.|
-out: |-
+  |!/i/w.gif!|12/02/04| |011|Dialog pass 1 and 2 complete (98+%)|
+  |!/i/w.gif!|12/03/04| |081|Feature complete|
+html: |-
   <table>
-  		<tr style="background:#ddd;">
-  			<td>S</td>
-  			<td>Target</td>
-  			<td>Complete</td>
-  			<td>App</td>
-  			<td>Milestone</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/18/04</td>
-  			<td>11/18/04</td>
-  			<td>070</td>
-  			<td>XML spec complete</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/29/04</td>
-  			<td>11/29/04</td>
-  			<td>011</td>
-  			<td>XML spec complete (KH is on schedule)</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/29/04</td>
-  			<td>11/29/04</td>
-  			<td>051</td>
-  			<td>XML spec complete (KH is on schedule)</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/29/04</td>
-  			<td>11/29/04</td>
-  			<td>081</td>
-  			<td>XML spec complete (KH is on schedule)</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/19/04</td>
-  			<td>11/22/04</td>
-  			<td>070</td>
-  			<td>Preprocessor complete</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/22/04</td>
-  			<td>11/22/04</td>
-  			<td>070</td>
-  			<td>Dialog pass 1 builds an index file</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/24/04</td>
-  			<td>11/24/04</td>
-  			<td>070</td>
-  			<td>Dialog pass 2 98% complete</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/30/04</td>
-  			<td>11/30/04</td>
-  			<td>070</td>
-  			<td>Feature complete. Passes end-to-end smoke test.</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/30/04</td>
-  			<td>11/30/04</td>
-  			<td>011</td>
-  			<td>Preprocessor updates complete</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/30/04</td>
-  			<td>11/30/04</td>
-  			<td>051</td>
-  			<td>Preprocessor updates complete</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/g.gif" alt="" /></td>
-  			<td>11/30/04</td>
-  			<td>11/29/04</td>
-  			<td>081</td>
-  			<td>Preprocessor updates complete</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/02/04</td>
-  			<td>&nbsp;</td>
-  			<td>011</td>
-  			<td>Dialog pass 1 and 2 complete (98+%)</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/02/04</td>
-  			<td>&nbsp;</td>
-  			<td>051</td>
-  			<td>Dialog pass 1 and 2 complete (98+%)</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/02/04</td>
-  			<td>&nbsp;</td>
-  			<td>081</td>
-  			<td>Dialog pass 1 and 2 complete (98+%)</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/03/04</td>
-  			<td>&nbsp;</td>
-  			<td>011</td>
-  			<td>Feature complete</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/03/04</td>
-  			<td>&nbsp;</td>
-  			<td>051</td>
-  			<td>Feature complete</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/03/04</td>
-  			<td>&nbsp;</td>
-  			<td>081</td>
-  			<td>Feature complete</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/10/04</td>
-  			<td>&nbsp;</td>
-  			<td>011</td>
-  			<td>Deployed to Napa test workstation. Passes smoke test.</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/10/04</td>
-  			<td>&nbsp;</td>
-  			<td>051</td>
-  			<td>Deployed to Napa test workstation. Passes smoke test.</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/10/04</td>
-  			<td>&nbsp;</td>
-  			<td>081</td>
-  			<td>Deployed to Napa test workstation. Passes smoke test.</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/10/04</td>
-  			<td>&nbsp;</td>
-  			<td>070</td>
-  			<td>Deployed to Napa test workstation. Passes smoke test.</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/17/04</td>
-  			<td>&nbsp;</td>
-  			<td>011</td>
-  			<td>System testing complete. Begin testing with live customer data.</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/17/04</td>
-  			<td>&nbsp;</td>
-  			<td>051</td>
-  			<td>System testing complete. Begin testing with live customer data.</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/17/04</td>
-  			<td>&nbsp;</td>
-  			<td>081</td>
-  			<td>System testing complete. Begin testing with live customer data.</td>
-  		</tr>
-  		<tr>
-  			<td><img src="/i/w.gif" alt="" /></td>
-  			<td>12/17/04</td>
-  			<td>&nbsp;</td>
-  			<td>070</td>
-  			<td>System testing complete. Begin testing with live customer data.</td>
-  		</tr>
-  	</table>
+  	<tr style="background:#ddd;">
+  		<td>S</td>
+  		<td>Target</td>
+  		<td>Complete</td>
+  		<td>App</td>
+  		<td>Milestone</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/g.gif" alt="" /></td>
+  		<td>11/29/04</td>
+  		<td>11/29/04</td>
+  		<td>011</td>
+  		<td><span class="caps">XML</span> spec complete (KH is on schedule)</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/g.gif" alt="" /></td>
+  		<td>11/22/04</td>
+  		<td>11/22/04</td>
+  		<td>070</td>
+  		<td>Dialog pass 1 builds an index file</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/g.gif" alt="" /></td>
+  		<td>11/24/04</td>
+  		<td>11/24/04</td>
+  		<td>070</td>
+  		<td>Dialog pass 2 98% complete</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/g.gif" alt="" /></td>
+  		<td>11/30/04</td>
+  		<td>11/30/04</td>
+  		<td>070</td>
+  		<td>Feature complete. Passes end-to-end smoke test.</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/w.gif" alt="" /></td>
+  		<td>12/02/04</td>
+  		<td> </td>
+  		<td>011</td>
+  		<td>Dialog pass 1 and 2 complete (98+%)</td>
+  	</tr>
+  	<tr>
+  		<td><img src="/i/w.gif" alt="" /></td>
+  		<td>12/03/04</td>
+  		<td> </td>
+  		<td>081</td>
+  		<td>Feature complete</td>
+  	</tr>
+  </table>
+---
+name: combined table header and colspan
+in: |-
+  table(my_class).
+  |_\2. a |_. b |_. c |
+  | 1 | 2 | 3 | 4 |
+html: |-
+  <table class="my_class">
+  	<tr>
+  		<th colspan="2">a </th>
+  		<th>b </th>
+  		<th>c </th>
+  	</tr>
+  	<tr>
+  		<td> 1 </td>
+  		<td> 2 </td>
+  		<td> 3 </td>
+  		<td> 4 </td>
+  	</tr>
+  </table>

@@ -1,148 +1,110 @@
 ---
+name: inline code
 in: 'This is an empty dictionary: @{}@'
-out: '<p>This is an empty dictionary: <code>{}</code></p>'
+html: '<p>This is an empty dictionary: <code>{}</code></p>'
 ---
-in: 'This is an empty dictionary: ==```=={}==```=='
-out: '<p>This is an empty dictionary: ```{}```</p>'
+name: inline code escapement
+in: 'Please type @cat "file.txt" > otherfile.txt@ at the prompt.'
+html: '<p>Please type <code>cat "file.txt" &gt; otherfile.txt</code> at the prompt.</p>'
 ---
-in: 'This is an empty dictionary: ```{}```'
-out: '<p>This is an empty dictionary: <pre><code>{}</code></pre></p>'
+name: escaping in blockcode
+in: 'bc. This is within a block of code, so < and > should be entities.  You can talk about a <p class="foo"> tag if you wish and it will be properly escaped.'
+html: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.  You can talk about a &lt;p class="foo"&gt; tag if you wish and it will be properly escaped.</code></pre>'
 ---
+name: escaping in pre
+in: '<pre><code>This is within a block of code, so < and > should be entities.  You can talk about a <p class="foo"> tag in pre tags too.</code></pre>'
+html: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.  You can talk about a &lt;p class="foo"&gt; tag in pre tags too.</code></pre>'
+---
+name: escaping in normal text
 in: |-
-  Testing nested pre tags...
-
-  <pre>
-  <code>
-    Good code here.
-
-    <pre>
-      a = 1
-    </pre>
-
-    Bad code here.
-
-    <script language="JavaScript">
-      window.open( "about:blank" );
-    </script>
-  </code>
-  </pre>
-
-out: |-
-  <p>Testing nested pre tags&#8230;</p>
-  
-
-  <pre>
-  <code>
-    Good code here.
-  
-    &lt;pre&gt;
-      a = 1
-    &lt;/pre&gt;
-  
-    Bad code here.
-  
-    &lt;script language="JavaScript"&gt;
-      window.open( "about:blank" );
-    &lt;/script&gt;
-  </code>
-  </pre>
+  This is a regular paragraph.  AT&T. &pound;38 > $38.
+html: |-
+  <p>This is a regular paragraph.  AT&amp;T. &pound;38 &gt; $38.</p>
 ---
+name: preservation of existing entities
+in: "Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;6 &#62; $6.
+"
+html: "<p>Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;6 &#62; $6.</p>"
+---
+name: escaping of existing entities in blockcode
+in: "bc. Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;5 &#62; $5.
+"
+html: "<pre><code>Math fact: 3 &amp;lt; 5 &amp;amp; 5 &amp;gt; 3 but &amp;pound;5 &amp;#62; $5.</code></pre>"
+---
+name: no formatting within pre
 in: |-
   <pre>
-  *** test
+  <code>
+  # *test*
+  __not italics__
+  no hard breaks
+  </code>
   </pre>
-out: |-
+html: |-
   <pre>
-  *** test
+  <code>
+  # *test*
+  __not italics__
+  no hard breaks
+  </code>
   </pre>
 ---
+name: no formatting within blockcode
+in: |-
+  bc. __not italics__
+html: |-
+  <pre><code>__not italics__</code></pre>
+---
+name: double-equals as inline notextile
+in: |-
+  p. Regular paragraph
+
+  ==Escaped portion -- will not be formatted by Textile at all==
+
+  p. Back to normal.
+html: |-
+  <p>Regular paragraph</p>
+  <p>Escaped portion -- will not be formatted by Textile at all</p>
+  <p>Back to normal.</p>
+---
+name: notextile tags
 in: |-
   <notextile>
-  *** test
+  # *test*
   </notextile>
-out: |-
-  *** test
+html: |-
+  
+  # *test*
 ---
-in: '*this <span></span> is strong*'
-out: '<p><strong>this <span></span> is strong</strong></p>'
----
-in: '*this <span>test</span> is strong*'
-out: '<p><strong>this <span>test</span> is strong</strong></p>'
----
-in: <pre class="code"> __inline__</pre>
-out: <pre class="code"> __inline__</pre>
----
+name: code in list items
 in: |-
   * @foo@
   * @bar@
   * and @x@ is also.
 
-out: |-
+html: |-
   <ul>
   	<li><code>foo</code></li>
   	<li><code>bar</code></li>
   	<li>and <code>x</code> is also.</li>
   </ul>
-
-
 ---
+name: extended block code
 in: |-
-  <pre class="code"> <hello> </pre>
-  <pre class="code"> <hello> </pre>
-out: |-
-  <pre class="code"> &lt;hello&gt; </pre>
-  <pre class="code"> &lt;hello&gt; </pre>
----
-in: |-
-  Test of Markdown-style indented code.
+  If you have a line or two of code or HTML to embed, use extended block code like so:
 
-    a = [1, 2, 3]
-    a.each do |x|
-      puts "test number", x,
-        "and more!"
-    end
-
-  Paragraph 2.
-
-  Paragraph 3.
-out: |-
-  <p>Test of Markdown-style indented code.</p>
-  
-  	<pre><code>a = [1, 2, 3]
-  a.each do |x|
-    puts "test number", x,
-      "and more!" 
-  end</code></pre>
-  
-  	<p>Paragraph 2.</p>
-  
-  	<p>Paragraph 3.</p>
----
-in: |-
-  If, however, you have a line or two of code or HTML or the like to embed, sandwich it between two sets of triple-backticks, ==```==, like so:
-
-  ```
-  ./foo.pl%
+  bc.. ./foo.pl%
   <p>foo outputs an HTML paragraph</p>
+  
+  <p>block of code keeps going until a different block signature is encountered</p>
 
-  ```
-out: |-
-  <p>If, however, you have a line or two of code or <span class="caps">HTML</span> or the like to embed, sandwich it between two sets of triple-backticks, ```, like so:</p>
+  p. And then go back with a normal paragraph.
+html: |-
+  <p>If you have a line or two of code or <span class="caps">HTML</span> to embed, use extended block code like so:</p>
+  <pre><code>./foo.pl%
+  &lt;p&gt;foo outputs an HTML paragraph&lt;/p&gt;</code>
 
-  <pre><code>
-  ./foo.pl%
-  &lt;p&gt;foo outputs an HTML paragraph&lt;/p&gt;
-  </code></pre>
----
-in: |-
-  ```
-  here is some *starred* code
+  <code>&lt;p&gt;block of code keeps going until a different block signature is encountered&lt;/p&gt;</code>
 
-  but I want some redcloth*bold*redcloth code
-  ```
-out: |-
-  <pre><code>
-  here is some *starred* code
-
-  but I want some <strong>bold</strong> code
-  </code></pre>
+  </pre>
+  <p>And then go back with a normal paragraph.</p>
