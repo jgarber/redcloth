@@ -10,6 +10,10 @@ class TestParser < Test::Unit::TestCase
     end
   end
   
+  def test_redcloth_has_version
+    assert RedCloth.const_defined? "VERSION"
+  end
+  
   def test_badly_formatted_table_does_not_segfault
     assert_match /td/, red("html", %Q{| one | two |\nthree | four |})
   end

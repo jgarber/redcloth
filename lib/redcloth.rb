@@ -6,6 +6,8 @@ require 'formatters/html'
 require 'formatters/latex'
 
 class RedCloth
+  VERSION = '4.0.0'
+  
   def initialize(input, opts=[])
     super(input)
   end
