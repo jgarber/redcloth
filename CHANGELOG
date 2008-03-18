@@ -1,4 +1,11 @@
-= 1.0
+= RedCloth 4.0
 === 15th Feb, 2007
 
-* New SuperRC is a total rewrite.
+* New SuperRedCloth (RedCloth 4.0) is a total rewrite using Ragel for the parsing.
+* The restrictions parameter is accepted for backward compatibility, but is not observed.
+* Single newlines become <br> tags, just as in traditional RedCloth and other Textile parsers.
+* HTML embedded in the Textile input does not ordinarily need to be escaped from Textile parsing.
+* A single line can be skipped by the parser by prepending a space.
+* Rudimentary support for LaTeX is built in.
+* Output (less newlines and tabs) is identical to Textile 2 except a few cases where the RedCloth
+  way was preferable.
