@@ -197,9 +197,9 @@ CLEAN.include WIN32_PKG_DIR
 
 task :install do
   sh %{rake package}
-  sh %{sudo gem install pkg/#{NAME}-#{VERS}}
+  sh %{sudo gem install pkg/#{OLD_NAME}-#{VERS}}
 end
 
 task :uninstall => [:clean] do
-  sh %{sudo gem uninstall #{NAME}}
+  sh %{sudo gem uninstall #{OLD_NAME}}
 end
