@@ -4,6 +4,12 @@ require 'helper'
 
 class TestParser < Test::Unit::TestCase
 
+  def test_parser_accepts_options
+    assert_nothing_raised(ArgumentError) do
+      RedCloth.new("test", [:hard_breaks])
+    end
+  end
+  
   def test_badly_formatted_table_does_not_segfault
     assert_match /td/, red("html", %Q{| one | two |\nthree | four |})
   end

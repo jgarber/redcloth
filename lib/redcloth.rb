@@ -2,5 +2,12 @@ require 'redcloth_scan'
 
 $:.unshift(File.dirname(__FILE__))
 
-require 'redcloth/html'
-require 'redcloth/latex'
+require 'formatters/html'
+require 'formatters/latex'
+
+class RedCloth
+  def initialize(input, opts=[])
+    super(input)
+  end
+  
+end
