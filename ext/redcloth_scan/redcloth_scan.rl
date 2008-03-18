@@ -225,6 +225,13 @@ redcloth_transform2(formatter, str)
   return redcloth_transform(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, Qnil);
 }
 
+/*
+ * Generates HTML from the Textile contents.
+ *
+ *   r = RedCloth.new( "And then? She *fell*!" )
+ *   r.to_html
+ *     #=>"And then? She <strong>fell</strong>!"
+ */
 static VALUE
 redcloth_to_html(self)
   VALUE self;
@@ -235,6 +242,13 @@ redcloth_to_html(self)
   return redcloth_transform2(super_HTML, self);
 }
 
+/*
+ * Generates LaTeX from the Textile contents.
+ *
+ *   r = RedCloth.new( "And then? She *fell*!" )
+ *   r.to_latex
+ *     #=>"And then? She \\textbf{fell}!\n\n"
+ */
 static VALUE
 redcloth_to_latex(self)
   VALUE self;
@@ -257,12 +271,15 @@ redcloth_to(self, formatter)
 
 void Init_redcloth_scan()
 {
+ /* The RedCloth parser. See the README for Textile syntax. */
   super_RedCloth = rb_define_class("RedCloth", rb_cString);
   rb_define_method(super_RedCloth, "to_html", redcloth_to_html, 0);
   rb_define_method(super_RedCloth, "to_latex", redcloth_to_latex, 0);
   rb_define_method(super_RedCloth, "to", redcloth_to, 1);
   super_ParseError = rb_define_class_under(super_RedCloth, "ParseError", rb_eException);
+  /* RedCloth HTML formatter. */
   super_HTML  = rb_define_module_under(super_RedCloth, "HTML");
+  /* RedCloth LaTeX formatter. */
   super_LATEX = rb_define_module_under(super_RedCloth, "LATEX");
   SYM_html_escape_entities = ID2SYM(rb_intern("html_escape_entities"));
 }

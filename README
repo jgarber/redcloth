@@ -1,25 +1,14 @@
-= RedCloth - Textile and Markdown Hybrid for Ruby
+= RedCloth - Textile parser for Ruby
 
 Homepage::  http://whytheluckystiff.net/ruby/redcloth/
 Author::    why the lucky stiff (http://whytheluckystiff.net/)
-Copyright:: (cc) 2004 why the lucky stiff (and his puppet organizations.)
-License::   BSD
+Copyright:: (c) 2006 why the lucky stiff
 
-(see http://hobix.com/textile/ for a Textile Reference.)
-
-Based on (and also inspired by) both:
-
-PyTextile: http://diveintomark.org/projects/textile/textile.py.txt
-Textism for PHP: http://www.textism.com/tools/textile/
+(See http://hobix.com/textile/ for a Textile reference.)
 
 = RedCloth
 
-RedCloth is a Ruby library for converting Textile and/or Markdown
-into HTML.  You can use either format, intermingled or separately.
-You can also extend RedCloth to honor your own custom text stylings.
-
-RedCloth users are encouraged to use Textile if they are generating
-HTML and to use Markdown if others will be viewing the plain text.
+RedCloth is a Ruby library for converting Textile into HTML.
 
 == What is Textile?
 
@@ -42,7 +31,7 @@ A Textile document consists of paragraphs.  Paragraphs
 can be specially formatted by adding a small instruction
 to the beginning of the paragraph.
 
- h[n].   Header of size [n].
+ h3.     Header 3.
  bq.     Blockquote.
  #       Numeric list.
  *       Bulleted list.
@@ -72,12 +61,12 @@ To make a hypertext link, put the link text in "quotation
 marks" followed immediately by a colon and the URL of the link.
 
 Optional: text in (parentheses) following the link text, 
-but before the closing quotation mark, will become a Title 
+but before the closing quotation mark, will become a title 
 attribute for the link, visible as a tool tip when a cursor is above it.
 
 Example:
 
- "This is a link (This is a title) ":http://www.textism.com
+ "This is a link (This is a title)":http://www.textism.com
 
 Will become:
 
@@ -130,16 +119,16 @@ Will become:
 
 == Adding Tables
 
-In Textile, simple tables can be added by seperating each column by
+In Textile, simple tables can be added by separating each column by
 a pipe.
 
     |a|simple|table|row|
     |And|Another|table|row|
 
-Attributes are defined by style definitions in parentheses.
+Styles are applied with curly braces.
 
-    table(border:1px solid black).
-    (background:#ddd;color:red). |{}| | | |
+    table{border:1px solid black}.
+    {background:#ddd;color:red}. |a|red|row|
 
 == Using RedCloth
 
@@ -155,8 +144,3 @@ RedCloth#to_html method.
 
  puts doc.to_html
 
-By default, RedCloth uses both Textile and Markdown formatting, with
-Textile formatting taking precedence.  If you want to turn off Markdown
-formatting, to boost speed and limit the processor:
-
- class RedCloth::Textile.new( str )

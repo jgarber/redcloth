@@ -69,7 +69,7 @@ Rake::RDocTask.new do |rdoc|
     # rdoc.template = "extras/flipbook_rdoc.rb"
     rdoc.main = "README"
     rdoc.title = "RedCloth Documentation"
-    rdoc.rdoc_files.add ['README', 'CHANGELOG', 'COPYING', 'lib/**/*.rb']
+    rdoc.rdoc_files.add ['README', 'CHANGELOG', 'COPYING', 'lib/**/*.rb', 'ext/**/*.c']
 end
 
 spec =
