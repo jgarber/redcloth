@@ -93,7 +93,7 @@ spec =
         s.require_path = "lib"
         #s.autorequire = "redcloth"  # no no no this is tHe 3v1l
         s.extensions = FileList["ext/**/extconf.rb"].to_a
-        s.bindir = "bin"
+        s.executables = ["redcloth"]
     end
 
 Rake::GemPackageTask.new(spec) do |p|
@@ -195,8 +195,7 @@ end
 
 CLEAN.include WIN32_PKG_DIR
 
-task :install do
-  sh %{rake package}
+task :install => [:package] do
   sh %{sudo gem install pkg/#{OLD_NAME}-#{VERS}}
 end
 
