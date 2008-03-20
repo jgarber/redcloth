@@ -81,8 +81,8 @@ spec =
         s.extra_rdoc_files = ["README", "CHANGELOG", "COPYING"]
         s.summary = SUMMARY
         s.description = s.summary
-        s.author = "why the lucky stiff"
-        s.email = 'why@ruby-lang.org'
+        s.author = "Jason Garber"
+        s.email = 'redcloth-upwards@rubyforge.org'
         s.homepage = 'http://code.whytheluckystiff.net/redcloth/'
 
         s.files = %w(COPYING README Rakefile) +
@@ -158,8 +158,8 @@ Win32Spec = Gem::Specification.new do |s|
   s.extra_rdoc_files = ["README", "CHANGELOG", "COPYING"]
   s.summary = SUMMARY 
   s.description = s.summary
-  s.author = "why the lucky stiff"
-  s.email = 'why@ruby-lang.org'
+  s.author = "Jason Garber"
+  s.email = 'redcloth-upwards@rubyforge.org'
   s.homepage = 'http://code.whytheluckystiff.net/redcloth/'
 
   s.files = PKG_FILES

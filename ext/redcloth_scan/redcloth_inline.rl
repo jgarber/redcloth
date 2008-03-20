@@ -1,10 +1,7 @@
 /*
  * redcloth_inline.rl
  *
- * $Author: why $
- * $Date$
- *
- * Copyright (C) 2007 why the lucky stiff
+ * Copyright (C) 2008 Jason Garber
  */
 #include <ruby.h>
 #include "redcloth.h"
