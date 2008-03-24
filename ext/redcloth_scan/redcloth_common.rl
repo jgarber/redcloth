@@ -42,6 +42,22 @@
   PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "," | "-" | "." | "/" | ":" | ";" | "=" | "?" | "\\" | "^" | "`" | "|" | "~" | "[" | "(" | "<" ) ;
   dotspace = ("." " "*) ;
   indent =  [ \t]* ;
+  
+  # very un-DRY; Adrian says an action-stripping macro will come in a future Ragel version
+  A_LEFT_noactions = "<" ;
+  A_RIGHT_noactions = ">" ;
+  A_JUSTIFIED_noactions = "<>" ;
+  A_CENTER_noactions = "=" ;
+  A_PADLEFT_noactions = "(" ;
+  A_PADRIGHT_noactions = ")"  ;
+  A_HLGN_noactions = ( A_LEFT_noactions | A_RIGHT_noactions | A_JUSTIFIED_noactions | A_CENTER_noactions | A_PADLEFT_noactions | A_PADRIGHT_noactions ) ;
+  A_VLGN_noactions = ( "-" | "^" | "~" ) ;
+  C_CLAS_noactions = ( "(" ( [^)#]+ )? ("#" [^)]+ )? ")" ) ;
+  C_LNGE_noactions = ( "[" [^\]]+ "]" ) ;
+  C_STYL_noactions = ( "{" [^}]+ "}" ) ;
+  A_noactions = ( ( A_HLGN_noactions | A_VLGN_noactions )* ) ;
+  C_noactions = ( C_CLAS_noactions | C_STYL_noactions | C_LNGE_noactions )* ;
+  
 
   # text blocks
   trailing = PUNCT - ("'" | '"') ;
