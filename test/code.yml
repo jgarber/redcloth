@@ -7,6 +7,12 @@ name: inline code escapement
 in: 'Please type @cat "file.txt" > otherfile.txt@ at the prompt.'
 html: '<p>Please type <code>cat "file.txt" &gt; otherfile.txt</code> at the prompt.</p>'
 ---
+name: inline code escapement with digits
+in: |-
+  Regex-based string substitution with Ruby's gsub!: @"123<789".gsub!(/</, "") => "123789"@
+html: |-
+  <p>Regex-based string substitution with Ruby&#8217;s gsub!: <code>"123&lt;789".gsub!(/&lt;/, "") =&gt; "123789"</code></p>
+---
 name: escaping in blockcode
 in: 'bc. This is within a block of code, so < and > should be entities.  You can talk about a <p class="foo"> tag if you wish and it will be properly escaped.'
 html: '<pre><code>This is within a block of code, so &lt; and &gt; should be entities.  You can talk about a &lt;p class="foo"&gt; tag if you wish and it will be properly escaped.</code></pre>'

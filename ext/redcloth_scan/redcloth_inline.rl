@@ -58,6 +58,7 @@
   acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" default+ >A %{ STORE(title) } :> ")" ) >X ;
   caps = ( upper{3,} >A %*T ) >X ;
   dim = ( digit+ >A %{ STORE(x) } (" x " @{ ASET(space, true)} | "x") digit @{ fhold; } ) >X ;
+  dim_noactions = digit+ ( (" x " | "x") digit+ )+ ;
   tm = [Tt] [Mm] ;
   trademark = " "? ( "[" tm "]" | "(" tm ")" ) ;
   reg = [Rr] ;
@@ -66,7 +67,7 @@
   copyright = ( "[" cee "]" | "(" cee ")" ) ;
   entity = ( "&" %A ( '#' digit+ | alpha+ ) %T ';' ) >X ;
 
-  other_phrase = phrase -- dim;
+  other_phrase = phrase -- dim_noactions;
 
   code_tag := |*
     code_tag_end { CAT(block); fgoto main; };
