@@ -73,3 +73,43 @@ html: |-
 name: preserves empty block standalone elements
 in: "<hr />"
 html: "<hr />"
+---
+name: complex example from real life
+in: |-
+  <div class="span-17 last">
+  <div class="span-8"><r:attachment:image name="logo.jpg" /></div>
+  
+  <div class="span-9 last">
+  h1. Contact
+  
+  Please contact us if you have questions or need help making arrangements.
+  
+  </div>
+  </div>
+  
+  <div class="span-8">
+  h2. Tom
+  
+  (540) 555-1212
+  
+  h3. Jerry
+  
+  (540) 555-1234
+  
+  </div>
+html: |-
+  <div class="span-17 last">
+  <div class="span-8"><r:attachment:image name="logo.jpg" /></div>
+  
+  <div class="span-9 last">
+  <h1>Contact</h1>
+  <p>Please contact us if you have questions or need help making arrangements.</p>
+  </div>
+  </div>
+  
+  <div class="span-8">
+  <h2>Tom</h2>
+  <p>(540) 555-1212</p>
+  <h3>Jerry</h3>
+  <p>(540) 555-1234</p>
+  </div>
