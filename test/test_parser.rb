@@ -10,8 +10,12 @@ class TestParser < Test::Unit::TestCase
     end
   end
   
+  # If RedCloth::VERSION isn't defined, it will pick up VERSION from Ruby (e.g. 1.8.6)
+  # but won't necessarily raise an exception.
   def test_redcloth_has_version
-    assert RedCloth.const_defined?("VERSION")
+    assert RedCloth.included_modules.include?(RedClothVersion)
+    assert RedClothVersion.const_defined?("VERSION")
+    assert_equal RedClothVersion::VERSION, RedCloth::VERSION
   end
   
   def test_badly_formatted_table_does_not_segfault

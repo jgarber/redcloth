@@ -18,7 +18,7 @@ desc "Does a full compile, test run"
 task :default => [:compile, :test]
 
 desc "Compiles all extensions"
-task :compile => [:redcloth_scan] do
+task :compile => [:version, :redcloth_scan] do
   if Dir.glob(File.join("lib","redcloth_scan.*")).length == 0
     STDERR.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     STDERR.puts "Gem actually failed to build.  Your system is"
@@ -29,7 +29,7 @@ task :compile => [:redcloth_scan] do
 end
 
 desc "Packages up RedCloth."
-task :package => [:clean, :ragel]
+task :package => [:clean, :compile]
 
 desc "Releases packages for all RedCloth packages and platforms."
 task :release => [:package, :rubygems_win32]
@@ -201,4 +201,14 @@ end
 
 task :uninstall => [:clean] do
   sh %{sudo gem uninstall #{OLD_NAME}}
+end
+
+task :version do
+  File.open("lib/version.rb", "w") do |file|
+    file.puts <<EOD
+module RedClothVersion
+  VERSION = "#{VERS}"
+end
+EOD
+  end
 end

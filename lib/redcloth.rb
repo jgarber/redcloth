@@ -4,9 +4,10 @@ $:.unshift(File.dirname(__FILE__))
 
 require 'formatters/html'
 require 'formatters/latex'
+require 'version'
 
 class RedCloth
-  VERSION = '4.0.0'
+  include RedClothVersion
   
   # Returns a new RedCloth object, based on _string_. The 
   # _restrictions_ parameter is accepted for backwards
