@@ -11,7 +11,7 @@ class TestParser < Test::Unit::TestCase
   end
   
   def test_redcloth_has_version
-    assert RedCloth.const_defined? "VERSION"
+    assert RedCloth.const_defined?("VERSION")
   end
   
   def test_badly_formatted_table_does_not_segfault
