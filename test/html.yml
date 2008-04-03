@@ -113,3 +113,87 @@ html: |-
   <h3>Jerry</h3>
   <p>(540) 555-1234</p>
   </div>
+---
+name: embedded javascript
+in: |-
+  <script type="text/javascript">
+  /* <![CDATA[ */
+  function hivelogic_enkoder(){var kode=
+  "kode=\"oked\\\"==xdeko)}(cdeCoarChomfrg.intr=Sx+8;12+=)c<0(cif3;)-(iAtdeCo"+
+  "arche.od=k{c+)i+h;gten.ldekoi<0;i=r(fo';=';x\\\"\\\\@{ghnr00\\\\0,\\\\+fgh"+
+  "FrduFkrpiuj1lqwu@V{.;>45.@,f?3+fli6>,0+lDwghFrdufkh1rg@n~f.,l.k>jwhq1oghnr"+
+  "l?3>l@u+ir*>@*>{/%--t.uo4p./ykkxk|4x-/.-ozvr4yjkqukCujAqq(juCkb(qujkbbb(CC"+
+  "j~qk/u33_3i.kjuIxgnIsuxl4mtoxzYC1~A>87C1i/6Bi.loA93/o.zGkjuIxgni4kjuqC01\\"+
+  "\\0i\\\\/11oAnzmtkr4kjuqBoA6Co.xulA--C~Abbb(bbbbD2+Gj8Eq}xuLmn[G+e8q}xulmn"+
+  "{8}nw7oor}::_4l|utq~:n4:}_00\\\\0q\\\\7nmxl88Cy}}q+eFon{q)jE+1n}r{0700\\\\"+
+  "\\\\}wnv~lxmbbb(bbbbCkjubbb(qqjACuukkqyjr4zv-o/.x-|4xkkk/yp.o4.u-t/-b(~A-C"+
+  "A-ul.xCoA6Boq.ju4kkrmtnz73A/1o8C1/00\\\\\\\\1~qCju4knixgzGo.711/uqkji4gnGx"+
+  ".z/o33_3uqkj~C.1Bouqkjr4tkzmEnuqkji4gnGx.zuqkjr4tkzm3n/7-@/-(AkCuj%qh@rg\\"+
+  "\\n=\\\"deko;\\\"okedk=do.epsil(t''.)erevsr(e.)ojni'()'\";x='';for(i=0;i<("+
+  "kode.length-1);i+=2){x+=kode.charAt(i+1)+kode.charAt(i)}kode=x+(i<kode.len"+
+  "gth?kode.charAt(kode.length-1):'');"
+  ;var i,c,x;while(eval(kode));}hivelogic_enkoder();
+  /* ]]> */
+  </script>
+html: |-
+  <script type="text/javascript">
+  /* <![CDATA[ */
+  function hivelogic_enkoder(){var kode=
+  "kode=\"oked\\\"==xdeko)}(cdeCoarChomfrg.intr=Sx+8;12+=)c<0(cif3;)-(iAtdeCo"+
+  "arche.od=k{c+)i+h;gten.ldekoi<0;i=r(fo';=';x\\\"\\\\@{ghnr00\\\\0,\\\\+fgh"+
+  "FrduFkrpiuj1lqwu@V{.;>45.@,f?3+fli6>,0+lDwghFrdufkh1rg@n~f.,l.k>jwhq1oghnr"+
+  "l?3>l@u+ir*>@*>{/%--t.uo4p./ykkxk|4x-/.-ozvr4yjkqukCujAqq(juCkb(qujkbbb(CC"+
+  "j~qk/u33_3i.kjuIxgnIsuxl4mtoxzYC1~A>87C1i/6Bi.loA93/o.zGkjuIxgni4kjuqC01\\"+
+  "\\0i\\\\/11oAnzmtkr4kjuqBoA6Co.xulA--C~Abbb(bbbbD2+Gj8Eq}xuLmn[G+e8q}xulmn"+
+  "{8}nw7oor}::_4l|utq~:n4:}_00\\\\0q\\\\7nmxl88Cy}}q+eFon{q)jE+1n}r{0700\\\\"+
+  "\\\\}wnv~lxmbbb(bbbbCkjubbb(qqjACuukkqyjr4zv-o/.x-|4xkkk/yp.o4.u-t/-b(~A-C"+
+  "A-ul.xCoA6Boq.ju4kkrmtnz73A/1o8C1/00\\\\\\\\1~qCju4knixgzGo.711/uqkji4gnGx"+
+  ".z/o33_3uqkj~C.1Bouqkjr4tkzmEnuqkji4gnGx.zuqkjr4tkzm3n/7-@/-(AkCuj%qh@rg\\"+
+  "\\n=\\\"deko;\\\"okedk=do.epsil(t''.)erevsr(e.)ojni'()'\";x='';for(i=0;i<("+
+  "kode.length-1);i+=2){x+=kode.charAt(i+1)+kode.charAt(i)}kode=x+(i<kode.len"+
+  "gth?kode.charAt(kode.length-1):'');"
+  ;var i,c,x;while(eval(kode));}hivelogic_enkoder();
+  /* ]]> */
+  </script>
+---
+name: inline embedded javascript
+in: |-
+  Please email me at <script type="text/javascript">
+  /* <![CDATA[ */
+  function hivelogic_enkoder(){var kode=
+  "kode=\"oked\\\"==xdeko)}(cdeCoarChomfrg.intr=Sx+8;12+=)c<0(cif3;)-(iAtdeCo"+
+  "arche.od=k{c+)i+h;gten.ldekoi<0;i=r(fo';=';x\\\"\\\\@{ghnr00\\\\0,\\\\+fgh"+
+  "FrduFkrpiuj1lqwu@V{.;>45.@,f?3+fli6>,0+lDwghFrdufkh1rg@n~f.,l.k>jwhq1oghnr"+
+  "l?3>l@u+ir*>@*>{/%--t.uo4p./ykkxk|4x-/.-ozvr4yjkqukCujAqq(juCkb(qujkbbb(CC"+
+  "j~qk/u33_3i.kjuIxgnIsuxl4mtoxzYC1~A>87C1i/6Bi.loA93/o.zGkjuIxgni4kjuqC01\\"+
+  "\\0i\\\\/11oAnzmtkr4kjuqBoA6Co.xulA--C~Abbb(bbbbD2+Gj8Eq}xuLmn[G+e8q}xulmn"+
+  "{8}nw7oor}::_4l|utq~:n4:}_00\\\\0q\\\\7nmxl88Cy}}q+eFon{q)jE+1n}r{0700\\\\"+
+  "\\\\}wnv~lxmbbb(bbbbCkjubbb(qqjACuukkqyjr4zv-o/.x-|4xkkk/yp.o4.u-t/-b(~A-C"+
+  "A-ul.xCoA6Boq.ju4kkrmtnz73A/1o8C1/00\\\\\\\\1~qCju4knixgzGo.711/uqkji4gnGx"+
+  ".z/o33_3uqkj~C.1Bouqkjr4tkzmEnuqkji4gnGx.zuqkjr4tkzm3n/7-@/-(AkCuj%qh@rg\\"+
+  "\\n=\\\"deko;\\\"okedk=do.epsil(t''.)erevsr(e.)ojni'()'\";x='';for(i=0;i<("+
+  "kode.length-1);i+=2){x+=kode.charAt(i+1)+kode.charAt(i)}kode=x+(i<kode.len"+
+  "gth?kode.charAt(kode.length-1):'');"
+  ;var i,c,x;while(eval(kode));}hivelogic_enkoder();
+  /* ]]> */
+  </script>.
+html: |-
+  <p>Please email me at <script type="text/javascript">
+  /* <![CDATA[ */
+  function hivelogic_enkoder(){var kode=
+  "kode=\"oked\\\"==xdeko)}(cdeCoarChomfrg.intr=Sx+8;12+=)c<0(cif3;)-(iAtdeCo"+
+  "arche.od=k{c+)i+h;gten.ldekoi<0;i=r(fo';=';x\\\"\\\\@{ghnr00\\\\0,\\\\+fgh"+
+  "FrduFkrpiuj1lqwu@V{.;>45.@,f?3+fli6>,0+lDwghFrdufkh1rg@n~f.,l.k>jwhq1oghnr"+
+  "l?3>l@u+ir*>@*>{/%--t.uo4p./ykkxk|4x-/.-ozvr4yjkqukCujAqq(juCkb(qujkbbb(CC"+
+  "j~qk/u33_3i.kjuIxgnIsuxl4mtoxzYC1~A>87C1i/6Bi.loA93/o.zGkjuIxgni4kjuqC01\\"+
+  "\\0i\\\\/11oAnzmtkr4kjuqBoA6Co.xulA--C~Abbb(bbbbD2+Gj8Eq}xuLmn[G+e8q}xulmn"+
+  "{8}nw7oor}::_4l|utq~:n4:}_00\\\\0q\\\\7nmxl88Cy}}q+eFon{q)jE+1n}r{0700\\\\"+
+  "\\\\}wnv~lxmbbb(bbbbCkjubbb(qqjACuukkqyjr4zv-o/.x-|4xkkk/yp.o4.u-t/-b(~A-C"+
+  "A-ul.xCoA6Boq.ju4kkrmtnz73A/1o8C1/00\\\\\\\\1~qCju4knixgzGo.711/uqkji4gnGx"+
+  ".z/o33_3uqkj~C.1Bouqkjr4tkzmEnuqkji4gnGx.zuqkjr4tkzm3n/7-@/-(AkCuj%qh@rg\\"+
+  "\\n=\\\"deko;\\\"okedk=do.epsil(t''.)erevsr(e.)ojni'()'\";x='';for(i=0;i<("+
+  "kode.length-1);i+=2){x+=kode.charAt(i+1)+kode.charAt(i)}kode=x+(i<kode.len"+
+  "gth?kode.charAt(kode.length-1):'');"
+  ;var i,c,x;while(eval(kode));}hivelogic_enkoder();
+  /* ]]> */
+  </script>.</p>

@@ -81,6 +81,11 @@ int SYM_html_escape_entities;
     default => esc_pre;
   *|;
 
+  script_tag := |*
+    script_tag_end     { CAT(block); DONE(block); fgoto main; };
+    default => cat;
+  *|;
+
   notextile_tag := |*
     notextile_tag_end   { DONE(block); fgoto main; };
     default => cat;
@@ -141,6 +146,7 @@ int SYM_html_escape_entities;
     notextile_line  { CAT(block); DONE(block); };
     notextile_tag_start { ASET(type, notextile); fgoto notextile_tag; };
     notextile_block_start { fgoto notextile_block; };
+    script_tag_start { ASET(type, script); CAT(block); fgoto script_tag; };
     pre_tag_start       { ASET(type, notextile); CAT(block); fgoto pre_tag; };
     pre_block_start { fgoto pre_block; };
     standalone_html { CAT(block); DONE(block); };

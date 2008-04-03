@@ -79,6 +79,10 @@
   empty_tag = "<" Name space+ AttrSet* (AttrEnd)? "/>" | "<" Name "/>" ;
   end_tag = "</" Name space* ">" ;
   html_comment = "<!--" (default+) :> "-->";
+  
+  script_tag_start = "<script" [^>]* ">" ;
+  script_tag_end = "</script>" CRLF? ;
+  
 
   # URI tokens (lifted from Mongrel)
   CTL = (cntrl | 127);

@@ -74,6 +74,11 @@
     default => esc_pre;
   *|;
 
+  script_tag := |*
+    script_tag_end { CAT(block); fgoto main; };
+    default => cat;
+  *|;
+
   main := |*
 
     image { INLINE(block, image); };
@@ -111,6 +116,7 @@
     footno { PASS(block, text, footno); };
     entity { INLINE(block, entity); };
 
+    script_tag_start { CAT(block); fgoto script_tag; };
     start_tag => cat;
     end_tag => cat;
     empty_tag => cat;
