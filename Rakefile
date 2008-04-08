@@ -127,10 +127,10 @@ end
   source = name.sub(/\.c$/, '.rl')
   file name => [source, "#{ext}/redcloth_common.rl", "#{ext}/redcloth.h"] do
     @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].split('.').map{|s| s.to_i}
-    if @ragel_v[0] >= 6
+    if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[2] >= 1)
       sh %{ragel #{source} -G2 -o #{name}}
     else
-      STDERR.puts "Ragel 6.0 or greater is required to generate #{name}."
+      STDERR.puts "Ragel 6.1 or greater is required to generate #{name}."
       exit(1)
     end
   end
@@ -153,7 +153,7 @@ PKG_FILES = FileList[
 Win32Spec = Gem::Specification.new do |s|
   s.name = OLD_NAME
   s.version = VERS
-  s.platform = Gem::Platform::CURRENT
+  s.platform = Gem::Platform::WIN32
   s.has_rdoc = false
   s.extra_rdoc_files = ["README", "CHANGELOG", "COPYING"]
   s.summary = SUMMARY 
