@@ -646,3 +646,53 @@ html: |-
   		<td>row</td>
   	</tr>
   </table>
+---
+name: extended block followed by pre block
+in: |-
+  div.. Just a test.
+  
+  Second div.
+  
+  pre. A pre block ends it.
+html: |-
+  <div>Just a test.</div>
+  <div>Second div.</div>
+  <pre>A pre block ends it.</pre>
+---
+name: extended block followed by blockquote
+in: |-
+  div.. Just a test.
+
+  Second div.
+
+  bq. A blockquote ends it.
+html: |-
+  <div>Just a test.</div>
+  <div>Second div.</div>
+  <blockquote>
+  <p>A blockquote ends it.</p>
+  </blockquote>
+---
+name: extended block followed by block code
+in: |-
+  div.. Just a test.
+
+  Second div.
+
+  bc. A blockcode ends it.
+html: |-
+  <div>Just a test.</div>
+  <div>Second div.</div>
+  <pre><code>A blockcode ends it.</code></pre>
+---
+name: extended block followed by notextile block
+in: |-
+  div.. Just a test.
+
+  Second div.
+
+  notextile. A notextile block ends it.
+html: |-
+  <div>Just a test.</div>
+  <div>Second div.</div>
+  A notextile block ends it.
