@@ -118,3 +118,19 @@ html: |-
 
   </pre>
   <p>And then go back with a normal paragraph.</p>
+---
+name: block code containing block start
+in: |-
+  bc. I saw a ship. It ate my elephant.
+html: |-
+  <pre><code>I saw a ship. It ate my elephant.</code></pre>
+---
+name: extended block code containing block start
+in: |-
+  bc.. This is an extended bc.
+  
+  I saw a ship. It ate my elephant.
+html: |-
+  <pre><code>This is an extended bc.</code>
+  
+  <code>I saw a ship. It ate my elephant.</code></pre>

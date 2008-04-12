@@ -75,9 +75,28 @@ int SYM_html_escape_entities;
   *|;
   
   pre_block := |*
-    EOF                { ADD_BLOCKCODE(); fgoto main; };
-    double_return      { if (NIL_P(extend)) { ADD_BLOCKCODE(); fgoto main; } else { ADD_EXTENDED_BLOCKCODE(); } };
-    next_block_start   { END_EXTENDED(); fgoto main; };
+    EOF { 
+      ADD_BLOCKCODE(); 
+      fgoto main; 
+    };
+    double_return { 
+      if (NIL_P(extend)) { 
+        ADD_BLOCKCODE(); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCKCODE(); 
+      } 
+    };
+    double_return next_block_start { 
+      if (NIL_P(extend)) { 
+        ADD_BLOCKCODE(); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCKCODE(); 
+        END_EXTENDED(); 
+        fgoto main; 
+      } 
+    };
     default => esc_pre;
   *|;
 
@@ -92,9 +111,30 @@ int SYM_html_escape_entities;
   *|;
   
   notextile_block := |*
-    EOF                { DONE(block); fgoto main; };
-    double_return      { if (NIL_P(extend)) { DONE(block); fgoto main; } else { CAT(block); DONE(block); } };
-    next_block_start   { END_EXTENDED(); fgoto main; };
+    EOF { 
+      DONE(block); 
+      fgoto main; 
+    };
+    double_return { 
+      if (NIL_P(extend)) { 
+        DONE(block); 
+        fgoto main; 
+      } else { 
+        CAT(block); 
+        DONE(block); 
+      } 
+    };
+    double_return next_block_start { 
+      if (NIL_P(extend)) { 
+        DONE(block); 
+        fgoto main; 
+      } else { 
+        CAT(block); 
+        DONE(block); 
+        END_EXTENDED(); 
+        fgoto main; 
+      } 
+    };
     default => cat;
   *|;
  
@@ -104,22 +144,94 @@ int SYM_html_escape_entities;
   *|;
 
   bc := |*
-    EOF                { ADD_BLOCKCODE(); INLINE(html, bc_close); plain_block = rb_str_new2("p"); fgoto main; };
-    double_return      { if (NIL_P(extend)) { ADD_BLOCKCODE(); INLINE(html, bc_close); plain_block = rb_str_new2("p"); fgoto main; } else { ADD_EXTENDED_BLOCKCODE(); CAT(html); } };    next_block_start   { INLINE(html, bc_close); plain_block = rb_str_new2("p");  END_EXTENDED(); fgoto main; };
+    EOF { 
+      ADD_BLOCKCODE(); 
+      INLINE(html, bc_close); 
+      plain_block = rb_str_new2("p"); 
+      fgoto main;
+    };
+    double_return { 
+      if (NIL_P(extend)) { 
+        ADD_BLOCKCODE(); 
+        INLINE(html, bc_close); 
+        plain_block = rb_str_new2("p"); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCKCODE(); 
+        CAT(html); 
+      } 
+    };
+    double_return next_block_start { 
+      if (NIL_P(extend)) { 
+        ADD_BLOCKCODE(); 
+        INLINE(html, bc_close); 
+        plain_block = rb_str_new2("p"); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCKCODE(); 
+        CAT(html); 
+        INLINE(html, bc_close); 
+        plain_block = rb_str_new2("p");  
+        END_EXTENDED(); 
+        fgoto main; 
+      } 
+    };
     default => esc_pre;
   *|;
 
   bq := |*
-    EOF                { ADD_BLOCK(); INLINE(html, bq_close); fgoto main; };
-    double_return      { if (NIL_P(extend)) { ADD_BLOCK(); INLINE(html, bq_close); fgoto main; } else { ADD_EXTENDED_BLOCK(); } };
+    EOF { 
+      ADD_BLOCK(); 
+      INLINE(html, bq_close); 
+      fgoto main; 
+    };
+    double_return { 
+      if (NIL_P(extend)) { 
+        ADD_BLOCK(); 
+        INLINE(html, bq_close); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCK(); 
+      } 
+    };
+    double_return next_block_start { 
+      if (NIL_P(extend)) { 
+        ADD_BLOCK(); 
+        INLINE(html, bq_close); 
+        fgoto main; 
+      } else {
+        ADD_EXTENDED_BLOCK(); 
+        INLINE(html, bq_close); 
+        END_EXTENDED(); 
+        fgoto main; 
+      }
+    };
     default => cat;
-    next_block_start   { INLINE(html, bq_close); END_EXTENDED(); fgoto main; };
   *|;
 
   block := |*
-    EOF                { ADD_BLOCK(); fgoto main; };
-    double_return      { if (NIL_P(extend)) { ADD_BLOCK(); fgoto main; } else { ADD_EXTENDED_BLOCK(); } };
-    next_block_start   { END_EXTENDED(); fgoto main; };
+    EOF { 
+      ADD_BLOCK(); 
+      fgoto main;
+    };
+    double_return {
+      if (NIL_P(extend)) { 
+        ADD_BLOCK(); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCK(); 
+      } 
+    };
+    double_return next_block_start { 
+      if (NIL_P(extend)) { 
+        ADD_BLOCK(); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCK(); 
+        END_EXTENDED(); 
+        fgoto main; 
+      } 
+    };
     default => cat;
   *|;
 

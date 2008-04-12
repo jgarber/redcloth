@@ -8,7 +8,73 @@ in: |-
 html: |-
   <p>A single paragraph.</p>
   <p>Followed by another.</p>
+---
+name: block containing block start
+in: |-
+  I saw a ship. It ate my elephant.
+html: |-
+  <p>I saw a ship. It ate my elephant.</p>
+---
+name: extended block containing block start
+in: |-
+  p.. I saw a ship. It ate my elephant.
+  
+  When the elephant comes to take a p. you...
+html: |-
+  <p>I saw a ship. It ate my elephant.</p>
+  <p>When the elephant comes to take a p. you&#8230;</p>
+---
+name: blockquote containing block start
+in: |-
+  bq. I saw a ship. It ate my elephant.
+html: |-
+  <blockquote>
+  <p>I saw a ship. It ate my elephant.</p>
+  </blockquote>
+---
+name: extended blockquote containing block start
+in: |-
+  bq.. I saw a ship. It ate my elephant.
+
+  When the elephant comes to take a p. you...
+html: |-
+  <blockquote>
+  <p>I saw a ship. It ate my elephant.</p>
+  <p>When the elephant comes to take a p. you&#8230;</p>
+  </blockquote>
 --- 
+name: notextile block containing block start
+in: |-
+  notextile. I saw a ship. It ate my elephant.
+html: |-
+  I saw a ship. It ate my elephant.
+---
+name: extended notextile block containing block start
+in: |-
+  notextile.. I saw a ship. It ate my elephant.
+
+  When the elephant comes to take a p. you...
+html: |-
+  I saw a ship. It ate my elephant.
+  
+  When the elephant comes to take a p. you...
+--- 
+name: pre block containing block start
+in: |-
+  pre. I saw a ship. It ate my elephant.
+html: |-
+  <pre>I saw a ship. It ate my elephant.</pre>
+---
+name: extended pre block containing block start
+in: |-
+  pre.. I saw a ship. It ate my elephant.
+
+  When the elephant comes to take a p. you...
+html: |-
+  <pre>I saw a ship. It ate my elephant.</pre>
+
+  <pre>When the elephant comes to take a p. you&#8230;</pre>
+  --- 
 name: html tags
 desc: You can certainly use HTML tags inside your Textile documents.  HTML will only be escaped if it&#8217;s found in a <code>pre</code> or <code>code</code> block.
 in: |-
