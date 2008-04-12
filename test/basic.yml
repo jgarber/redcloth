@@ -204,6 +204,10 @@ name: code phrases
 desc: Code phrases can be surrounded by at-symbols.
 in: Convert with @r.to_html@
 html: <p>Convert with <code>r.to_html</code></p>
+---
+name: code phrases not created with multiple email addresses
+in: Please email why@domain.com or jason@domain.com.
+html: <p>Please email why@domain.com or jason@domain.com.</p>
 --- 
 name: del
 desc: To indicate a passage which has been deleted, surround the passage with hypens.
