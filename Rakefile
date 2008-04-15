@@ -8,7 +8,7 @@ include FileUtils
 
 NAME = "redcloth"
 OLD_NAME = "RedCloth"
-SUMMARY = "a fast library for formatting Textile and Markdown as HTML"
+SUMMARY = "a fast library for formatting Textile as HTML"
 REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
 VERS = ENV['VERSION'] || "3" + (REV ? ".#{REV}" : "")
 CLEAN.include ['ext/redcloth_scan/*.{bundle,so,obj,pdb,lib,def,exp}', 'ext/redcloth_scan/Makefile', 
@@ -127,7 +127,7 @@ end
   source = name.sub(/\.c$/, '.rl')
   file name => [source, "#{ext}/redcloth_common.rl", "#{ext}/redcloth.h"] do
     @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].split('.').map{|s| s.to_i}
-    if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[2] >= 1)
+    if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[1] >= 1)
       sh %{ragel #{source} -G2 -o #{name}}
     else
       STDERR.puts "Ragel 6.1 or greater is required to generate #{name}."
@@ -153,7 +153,7 @@ PKG_FILES = FileList[
 Win32Spec = Gem::Specification.new do |s|
   s.name = OLD_NAME
   s.version = VERS
-  s.platform = Gem::Platform::WIN32
+  s.platform = 'mswin32'
   s.has_rdoc = false
   s.extra_rdoc_files = ["README", "CHANGELOG", "COPYING"]
   s.summary = SUMMARY 
