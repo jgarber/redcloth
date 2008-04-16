@@ -216,3 +216,58 @@ html: |-
   	<li>See Also notes should be bullets</li>
   	<li>Like this</li>
   </ul>
+---
+name: ordered list immediately following paragraph
+desc: Normally a paragraph and a list that follows it should be separated by two newlines.  Textile-2.0.0 recognizes the list even when separated by only one newline, but creates invalid XHTML by placing the list inside the paragraph.  RedCloth recognizes the pattern for backward compatibility, but creates valid XHTML.
+in: |-
+  A simple example.
+  # One
+  # Two
+html: |-
+  <p>A simple example.</p>
+  <ol>
+  	<li>One</li>
+  	<li>Two</li>
+  </ol>
+---
+name: unordered list immediately following paragraph
+in: |-
+  A simple example.
+  * One
+  * Two
+html: |-
+  <p>A simple example.</p>
+  <ul>
+  	<li>One</li>
+  	<li>Two</li>
+  </ul>
+---
+name: ordered list immediately following extended block
+in: |-
+  div.. Here it comes.
+  
+  A simple example.
+  # One
+  # Two
+html: |-
+  <div>Here it comes.</div>
+  <div>A simple example.</div>
+  <ol>
+  	<li>One</li>
+  	<li>Two</li>
+  </ol>
+---
+name: unordered list immediately following extended block
+in: |-
+  div.. Here it comes.
+  
+  A simple example.
+  * One
+  * Two
+html: |-
+  <div>Here it comes.</div>
+  <div>A simple example.</div>
+  <ul>
+  	<li>One</li>
+  	<li>Two</li>
+  </ul>

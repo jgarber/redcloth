@@ -231,8 +231,15 @@ int SYM_html_escape_entities;
         ADD_EXTENDED_BLOCK(); 
         END_EXTENDED(); 
         fgoto main; 
-      } 
+      }      
     };
+    CRLF list_start { 
+      ADD_BLOCK(); 
+      list_layout = rb_ary_new(); 
+      LIST_ITEM(); 
+      fgoto list; 
+    };
+    
     default => cat;
   *|;
 
