@@ -70,6 +70,9 @@ int SYM_html_escape_entities;
   tdef = ( "table" >X A C :> dotspace CRLF ) ;
   table = ( tdef? trows >{INLINE(table, table_open);} ) >{ reg = NULL; } ;
 
+  # info
+  redcloth_version = "RedCloth::VERSION" (CRLF* EOF | double_return) ;
+
   pre_tag := |*
     pre_tag_end         { CAT(block); DONE(block); fgoto main; };
     default => esc_pre;
@@ -280,6 +283,7 @@ int SYM_html_escape_entities;
     table           { INLINE(table, table_close); DONE(table); fgoto block; };
     link_alias      { rb_hash_aset(refs_found, rb_hash_aref(regs, ID2SYM(rb_intern("text"))), rb_hash_aref(regs, ID2SYM(rb_intern("href")))); DONE(block); };
     aligned_image   { rb_hash_aset(regs, ID2SYM(rb_intern("type")), plain_block); fgoto block; };
+    redcloth_version { INLINE(html, redcloth_version); };
     blank_line => cat;
     default
     { 

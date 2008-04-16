@@ -213,4 +213,8 @@ class << RedCloth::HTML
   def urlesc(txt)
     txt.gsub(/&/, '&amp;')
   end
+  
+  def redcloth_version(opts)
+    p(:text => RedCloth::VERSION)
+  end
 end
