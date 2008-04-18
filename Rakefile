@@ -11,8 +11,8 @@ OLD_NAME = "RedCloth"
 SUMMARY = "a fast library for formatting Textile as HTML"
 REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
 VERS = ENV['VERSION'] || "3" + (REV ? ".#{REV}" : "")
-CLEAN.include ['ext/redcloth_scan/*.{bundle,so,obj,pdb,lib,def,exp}', 'ext/redcloth_scan/Makefile', 
-               '**/.*.sw?', '*.gem', '.config']
+CLEAN.include ['ext/redcloth_scan/*.{bundle,so,obj,pdb,lib,def,exp,c,o,xml}', 'ext/redcloth_scan/Makefile', '**/.*.sw?', '*.gem', '.config']
+CLOBBER.include ['lib/*.{bundle,so,obj,pdb,lib,def,exp}']
 
 desc "Does a full compile, test run"
 task :default => [:compile, :test]
@@ -124,11 +124,12 @@ task "lib" do
 end
 
 ["#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c"].each do |name|
+  @code_style ||= "T0"
   source = name.sub(/\.c$/, '.rl')
   file name => [source, "#{ext}/redcloth_common.rl", "#{ext}/redcloth.h"] do
     @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].split('.').map{|s| s.to_i}
     if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[1] >= 1)
-      sh %{ragel #{source} -G2 -o #{name}}
+      sh %{ragel #{source} -#{@code_style} -o #{name}}
     else
       STDERR.puts "Ragel 6.1 or greater is required to generate #{name}."
       exit(1)
@@ -211,4 +212,39 @@ module RedClothVersion
 end
 EOD
   end
+end
+
+RAGEL_CODE_GENERATION_STYLES = {
+  'T0' => "Table driven FSM (default)",
+  'T1' => "Faster table driven FSM",
+  'F0' => "Flat table driven FSM",
+  'F1' => "Faster flat table-driven FSM",
+  'G0' => "Goto-driven FSM",
+  'G1' => "Faster goto-driven FSM",
+  'G2' => "Really fast goto-driven FSM"
+}
+
+task :optimize do
+  require 'extras/ragel_profiler'
+  results = []
+  RAGEL_CODE_GENERATION_STYLES.each do |style, name|
+    @code_style = style
+    profiler = RagelProfiler.new(style + " " + name)
+    
+    # Hack to get everything to invoke again.  Could use #execute, but then it 
+    # doesn't execute prerequisites the second+ time
+    Rake::Task.tasks.each {|t| t.instance_eval "@already_invoked = false" }
+    
+    Rake::Task['clobber'].invoke
+    
+    profiler.measure(:compile) do
+      Rake::Task['compile'].invoke
+    end
+    profiler.measure(:test) do
+      Rake::Task['test'].invoke
+    end
+    profiler.ext_size(ext_so)
+    
+  end
+  puts RagelProfiler.results
 end
