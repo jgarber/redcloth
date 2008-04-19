@@ -1,6 +1,6 @@
 require 'mkmf'
 
-$CFLAGS << " -O0 " # do not optimize (takes too much memory and performance gain is negligeable)
+$CFLAGS << " -O2 "
 
 ### It seems to work fine without these
 # dir_config("redcloth_scan")
