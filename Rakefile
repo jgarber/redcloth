@@ -9,7 +9,7 @@ include FileUtils
 NAME = "redcloth"
 OLD_NAME = "RedCloth"
 SUMMARY = "a fast library for formatting Textile as HTML"
-REV = `svn info`[/Revision: (\d+)/, 1] rescue nil
+REV = (`#{ENV['GIT'] || "git"} rev-list HEAD`.split.length + 20).to_s
 VERS = ENV['VERSION'] || "3" + (REV ? ".#{REV}" : "")
 CLEAN.include ['ext/redcloth_scan/*.{bundle,so,obj,pdb,lib,def,exp,c,o,xml}', 'ext/redcloth_scan/Makefile', '**/.*.sw?', '*.gem', '.config']
 CLOBBER.include ['lib/*.{bundle,so,obj,pdb,lib,def,exp}']
