@@ -1,0 +1,9 @@
+---
+in:  Just a little harmless xss <script src=http://ha.ckers.org/xss.js>stuff</script>.
+sanitized_html: <p>Just a little harmless xss stuff.</p>
+---
+in: Here's a bad image <img src="JaVaScRiPt:alert('XSS');" />
+sanitized_html: <p>Here&#8217;s a bad image <img /></p>
+---
+in: Just some random > and < characters, but also a <br/> tag.
+sanitized_html: <p>Just some random &gt; and &lt; characters, but also a <br/> tag.</p>

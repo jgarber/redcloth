@@ -15,5 +15,9 @@ class TestFormatters < Test::Unit::TestCase
   generate_formatter_tests('filtered_html') do |doc|
     assert_equal doc['filtered_html'],  RedCloth.new(doc['in'], [:filter_html]).to_html
   end
+  
+  generate_formatter_tests('sanitized_html') do |doc|
+    assert_equal doc['sanitized_html'],  RedCloth.new(doc['in'], [:sanitize_html]).to_html
+  end
 
 end

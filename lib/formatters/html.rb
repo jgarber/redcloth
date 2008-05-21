@@ -224,10 +224,77 @@ class << RedCloth::HTML
   end
   
   def inline_html(opts)
+    clean_html(opts[:text]) if opts[:restrictions].include?(:sanitize_html)
+    
     if opts[:restrictions].include?(:filter_html)
       html_esc(opts[:text])
     else
       "#{opts[:text]}"
+    end
+  end
+  
+  # HTML cleansing stuff
+  BASIC_TAGS = {
+      'a' => ['href', 'title'],
+      'img' => ['src', 'alt', 'title'],
+      'br' => [],
+      'i' => nil,
+      'u' => nil, 
+      'b' => nil,
+      'pre' => nil,
+      'kbd' => nil,
+      'code' => ['lang'],
+      'cite' => nil,
+      'strong' => nil,
+      'em' => nil,
+      'ins' => nil,
+      'sup' => nil,
+      'sub' => nil,
+      'del' => nil,
+      'table' => nil,
+      'tr' => nil,
+      'td' => ['colspan', 'rowspan'],
+      'th' => nil,
+      'ol' => ['start'],
+      'ul' => nil,
+      'li' => nil,
+      'p' => nil,
+      'h1' => nil,
+      'h2' => nil,
+      'h3' => nil,
+      'h4' => nil,
+      'h5' => nil,
+      'h6' => nil, 
+      'blockquote' => ['cite']
+  }
+  
+  # Clean unauthorized tags.
+  def clean_html( text, allowed_tags = BASIC_TAGS )
+    text.gsub!( /<!\[CDATA\[/, '' )
+    text.gsub!( /<(\/*)([A-Za-z]\w*)([^>]*?)(\s?\/?)>/ ) do |m|
+      raw = $~
+      tag = raw[2].downcase
+      if allowed_tags.has_key? tag
+        pcs = [tag]
+        allowed_tags[tag].each do |prop|
+          ['"', "'", ''].each do |q|
+            q2 = ( q != '' ? q : '\s' )
+            if raw[3] =~ /#{prop}\s*=\s*#{q}([^#{q2}]+)#{q}/i
+              attrv = $1
+              next if (prop == 'src' or prop == 'href') and not attrv =~ %r{^(http|https|ftp):}
+              pcs << "#{prop}=\"#{attrv.gsub('"', '\\"')}\""
+              break
+            end
+          end
+        end if allowed_tags[tag]
+        "<#{raw[1]}#{pcs.join " "}#{raw[4]}>"
+      else # Unauthorized tag
+        if block_given?
+          yield m
+        else
+          ''
+        end
+      end
     end
   end
 end
