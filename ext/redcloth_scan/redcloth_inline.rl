@@ -49,6 +49,12 @@
   snip = "["? "```" >X %A mtext %T :> "```" "]"? ;
   quote1 = "["? "'" >X %A mtext %T :> "'" "]"? ;
   quote2 = "["? '"' >X %A mtext %T :> '"' "]"? ;
+  
+  # html
+  start_tag = ( "<" Name space+ AttrSet* (AttrEnd)? ">" | "<" Name ">" ) >X >A %T ;
+  empty_tag = ( "<" Name space+ AttrSet* (AttrEnd)? "/>" | "<" Name "/>" ) >X >A %T ;
+  end_tag = ( "</" Name space* ">" ) >X >A %T ;
+  html_comment = "<!--" (default+) :> "-->";  
 
   # glyphs
   ellipsis = ( " "? >A %T "..." ) >X ;
@@ -75,7 +81,7 @@
   *|;
 
   script_tag := |*
-    script_tag_end { CAT(block); fgoto main; };
+    script_tag_end { INLINE(block, inline_html); fgoto main; };
     default => cat;
   *|;
 
@@ -116,10 +122,10 @@
     footno { PASS(block, text, footno); };
     entity { INLINE(block, entity); };
 
-    script_tag_start { CAT(block); fgoto script_tag; };
-    start_tag => cat;
-    end_tag => cat;
-    empty_tag => cat;
+    script_tag_start { INLINE(block, inline_html); fgoto script_tag; };
+    start_tag { INLINE(block, inline_html); };
+    end_tag { INLINE(block, inline_html); };
+    empty_tag { INLINE(block, inline_html); };
     html_comment => cat;
 
     other_phrase => esc;
@@ -135,10 +141,10 @@
 %% write data nofinal;
 
 VALUE
-red_pass(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth, VALUE refs)
+red_pass(VALUE self, VALUE rb_formatter, VALUE regs, VALUE ref, ID meth, VALUE refs)
 {
   VALUE txt = rb_hash_aref(regs, ref);
-  if (!NIL_P(txt)) rb_hash_aset(regs, ref, redcloth_inline2(rb_formatter, txt, refs));
+  if (!NIL_P(txt)) rb_hash_aset(regs, ref, redcloth_inline2(self, rb_formatter, txt, refs));
   return rb_funcall(rb_formatter, meth, 1, regs);
 }
 
@@ -155,21 +161,13 @@ red_pass_code(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth, unsigned int o
 }
 
 VALUE
-red_pass2(VALUE rb_formatter, VALUE regs, VALUE ref, VALUE btype, VALUE refs)
-{
-  btype = rb_hash_aref(regs, btype);
-  StringValue(btype);
-  return red_pass(rb_formatter, regs, ref, rb_intern(RSTRING(btype)->ptr), refs);
-}
-
-VALUE
-red_block(VALUE rb_formatter, VALUE regs, VALUE block, VALUE refs)
+red_block(VALUE self, VALUE rb_formatter, VALUE regs, VALUE block, VALUE refs)
 {
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
   if ((RSTRING(block)->len > 0) && !NIL_P(btype))
   {
-    rb_hash_aset(regs, ID2SYM(rb_intern("text")), redcloth_inline2(rb_formatter, block, refs));
+    rb_hash_aset(regs, ID2SYM(rb_intern("text")), redcloth_inline2(self, rb_formatter, block, refs));
     block = rb_funcall(rb_formatter, rb_intern(RSTRING(btype)->ptr), 1, regs);
   }
   return block;
@@ -198,8 +196,8 @@ red_inc(VALUE regs, VALUE ref)
 }
 
 VALUE
-redcloth_inline(rb_formatter, p, pe, refs)
-  VALUE rb_formatter;
+redcloth_inline(self, rb_formatter, p, pe, refs)
+  VALUE self, rb_formatter;
   char *p, *pe;
   VALUE refs;
 {
@@ -306,9 +304,9 @@ rb_str_cat_escaped_for_preformatted(str, ts, te, opts)
 }
 
 VALUE
-redcloth_inline2(formatter, str, refs)
-  VALUE formatter, str, refs;
+redcloth_inline2(self, formatter, str, refs)
+  VALUE self, formatter, str, refs;
 {
   StringValue(str);
-  return redcloth_inline(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, refs);
+  return redcloth_inline(self, formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, refs);
 }

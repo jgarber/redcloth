@@ -54,7 +54,6 @@ html: |-
   	<li>in a div.</li>
   </ul>
   </div>
-  
   <p>Another paragraph.</p>
 ---
 name: wraps inline HTML in paragraphs
@@ -100,13 +99,11 @@ in: |-
 html: |-
   <div class="span-17 last">
   <div class="span-8"><r:attachment:image name="logo.jpg" /></div>
-  
   <div class="span-9 last">
   <h1>Contact</h1>
   <p>Please contact us if you have questions or need help making arrangements.</p>
   </div>
   </div>
-  
   <div class="span-8">
   <h2>Tom</h2>
   <p>(540) 555-1212</p>

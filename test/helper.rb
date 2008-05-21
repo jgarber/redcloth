@@ -3,12 +3,28 @@ $:.unshift File.dirname(__FILE__) + "/../lib"
 require 'redcloth'
 require 'yaml'
 
-def red(formatter, str)
-  RedCloth.new(str).send("to_#{formatter}")
-end
-
 module Test
   module Unit
+    
+    class TestCase
+      def self.generate_formatter_tests(formatter, &block)
+        define_method("do_test_with_#{formatter}", &block)
+
+        Dir[File.join(File.dirname(__FILE__), "*.yml")].each do |testfile|
+          testgroup = File.basename(testfile, '.yml')
+          num = 0
+          YAML::load_documents(File.open(testfile)) do |doc|
+            name = doc['name'] ? doc['name'].downcase.gsub(/[- ]/, '_') : num
+            define_method("test_#{formatter}_#{testgroup}_#{name}") do
+              method("do_test_with_#{formatter}").call(doc)
+            end if doc[formatter]
+            num += 1
+          end
+        end
+      end
+      
+    end
+    
     module Assertions
       # Browsers ignore tabs and newlines (generally), so don't quibble
       def assert_html_equal(expected, actual, message=nil)

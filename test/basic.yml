@@ -331,12 +331,10 @@ in: |
   The main text of the page goes here and will stay to the left of the sidebar.
 html: |-
   <div style="float:right;">
-
   <h3>Sidebar</h3>
   <p><a href="http://hobix.com/">Hobix</a><br />
   <a href="http://ruby-lang.org/">Ruby</a></p>
   </div>
-  
   <p>The main text of the page goes here and will stay to the left of the sidebar.</p>
 --- 
 name: numbered list
