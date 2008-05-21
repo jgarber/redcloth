@@ -1,4 +1,5 @@
 class << RedCloth::HTML
+    
   def options
     {:html_escape_entities => true}
   end
@@ -216,5 +217,17 @@ class << RedCloth::HTML
   
   def redcloth_version(opts)
     p(:text => RedCloth::VERSION)
+  end
+  
+  def html(opts)
+    "#{opts[:text]}\n"
+  end
+  
+  def inline_html(opts)
+    if opts[:restrictions].include?(:filter_html)
+      html_esc(opts[:text])
+    else
+      "#{opts[:text]}"
+    end
   end
 end

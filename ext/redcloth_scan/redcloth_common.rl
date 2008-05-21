@@ -4,7 +4,7 @@
 
   action A { reg = p; }
   action T { STORE(text); }
-  action X { regs = rb_hash_new(); reg = NULL; }
+  action X { CLEAR_REGS(); reg = NULL; }
   action cat { CAT(block); }
   action esc { rb_str_cat_escaped(block, ts, te, opts); }
   action esc_pre { rb_str_cat_escaped_for_preformatted(block, ts, te, opts); }
@@ -75,13 +75,9 @@
   Attr =  NameAttr space* "=" space* ('"' Q2Attr '"' | "'" Q1Attr "'" | UnqAttr space+ ) space* ;
   AttrEnd = ( NameAttr space* "=" space* UnqAttr? | Nmtoken ) ;
   AttrSet = ( Attr | Nmtoken space+ ) ;
-  start_tag = "<" Name space+ AttrSet* (AttrEnd)? ">" | "<" Name ">";
-  empty_tag = "<" Name space+ AttrSet* (AttrEnd)? "/>" | "<" Name "/>" ;
-  end_tag = "</" Name space* ">" ;
-  html_comment = "<!--" (default+) :> "-->";
   
-  script_tag_start = "<script" [^>]* ">" ;
-  script_tag_end = "</script>" CRLF? ;
+  script_tag_start = ( "<script" [^>]* ">" ) >X >A %T ;
+  script_tag_end = ( "</script>" >A %T CRLF? ) >X ;
   
 
   # URI tokens (lifted from Mongrel)

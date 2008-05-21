@@ -272,7 +272,7 @@ int SYM_html_escape_entities;
     script_tag_start { ASET(type, script); CAT(block); fgoto script_tag; };
     pre_tag_start       { ASET(type, notextile); CAT(block); fgoto pre_tag; };
     pre_block_start { fgoto pre_block; };
-    standalone_html { CAT(block); DONE(block); };
+    standalone_html { ASET(type, html); CAT(block); ADD_BLOCK(); };
     html_start      { ASET(type, notextile); CAT(html); fgoto html; };
     bc_start        { INLINE(html, bc_open); ASET(type, code); plain_block = rb_str_new2("code"); fgoto bc; };
     bq_start        { INLINE(html, bq_open); ASET(type, p); fgoto bq; };
@@ -287,7 +287,7 @@ int SYM_html_escape_entities;
     blank_line => cat;
     default
     { 
-      regs = rb_hash_new();
+      CLEAR_REGS();
       rb_hash_aset(regs, ID2SYM(rb_intern("type")), plain_block);
       CAT(block);
       fgoto block;
@@ -300,8 +300,8 @@ int SYM_html_escape_entities;
 %% write data nofinal;
 
 VALUE
-redcloth_transform(rb_formatter, p, pe, refs)
-  VALUE rb_formatter;
+redcloth_transform(self, rb_formatter, p, pe, refs)
+  VALUE self, rb_formatter;
   char *p, *pe;
   VALUE refs;
 {
@@ -311,7 +311,9 @@ redcloth_transform(rb_formatter, p, pe, refs)
   VALUE html = rb_str_new2("");
   VALUE table = rb_str_new2("");
   VALUE block = rb_str_new2("");
-  VALUE regs = rb_hash_new();
+  VALUE regs; CLEAR_REGS()
+  
+  
   VALUE list_layout = Qnil;
   char *list_type = NULL;
   VALUE list_index = rb_ary_new();
@@ -336,7 +338,7 @@ redcloth_transform(rb_formatter, p, pe, refs)
   }
 
   if ( NIL_P(refs) && rb_funcall(refs_found, rb_intern("empty?"), 0) == Qfalse ) {
-    return redcloth_transform(rb_formatter, orig_p, orig_pe, refs_found);
+    return redcloth_transform(self, rb_formatter, orig_p, orig_pe, refs_found);
   } else {
     rb_funcall(rb_formatter, rb_intern("after_transform"), 1, html);
     return html;
@@ -344,13 +346,28 @@ redcloth_transform(rb_formatter, p, pe, refs)
 }
 
 VALUE
-redcloth_transform2(formatter, str)
-  VALUE formatter, str;
+redcloth_transform2(self, formatter, str)
+  VALUE self, formatter, str;
 {
   rb_str_cat2(str, "\n");
   StringValue(str);
-  return redcloth_transform(formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, Qnil);
+  return redcloth_transform(self, formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, Qnil);
 }
+
+/*
+ * Converts special characters into HTML entities.
+ */
+static VALUE
+redcloth_html_esc(self, str)
+  VALUE self;
+  VALUE str;
+{
+  VALUE new_str = rb_str_new2("");
+  StringValue(str);
+  rb_str_cat_escaped(new_str, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len, SR_HTML_ESCAPE_ENTITIES);
+  return new_str;
+}
+
 
 /*
  * Generates HTML from the Textile contents.
@@ -366,7 +383,7 @@ redcloth_to_html(self)
   char *pe, *p;
   int len = 0;
 
-  return redcloth_transform2(super_HTML, self);
+  return redcloth_transform2(self, super_HTML, self);
 }
 
 /*
@@ -383,7 +400,7 @@ redcloth_to_latex(self)
   char *pe, *p;
   int len = 0;
 
-  return redcloth_transform2(super_LATEX, self);
+  return redcloth_transform2(self, super_LATEX, self);
 }
 
 static VALUE
@@ -393,7 +410,7 @@ redcloth_to(self, formatter)
   char *pe, *p;
   int len = 0;
 
-  return redcloth_transform2(formatter, self);
+  return redcloth_transform2(self, formatter, self);
 }
 
 void Init_redcloth_scan()
@@ -406,6 +423,7 @@ void Init_redcloth_scan()
   super_ParseError = rb_define_class_under(super_RedCloth, "ParseError", rb_eException);
   /* RedCloth HTML formatter. */
   super_HTML  = rb_define_module_under(super_RedCloth, "HTML");
+  rb_define_singleton_method(super_HTML, "html_esc", redcloth_html_esc, 1);
   /* RedCloth LaTeX formatter. */
   super_LATEX = rb_define_module_under(super_RedCloth, "LATEX");
   SYM_html_escape_entities = ID2SYM(rb_intern("html_escape_entities"));

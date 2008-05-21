@@ -196,10 +196,12 @@ end
 
 CLEAN.include WIN32_PKG_DIR
 
+desc "Build and install the RedCloth gem on your system"
 task :install => [:package] do
   sh %{sudo gem install pkg/#{OLD_NAME}-#{VERS}}
 end
 
+desc "Uninstall the RedCloth gem from your system"
 task :uninstall => [:clean] do
   sh %{sudo gem uninstall #{OLD_NAME}}
 end
