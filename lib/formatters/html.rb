@@ -9,6 +9,12 @@ class << RedCloth::HTML
   end
   
   def pba(opts)
+    if opts[:restrictions]
+      opts.delete(:style) if opts[:restrictions].include?(:filter_styles)
+      opts.delete(:class) if opts[:restrictions].include?(:filter_classes)
+      opts.delete(:id) if opts[:restrictions].include?(:filter_ids)
+    end
+    
     atts = ''
     opts[:"text-align"] = opts.delete(:align)
     opts[:style] += ';' if opts[:style] && (opts[:style][-1..-1] != ';')

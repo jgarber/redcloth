@@ -1,0 +1,12 @@
+---
+name: filter styles
+in: "p{color:red}. Test"
+style_filtered_html: "<p>Test</p>"
+---
+name: filter classes
+in: "p(myclass). Test"
+class_filtered_html: "<p>Test</p>"
+---
+name: filter ids
+in: "p(#myid). Test"
+id_filtered_html: "<p>Test</p>"
