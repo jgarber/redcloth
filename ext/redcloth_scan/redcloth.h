@@ -4,12 +4,11 @@
 /* variable defs */
 #ifndef redcloth_scan_c
 extern VALUE super_ParseError, super_RedCloth;
-extern int SYM_html_escape_entities;
 #endif
 
 /* function defs */
-void rb_str_cat_escaped(VALUE str, char *ts, char *te, unsigned int opts);
-void rb_str_cat_escaped_for_preformatted(VALUE str, char *ts, char *te, unsigned int opts);
+void rb_str_cat_escaped(VALUE str, char *ts, char *te, VALUE rb_formatter);
+void rb_str_cat_escaped_for_preformatted(VALUE str, char *ts, char *te, VALUE rb_formatter);
 VALUE redcloth_inline(VALUE, VALUE, char *, char *, VALUE);
 VALUE redcloth_inline2(VALUE, VALUE, VALUE, VALUE);
 VALUE redcloth_transform(VALUE, VALUE, char *, char *, VALUE);
@@ -18,10 +17,7 @@ void red_inc(VALUE, VALUE);
 VALUE red_block(VALUE, VALUE, VALUE, VALUE, VALUE);
 VALUE red_blockcode(VALUE, VALUE, VALUE);
 VALUE red_pass(VALUE, VALUE, VALUE, VALUE, ID, VALUE);
-VALUE red_pass_code(VALUE, VALUE, VALUE, ID, unsigned int opts);
-
-/* parsing options */
-#define SR_HTML_ESCAPE_ENTITIES 2
+VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 
 /* parser macros */
 #define CLEAR_REGS()   regs = rb_hash_new(); rb_hash_aset(regs, ID2SYM(rb_intern("restrictions")), rb_iv_get(self, "@restrictions"));
@@ -30,7 +26,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID, unsigned int opts);
 #define INLINE(H, T)   rb_str_append(H, rb_funcall(rb_formatter, rb_intern(#T), 1, regs))
 #define DONE(H)        rb_str_append(html, H); CLEAR(H); CLEAR_REGS()
 #define PASS(H, A, T)  rb_str_append(H, red_pass(self, rb_formatter, regs, ID2SYM(rb_intern(#A)), rb_intern(#T), refs))
-#define PASS_CODE(H, A, T, O) rb_str_append(H, red_pass_code(rb_formatter, regs, ID2SYM(rb_intern(#A)), rb_intern(#T), O))
+#define PASS_CODE(H, A, T, O) rb_str_append(H, red_pass_code(rb_formatter, regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))
 #define ADD_BLOCK() \
   rb_str_append(html, red_block(self, rb_formatter, regs, block, refs)); \
   extend = Qnil; \
@@ -44,10 +40,6 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID, unsigned int opts);
 #define AINC(T)        red_inc(regs, ID2SYM(rb_intern(#T)));
 #define TRANSFORM(T) \
   if (p > reg && reg >= ts) { \
-    while (reg < p && ( *reg == '\r' || *reg == '\n' ) ) { reg++; } \
-    while (p > reg && ( *(p - 1) == '\r' || *(p - 1) == '\n' ) ) { p--; } \
-  } \
-  if (p > reg && reg >= ts) { \
     VALUE str = redcloth_transform(self, rb_formatter, reg, p, refs); \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
   /*  printf("TRANSFORM(" #T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
@@ -55,10 +47,6 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID, unsigned int opts);
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
   }
 #define STORE(T)  \
-  if (p > reg && reg >= ts) { \
-    while (reg < p && ( *reg == '\r' || *reg == '\n' ) ) { reg++; } \
-    while (p > reg && ( *(p - 1) == '\r' || *(p - 1) == '\n' ) ) { p--; } \
-  } \
   if (p > reg && reg >= ts) { \
     VALUE str = rb_str_new(reg, p-reg); \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \

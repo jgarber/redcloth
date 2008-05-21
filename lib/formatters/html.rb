@@ -1,8 +1,15 @@
 class << RedCloth::HTML
-    
-  def options
-    {:html_escape_entities => true}
+  
+  # escapement for regular HTML (not in PRE tag)
+  def escape(text)
+    html_esc(text)
   end
+
+  # escapement for HTML in a PRE tag
+  def escape_pre(text)
+    html_esc_pre(text)
+  end
+
   
   def after_transform(text)
     text.chomp!

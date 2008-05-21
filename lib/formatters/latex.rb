@@ -1,6 +1,10 @@
 class << RedCloth::LATEX
-  def options
-    {:html_escape_entities => false}
+  def escape(text)
+    text
+  end
+
+  def escape_pre(text)
+    text
   end
   
   def after_transform(text)
@@ -217,4 +221,5 @@ class << RedCloth::LATEX
     space = opts[:space] ? " " : ''
     "#{opts[:x]}#{space}&#215;#{space}"
   end
+  
 end

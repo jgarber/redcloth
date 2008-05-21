@@ -322,12 +322,7 @@ redcloth_transform(self, rb_formatter, p, pe, refs)
   VALUE extend = Qnil;
   char listm[10] = "";
   VALUE refs_found = rb_hash_new();
-  unsigned int opts = 0;
   
-  VALUE options = rb_funcall(rb_formatter, rb_intern("options"), 0);
-  Check_Type(options, T_HASH);
-  if (rb_hash_aref(options, SYM_html_escape_entities) == Qtrue) opts |= SR_HTML_ESCAPE_ENTITIES;
-
   %% write init;
 
   %% write exec;
@@ -364,9 +359,79 @@ redcloth_html_esc(self, str)
 {
   VALUE new_str = rb_str_new2("");
   StringValue(str);
-  rb_str_cat_escaped(new_str, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len, SR_HTML_ESCAPE_ENTITIES);
+  
+  char *ts = RSTRING(str)->ptr, *te = RSTRING(str)->ptr + RSTRING(str)->len;
+  char *t = ts, *t2 = ts, *ch = NULL;
+  if (te <= ts) return;
+
+  while (t2 < te) {
+    ch = NULL;
+    switch (*t2)
+    {
+      case '&':  ch = "&amp;";    break;
+      case '>':  ch = "&gt;";     break;
+      case '<':  ch = "&lt;";     break;
+      case '"':  ch = "&quot;";   break;
+      case '\n': ch = "<br />\n"; break;
+      case '\'': ch = "&#8217;";  break;
+    }
+
+    if (ch != NULL)
+    {
+      if (t2 > t)
+        rb_str_cat(new_str, t, t2-t);
+      rb_str_cat2(new_str, ch);
+      t = t2 + 1;
+    }
+
+    t2++;
+  }
+  if (t2 > t)
+    rb_str_cat(new_str, t, t2-t);
+  
   return new_str;
 }
+
+/*
+ * ******* Quick hack; redcloth_html_esc really needs a degree parameter
+ */
+static VALUE
+redcloth_html_esc_pre(self, str)
+  VALUE self;
+  VALUE str;
+{
+  VALUE new_str = rb_str_new2("");
+  StringValue(str);
+  
+  char *ts = RSTRING(str)->ptr, *te = RSTRING(str)->ptr + RSTRING(str)->len;
+  char *t = ts, *t2 = ts, *ch = NULL;
+  if (te <= ts) return;
+
+  while (t2 < te) {
+    ch = NULL;
+    switch (*t2)
+    {
+      case '&':  ch = "&amp;";    break;
+      case '>':  ch = "&gt;";     break;
+      case '<':  ch = "&lt;";     break;
+    }
+
+    if (ch != NULL)
+    {
+      if (t2 > t)
+        rb_str_cat(new_str, t, t2-t);
+      rb_str_cat2(new_str, ch);
+      t = t2 + 1;
+    }
+
+    t2++;
+  }
+  if (t2 > t)
+    rb_str_cat(new_str, t, t2-t);
+  
+  return new_str;
+}
+
 
 
 /*
@@ -424,7 +489,7 @@ void Init_redcloth_scan()
   /* RedCloth HTML formatter. */
   super_HTML  = rb_define_module_under(super_RedCloth, "HTML");
   rb_define_singleton_method(super_HTML, "html_esc", redcloth_html_esc, 1);
+  rb_define_singleton_method(super_HTML, "html_esc_pre", redcloth_html_esc_pre, 1);
   /* RedCloth LaTeX formatter. */
   super_LATEX = rb_define_module_under(super_RedCloth, "LATEX");
-  SYM_html_escape_entities = ID2SYM(rb_intern("html_escape_entities"));
 }

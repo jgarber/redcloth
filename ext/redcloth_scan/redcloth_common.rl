@@ -6,8 +6,8 @@
   action T { STORE(text); }
   action X { CLEAR_REGS(); reg = NULL; }
   action cat { CAT(block); }
-  action esc { rb_str_cat_escaped(block, ts, te, opts); }
-  action esc_pre { rb_str_cat_escaped_for_preformatted(block, ts, te, opts); }
+  action esc { rb_str_cat_escaped(block, ts, te, rb_formatter); }
+  action esc_pre { rb_str_cat_escaped_for_preformatted(block, ts, te, rb_formatter); }
   action ignore { rb_str_append(block, rb_funcall(rb_formatter, rb_intern("ignore"), 1, regs)); }
 
   # simple
