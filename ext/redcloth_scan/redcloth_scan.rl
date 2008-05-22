@@ -10,7 +10,6 @@
 
 VALUE super_ParseError, super_RedCloth, super_HTML, super_LATEX;
 int SYM_escape_preformatted;
-int SYM_escape_no_hard_breaks;
 
 %%{
 
@@ -388,14 +387,6 @@ redcloth_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
       }
     }
     
-    // hard breaks OFF (deprecated) - will be removed in a later version
-    if (level == SYM_escape_no_hard_breaks) {
-      switch (*t2)
-      {
-        case '\n': ch = NULL;     break;
-      }
-    }
-
     if (ch != NULL)
     {
       if (t2 > t)
@@ -433,5 +424,4 @@ void Init_redcloth_scan()
   /* Escaping */
   rb_define_method(super_RedCloth, "html_esc", redcloth_esc, -1);
   SYM_escape_preformatted   = ID2SYM(rb_intern("html_escape_preformatted"));
-  SYM_escape_no_hard_breaks = ID2SYM(rb_intern("html_escape_no_hard_breaks"));
 }

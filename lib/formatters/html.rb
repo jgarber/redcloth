@@ -210,7 +210,11 @@ module RedCloth::Formatters::HTML
   end
   
   def br(opts)
-    "<br />\n"
+    if hard_breaks == false
+      "\n"
+    else
+      "<br />\n"
+    end
   end
   
   def quot(opts)

@@ -22,6 +22,12 @@ class TestRestrictions < Test::Unit::TestCase
   generate_formatter_tests('id_filtered_html') do |doc|
     assert_equal doc['id_filtered_html'],  RedCloth.new(doc['in'], [:filter_ids]).to_html
   end
-
+  
+  # hard breaks - has been deprecated and will be removed in a future version
+  generate_formatter_tests('html_no_breaks') do |doc|
+    red = RedCloth.new(doc['in'])
+    red.hard_breaks = false
+    assert_equal doc['html_no_breaks'],  red.to_html
+  end
 
 end

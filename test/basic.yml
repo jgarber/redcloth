@@ -97,6 +97,9 @@ in: |-
 html: |-
   <p>I spoke.<br />
   And none replied.</p>
+html_no_breaks: |-
+  <p>I spoke.
+  And none replied.</p>
 --- 
 name: curly quotes
 desc: Single- and double-quotes around words or phrases are converted to curly quotations, much easier on the eye.
