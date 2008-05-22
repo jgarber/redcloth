@@ -9,40 +9,40 @@ extern int SYM_escape_no_hard_breaks;
 #endif
 
 /* function defs */
-void rb_str_cat_escaped(VALUE str, char *ts, char *te, VALUE rb_formatter);
-void rb_str_cat_escaped_for_preformatted(VALUE str, char *ts, char *te, VALUE rb_formatter);
-VALUE redcloth_inline(VALUE, VALUE, char *, char *, VALUE);
-VALUE redcloth_inline2(VALUE, VALUE, VALUE, VALUE);
-VALUE redcloth_transform(VALUE, VALUE, char *, char *, VALUE);
-VALUE redcloth_transform2(VALUE, VALUE, VALUE);
+void rb_str_cat_escaped(VALUE self, VALUE str, char *ts, char *te);
+void rb_str_cat_escaped_for_preformatted(VALUE self, VALUE str, char *ts, char *te);
+VALUE redcloth_inline(VALUE, char *, char *, VALUE);
+VALUE redcloth_inline2(VALUE, VALUE, VALUE);
+VALUE redcloth_transform(VALUE, char *, char *, VALUE);
+VALUE redcloth_transform2(VALUE, VALUE);
 void red_inc(VALUE, VALUE);
-VALUE red_block(VALUE, VALUE, VALUE, VALUE, VALUE);
+VALUE red_block(VALUE, VALUE, VALUE, VALUE);
 VALUE red_blockcode(VALUE, VALUE, VALUE);
-VALUE red_pass(VALUE, VALUE, VALUE, VALUE, ID, VALUE);
+VALUE red_pass(VALUE, VALUE, VALUE, ID, VALUE);
 VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 
 /* parser macros */
 #define CLEAR_REGS()   regs = rb_hash_new(); rb_hash_aset(regs, ID2SYM(rb_intern("restrictions")), rb_iv_get(self, "@restrictions"));
 #define CAT(H)         rb_str_cat(H, ts, te-ts)
 #define CLEAR(H)       H = rb_str_new2("")
-#define INLINE(H, T)   rb_str_append(H, rb_funcall(rb_formatter, rb_intern(#T), 1, regs))
+#define INLINE(H, T)   rb_str_append(H, rb_funcall(self, rb_intern(#T), 1, regs))
 #define DONE(H)        rb_str_append(html, H); CLEAR(H); CLEAR_REGS()
-#define PASS(H, A, T)  rb_str_append(H, red_pass(self, rb_formatter, regs, ID2SYM(rb_intern(#A)), rb_intern(#T), refs))
-#define PASS_CODE(H, A, T, O) rb_str_append(H, red_pass_code(rb_formatter, regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))
+#define PASS(H, A, T)  rb_str_append(H, red_pass(self, regs, ID2SYM(rb_intern(#A)), rb_intern(#T), refs))
+#define PASS_CODE(H, A, T, O) rb_str_append(H, red_pass_code(self, regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))
 #define ADD_BLOCK() \
-  rb_str_append(html, red_block(self, rb_formatter, regs, block, refs)); \
+  rb_str_append(html, red_block(self, regs, block, refs)); \
   extend = Qnil; \
   CLEAR(block); \
   CLEAR_REGS()
-#define ADD_EXTENDED_BLOCK()    rb_str_append(html, red_block(self, rb_formatter, regs, block, refs)); CLEAR(block);
+#define ADD_EXTENDED_BLOCK()    rb_str_append(html, red_block(self, regs, block, refs)); CLEAR(block);
 #define END_EXTENDED()     extend = Qnil; CLEAR_REGS();
-#define ADD_BLOCKCODE()    rb_str_append(html, red_blockcode(rb_formatter, regs, block)); CLEAR(block); CLEAR_REGS()
-#define ADD_EXTENDED_BLOCKCODE()    rb_str_append(html, red_blockcode(rb_formatter, regs, block)); CLEAR(block);
+#define ADD_BLOCKCODE()    rb_str_append(html, red_blockcode(self, regs, block)); CLEAR(block); CLEAR_REGS()
+#define ADD_EXTENDED_BLOCKCODE()    rb_str_append(html, red_blockcode(self, regs, block)); CLEAR(block);
 #define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_str_new2(#V));
 #define AINC(T)        red_inc(regs, ID2SYM(rb_intern(#T)));
 #define TRANSFORM(T) \
   if (p > reg && reg >= ts) { \
-    VALUE str = redcloth_transform(self, rb_formatter, reg, p, refs); \
+    VALUE str = redcloth_transform(self, reg, p, refs); \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
   /*  printf("TRANSFORM(" #T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
   } else { \
@@ -104,7 +104,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
         } \
       } \
       rb_hash_aset(regs, ID2SYM(rb_intern("nest")), INT2NUM(nest)); \
-      rb_str_append(html, rb_funcall(rb_formatter, rb_intern(listm), 1, regs)); \
+      rb_str_append(html, rb_funcall(self, rb_intern(listm), 1, regs)); \
       rb_ary_store(list_layout, nest-1, rb_str_new2(list_type)); \
       CLEAR_REGS(); \
       ASET(first, true); \
@@ -121,7 +121,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
       { \
         StringValue(end_list); \
         sprintf(listm, "%s_close", RSTRING(end_list)->ptr); \
-        rb_str_append(html, rb_funcall(rb_formatter, rb_intern(listm), 1, regs)); \
+        rb_str_append(html, rb_funcall(self, rb_intern(listm), 1, regs)); \
       } \
     }
 

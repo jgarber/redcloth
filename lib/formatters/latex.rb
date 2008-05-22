@@ -1,4 +1,6 @@
-class << RedCloth::LATEX
+module RedCloth::Formatters::LATEX
+  include RedCloth::Formatters::Base
+  
   def escape(text)
     text
   end
@@ -9,22 +11,6 @@ class << RedCloth::LATEX
   
   def after_transform(text)
     
-  end
-  
-  def pba(opts)
-    atts = ''
-    opts[:"text-align"] = opts.delete(:align)
-    opts[:style] += ';' if opts[:style] && (opts[:style][-1..-1] != ';')
-    [:float, :"text-align", :"vertical-align"].each do |a|
-      opts[:style] = "#{a}:#{opts[a]};#{opts[:style]}" if opts[a]
-    end
-    [:"padding-right", :"padding-left"].each do |a|
-      opts[:style] = "#{a}:#{opts[a]}em;#{opts[:style]}" if opts[a]
-    end
-    [:style, :class, :lang, :id, :colspan, :rowspan, :title, :start, :align].each do |a|
-      atts << " #{a}=\"#{ opts[a] }\"" if opts[a]
-    end
-    atts
   end
   
   # commands
@@ -97,15 +83,6 @@ class << RedCloth::LATEX
   
   def li_close(opts=nil)
     "\n"
-  end
-  
-  def ignore(opts)
-    opts[:text]
-  end
-  alias_method :notextile, :ignore
-  
-  def para(txt)
-    txt
   end
   
   def p(opts)

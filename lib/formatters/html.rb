@@ -1,4 +1,5 @@
-class << RedCloth::HTML
+module RedCloth::Formatters::HTML
+  include RedCloth::Formatters::Base
   
   # escapement for regular HTML (not in PRE tag)
   def escape(text)
@@ -9,34 +10,11 @@ class << RedCloth::HTML
   def escape_pre(text)
     html_esc(text, :html_escape_preformatted)
   end
-
   
   def after_transform(text)
     text.chomp!
   end
-  
-  def pba(opts)
-    if opts[:restrictions]
-      opts.delete(:style) if opts[:restrictions].include?(:filter_styles)
-      opts.delete(:class) if opts[:restrictions].include?(:filter_classes)
-      opts.delete(:id) if opts[:restrictions].include?(:filter_ids)
-    end
     
-    atts = ''
-    opts[:"text-align"] = opts.delete(:align)
-    opts[:style] += ';' if opts[:style] && (opts[:style][-1..-1] != ';')
-    [:float, :"text-align", :"vertical-align"].each do |a|
-      opts[:style] = "#{a}:#{opts[a]};#{opts[:style]}" if opts[a]
-    end
-    [:"padding-right", :"padding-left"].each do |a|
-      opts[:style] = "#{a}:#{opts[a]}em;#{opts[:style]}" if opts[a]
-    end
-    [:style, :class, :lang, :id, :colspan, :rowspan, :title, :start, :align].each do |a|
-      atts << " #{a}=\"#{ opts[a] }\"" if opts[a]
-    end
-    atts
-  end
-  
   [:h1, :h2, :h3, :h4, :h5, :h6, :p, :pre, :div].each do |m|
     define_method(m) do |opts|
       "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>\n"
@@ -100,15 +78,6 @@ class << RedCloth::HTML
     define_method(m) do |opts|
       "\t<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>\n"
     end
-  end
-  
-  def ignore(opts)
-    opts[:text]
-  end
-  alias_method :notextile, :ignore
-  
-  def para(txt)
-    "<p>" + txt + "</p>\n"
   end
   
   def td(opts)
@@ -252,18 +221,14 @@ class << RedCloth::HTML
     "&#8217;"
   end
   
-  def redcloth_version(opts)
-    p(:text => RedCloth::VERSION)
-  end
-  
   def html(opts)
     "#{opts[:text]}\n"
   end
   
   def inline_html(opts)
-    clean_html(opts[:text]) if opts[:restrictions].include?(:sanitize_html)
+    clean_html(opts[:text]) if sanitize_html
     
-    if opts[:restrictions].include?(:filter_html)
+    if filter_html
       html_esc(opts[:text])
     else
       "#{opts[:text]}"

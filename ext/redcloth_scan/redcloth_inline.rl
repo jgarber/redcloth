@@ -141,47 +141,47 @@
 %% write data nofinal;
 
 VALUE
-red_pass(VALUE self, VALUE rb_formatter, VALUE regs, VALUE ref, ID meth, VALUE refs)
+red_pass(VALUE self, VALUE regs, VALUE ref, ID meth, VALUE refs)
 {
   VALUE txt = rb_hash_aref(regs, ref);
-  if (!NIL_P(txt)) rb_hash_aset(regs, ref, redcloth_inline2(self, rb_formatter, txt, refs));
-  return rb_funcall(rb_formatter, meth, 1, regs);
+  if (!NIL_P(txt)) rb_hash_aset(regs, ref, redcloth_inline2(self, txt, refs));
+  return rb_funcall(self, meth, 1, regs);
 }
 
 VALUE
-red_pass_code(VALUE rb_formatter, VALUE regs, VALUE ref, ID meth)
+red_pass_code(VALUE self, VALUE regs, VALUE ref, ID meth)
 {
   VALUE txt = rb_hash_aref(regs, ref);
   if (!NIL_P(txt)) {
     VALUE txt2 = rb_str_new2("");
-    rb_str_cat_escaped_for_preformatted(txt2, RSTRING(txt)->ptr, RSTRING(txt)->ptr + RSTRING(txt)->len, rb_formatter);
+    rb_str_cat_escaped_for_preformatted(self, txt2, RSTRING(txt)->ptr, RSTRING(txt)->ptr + RSTRING(txt)->len);
     rb_hash_aset(regs, ref, txt2);
   }
-  return rb_funcall(rb_formatter, meth, 1, regs);
+  return rb_funcall(self, meth, 1, regs);
 }
 
 VALUE
-red_block(VALUE self, VALUE rb_formatter, VALUE regs, VALUE block, VALUE refs)
+red_block(VALUE self, VALUE regs, VALUE block, VALUE refs)
 {
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
   if ((RSTRING(block)->len > 0) && !NIL_P(btype))
   {
-    rb_hash_aset(regs, ID2SYM(rb_intern("text")), redcloth_inline2(self, rb_formatter, block, refs));
-    block = rb_funcall(rb_formatter, rb_intern(RSTRING(btype)->ptr), 1, regs);
+    rb_hash_aset(regs, ID2SYM(rb_intern("text")), redcloth_inline2(self, block, refs));
+    block = rb_funcall(self, rb_intern(RSTRING(btype)->ptr), 1, regs);
   }
   return block;
 }
 
 VALUE
-red_blockcode(VALUE rb_formatter, VALUE regs, VALUE block)
+red_blockcode(VALUE self, VALUE regs, VALUE block)
 {
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
   if (RSTRING(block)->len > 0)
   {
     rb_hash_aset(regs, ID2SYM(rb_intern("text")), block);
-    block = rb_funcall(rb_formatter, rb_intern(RSTRING(btype)->ptr), 1, regs);
+    block = rb_funcall(self, rb_intern(RSTRING(btype)->ptr), 1, regs);
   }
   return block;
 }
@@ -196,8 +196,8 @@ red_inc(VALUE regs, VALUE ref)
 }
 
 VALUE
-redcloth_inline(self, rb_formatter, p, pe, refs)
-  VALUE self, rb_formatter;
+redcloth_inline(self, p, pe, refs)
+  VALUE self;
   char *p, *pe;
   VALUE refs;
 {
@@ -214,46 +214,35 @@ redcloth_inline(self, rb_formatter, p, pe, refs)
   return block;
 }
 
-/** Append characters to a string, escaping (&, <, >, ", ') to their html entities using
-    the formatter's escape method.
+/** Append characters to a string, escaping (&, <, >, ", ') using the formatter's escape method.
   * @param str ruby string
   * @param ts  start of character buffer to append
   * @param te  end of character buffer
-  * @param rb_formatter the formatter
   */
 void
-rb_str_cat_escaped(str, ts, te, rb_formatter)
-  VALUE str;
+rb_str_cat_escaped(self, str, ts, te)
+  VALUE self, str;
   char *ts, *te;
-  VALUE rb_formatter;
 {
   VALUE source_str = rb_str_new(ts, te-ts);
-  VALUE escaped_str = rb_funcall(rb_formatter, rb_intern("escape"), 1, source_str);
+  VALUE escaped_str = rb_funcall(self, rb_intern("escape"), 1, source_str);
   rb_str_concat(str, escaped_str);
 }
 
-/** Append characters to a string, escaping (&, <, >) to their html entities.
-  * @param str ruby string
-  * @param ts  start of character buffer to append
-  * @param te  end of character buffer
-  * @param opts integer with parsing options created by ORing. If SR_HTML_ESCAPE_ENTITIES is not set,
-                escaping will not be performed.
-  */
 void
-rb_str_cat_escaped_for_preformatted(str, ts, te, rb_formatter)
-  VALUE str;
+rb_str_cat_escaped_for_preformatted(self, str, ts, te)
+  VALUE self, str;
   char *ts, *te;
-  VALUE rb_formatter;
 {
   VALUE source_str = rb_str_new(ts, te-ts);
-  VALUE escaped_str = rb_funcall(rb_formatter, rb_intern("escape_pre"), 1, source_str);
+  VALUE escaped_str = rb_funcall(self, rb_intern("escape_pre"), 1, source_str);
   rb_str_concat(str, escaped_str);
 }
 
 VALUE
-redcloth_inline2(self, formatter, str, refs)
-  VALUE self, formatter, str, refs;
+redcloth_inline2(self, str, refs)
+  VALUE self, str, refs;
 {
   StringValue(str);
-  return redcloth_inline(self, formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, refs);
+  return redcloth_inline(self, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, refs);
 }

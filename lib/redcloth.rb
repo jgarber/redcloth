@@ -2,6 +2,7 @@ require 'redcloth_scan'
 
 $:.unshift(File.dirname(__FILE__))
 
+require 'formatters/base'
 require 'formatters/html'
 require 'formatters/latex'
 require 'version'
@@ -76,8 +77,15 @@ class RedCloth
   #
   def initialize( string, restrictions = [] )
     restrictions.each { |r| method("#{r}=").call( true ) }
-    @restrictions = restrictions
     super( string )
+  end
+  
+  def to_html
+    to(RedCloth::Formatters::HTML)
+  end
+  
+  def to_latex
+    to(RedCloth::Formatters::LATEX)
   end
   
 end

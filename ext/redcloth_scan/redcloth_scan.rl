@@ -301,8 +301,8 @@ int SYM_escape_no_hard_breaks;
 %% write data nofinal;
 
 VALUE
-redcloth_transform(self, rb_formatter, p, pe, refs)
-  VALUE self, rb_formatter;
+redcloth_transform(self, p, pe, refs)
+  VALUE self;
   char *p, *pe;
   VALUE refs;
 {
@@ -310,6 +310,7 @@ redcloth_transform(self, rb_formatter, p, pe, refs)
   int cs, act, nest;
   char *ts = NULL, *te = NULL, *reg = NULL, *eof = NULL;
   VALUE html = rb_str_new2("");
+  
   VALUE table = rb_str_new2("");
   VALUE block = rb_str_new2("");
   VALUE regs; CLEAR_REGS()
@@ -334,27 +335,27 @@ redcloth_transform(self, rb_formatter, p, pe, refs)
   }
 
   if ( NIL_P(refs) && rb_funcall(refs_found, rb_intern("empty?"), 0) == Qfalse ) {
-    return redcloth_transform(self, rb_formatter, orig_p, orig_pe, refs_found);
+    return redcloth_transform(self, orig_p, orig_pe, refs_found);
   } else {
-    rb_funcall(rb_formatter, rb_intern("after_transform"), 1, html);
+    rb_funcall(self, rb_intern("after_transform"), 1, html);
     return html;
   }
 }
 
 VALUE
-redcloth_transform2(self, formatter, str)
-  VALUE self, formatter, str;
+redcloth_transform2(self, str)
+  VALUE self, str;
 {
   rb_str_cat2(str, "\n");
   StringValue(str);
-  return redcloth_transform(self, formatter, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, Qnil);
+  return redcloth_transform(self, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, Qnil);
 }
 
 /*
  * Converts special characters into HTML entities.
  */
 static VALUE
-redcloth_html_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
+redcloth_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
 {
   VALUE str, level;
   
@@ -412,64 +413,26 @@ redcloth_html_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
   return new_str;
 }
 
-/*
- * Generates HTML from the Textile contents.
- *
- *   r = RedCloth.new( "And then? She *fell*!" )
- *   r.to_html
- *     #=>"And then? She <strong>fell</strong>!"
- */
-static VALUE
-redcloth_to_html(self)
-  VALUE self;
-{
-  char *pe, *p;
-  int len = 0;
-
-  return redcloth_transform2(self, super_HTML, self);
-}
-
-/*
- * Generates LaTeX from the Textile contents.
- *
- *   r = RedCloth.new( "And then? She *fell*!" )
- *   r.to_latex
- *     #=>"And then? She \\textbf{fell}!\n\n"
- */
-static VALUE
-redcloth_to_latex(self)
-  VALUE self;
-{
-  char *pe, *p;
-  int len = 0;
-
-  return redcloth_transform2(self, super_LATEX, self);
-}
-
 static VALUE
 redcloth_to(self, formatter)
   VALUE self, formatter;
 {
   char *pe, *p;
   int len = 0;
-
-  return redcloth_transform2(self, formatter, self);
+  
+  VALUE working_copy = rb_obj_clone(self);
+  rb_extend_object(working_copy, formatter);
+  return redcloth_transform2(working_copy, self);
 }
 
 void Init_redcloth_scan()
 {
  /* The RedCloth parser. See the README for Textile syntax. */
   super_RedCloth = rb_define_class("RedCloth", rb_cString);
-  rb_define_method(super_RedCloth, "to_html", redcloth_to_html, 0);
-  rb_define_method(super_RedCloth, "to_latex", redcloth_to_latex, 0);
   rb_define_method(super_RedCloth, "to", redcloth_to, 1);
   super_ParseError = rb_define_class_under(super_RedCloth, "ParseError", rb_eException);
-  /* RedCloth HTML formatter. */
-  super_HTML  = rb_define_module_under(super_RedCloth, "HTML");
-  rb_define_singleton_method(super_HTML, "html_esc", redcloth_html_esc, -1);
-  /* RedCloth LaTeX formatter. */
-  super_LATEX = rb_define_module_under(super_RedCloth, "LATEX");
-  /* Escaping levels */
+  /* Escaping */
+  rb_define_method(super_RedCloth, "html_esc", redcloth_esc, -1);
   SYM_escape_preformatted   = ID2SYM(rb_intern("html_escape_preformatted"));
   SYM_escape_no_hard_breaks = ID2SYM(rb_intern("html_escape_no_hard_breaks"));
 }
