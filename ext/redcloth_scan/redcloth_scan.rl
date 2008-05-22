@@ -310,7 +310,6 @@ redcloth_transform(self, p, pe, refs)
   int cs, act, nest;
   char *ts = NULL, *te = NULL, *reg = NULL, *eof = NULL;
   VALUE html = rb_str_new2("");
-  
   VALUE table = rb_str_new2("");
   VALUE block = rb_str_new2("");
   VALUE regs; CLEAR_REGS()
