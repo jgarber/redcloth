@@ -9,7 +9,8 @@
 #include "redcloth.h"
 
 VALUE super_ParseError, super_RedCloth, super_HTML, super_LATEX;
-int SYM_html_escape_entities;
+int SYM_escape_preformatted;
+int SYM_escape_no_hard_breaks;
 
 %%{
 
@@ -353,10 +354,12 @@ redcloth_transform2(self, formatter, str)
  * Converts special characters into HTML entities.
  */
 static VALUE
-redcloth_html_esc(self, str)
-  VALUE self;
-  VALUE str;
+redcloth_html_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
 {
+  VALUE str, level;
+  
+  rb_scan_args(argc, argv, "11", &str, &level);
+  
   VALUE new_str = rb_str_new2("");
   StringValue(str);
   
@@ -366,21 +369,38 @@ redcloth_html_esc(self, str)
 
   while (t2 < te) {
     ch = NULL;
+    
+    // normal + pre
     switch (*t2)
     {
-      case '&':  ch = "&amp;";    break;
-      case '>':  ch = "&gt;";     break;
-      case '<':  ch = "&lt;";     break;
-      case '"':  ch = "&quot;";   break;
-      case '\n': ch = "<br />\n"; break;
-      case '\'': ch = "&#8217;";  break;
+      case '&':  ch = "amp";    break;
+      case '>':  ch = "gt";     break;
+      case '<':  ch = "lt";     break;
+    }
+    
+    // normal (non-pre)
+    if (level != SYM_escape_preformatted) {
+      switch (*t2)
+      {
+        case '"':  ch = "quot";   break;
+        case '\'': ch = "squot";  break;
+        case '\n': ch = "br";     break;
+      }
+    }
+    
+    // hard breaks OFF (deprecated) - will be removed in a later version
+    if (level == SYM_escape_no_hard_breaks) {
+      switch (*t2)
+      {
+        case '\n': ch = NULL;     break;
+      }
     }
 
     if (ch != NULL)
     {
       if (t2 > t)
         rb_str_cat(new_str, t, t2-t);
-      rb_str_cat2(new_str, ch);
+      rb_str_concat(new_str, rb_funcall(self, rb_intern(ch), 1, rb_hash_new()));
       t = t2 + 1;
     }
 
@@ -391,48 +411,6 @@ redcloth_html_esc(self, str)
   
   return new_str;
 }
-
-/*
- * ******* Quick hack; redcloth_html_esc really needs a degree parameter
- */
-static VALUE
-redcloth_html_esc_pre(self, str)
-  VALUE self;
-  VALUE str;
-{
-  VALUE new_str = rb_str_new2("");
-  StringValue(str);
-  
-  char *ts = RSTRING(str)->ptr, *te = RSTRING(str)->ptr + RSTRING(str)->len;
-  char *t = ts, *t2 = ts, *ch = NULL;
-  if (te <= ts) return;
-
-  while (t2 < te) {
-    ch = NULL;
-    switch (*t2)
-    {
-      case '&':  ch = "&amp;";    break;
-      case '>':  ch = "&gt;";     break;
-      case '<':  ch = "&lt;";     break;
-    }
-
-    if (ch != NULL)
-    {
-      if (t2 > t)
-        rb_str_cat(new_str, t, t2-t);
-      rb_str_cat2(new_str, ch);
-      t = t2 + 1;
-    }
-
-    t2++;
-  }
-  if (t2 > t)
-    rb_str_cat(new_str, t, t2-t);
-  
-  return new_str;
-}
-
-
 
 /*
  * Generates HTML from the Textile contents.
@@ -488,8 +466,10 @@ void Init_redcloth_scan()
   super_ParseError = rb_define_class_under(super_RedCloth, "ParseError", rb_eException);
   /* RedCloth HTML formatter. */
   super_HTML  = rb_define_module_under(super_RedCloth, "HTML");
-  rb_define_singleton_method(super_HTML, "html_esc", redcloth_html_esc, 1);
-  rb_define_singleton_method(super_HTML, "html_esc_pre", redcloth_html_esc_pre, 1);
+  rb_define_singleton_method(super_HTML, "html_esc", redcloth_html_esc, -1);
   /* RedCloth LaTeX formatter. */
   super_LATEX = rb_define_module_under(super_RedCloth, "LATEX");
+  /* Escaping levels */
+  SYM_escape_preformatted   = ID2SYM(rb_intern("html_escape_preformatted"));
+  SYM_escape_no_hard_breaks = ID2SYM(rb_intern("html_escape_no_hard_breaks"));
 }

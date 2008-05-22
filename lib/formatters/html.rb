@@ -7,7 +7,7 @@ class << RedCloth::HTML
 
   # escapement for HTML in a PRE tag
   def escape_pre(text)
-    html_esc_pre(text)
+    html_esc(text, :html_escape_preformatted)
   end
 
   
@@ -226,6 +226,30 @@ class << RedCloth::HTML
   
   def urlesc(txt)
     txt.gsub(/&/, '&amp;')
+  end
+  
+  def amp(opts)
+    "&amp;"
+  end
+  
+  def gt(opts)
+    "&gt;"
+  end
+  
+  def lt(opts)
+    "&lt;"
+  end
+  
+  def br(opts)
+    "<br />\n"
+  end
+  
+  def quot(opts)
+    "&quot;"
+  end
+  
+  def squot(opts)
+    "&#8217;"
   end
   
   def redcloth_version(opts)

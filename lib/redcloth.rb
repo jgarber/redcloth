@@ -34,11 +34,14 @@ class RedCloth
   attr_accessor :filter_html, :sanitize_html, :filter_styles, :filter_classes, :filter_ids
 
   #
-  # Accessor for toggling hard breaks.
+  # Deprecated accessor for toggling hard breaks.
   #
-  # If +:hard_breaks+ is set, single newlines will
-  # be converted to HTML break tags.  This is the
-  # default behavior for traditional RedCloth.
+  # Traditional RedCloth converted single newlines
+  # to HTML break tags, but later versions required
+  # +:hard_breaks+ be set to enable this behavior.
+  # +:hard_breaks+ is once again the default. The
+  # accessor is deprecated and will be removed in a
+  # future version.
   #
   attr_accessor :hard_breaks
 
