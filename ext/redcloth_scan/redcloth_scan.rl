@@ -353,7 +353,7 @@ redcloth_transform2(self, str)
  * Converts special characters into HTML entities.
  */
 static VALUE
-redcloth_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
+redcloth_html_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
 {
   VALUE str, level;
   
@@ -403,6 +403,57 @@ redcloth_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
   return new_str;
 }
 
+/*
+ * Converts special characters into LaTeX entities.
+ */
+static VALUE
+redcloth_latex_esc(VALUE self, VALUE str)
+{  
+  VALUE new_str = rb_str_new2("");
+  StringValue(str);
+  
+  char *ts = RSTRING(str)->ptr, *te = RSTRING(str)->ptr + RSTRING(str)->len;
+  char *t = ts, *t2 = ts, *ch = NULL;
+  if (te <= ts) return;
+
+  while (t2 < te) {
+    ch = NULL;
+    
+    switch (*t2) 
+    { 
+      case '{':  ch = "#123";   break;
+      case '}':  ch = "#125";   break;
+      case '\\': ch = "#92";    break;
+      case '#':  ch = "#35";    break;
+      case '$':  ch = "#36";    break;
+      case '%':  ch = "#37";    break;
+      case '&':  ch = "amp";    break;
+      case '_':  ch = "#95";    break;
+      case '^':  ch = "circ";   break;
+      case '~':  ch = "tilde";  break;
+      case '<':  ch = "lt";     break;
+      case '>':  ch = "gt";     break;
+      case '\n': ch = "#10";    break;
+    }
+
+    if (ch != NULL)
+    {
+      if (t2 > t)
+        rb_str_cat(new_str, t, t2-t);
+      VALUE opts = rb_hash_new();
+      rb_hash_aset(opts, ID2SYM(rb_intern("text")), rb_str_new2(ch));
+      rb_str_concat(new_str, rb_funcall(self, rb_intern("entity"), 1, opts));
+      t = t2 + 1;
+    }
+
+    t2++;
+  }
+  if (t2 > t)
+    rb_str_cat(new_str, t, t2-t);
+  
+  return new_str;
+}
+
 static VALUE
 redcloth_to(self, formatter)
   VALUE self, formatter;
@@ -426,6 +477,7 @@ void Init_redcloth_scan()
   rb_define_method(super_RedCloth, "to", redcloth_to, 1);
   super_ParseError = rb_define_class_under(super_RedCloth, "ParseError", rb_eException);
   /* Escaping */
-  rb_define_method(super_RedCloth, "html_esc", redcloth_esc, -1);
+  rb_define_method(super_RedCloth, "html_esc", redcloth_html_esc, -1);
+  rb_define_method(super_RedCloth, "latex_esc", redcloth_latex_esc, 1);
   SYM_escape_preformatted   = ID2SYM(rb_intern("html_escape_preformatted"));
 }

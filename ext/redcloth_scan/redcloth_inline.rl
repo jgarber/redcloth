@@ -71,7 +71,7 @@
   registered = " "? ( "[" reg "]" | "(" reg ")" ) ;
   cee = [Cc] ;
   copyright = ( "[" cee "]" | "(" cee ")" ) ;
-  entity = ( "&" %A ( '#' digit+ | alpha+ ) %T ';' ) >X ;
+  entity = ( "&" %A ( '#' digit+ | ( alpha ( alpha | digit )+ ) ) %T ';' ) >X ;
 
   other_phrase = phrase -- dim_noactions;
 

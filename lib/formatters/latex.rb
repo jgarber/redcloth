@@ -1,26 +1,37 @@
+require 'yaml' 
+
 module RedCloth::Formatters::LATEX
   include RedCloth::Formatters::Base
   
+  ENTITIES = YAML::load(File.read(File.dirname(__FILE__)+'/latex_entities.yml')) 
+  
   def escape(text)
-    text
+    latex_esc(text)
   end
 
   def escape_pre(text)
-    text
+    latex_esc(text)
   end
   
   def after_transform(text)
     
   end
   
-  # commands
+  # headers
   { :h1 => 'section*',
     :h2 => 'subsection*',
     :h3 => 'subsubsection*',
     :h4 => 'textbf',
     :h5 => 'textbf',
     :h6 => 'textbf',
-    :strong => 'textbf',
+  }.each do |m,tag| 
+    define_method(m) do |opts| 
+      "\\#{tag}{#{opts[:text]}}\n\n" 
+    end 
+  end 
+  
+  # commands 
+  { :strong => 'textbf',
     :em => 'emph',
     :i  => 'emph',
     :b  => 'textbf',
@@ -28,7 +39,7 @@ module RedCloth::Formatters::LATEX
     :del => 'sout',
     :acronym => 'MakeUppercase',
     :caps => 'MakeUppercase',
-    }.each do |m,tag|
+  }.each do |m,tag|
     define_method(m) do |opts|
       "\\#{tag}{#{opts[:text]}}"
     end
@@ -160,43 +171,43 @@ module RedCloth::Formatters::LATEX
   end
   
   def ellipsis(opts)
-    "#{opts[:text]}\\ldots"
+    "#{opts[:text]}\\ldots{}"
   end
   
-  # TODO: these should use Latex equivalents
   def emdash(opts)
-    "--"
+    "---"
   end
   
   def endash(opts)
-    " - "
+    "--"
   end
   
   def arrow(opts)
-    "\\rightarrow"
+    "\\rightarrow{}"
   end
   
   def trademark(opts)
-    "\\texttrademark"
+    "\\texttrademark{}"
   end
   
   def registered(opts)
-    "\\textregistered"
+    "\\textregistered{}"
   end
   
   def copyright(opts)
-    "\\copyright"
+    "\\copyright{}"
   end
   
-  # TODO: what do we do with unicode entities ?
+  # TODO: what do we do with (unknown) unicode entities ? 
+  #
   def entity(opts)
-    "&#{opts[:text]}"
+    text = opts[:text][0..0] == '#' ? opts[:text][1..-1] : opts[:text] 
+    ENTITIES[text]
   end
   
-  # ?
   def dim(opts)
     space = opts[:space] ? " " : ''
-    "#{opts[:x]}#{space}&#215;#{space}"
+    "#{opts[:x]}#{space}\\texttimes{}#{space}"
   end
   
 end

@@ -113,16 +113,19 @@ name: double hyphens
 desc: Double hyphens are replaced with an em-dash.
 in: Observe--very nice!
 html: <p>Observe&#8212;very nice!</p>
+latex: "Observe---very nice!\n\n"
 --- 
 name: double hyphens with spaces
 desc: Double hyphens are replaced with an em-dash and surrounding spaces are preserved.
 in: Observe -- very nice!
 html: <p>Observe &#8212; very nice!</p>
+latex: "Observe --- very nice!\n\n"
 --- 
 name: single hyphens with spaces
 desc: Single hyphens are replaced with en-dashes if they are surrounded by spaces.
 in: Observe - tiny and brief.
 html: <p>Observe &#8211; tiny and brief.</p>
+latex: "Observe--tiny and brief.\n\n"
 --- 
 name: midword hyphens 
 desc: Single hyphens are left alone if not surrounded by spaces.
