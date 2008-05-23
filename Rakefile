@@ -171,10 +171,10 @@ Win32Spec = Gem::Specification.new do |s|
   s.bindir = "bin"
 end
   
-WIN32_PKG_DIR = "#{OLD_NAME}-#{VERS}"
+WIN32_PKG_DIR = "pkg/#{OLD_NAME}-#{VERS}-mswin32"
 
 file WIN32_PKG_DIR => [:package] do
-  sh "tar zxf pkg/#{WIN32_PKG_DIR}.tgz"
+  cp_r "pkg/#{OLD_NAME}-#{VERS}", "#{WIN32_PKG_DIR}"
 end
 
 desc "Cross-compile the redcloth_scan extension for win32"
@@ -189,7 +189,7 @@ task :rubygems_win32 => ["redcloth_scan_win32"] do
   Dir.chdir("#{WIN32_PKG_DIR}") do
     Gem::Builder.new(Win32Spec).build
     verbose(true) {
-      mv Dir["*.gem"].first, "../pkg/#{OLD_NAME}-#{VERS}-mswin32.gem"
+      cp Dir["*.gem"].first, "../"
     }
   end
 end
