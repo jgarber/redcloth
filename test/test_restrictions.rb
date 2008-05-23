@@ -29,5 +29,9 @@ class TestRestrictions < Test::Unit::TestCase
     red.hard_breaks = false
     assert_equal doc['html_no_breaks'],  red.to_html
   end
-
+  
+  generate_formatter_tests('lite_mode_html') do |doc|
+    assert_equal doc['lite_mode_html'],  RedCloth.new(doc['in'], [:lite_mode]).to_html
+  end
+  
 end

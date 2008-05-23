@@ -412,7 +412,11 @@ redcloth_to(self, formatter)
   
   VALUE working_copy = rb_obj_clone(self);
   rb_extend_object(working_copy, formatter);
-  return redcloth_transform2(working_copy, self);
+  if (rb_funcall(working_copy, rb_intern("lite_mode"), 0) == Qtrue) {
+    return redcloth_inline2(working_copy, self, rb_hash_new());
+  } else {
+    return redcloth_transform2(working_copy, self);
+  }
 }
 
 void Init_redcloth_scan()

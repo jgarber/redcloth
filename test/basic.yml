@@ -100,6 +100,9 @@ html: |-
 html_no_breaks: |-
   <p>I spoke.
   And none replied.</p>
+lite_mode_html: |-
+  I spoke.<br />
+  And none replied.
 --- 
 name: curly quotes
 desc: Single- and double-quotes around words or phrases are converted to curly quotations, much easier on the eye.
@@ -130,6 +133,7 @@ name: ellipses
 desc: Triplets of periods become an ellipsis.
 in: Observe...
 html: <p>Observe&#8230;</p>
+lite_mode_html: Observe&#8230;
 --- 
 name: dimension sign
 desc: The letter 'x' becomes a dimension sign when used between digits.
@@ -143,11 +147,13 @@ html: "<p>Observe: 2 &#215; 4.</p>"
 name: dimension signs chained
 in: "Observe: 2x3x4."
 html: "<p>Observe: 2&#215;3&#215;4.</p>"
+lite_mode_html: "Observe: 2&#215;3&#215;4."
 --- 
 name: trademark and copyright
 desc: Conversion of trademark and copyright symbols.
 in: one(TM), two(R), three(C).
 html: <p>one&#8482;, two&#174;, three&#169;.</p>
+lite_mode_html: one&#8482;, two&#174;, three&#169;.
 --- 
 name: headers
 desc: To make an entire paragraph into a Header, place “h<em>n</em>.” at its beginning, where <em>n</em> is a number from 1-6.
@@ -183,11 +189,13 @@ name: em
 desc: Emphasis to text is added by surrounding a phrase with underscores.  In HTML, this often appears as <em>italics</em>.
 in: I _believe_ every word.
 html: <p>I <em>believe</em> every word.</p>
+lite_mode_html: "I <em>believe</em> every word."
 --- 
 name: strong
 desc: Strength can be give to text by surrounding with asterisks.  In HTML, this strength appears as <strong>bold</strong>.
 in: And then? She *fell*!
 html: <p>And then? She <strong>fell</strong>!</p>
+lite_mode_html: "And then? She <strong>fell</strong>!"
 --- 
 name: force bold italics
 desc: Both italics and bold can be forced by doubling the underscores or asterisks.
@@ -207,6 +215,7 @@ name: code phrases
 desc: Code phrases can be surrounded by at-symbols.
 in: Convert with @r.to_html@
 html: <p>Convert with <code>r.to_html</code></p>
+lite_mode_html: Convert with <code>r.to_html</code>
 ---
 name: code phrases not created with multiple email addresses
 in: Please email why@domain.com or jason@domain.com.
@@ -245,6 +254,9 @@ in: |-
 html: |-
   <p>I&#8217;m <span style="color:red;">unaware</span><br />
   of most soft drinks.</p>
+lite_mode_html: |-
+  I&#8217;m <span style="color:red;">unaware</span><br />
+  of most soft drinks.
 --- 
 name: css class
 desc: A block can be tagged with a CSS class by circling the class in parentheses and placing it just before the period which marks the block.
@@ -420,6 +432,7 @@ name: links
 desc: Basic links are comprised of a phrase which is linked to a <acronym title="Universal Resource Locator">URL</acronym>.  Place the descriptive phrase in quotation marks.  Follow it immediately by a colon and the URL.
 in: I searched "Google":http://google.com.
 html: <p>I searched <a href="http://google.com">Google</a>.</p>
+lite_mode_html: I searched <a href="http://google.com">Google</a>.
 --- 
 name: link aliases
 desc: If you are using the same link several times in your document, or you’d just like to be a tad more organized, you can use a link alias.  Place the URL anywhere in your document, beginning with its alias in square brackets.  Then, use the alias in place of the URL, using the link format above.
@@ -438,6 +451,7 @@ name: image
 desc: You can embed an image in your Textile document by surrounding its URL with exclamation marks.
 in: "!http://hobix.com/sample.jpg!"
 html: <p><img src="http://hobix.com/sample.jpg" alt="" /></p>
+lite_mode_html: <img src="http://hobix.com/sample.jpg" alt="" />
 --- 
 name: image title
 desc: A title for the image can also be provided in parens, just before the closing exclamation.
@@ -465,6 +479,7 @@ name: acronym definitions
 desc: Definitions for acronyms can be provided by following an acronym with its definition in parens.
 in: We use CSS(Cascading Style Sheets).
 html: <p>We use <acronym title="Cascading Style Sheets"><span class="caps">CSS</span></acronym>.</p>
+lite_mode_html: We use <acronym title="Cascading Style Sheets"><span class="caps">CSS</span></acronym>.
 --- 
 name: tables
 desc: Simple tables can be built by separating fields with pipe characters
