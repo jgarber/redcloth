@@ -34,8 +34,12 @@ module RedCloth::Formatters::HTML
   end
   
   def caps(opts)
-    opts[:class] = 'caps'
-    span(opts)
+    if no_span_caps
+      opts[:text]
+    else
+      opts[:class] = 'caps'
+      span(opts)
+    end
   end
   
   def del(opts)

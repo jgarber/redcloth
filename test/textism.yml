@@ -136,6 +136,7 @@ html: <p><sub>a phrase</sub></p>
 ---
 in: %(myclass)SPAN%
 html: <p><span class="myclass"><span class="caps">SPAN</span></span></p>
+no_span_caps_html: <p><span class="myclass">SPAN</span></p>
 ---
 in: %{color:red}red%
 html: <p><span style="color:red;">red</span></p>

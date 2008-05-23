@@ -480,6 +480,7 @@ desc: Definitions for acronyms can be provided by following an acronym with its 
 in: We use CSS(Cascading Style Sheets).
 html: <p>We use <acronym title="Cascading Style Sheets"><span class="caps">CSS</span></acronym>.</p>
 lite_mode_html: We use <acronym title="Cascading Style Sheets"><span class="caps">CSS</span></acronym>.
+no_span_caps_html: <p>We use <acronym title="Cascading Style Sheets">CSS</acronym>.</p>
 --- 
 name: tables
 desc: Simple tables can be built by separating fields with pipe characters

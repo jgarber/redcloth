@@ -34,4 +34,8 @@ class TestRestrictions < Test::Unit::TestCase
     assert_equal doc['lite_mode_html'],  RedCloth.new(doc['in'], [:lite_mode]).to_html
   end
   
+  generate_formatter_tests('no_span_caps_html') do |doc|
+    assert_equal doc['no_span_caps_html'],  RedCloth.new(doc['in'], [:no_span_caps]).to_html
+  end
+  
 end
