@@ -9,7 +9,7 @@
 %%{
 
   machine redcloth_inline;
-  include redcloth_common "ext/redcloth_scan/redcloth_common.rl";
+  include redcloth_common "redcloth_common.rl";
 
   # common
   title = ( '(' default+ >A %{ STORE(title) } :> ')' ) ;

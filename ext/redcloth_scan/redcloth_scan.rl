@@ -14,7 +14,7 @@ int SYM_escape_preformatted;
 %%{
 
   machine redcloth_scan;
-  include redcloth_common "ext/redcloth_scan/redcloth_common.rl";
+  include redcloth_common "redcloth_common.rl";
 
   action extend { extend = rb_hash_aref(regs, ID2SYM(rb_intern("type"))); }
 
