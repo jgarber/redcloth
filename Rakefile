@@ -131,7 +131,7 @@ end
     if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[1] >= 1)
       sh %{ragel #{source} -#{@code_style} -o #{name}}
     else
-      STDERR.puts "Ragel 6.1 or greater is required to generate #{name}."
+      STDERR.puts "Ragel 6.2 or greater is required to generate #{name}."
       exit(1)
     end
   end
