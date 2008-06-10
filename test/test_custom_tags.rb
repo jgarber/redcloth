@@ -38,9 +38,9 @@ class TestCustomTags < Test::Unit::TestCase
   end
 
   def test_fallback
-    r = RedCloth.new %Q{fig. 1.1 | img.jpg}
+    r = RedCloth.new %Q/fig()>[no]{color:red}. 1.1 | img.jpg/
     str = r.to_html
 
-    assert_equal "<p>1.1 | img.jpg</p>", str
+    assert_equal "<p>fig()>[no]{color:red}. 1.1 | img.jpg</p>", str
   end
 end

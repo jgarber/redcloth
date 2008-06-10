@@ -55,6 +55,13 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
   } else { \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
   }
+#define STORE_B(T)  \
+  if (p > bck && bck >= ts) { \
+    VALUE str = rb_str_new(bck, p-bck); \
+    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
+  } else { \
+    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
+  }
 #define STORE_URL(T) \
   if (p > reg && reg >= ts) { \
     char punct = 1; \
