@@ -30,7 +30,7 @@ int SYM_escape_preformatted;
   bq_start = ( "bq" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE(cite) } )? " "+ ) ;
   non_ac_btype = ( "bq" | "bc" | "pre" | "notextile" );
   btype = (alpha alnum*) -- (non_ac_btype | "fn" digit+);
-  block_start = ( btype >A >B %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) %{ STORE_B(fallback) };
+  block_start = ( btype >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) >B %{ STORE_B(fallback) };
   all_btypes = btype | non_ac_btype;
   next_block_start = ( all_btypes A_noactions C_noactions :> "."+ " " ) >A @{ p = reg - 1; } ;
   double_return = CRLF{2,} ;
