@@ -16,7 +16,7 @@ RedCloth can be installed via RubyGems:
 
   sudo gem install redcloth
 
-Or can be compiled from its Ragel source with <tt>rake compile</tt>.  Ragel 6.1 
+Or can be compiled from its Ragel source with <tt>rake compile</tt>.  Ragel 6.2 
 or greater is required to build RedCloth.
 
 == What is Textile?
