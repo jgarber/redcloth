@@ -128,7 +128,7 @@ end
   source = name.sub(/\.c$/, '.rl')
   file name => [source, "#{ext}/redcloth_common.rl", "#{ext}/redcloth.h"] do
     @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].split('.').map{|s| s.to_i}
-    if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[1] >= 1)
+    if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[1] >= 2)
       sh %{ragel #{source} -#{@code_style} -o #{name}}
     else
       STDERR.puts "Ragel 6.2 or greater is required to generate #{name}."
