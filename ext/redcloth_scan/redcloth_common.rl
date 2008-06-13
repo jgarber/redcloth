@@ -3,6 +3,7 @@
   machine redcloth_common;
 
   action A { reg = p; }
+  action B { bck = p; }
   action T { STORE(text); }
   action X { CLEAR_REGS(); reg = NULL; }
   action cat { CAT(block); }

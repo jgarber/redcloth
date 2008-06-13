@@ -28,9 +28,10 @@ int SYM_escape_preformatted;
   pre_block_start = ( "pre" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   bc_start = ( "bc" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   bq_start = ( "bq" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE(cite) } )? " "+ ) ;
-  btype = ( "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div" ) ;
-  block_start = ( btype >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
-  all_btypes = btype | "bq" | "bc" | "pre" | "notextile" ;
+  non_ac_btype = ( "bq" | "bc" | "pre" | "notextile" );
+  btype = (alpha alnum*) -- (non_ac_btype | "fn" digit+);
+  block_start = ( btype >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) >B %{ STORE_B(fallback) };
+  all_btypes = btype | non_ac_btype;
   next_block_start = ( all_btypes A_noactions C_noactions :> "."+ " " ) >A @{ p = reg - 1; } ;
   double_return = CRLF{2,} ;
   block_end = ( double_return | EOF );
@@ -307,7 +308,7 @@ redcloth_transform(self, p, pe, refs)
 {
   char *orig_p = p, *orig_pe = pe;
   int cs, act, nest;
-  char *ts = NULL, *te = NULL, *reg = NULL, *eof = NULL;
+  char *ts = NULL, *te = NULL, *reg = NULL, *bck = NULL, *eof = NULL;
   VALUE html = rb_str_new2("");
   VALUE table = rb_str_new2("");
   VALUE block = rb_str_new2("");

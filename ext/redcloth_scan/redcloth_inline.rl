@@ -163,12 +163,26 @@ red_pass_code(VALUE self, VALUE regs, VALUE ref, ID meth)
 VALUE
 red_block(VALUE self, VALUE regs, VALUE block, VALUE refs)
 {
+  ID method;
+  VALUE fallback;
+  VALUE sym_text = ID2SYM(rb_intern("text"));
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
   if ((RSTRING(block)->len > 0) && !NIL_P(btype))
   {
-    rb_hash_aset(regs, ID2SYM(rb_intern("text")), redcloth_inline2(self, block, refs));
-    block = rb_funcall(self, rb_intern(RSTRING(btype)->ptr), 1, regs);
+    method = rb_intern(RSTRING(btype)->ptr);
+    rb_hash_aset(regs, sym_text, redcloth_inline2(self, block, refs));
+    if (rb_respond_to(self, method)) {
+      block = rb_funcall(self, method, 1, regs);
+    } else {
+      fallback = rb_hash_aref(regs, ID2SYM(rb_intern("fallback")));
+      if (!NIL_P(fallback)) {
+        rb_str_append(fallback, rb_hash_aref(regs, sym_text));
+        CLEAR_REGS();
+        rb_hash_aset(regs, sym_text, fallback);
+      }
+      block = rb_funcall(self, rb_intern("p"), 1, regs);
+    }
   }
   return block;
 }
