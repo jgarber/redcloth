@@ -721,49 +721,48 @@ html: |-
   <div>Second div.</div>
   A notextile block ends it.
 ---
-#works
 name: simple parentheses
 in: |-
   before (in parens) after
 html: |-
   <p>before (in parens) after</p>
 ---
-#broken r297
 name: parentheses in underscores
 in: |-
   before _(in parens)_ after
 html: |-
   <p>before <em>(in parens)</em> after</p>
 ---
-#broken r297
+name: parentheses in asterisks
+in: |-
+  before *(in parens)* after
+html: |-
+  <p>before <strong>(in parens)</strong> after</p>
+---
 name: parentheses in underscores in quotes
 in: |-
   "before _(in parens)_ after"
 html: |-
   <p>&#8220;before <em>(in parens)</em> after&#8221;</p>
 ---
-#works
 name: underscores in parentheses
 in: |-
    one _two three_ (four _five six_) seven
 html: |-
   <p>one <em>two three</em> (four <em>five six</em>) seven</p>
 ---
-#broken r297
 name: underscores in parentheses in quotes
 in: |-
    "one _two three_ (four _five six_) seven"
 html: |-
   <p>&#8220;one <em>two three</em> (four <em>five six</em>) seven&#8221;</p>
 ---
-#works
 name: underscores in parentheses 2
 in: |-
    one (two _three four_) five
 html: |-
   <p>one (two <em>three four</em>) five</p>
 ---
-#broken r297
 name: underscores in parentheses in quotes 2
 in: |-
    "one (two _three four_) five"

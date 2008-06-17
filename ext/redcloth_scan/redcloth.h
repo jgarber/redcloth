@@ -43,10 +43,14 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_str_new2(#V));
 #define AINC(T)        red_inc(regs, ID2SYM(rb_intern(#T)));
 #define SET_ATTRIBUTES() \
-  rb_hash_aset(regs, ID2SYM(rb_intern("class")), rb_hash_aref(regs, ID2SYM(rb_intern("class_buf")))); \
-  rb_hash_aset(regs, ID2SYM(rb_intern("id")), rb_hash_aref(regs, ID2SYM(rb_intern("id_buf")))); \
-  rb_hash_aset(regs, ID2SYM(rb_intern("lang")), rb_hash_aref(regs, ID2SYM(rb_intern("lang_buf")))); \
-  rb_hash_aset(regs, ID2SYM(rb_intern("style")), rb_hash_aref(regs, ID2SYM(rb_intern("style_buf")))); 
+  VALUE buf = Qnil; \
+  SET_ATTRIBUTE("class_buf", "class"); \
+  SET_ATTRIBUTE("id_buf", "id"); \
+  SET_ATTRIBUTE("lang_buf", "lang"); \
+  SET_ATTRIBUTE("style_buf", "style");
+#define SET_ATTRIBUTE(B, A) \
+  buf = rb_hash_aref(regs, ID2SYM(rb_intern(B))); \
+  if (buf != Qnil) rb_hash_aset(regs, ID2SYM(rb_intern(A)), buf);
 #define TRANSFORM(T) \
   if (p > reg && reg >= ts) { \
     VALUE str = redcloth_transform(self, reg, p, refs); \

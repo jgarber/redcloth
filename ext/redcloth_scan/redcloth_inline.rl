@@ -29,20 +29,20 @@
   footno = "[" >X %A digit+ %T "]" ;
 
   # markup
-  code = "["? "@" >X C mtext >A %T :> "@" "]"? ;
+  code = "["? "@" >X mtext >A %T :> "@" "]"? ;
   code_tag_start = "<code>" ;
   code_tag_end = "</code>" ;
-  strong = "["? "*" >X C mtext >A %T :> "*" "]"? ;
-  b = "["? "**" >X C mtext >A %T :> "**" "]"? ;
+  strong = "["? "*" >X mtext >A %T :> "*" "]"? ;
+  b = "["? "**" >X mtext >A %T :> "**" "]"? ;
   em = "["? "_" >X mtext >A %T :> "_" "]"? ;
-  i = "["? "__" >X C mtext >A %T :> "__" "]"? ;
+  i = "["? "__" >X mtext >A %T :> "__" "]"? ;
   del = "[-" >X C ( mtext ) >A %T :>> "-]" ;
   del_phrase = (" -") >X C ( mtext ) >A %T :>> ( "-" (" " | PUNCT) @{ fhold; } ) ;
-  ins = "["? "+" >X C mtext >A %T :> "+" "]"? ;
-  sup = "["? "^" >X C mtext >A %T :> "^" "]"? ;
-  sub = "["? "~" >X C mtext >A %T :> "~" "]"? ;
-  span = "["? "%" >X C mtext >A %T :> "%" "]"? ;
-  cite = "["? "??" >X C mtext >A %T :> "??" "]"? ;
+  ins = "["? "+" >X mtext >A %T :> "+" "]"? ;
+  sup = "["? "^" >X mtext >A %T :> "^" "]"? ;
+  sub = "["? "~" >X mtext >A %T :> "~" "]"? ;
+  span = "["? "%" >X mtext >A %T :> "%" "]"? ;
+  cite = "["? "??" >X mtext >A %T :> "??" "]"? ;
   ignore = "["? "==" >X %A mtext %T :> "==" "]"? ;
   snip = "["? "```" >X %A mtext %T :> "```" "]"? ;
   quote1 = "["? "'" >X %A mtext %T :> "'" "]"? ;
@@ -89,19 +89,19 @@
 
     link { PASS(block, name, link); };
 
-    code { PASS_CODE(block, text, code, opts); };
+    code { PARSE_ATTR(text); PASS_CODE(block, text, code, opts); };
     code_tag_start { CAT(block); fgoto code_tag; };
-    strong { PASS(block, text, strong); };
-    b { PASS(block, text, b); };
+    strong { PARSE_ATTR(text); PASS(block, text, strong); };
+    b { PARSE_ATTR(text); PASS(block, text, b); };
     em { PARSE_ATTR(text); PASS(block, text, em); };
-    i { PASS(block, text, i); };
+    i { PARSE_ATTR(text); PASS(block, text, i); };
     del { PASS(block, text, del); };
     del_phrase { PASS(block, text, del_phrase); };
-    ins { PASS(block, text, ins); };
-    sup { PASS(block, text, sup); };
-    sub { PASS(block, text, sub); };
-    span { PASS(block, text, span); };
-    cite { PASS(block, text, cite); };
+    ins { PARSE_ATTR(text); PASS(block, text, ins); };
+    sup { PARSE_ATTR(text); PASS(block, text, sup); };
+    sub { PARSE_ATTR(text); PASS(block, text, sub); };
+    span { PARSE_ATTR(text); PASS(block, text, span); };
+    cite { PARSE_ATTR(text); PASS(block, text, cite); };
     ignore => ignore;
     snip { PASS(block, text, snip); };
     quote1 { PASS(block, text, quote1); };
