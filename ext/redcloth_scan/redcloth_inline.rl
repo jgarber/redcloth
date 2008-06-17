@@ -14,8 +14,6 @@
   # common
   title = ( '(' default+ >A %{ STORE(title) } :> ')' ) ;
   word = ( alnum | safe | " " ) ;
-  mspace = ( ( " " | "\t" | CRLF )+ ) -- CRLF{2} ;
-  mtext = ( chars (mspace chars)* ) ;
 
   # links
   link_says = ( mtext+ ) >A %{ STORE(name) } ;
@@ -36,7 +34,7 @@
   code_tag_end = "</code>" ;
   strong = "["? "*" >X C mtext >A %T :> "*" "]"? ;
   b = "["? "**" >X C mtext >A %T :> "**" "]"? ;
-  em = "["? "_" >X C mtext >A %T :> "_" "]"? ;
+  em = "["? "_" >X mtext >A %T :> "_" "]"? ;
   i = "["? "__" >X C mtext >A %T :> "__" "]"? ;
   del = "[-" >X C ( mtext ) >A %T :>> "-]" ;
   del_phrase = (" -") >X C ( mtext ) >A %T :>> ( "-" (" " | PUNCT) @{ fhold; } ) ;
@@ -95,7 +93,7 @@
     code_tag_start { CAT(block); fgoto code_tag; };
     strong { PASS(block, text, strong); };
     b { PASS(block, text, b); };
-    em { PASS(block, text, em); };
+    em { PARSE_ATTR(text); PASS(block, text, em); };
     i { PASS(block, text, i); };
     del { PASS(block, text, del); };
     del_phrase { PASS(block, text, del_phrase); };
@@ -146,6 +144,14 @@ red_pass(VALUE self, VALUE regs, VALUE ref, ID meth, VALUE refs)
   VALUE txt = rb_hash_aref(regs, ref);
   if (!NIL_P(txt)) rb_hash_aset(regs, ref, redcloth_inline2(self, txt, refs));
   return rb_funcall(self, meth, 1, regs);
+}
+
+VALUE
+red_parse_attr(VALUE self, VALUE regs, VALUE ref)
+{
+  VALUE txt = rb_hash_aref(regs, ref);
+  VALUE new_regs = redcloth_attributes2(self, txt);
+  return rb_funcall(regs, rb_intern("update"), 1, new_regs);
 }
 
 VALUE

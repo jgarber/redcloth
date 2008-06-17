@@ -107,6 +107,7 @@ ext_so = "#{ext}/#{extension}.#{Config::CONFIG['DLEXT']}"
 ext_files = FileList[
   "#{ext}/redcloth_scan.c",
   "#{ext}/redcloth_inline.c",
+  "#{ext}/redcloth_attributes.c",
   "#{ext}/extconf.rb",
   "#{ext}/Makefile",
   "lib"
@@ -123,7 +124,7 @@ task "lib" do
   directory "lib"
 end
 
-["#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c"].each do |name|
+["#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c","#{ext}/redcloth_attributes.c"].each do |name|
   @code_style ||= "T0"
   source = name.sub(/\.c$/, '.rl')
   file name => [source, "#{ext}/redcloth_common.rl", "#{ext}/redcloth.h"] do
@@ -140,7 +141,7 @@ end
 desc "Builds just the #{extension} extension"
 task extension.to_sym => ["#{ext}/Makefile", ext_so ]
 
-file "#{ext}/Makefile" => ["#{ext}/extconf.rb", "#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c"] do
+file "#{ext}/Makefile" => ["#{ext}/extconf.rb", "#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c","#{ext}/redcloth_attributes.c"] do
   Dir.chdir(ext) do ruby "extconf.rb" end
 end
 

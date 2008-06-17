@@ -64,6 +64,8 @@
   trailing = PUNCT - ("'" | '"') ;
   chars = (default - space)+ ;
   phrase = chars -- trailing ;
+  mspace = ( ( " " | "\t" | CRLF )+ ) -- CRLF{2} ;
+  mtext = ( chars (mspace chars)* ) ;
 
   # html tags (from Hpricot)
   NameChar = [\-A-Za-z0-9._:?] ;
