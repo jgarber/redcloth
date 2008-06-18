@@ -12,8 +12,8 @@ void rb_str_cat_escaped(VALUE self, VALUE str, char *ts, char *te);
 void rb_str_cat_escaped_for_preformatted(VALUE self, VALUE str, char *ts, char *te);
 VALUE redcloth_inline(VALUE, char *, char *, VALUE);
 VALUE redcloth_inline2(VALUE, VALUE, VALUE);
-VALUE redcloth_attributes(VALUE, char *, char *);
-VALUE redcloth_attributes2(VALUE, VALUE);
+VALUE redcloth_attribute_parser(int, VALUE, char *, char *);
+VALUE redcloth_attributes(VALUE, VALUE);
 VALUE redcloth_transform(VALUE, char *, char *, VALUE);
 VALUE redcloth_transform2(VALUE, VALUE);
 void red_inc(VALUE, VALUE);
@@ -28,8 +28,9 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define CLEAR(H)       H = rb_str_new2("")
 #define INLINE(H, T)   rb_str_append(H, rb_funcall(self, rb_intern(#T), 1, regs))
 #define DONE(H)        rb_str_append(html, H); CLEAR(H); CLEAR_REGS()
-#define PASS(H, A, T)  rb_str_append(H, red_pass(self, regs, ID2SYM(rb_intern(#A)), rb_intern(#T), refs))
+#define PASS(H, A, T)  rb_str_append(H, red_pass(self, regs, ID2SYM(rb_intern(#A)), rb_intern(#T), refs));
 #define PARSE_ATTR(A)  red_parse_attr(self, regs, ID2SYM(rb_intern(#A)))
+#define PARSE_LINK_ATTR(A)  red_parse_link_attr(self, regs, ID2SYM(rb_intern(#A)))
 #define PASS_CODE(H, A, T, O) rb_str_append(H, red_pass_code(self, regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))
 #define ADD_BLOCK() \
   rb_str_append(html, red_block(self, regs, block, refs)); \
@@ -71,6 +72,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
   if (p > bck && bck >= ts) { \
     VALUE str = rb_str_new(bck, p-bck); \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
+  /*  printf("STORE_B(" #T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
   } else { \
     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
   }

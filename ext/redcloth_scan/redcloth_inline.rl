@@ -16,8 +16,10 @@
   word = ( alnum | safe | " " ) ;
 
   # links
-  link_says = ( mtext+ ) >A %{ STORE(name) } ;
-  link = ( "["? '"' C "."* " "* link_says " "* :> title? :> '":' %A uri %{ STORE_URL(href); } :> "]"? ) >X ;
+  link_says = ( C_noactions "."* " "* mtext+ ) >A %{ STORE(link_text); } ;
+  # link_says = ( mtext+ ) >A %{ STORE(name) } ;
+  link = ( "["? '"' link_says  :> '":' %A uri %{ STORE_URL(href); } :> "]"? ) >X ;
+  # link = ( "["? '"' C "."* " "* link_says " "* :> title? :> '":' %A uri %{ STORE_URL(href); } :> "]"? ) >X ;
 
   # images
   image_src = ( uri ) >A %{ STORE(src) } ;
@@ -87,7 +89,7 @@
 
     image { INLINE(block, image); };
 
-    link { PASS(block, name, link); };
+    link { PARSE_LINK_ATTR(link_text); PASS(block, name, link); };
 
     code { PARSE_ATTR(text); PASS_CODE(block, text, code, opts); };
     code_tag_start { CAT(block); fgoto code_tag; };
@@ -142,7 +144,9 @@ VALUE
 red_pass(VALUE self, VALUE regs, VALUE ref, ID meth, VALUE refs)
 {
   VALUE txt = rb_hash_aref(regs, ref);
+  // printf("red_pass is getting a name of: %s\n", RSTRING(rb_hash_aref(regs, ID2SYM(rb_intern("name"))))->ptr);
   if (!NIL_P(txt)) rb_hash_aset(regs, ref, redcloth_inline2(self, txt, refs));
+  // printf("red_pass is calling this method: %s\n", rb_id2name(meth));
   return rb_funcall(self, meth, 1, regs);
 }
 
@@ -150,7 +154,16 @@ VALUE
 red_parse_attr(VALUE self, VALUE regs, VALUE ref)
 {
   VALUE txt = rb_hash_aref(regs, ref);
-  VALUE new_regs = redcloth_attributes2(self, txt);
+  VALUE new_regs = redcloth_attributes(self, txt);
+  return rb_funcall(regs, rb_intern("update"), 1, new_regs);
+}
+
+VALUE
+red_parse_link_attr(VALUE self, VALUE regs, VALUE ref)
+{
+  VALUE txt = rb_hash_aref(regs, ref);
+  VALUE new_regs = redcloth_link_attributes(self, txt);
+  // printf("red_parse_link_attr is getting a name of: %s in new_regs\n", RSTRING(rb_hash_aref(new_regs, ID2SYM(rb_intern("name"))))->ptr);
   return rb_funcall(regs, rb_intern("update"), 1, new_regs);
 }
 
@@ -226,6 +239,7 @@ redcloth_inline(self, p, pe, refs)
   VALUE block = rb_str_new2("");
   VALUE regs = Qnil;
   unsigned int opts = 0;
+  VALUE buf = Qnil;
   
   %% write init;
 

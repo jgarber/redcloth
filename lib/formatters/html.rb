@@ -124,7 +124,18 @@ module RedCloth::Formatters::HTML
     "</blockquote>\n"
   end
   
+  LINK_TEXT_WITH_TITLE_RE = /
+          ([^"]+?)         # $text
+          \s?
+          \(([^)]+?)\)     # $title
+          $
+      /x
   def link(opts)
+    if opts[:name] =~ LINK_TEXT_WITH_TITLE_RE
+      md = LINK_TEXT_WITH_TITLE_RE.match(opts[:name])
+      opts[:name] = md[1]
+      opts[:title] = md[2]
+    end
     "<a href=\"#{opts[:href].gsub(/&/, '&#38;')}\"#{pba(opts)}>#{opts[:name]}</a>"
   end
   

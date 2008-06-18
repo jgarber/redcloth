@@ -184,3 +184,11 @@ html: "<p><a href=\"/foo.html\">Link</a>; me</p>"
 name: trailing period stays outside link
 in: '"Link":/foo.html.'
 html: "<p><a href=\"/foo.html\">Link</a>.</p>"
+---
+name: parenthetical statement as a link
+in: '"(just in case you were wondering)":http://slashdot.org/'
+html: '<p><a href="http://slashdot.org/">(just in case you were wondering)</a></p>'
+---
+name: link containing parentheses
+in: '"It is (very) fortunate that this works":http://slashdot.org/'
+html: '<p><a href="http://slashdot.org/">It is (very) fortunate that this works</a></p>'
