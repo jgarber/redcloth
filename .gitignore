@@ -1,5 +1,5 @@
 ext/redcloth_scan/Makefile
-ext/redcloth_scan/*.[coh]
+ext/redcloth_scan/*.[co]
 ext/redcloth_scan/*.bundle
 ext/redcloth_scan/*.so
 lib/*.bundle

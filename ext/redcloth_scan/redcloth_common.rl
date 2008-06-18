@@ -64,8 +64,6 @@
   trailing = PUNCT - ("'" | '"') ;
   chars = (default - space)+ ;
   phrase = chars -- trailing ;
-  mspace = ( ( " " | "\t" | CRLF )+ ) -- CRLF{2} ;
-  mtext = ( chars (mspace chars)* ) ;
 
   # html tags (from Hpricot)
   NameChar = [\-A-Za-z0-9._:?] ;
@@ -105,5 +103,11 @@
   absolute_path = ("/"+ rel_path?);
   target = ("#" pchar*) ;
   uri = (target | absolute_uri | absolute_path | rel_path) ;
+
+  # common
+  title = ( '(' default+ >A %{ STORE(title) } :> ')' ) ;
+  word = ( alnum | safe | " " ) ;
+  mspace = ( ( " " | "\t" | CRLF )+ ) -- CRLF{2} ;
+  mtext = ( chars (mspace chars)* ) ;
 
 }%%;

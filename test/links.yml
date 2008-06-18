@@ -192,3 +192,11 @@ html: '<p><a href="http://slashdot.org/">(just in case you were wondering)</a></
 name: link containing parentheses
 in: '"It is (very) fortunate that this works":http://slashdot.org/'
 html: '<p><a href="http://slashdot.org/">It is (very) fortunate that this works</a></p>'
+---
+name: link containing quotes
+in: '"He said it is "very unlikely" this works":http://slashdot.org/'
+html: '<p><a href="http://slashdot.org/">He said it is &#8220;very unlikely&#8221; this works</a></p>'
+---
+name: linked quoted phrase
+in: '""Open the pod bay doors please, HAL."":http://www.youtube.com/watch?v=npN9l2Bd06s'
+html: '<p><a href="http://www.youtube.com/watch?v=npN9l2Bd06s">&#8220;Open the pod bay doors please, <span class="caps">HAL</span>.&#8221;</a></p>'

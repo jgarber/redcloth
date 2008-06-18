@@ -28,7 +28,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define CLEAR(H)       H = rb_str_new2("")
 #define INLINE(H, T)   rb_str_append(H, rb_funcall(self, rb_intern(#T), 1, regs))
 #define DONE(H)        rb_str_append(html, H); CLEAR(H); CLEAR_REGS()
-#define PASS(H, A, T)  rb_str_append(H, red_pass(self, regs, ID2SYM(rb_intern(#A)), rb_intern(#T), refs));
+#define PASS(H, A, T)  rb_str_append(H, red_pass(self, regs, ID2SYM(rb_intern(#A)), rb_intern(#T), refs))
 #define PARSE_ATTR(A)  red_parse_attr(self, regs, ID2SYM(rb_intern(#A)))
 #define PARSE_LINK_ATTR(A)  red_parse_link_attr(self, regs, ID2SYM(rb_intern(#A)))
 #define PASS_CODE(H, A, T, O) rb_str_append(H, red_pass_code(self, regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))

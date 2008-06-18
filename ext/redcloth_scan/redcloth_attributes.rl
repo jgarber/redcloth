@@ -17,24 +17,22 @@
   C2 = ( C2_CLAS | C2_STYL | C2_LNGE )+ ;
 
   mtext_with_attributes = ( C2 mtext >A %T ) >X ;
-  
+
   inline := |*
-    
+
     mtext_with_attributes { SET_ATTRIBUTES(); } ;
     any ;
-    
+
   *|;
-  
-  #'"' C "."* " "* link_says " "* :> title? :> '":'
-    title = ( '(' default+ >A %{ STORE(title) } :> ')' ) ;
-    # duplicate
-  
+
   link_text_with_attributes = C2 "."* " "* ( mtext+ ) >A %{ STORE(name) } ;
   link_text_without_attributes = ( mtext+ ) >B %{ STORE_B(name_without_attributes) } ;
-  
+
   link_says := |*
+
     link_text_with_attributes { SET_ATTRIBUTES(); } ;
     link_text_without_attributes { SET_ATTRIBUTE("name_without_attributes", "name"); } ;
+
   *|;
 
 }%%
@@ -58,8 +56,6 @@ redcloth_attribute_parser(machine, self, p, pe)
   cs = machine;
 
   %% write exec;
-
-  // printf("redcloth_attribute_parser is going to return a name of: %s\n", RSTRING(rb_hash_aref(regs, ID2SYM(rb_intern("name"))))->ptr);
 
   return regs;
 }
