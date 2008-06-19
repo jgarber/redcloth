@@ -88,6 +88,10 @@ html: |-
   
   # *test*
 ---
+name: inline notextile tags
+in: 'This is how you make a link: <notextile>"link":http://www.redcloth.org</notextile>'
+html: '<p>This is how you make a link: "link":http://www.redcloth.org</p>'
+---
 name: code in list items
 in: |-
   * @foo@
