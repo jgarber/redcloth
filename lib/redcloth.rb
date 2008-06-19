@@ -80,7 +80,11 @@ class RedCloth
     super( string )
   end
   
-  def to_html
+  def to_html( *rules )
+    rules.each do |r|
+      method(r).call(self) if self.respond_to?(r)
+    end
+    
     to(RedCloth::Formatters::HTML)
   end
   
