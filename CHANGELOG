@@ -2,10 +2,14 @@
 === 15th Feb, 2007
 
 * New SuperRedCloth (RedCloth 4.0) is a total rewrite using Ragel for the parsing.
-* The restrictions parameter is accepted for backward compatibility, but is not observed.
+* Markdown support has been removed.
 * Single newlines become <br> tags, just as in traditional RedCloth and other Textile parsers.
-* HTML embedded in the Textile input does not ordinarily need to be escaped from Textile parsing.
-* A single line can be skipped by the parser by prepending a space.
+* The restrictions parameter is observed just like previous versions (except :hard_breaks is now the default).
+* Arguments to to_html are called so extensions from the versions are compatible.
+* Custom block tags can be implemented as in the previous version, though the means of implementing them differs.
+* HTML embedded in the Textile input does not often need to be escaped from Textile parsing.
+* The parser will skip lines that begin with a space.
 * Rudimentary support for LaTeX is built in.
 * Output (less newlines and tabs) is identical to Textile 2 except a few cases where the RedCloth
   way was preferable.
+* Oh yeah... and it's 40 times faster than the previous version.
