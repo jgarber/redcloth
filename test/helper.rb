@@ -8,16 +8,23 @@ module Test
     
     class TestCase
       def self.generate_formatter_tests(formatter, &block)
-        define_method("do_test_with_#{formatter}", &block)
+        define_method("format_as_#{formatter}", &block)
 
         Dir[File.join(File.dirname(__FILE__), "*.yml")].each do |testfile|
           testgroup = File.basename(testfile, '.yml')
           num = 0
           YAML::load_documents(File.open(testfile)) do |doc|
             name = doc['name'] ? doc['name'].downcase.gsub(/[- ]/, '_') : num
-            define_method("test_#{formatter}_#{testgroup}_#{name}") do
-              method("do_test_with_#{formatter}").call(doc)
-            end if doc[formatter]
+            if doc[formatter]
+              define_method("test_#{formatter}_#{testgroup}_#{name}") do
+                output = method("format_as_#{formatter}").call(doc)
+                assert_equal doc[formatter], output
+              end
+            else
+              define_method("test_#{formatter}_#{testgroup}_#{name}_raises_nothing") do
+                assert_nothing_raised(Exception) { method("format_as_#{formatter}").call(doc) }
+              end
+            end 
             num += 1
           end
         end
