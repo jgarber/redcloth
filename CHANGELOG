@@ -12,4 +12,5 @@
 * Rudimentary support for LaTeX is built in.
 * Output (less newlines and tabs) is identical to Textile 2 except a few cases where the RedCloth
   way was preferable.
+* RedCloth::VERSION on a line by itself inserts the version number into the output.
 * Oh yeah... and it's 40 times faster than the previous version.
