@@ -14,6 +14,7 @@ VALUE redcloth_inline(VALUE, char *, char *, VALUE);
 VALUE redcloth_inline2(VALUE, VALUE, VALUE);
 VALUE redcloth_attribute_parser(int, VALUE, char *, char *);
 VALUE redcloth_attributes(VALUE, VALUE);
+VALUE redcloth_link_attributes(VALUE, VALUE);
 VALUE redcloth_transform(VALUE, char *, char *, VALUE);
 VALUE redcloth_transform2(VALUE, VALUE);
 void red_inc(VALUE, VALUE);
