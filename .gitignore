@@ -8,3 +8,4 @@ lib/version.rb
 doc/rdoc/*
 tmp/*
 pkg/*
+.DS_Store
