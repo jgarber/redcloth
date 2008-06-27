@@ -41,7 +41,7 @@ name: escaping of existing entities in blockcode
 in: "bc. Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;5 &#62; $5.
 "
 html: "<pre><code>Math fact: 3 &amp;lt; 5 &amp;amp; 5 &amp;gt; 3 but &amp;pound;5 &amp;#62; $5.</code></pre>"
-latex: "\\begin{verbatim}\n\\begin{verbatim}Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;5 &#62; $5.\\end{verbatim}\\end{verbatim}\n"
+latex: "\\begin{verbatim}\nMath fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;5 &#62; $5.\\end{verbatim}\n"
 ---
 name: no formatting within pre
 in: |-
