@@ -10,7 +10,7 @@ module RedCloth::Formatters::LATEX
   end
 
   def escape_pre(text)
-    latex_esc(text)
+    text
   end
   
   def after_transform(text)
@@ -59,7 +59,7 @@ module RedCloth::Formatters::LATEX
     :cite => 'quote',
     }.each do |m, env|
     define_method(m) do |opts|
-      "\\begin{#{env}}#{opts[:text]}\\end{#{env}}"
+      begin_chunk(env) + opts[:text] + end_chunk(env)
     end
   end
   
@@ -123,11 +123,11 @@ module RedCloth::Formatters::LATEX
 
   def bc_open(opts)
     opts[:block] = true
-    "\\begin{verbatim}\n"
+    begin_chunk("verbatim") + "\n"
   end
 
   def bc_close(opts)
-    "\\end{verbatim}\n"
+    end_chunk("verbatim") + "\n"
   end
 
   def bq_open(opts)
@@ -210,4 +210,22 @@ module RedCloth::Formatters::LATEX
     "#{opts[:x]}#{space}\\texttimes{}#{space}"
   end
   
+  private
+  
+  def begin_chunk(type)
+    chunk_counter[type] += 1
+    return "\\begin{#{type}}" if 1 == chunk_counter[type]
+    ''
+  end
+  
+  def end_chunk(type)
+    chunk_counter[type] -= 1
+    raise RuntimeError, "Bad latex #{type} nesting detected" if chunk_counter[type] < 0 # This should never need to happen
+    return "\\end{#{type}}" if 0 == chunk_counter[type]
+    ''
+  end
+  
+  def chunk_counter
+    @chunk_counter ||= Hash.new 0
+  end
 end
