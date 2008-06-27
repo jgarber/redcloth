@@ -254,6 +254,10 @@ module RedCloth::Formatters::HTML
     end
   end
   
+  def ignored_line(opts)
+    opts[:text] + "\n"
+  end
+  
   # HTML cleansing stuff
   BASIC_TAGS = {
       'a' => ['href', 'title'],

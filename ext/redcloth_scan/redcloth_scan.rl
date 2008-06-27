@@ -21,7 +21,7 @@ int SYM_escape_preformatted;
   # blocks
   notextile_tag_start = "<notextile>" ;
   notextile_tag_end = "</notextile>" CRLF? ;
-  notextile_line = " " (( default+ ) -- CRLF) CRLF ;
+  noparagraph_line_start = " "+ ;
   notextile_block_start = ( "notextile" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   pre_tag_start = "<pre" [^>]* ">" (space* "<code>")? ;
   pre_tag_end = ("</code>" space*)? "</pre>" CRLF? ;
@@ -107,6 +107,11 @@ int SYM_escape_preformatted;
 
   script_tag := |*
     script_tag_end     { CAT(block); DONE(block); fgoto main; };
+    default => cat;
+  *|;
+
+  noparagraph_line := |*
+    CRLF  { ADD_BLOCK(); fgoto main; };
     default => cat;
   *|;
 
@@ -267,7 +272,7 @@ int SYM_escape_preformatted;
   *|;
 
   main := |*
-    notextile_line  { CAT(block); DONE(block); };
+    noparagraph_line_start  { ASET(type, ignored_line); fgoto noparagraph_line; };
     notextile_tag_start { ASET(type, notextile); fgoto notextile_tag; };
     notextile_block_start { fgoto notextile_block; };
     script_tag_start { ASET(type, script); CAT(block); fgoto script_tag; };

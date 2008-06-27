@@ -26,7 +26,7 @@ html: <p>Here&#8217;s some <b>bold</b> text.</p>
 name: no paragraph tags
 desc: A line beginning with a space will be left untouched, and not wrapped in <p> tags.
 in: " No paragraph tags here."
-html: " No paragraph tags here."
+html: "No paragraph tags here."
 ---
 name: smart quotes
 desc: Single and double typewriter quotation marks ' and " are transformed into typographically correct “curly” quote marks.
@@ -440,7 +440,7 @@ html: <div>inside</div> <p>and outside.</p>
 name: complex xhtml blocks
 desc: Textile can’t always identify the beginning and end of long or complex blocks of XHTML. To prevent Textile from enclosing complex XHTML blocks in paragraph tags, either use a space at the beginning of each line...
 in: " <div>\n <span>My div</span>\n </div>"
-html: " <div>\n <span>My div</span>\n </div>"
+html: "<div>\n<span>My div</span>\n</div>"
 ---
 name: complex xhtml blocks 2
 desc: ...or a notexile.. extended block.
@@ -456,6 +456,11 @@ html: |-
   <span>My div</span>
 
   </div>
+---
+name: complex xhtml blocks with inline formatting
+desc: Textile will not wrap lines that start with a space in paragraph tags, but it should parse inline signatures
+in: " <div>\n <span>My *div*</span>\n </div>"
+html: "<div>\n<span>My <strong>div</strong></span>\n</div>"
 ---
 name: explicit pre escapement
 desc: The contents of explicit <pre>...</pre> tags are escaped for display. 
