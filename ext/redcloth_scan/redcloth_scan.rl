@@ -106,7 +106,7 @@ int SYM_escape_preformatted;
   *|;
 
   script_tag := |*
-    script_tag_end     { CAT(block); DONE(block); fgoto main; };
+    script_tag_end     { CAT(block); ASET(type, ignore); ADD_BLOCK(); fgoto main; };
     default => cat;
   *|;
 
@@ -275,7 +275,7 @@ int SYM_escape_preformatted;
     noparagraph_line_start  { ASET(type, ignored_line); fgoto noparagraph_line; };
     notextile_tag_start { ASET(type, notextile); fgoto notextile_tag; };
     notextile_block_start { fgoto notextile_block; };
-    script_tag_start { ASET(type, script); CAT(block); fgoto script_tag; };
+    script_tag_start { CAT(block); fgoto script_tag; };
     pre_tag_start       { ASET(type, notextile); CAT(block); fgoto pre_tag; };
     pre_block_start { fgoto pre_block; };
     standalone_html { ASET(type, html); CAT(block); ADD_BLOCK(); };

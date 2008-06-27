@@ -34,6 +34,22 @@ in: |-
 filtered_html: |-
   This should be &lt;b&gt;escaped&lt;/b&gt;: &lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye&quot;);&lt;/script&gt;
 ---
+name: filter_html escapes script tags
+in: |-
+  <script type="text/javascript">
+    alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");
+  </script>
+filtered_html: |-
+  &lt;script type=&quot;text/javascript&quot;&gt;
+    alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");
+  &lt;/script&gt;
+---
+name: filter_html escapes inline html tags
+in: |-
+  p. Letting people inject their own HTML can be <em>dangerous</em>!.
+filtered_html: |-
+  <p>Letting people inject their own <span class="caps">HTML</span> can be &lt;em&gt;dangerous&lt;/em&gt;!.</p>
+---
 in: Here's a bad image <img src="JaVaScRiPt:alert('XSS');">
 filtered_html: <p>Here&#8217;s a bad image &lt;img src=&quot;JaVaScRiPt:alert(&#8217;XSS&#8217;);&quot;&gt;</p>
 ---

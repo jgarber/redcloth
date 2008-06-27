@@ -19,3 +19,10 @@ in: |-
   </notextile>
 sanitized_html: |-
   The bad tags should be <b>missing</b>: alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");
+---
+name: sanitize_html removes script tags
+in: |-
+  <script type="text/javascript">
+    alert('Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye');
+  </script>
+sanitized_html: "\n  alert('Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye');"
