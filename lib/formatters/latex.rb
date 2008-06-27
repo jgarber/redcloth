@@ -10,7 +10,7 @@ module RedCloth::Formatters::LATEX
   end
 
   def escape_pre(text)
-    latex_esc(text)
+    text
   end
   
   def after_transform(text)
