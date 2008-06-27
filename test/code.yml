@@ -85,7 +85,6 @@ in: |-
   # *test*
   </notextile>
 html: |-
-  
   # *test*
 ---
 name: inline notextile tags

@@ -7,3 +7,15 @@ sanitized_html: <p>Here&#8217;s a bad image <img /></p>
 ---
 in: Just some random > and < characters, but also a <br/> tag.
 sanitized_html: <p>Just some random &gt; and &lt; characters, but also a <br/> tag.</p>
+---
+name: sanitize_html processes text beginning with space
+in: ' This began with a space and ends with some XSS: <script type="text/javascript">alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");</script>'
+sanitized_html: 'This began with a space and ends with some <span class="caps">XSS</span>: alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");'
+---
+name: sanitize_html processes text in notextile tags
+in: |-
+  <notextile>
+  The bad tags should be <b>missing</b>: <script type="text/javascript">alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");</script>
+  </notextile>
+sanitized_html: |-
+  The bad tags should be <b>missing</b>: alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");

@@ -189,7 +189,11 @@ red_block(VALUE self, VALUE regs, VALUE block, VALUE refs)
   if ((RSTRING(block)->len > 0) && !NIL_P(btype))
   {
     method = rb_intern(RSTRING(btype)->ptr);
-    rb_hash_aset(regs, sym_text, redcloth_inline2(self, block, refs));
+    if (method == rb_intern("notextile")) {
+      rb_hash_aset(regs, sym_text, block);
+    } else {
+      rb_hash_aset(regs, sym_text, redcloth_inline2(self, block, refs));
+    }
     if (rb_respond_to(self, method)) {
       block = rb_funcall(self, method, 1, regs);
     } else {

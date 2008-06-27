@@ -244,6 +244,16 @@ module RedCloth::Formatters::HTML
     "#{opts[:text]}\n"
   end
   
+  def notextile(opts)
+    clean_html(opts[:text]) if sanitize_html
+    
+    if filter_html
+      html_esc(opts[:text])
+    else
+      "#{opts[:text]}"
+    end
+  end
+  
   def inline_html(opts)
     clean_html(opts[:text]) if sanitize_html
     

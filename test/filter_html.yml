@@ -18,6 +18,22 @@ filtered_html: |-
 in:  Just a little harmless xss <script src=http://ha.ckers.org/xss.js></script>
 filtered_html: <p>Just a little harmless xss &lt;script src=http://ha.ckers.org/xss.js&gt;&lt;/script&gt;</p>
 ---
+name: filter_html processes text beginning with space
+in: ' This should be <b>escaped</b>: <script type="text/javascript">alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");</script>'
+filtered_html: 'This should be &lt;b&gt;escaped&lt;/b&gt;: &lt;script type=&quot;text/javascript&quot;&gt;alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");&lt;/script&gt;'
+---
+name: filter_html processes script tags beginning with space
+in: ' <script type="text/javascript">alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");</script>'
+filtered_html: '&lt;script type=&quot;text/javascript&quot;&gt;alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");&lt;/script&gt;'
+---
+name: filter_html processes text in notextile tags
+in: |-
+  <notextile>
+  This should be <b>escaped</b>: <script type="text/javascript">alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");</script>
+  </notextile>
+filtered_html: |-
+  This should be &lt;b&gt;escaped&lt;/b&gt;: &lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye&quot;);&lt;/script&gt;
+---
 in: Here's a bad image <img src="JaVaScRiPt:alert('XSS');">
 filtered_html: <p>Here&#8217;s a bad image &lt;img src=&quot;JaVaScRiPt:alert(&#8217;XSS&#8217;);&quot;&gt;</p>
 ---

@@ -116,7 +116,7 @@ int SYM_escape_preformatted;
   *|;
 
   notextile_tag := |*
-    notextile_tag_end   { DONE(block); fgoto main; };
+    notextile_tag_end   { ADD_BLOCK(); fgoto main; };
     default => cat;
   *|;
   
@@ -279,7 +279,7 @@ int SYM_escape_preformatted;
     pre_tag_start       { ASET(type, notextile); CAT(block); fgoto pre_tag; };
     pre_block_start { fgoto pre_block; };
     standalone_html { ASET(type, html); CAT(block); ADD_BLOCK(); };
-    html_start      { ASET(type, notextile); CAT(html); fgoto html; };
+    html_start      { ASET(type, ignore); CAT(html); fgoto html; };
     bc_start        { INLINE(html, bc_open); ASET(type, code); plain_block = rb_str_new2("code"); fgoto bc; };
     bq_start        { INLINE(html, bq_open); ASET(type, p); fgoto bq; };
     block_start     { fgoto block; };
