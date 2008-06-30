@@ -34,6 +34,12 @@ in: |-
 filtered_html: |-
   This should be &lt;b&gt;escaped&lt;/b&gt;: &lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye&quot;);&lt;/script&gt;
 ---
+name: filter_html processes text in inline notextile tags
+in: |-
+  This should be <b>escaped</b>: <notextile><script type="text/javascript">alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");</script></notextile>
+filtered_html: |-
+  <p>This should be &lt;b&gt;escaped&lt;/b&gt;: &lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye&quot;);&lt;/script&gt;</p>
+---
 name: filter_html escapes script tags
 in: |-
   <script type="text/javascript">

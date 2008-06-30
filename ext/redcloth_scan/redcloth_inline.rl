@@ -30,6 +30,7 @@
   code_tag_end = "</code>" ;
   notextile_tag_start = "<notextile>" ;
   notextile_tag_end = "</notextile>" ;
+  notextile = (notextile_tag_start default+ >A %T notextile_tag_end ) >X ;
   strong = "["? "*" >X mtext >A %T :> "*" "]"? ;
   b = "["? "**" >X mtext >A %T :> "**" "]"? ;
   em = "["? "_" >X mtext >A %T :> "_" "]"? ;
@@ -76,11 +77,6 @@
     default => esc_pre;
   *|;
 
-  notextile_tag := |*
-    notextile_tag_end { fgoto main; };
-    default => cat;
-  *|;
-
   script_tag := |*
     script_tag_end { INLINE(block, inline_html); fgoto main; };
     default => cat;
@@ -94,7 +90,7 @@
 
     code { PARSE_ATTR(text); PASS_CODE(block, text, code, opts); };
     code_tag_start { CAT(block); fgoto code_tag; };
-    notextile_tag_start { fgoto notextile_tag; };
+    notextile { INLINE(block, notextile); };
     strong { PARSE_ATTR(text); PASS(block, text, strong); };
     b { PARSE_ATTR(text); PASS(block, text, b); };
     em { PARSE_ATTR(text); PASS(block, text, em); };
