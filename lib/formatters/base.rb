@@ -33,6 +33,14 @@ module RedCloth::Formatters
     def method_missing(method, opts)
       opts[:text] || ""
     end
+    
+    def before_transform(text)
+      
+    end
+    
+    def after_transform(text)
+      
+    end
 
   end
 end

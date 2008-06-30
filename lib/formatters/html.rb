@@ -245,8 +245,6 @@ module RedCloth::Formatters::HTML
   end
   
   def notextile(opts)
-    clean_html(opts[:text]) if sanitize_html
-    
     if filter_html
       html_esc(opts[:text])
     else
@@ -255,8 +253,6 @@ module RedCloth::Formatters::HTML
   end
   
   def inline_html(opts)
-    clean_html(opts[:text]) if sanitize_html
-    
     if filter_html
       html_esc(opts[:text])
     else
@@ -266,6 +262,10 @@ module RedCloth::Formatters::HTML
   
   def ignored_line(opts)
     opts[:text] + "\n"
+  end
+  
+  def before_transform(text)
+    clean_html(text) if sanitize_html
   end
   
   # HTML cleansing stuff
@@ -300,7 +300,8 @@ module RedCloth::Formatters::HTML
       'h4' => nil,
       'h5' => nil,
       'h6' => nil, 
-      'blockquote' => ['cite']
+      'blockquote' => ['cite'],
+      'notextile' => nil
   }
   
   # Clean unauthorized tags.

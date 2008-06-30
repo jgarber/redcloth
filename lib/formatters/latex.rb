@@ -13,10 +13,6 @@ module RedCloth::Formatters::LATEX
     text
   end
   
-  def after_transform(text)
-    
-  end
-  
   # headers
   { :h1 => 'section*',
     :h2 => 'subsection*',
