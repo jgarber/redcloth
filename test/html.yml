@@ -5,6 +5,12 @@ html: '<p><strong>this <span></span> is strong</strong></p>'
 in: '*this <span>test</span> is strong*'
 html: '<p><strong>this <span>test</span> is strong</strong></p>'
 ---
+in: 'A simple <!-- HTML comment -->'
+html: '<p>A simple <!-- HTML comment --></p>'
+---
+in: 'A simple <!-- HTML comment with hy-phen-a-tion -->'
+html: '<p>A simple <!-- HTML comment with hy-phen-a-tion --></p>'
+---
 name: no breaks between HTML elements
 in: |-
   <ul>

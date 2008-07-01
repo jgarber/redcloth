@@ -52,7 +52,7 @@
   start_tag = ( "<" Name space+ AttrSet* (AttrEnd)? ">" | "<" Name ">" ) >X >A %T ;
   empty_tag = ( "<" Name space+ AttrSet* (AttrEnd)? "/>" | "<" Name "/>" ) >X >A %T ;
   end_tag = ( "</" Name space* ">" ) >X >A %T ;
-  html_comment = ("<!--" (default+) :> "-->") >X >A %T;  
+  html_comment = ("<!--" (default+) :>> "-->") >X >A %T;
 
   # glyphs
   ellipsis = ( " "? >A %T "..." ) >X ;
