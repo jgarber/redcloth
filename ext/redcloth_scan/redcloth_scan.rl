@@ -121,27 +121,30 @@ int SYM_escape_preformatted;
   *|;
   
   notextile_block := |*
-    EOF { 
-      DONE(block); 
-      fgoto main; 
+    EOF {
+      ADD_BLOCK();
+      fgoto main;
     };
-    double_return { 
-      if (NIL_P(extend)) { 
-        DONE(block); 
-        fgoto main; 
-      } else { 
-        CAT(block); 
-        DONE(block); 
-      } 
+    double_return {
+      if (NIL_P(extend)) {
+        ADD_BLOCK();
+        CAT(html);
+        fgoto main;
+      } else {
+        CAT(block);
+        ADD_EXTENDED_BLOCK();
+        CAT(html);
+      }
     };
-    double_return next_block_start { 
-      if (NIL_P(extend)) { 
-        DONE(block); 
-        fgoto main; 
-      } else { 
-        CAT(block); 
-        DONE(block); 
-        END_EXTENDED(); 
+    double_return next_block_start {
+      if (NIL_P(extend)) {
+        ADD_BLOCK();
+        CAT(html);
+        fgoto main;
+      } else {
+        CAT(block);
+        ADD_EXTENDED_BLOCK();
+        END_EXTENDED();
         fgoto main; 
       } 
     };
@@ -274,7 +277,7 @@ int SYM_escape_preformatted;
   main := |*
     noparagraph_line_start  { ASET(type, ignored_line); fgoto noparagraph_line; };
     notextile_tag_start { ASET(type, notextile); fgoto notextile_tag; };
-    notextile_block_start { fgoto notextile_block; };
+    notextile_block_start { ASET(type, notextile); fgoto notextile_block; };
     script_tag_start { CAT(block); fgoto script_tag; };
     pre_tag_start       { ASET(type, notextile); CAT(block); fgoto pre_tag; };
     pre_block_start { fgoto pre_block; };

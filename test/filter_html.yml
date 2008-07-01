@@ -82,6 +82,22 @@ in: |-
 filtered_html: |-
   <p>I have some <code>&lt;em&gt;awesome&lt;/em&gt; code</code> here.</p>
 ---
+name: escapes html notextile block
+in: |-
+  notextile. This is a <em>notextile</em> block.
+filtered_html: |-
+  This is a &lt;em&gt;notextile&lt;/em&gt; block.
+---
+name: escapes html in pre tags
+in: |-
+  <pre>
+  This should be <em>escaped</em>.
+  </pre>
+filtered_html: |-
+  <pre>
+  This should be &lt;em&gt;escaped&lt;/em&gt;.
+  </pre>
+---
 in: Here's a bad image <img src="JaVaScRiPt:alert('XSS');">
 filtered_html: <p>Here&#8217;s a bad image &lt;img src="JaVaScRiPt:alert('XSS');"&gt;</p>
 ---
