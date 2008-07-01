@@ -246,17 +246,17 @@ module RedCloth::Formatters::HTML
   
   def notextile(opts)
     if filter_html
-      html_esc(opts[:text])
+      html_esc(opts[:text], :html_escape_preformatted)
     else
-      "#{opts[:text]}"
+      opts[:text]
     end
   end
   
   def inline_html(opts)
     if filter_html
-      html_esc(opts[:text])
+      html_esc(opts[:text], :html_escape_preformatted)
     else
-      "#{opts[:text]}"
+      opts[:text]
     end
   end
   

@@ -28,6 +28,7 @@
   code = "["? "@" >X mtext >A %T :> "@" "]"? ;
   code_tag_start = "<code>" ;
   code_tag_end = "</code>" ;
+  script_tag = ( "<script" [^>]* ">" (default+ -- "</script>") "</script>" CRLF? ) >X >A %T ;
   notextile_tag_start = "<notextile>" ;
   notextile_tag_end = "</notextile>" ;
   notextile = (notextile_tag_start default+ >A %T notextile_tag_end ) >X ;
@@ -51,7 +52,7 @@
   start_tag = ( "<" Name space+ AttrSet* (AttrEnd)? ">" | "<" Name ">" ) >X >A %T ;
   empty_tag = ( "<" Name space+ AttrSet* (AttrEnd)? "/>" | "<" Name "/>" ) >X >A %T ;
   end_tag = ( "</" Name space* ">" ) >X >A %T ;
-  html_comment = "<!--" (default+) :> "-->";  
+  html_comment = ("<!--" (default+) :> "-->") >X >A %T;  
 
   # glyphs
   ellipsis = ( " "? >A %T "..." ) >X ;
@@ -75,11 +76,6 @@
   code_tag := |*
     code_tag_end { CAT(block); fgoto main; };
     default => esc_pre;
-  *|;
-
-  script_tag := |*
-    script_tag_end { INLINE(block, inline_html); fgoto main; };
-    default => cat;
   *|;
 
   main := |*
@@ -120,11 +116,11 @@
     footno { PASS(block, text, footno); };
     entity { INLINE(block, entity); };
 
-    script_tag_start { INLINE(block, inline_html); fgoto script_tag; };
+    script_tag { INLINE(block, inline_html); };
     start_tag { INLINE(block, inline_html); };
     end_tag { INLINE(block, inline_html); };
     empty_tag { INLINE(block, inline_html); };
-    html_comment => cat;
+    html_comment { INLINE(block, inline_html); };
 
     other_phrase => esc;
     PUNCT => esc;
