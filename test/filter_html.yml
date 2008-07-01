@@ -76,6 +76,12 @@ in: |-
 filtered_html: |-
   <p>You can&#8217;t have people injecting <span class="caps">HTML</span> into &lt;!-- &lt;b&gt;comments&lt;/b&gt;! --&gt;.</p>
 ---
+name: escapes html in inline code tags
+in: |-
+  p. I have some <code><em>awesome</em> code</code> here.
+filtered_html: |-
+  <p>I have some <code>&lt;em&gt;awesome&lt;/em&gt; code</code> here.</p>
+---
 in: Here's a bad image <img src="JaVaScRiPt:alert('XSS');">
 filtered_html: <p>Here&#8217;s a bad image &lt;img src="JaVaScRiPt:alert('XSS');"&gt;</p>
 ---

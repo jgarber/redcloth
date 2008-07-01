@@ -26,7 +26,7 @@
 
   # markup
   code = "["? "@" >X mtext >A %T :> "@" "]"? ;
-  code_tag_start = "<code>" ;
+  code_tag_start = "<code" [^>]* ">" ;
   code_tag_end = "</code>" ;
   script_tag = ( "<script" [^>]* ">" (default+ -- "</script>") "</script>" CRLF? ) >X >A %T ;
   notextile_tag_start = "<notextile>" ;
