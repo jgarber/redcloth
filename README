@@ -14,7 +14,7 @@ RedCloth is a Ruby library for converting Textile into HTML.
 
 RedCloth can be installed via RubyGems:
 
-  sudo gem install redcloth
+  sudo gem install RedCloth
 
 Or can be compiled from its Ragel source with <tt>rake compile</tt>.  Ragel 6.2 
 or greater is required to build RedCloth.
