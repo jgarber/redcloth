@@ -98,6 +98,18 @@ filtered_html: |-
   This should be &lt;em&gt;escaped&lt;/em&gt;.
   </pre>
 ---
+name: escapes html
+in: |-
+  <div>This should be escaped</div>
+filtered_html: |-
+  &lt;div&gt;This should be escaped&lt;/div&gt;
+---
+name: escapes html in html
+in: |-
+  <div>This should be <b>bold</b></div>
+filtered_html: |-
+  &lt;div&gt;This should be &lt;b&gt;bold&lt;/b&gt;&lt;/div&gt;
+---
 in: Here's a bad image <img src="JaVaScRiPt:alert('XSS');">
 filtered_html: <p>Here&#8217;s a bad image &lt;img src="JaVaScRiPt:alert('XSS');"&gt;</p>
 ---

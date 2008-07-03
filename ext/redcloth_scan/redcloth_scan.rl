@@ -52,12 +52,12 @@ int SYM_escape_preformatted;
   aligned_image = ( "["? "!" (IMG_A_LEFT | IMG_A_RIGHT) ) >A @{ p = reg - 1; } ;
   
   # html blocks
-  BlockTagName = Name* - ("pre" | "notextile" | "a" | "applet" | "basefont" | "bdo" | "br" | "font" | "iframe" | "img" | "map" | "object" | "param" | "q" | "script" | "span" | "sub" | "sup" | "abbr" | "acronym" | "cite" | "code" | "del" | "dfn" | "em" | "ins" | "kbd" | "samp" | "strong" | "var" | "b" | "big" | "i" | "s" | "small" | "strike" | "tt" | "u");
+  BlockTagName = Name - ("pre" | "notextile" | "a" | "applet" | "basefont" | "bdo" | "br" | "font" | "iframe" | "img" | "map" | "object" | "param" | "q" | "script" | "span" | "sub" | "sup" | "abbr" | "acronym" | "cite" | "code" | "del" | "dfn" | "em" | "ins" | "kbd" | "samp" | "strong" | "var" | "b" | "big" | "i" | "s" | "small" | "strike" | "tt" | "u");
   block_start_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? ">" | "<" BlockTagName ">";
   block_empty_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? "/>" | "<" BlockTagName "/>" ;
   block_end_tag = "</" BlockTagName space* ">" ;
-  html_start = indent (block_start_tag | block_empty_tag) indent ;
-  html_end = indent block_end_tag indent CRLF? ;
+  html_start = indent >B %{STORE_B(indent_before_start)} (block_start_tag | block_empty_tag) >B %{STORE_B(start_tag)}  indent >B %{STORE_B(indent_after_start)} ;
+  html_end = indent >B %{STORE_B(indent_before_end)} block_end_tag >B %{STORE_B(end_tag)} (indent CRLF?) >B %{STORE_B(indent_after_end)} ;
   standalone_html = indent (block_start_tag | block_empty_tag | block_end_tag) indent CRLF+;
 
   # tables
@@ -152,7 +152,7 @@ int SYM_escape_preformatted;
   *|;
  
   html := |*
-    html_end        { ADD_BLOCK(); CAT(html); fgoto main; };
+    html_end        { ADD_BLOCK(); fgoto main; };
     default => cat;
   *|;
 
@@ -282,7 +282,7 @@ int SYM_escape_preformatted;
     pre_tag_start       { ASET(type, notextile); CAT(block); fgoto pre_tag; };
     pre_block_start { fgoto pre_block; };
     standalone_html { ASET(type, html); CAT(block); ADD_BLOCK(); };
-    html_start      { ASET(type, ignore); CAT(html); fgoto html; };
+    html_start      { ASET(type, html_block); fgoto html; };
     bc_start        { INLINE(html, bc_open); ASET(type, code); plain_block = rb_str_new2("code"); fgoto bc; };
     bq_start        { INLINE(html, bq_open); ASET(type, p); fgoto bq; };
     block_start     { fgoto block; };

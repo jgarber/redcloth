@@ -244,6 +244,12 @@ module RedCloth::Formatters::HTML
     "#{opts[:text]}\n"
   end
   
+  def html_block(opts)
+    inline_html(:text => "#{opts[:indent_before_start]}#{opts[:start_tag]}#{opts[:indent_after_start]}") + 
+    "#{opts[:text]}" +
+    inline_html(:text => "#{opts[:indent_before_end]}#{opts[:end_tag]}#{opts[:indent_after_end]}")
+  end
+  
   def notextile(opts)
     if filter_html
       html_esc(opts[:text], :html_escape_preformatted)
