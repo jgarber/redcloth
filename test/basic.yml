@@ -299,6 +299,19 @@ html: |-
   corn stalk from my<br />
   <span lang="es">cabeza</span>.</p>
 --- 
+name: inline attributes preceded by text are treated as literal
+desc: modifiers must come first, without anything before them
+in: |-
+  I *seriously {color:red}blushed*
+  when I _first (big)sprouted_ that
+  corn stalk from my
+  %grande [es]cabeza%.
+html: |-
+  <p>I <strong>seriously {color:red}blushed</strong><br />
+  when I <em>first (big)sprouted</em> that<br />
+  corn stalk from my<br />
+  <span>grande [es]cabeza</span>.</p>
+--- 
 name: align justified
 desc: Text inside blocks can be aligned in four basic ways.
 in: p<>. justified

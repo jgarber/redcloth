@@ -184,3 +184,7 @@ html: '<pre><code>This is a pre that will go unfinished'
 name: unclosed code tag
 in: 'This is a some <code>code that will go unfinished'
 html: '<p>This is a some <code>code that will go unfinished</p>'
+---
+name: code containing parentheses
+in: 'p. @some_method(some_params, some => test);@ Oh dear this fails'
+html: '<p><code>some_method(some_params, some =&gt; test);</code> Oh dear this fails</p>'

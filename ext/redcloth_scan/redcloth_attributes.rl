@@ -21,7 +21,6 @@
   inline := |*
 
     mtext_with_attributes { SET_ATTRIBUTES(); } ;
-    any ;
 
   *|;
 
