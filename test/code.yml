@@ -139,6 +139,12 @@ html: |-
   </pre>
   <p>And then go back with a normal paragraph.</p>
 ---
+name: block code containing code avoids nesting code tags
+in: |-
+  bc. A one-liner: @ruby -ne '($h||={}).fetch($_){puts $h[$_]=$_}'@
+html: |-
+  <pre><code>A one-liner: @ruby -ne '($h||={}).fetch($_){puts $h[$_]=$_}'@</code></pre>
+---
 name: block code containing block start
 in: |-
   bc. I saw a ship. It ate my elephant.
