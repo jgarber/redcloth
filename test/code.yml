@@ -170,3 +170,11 @@ latex: "\ldots{} \sfrac{1}{2}\n\n"
 name: numeric html entities to latex 
 in: "&#8230; &#189;" 
 latex: "\ldots{} \sfrac{1}{2}\n\n"
+---
+name: unclosed pre tag
+in: '<pre><code>This is a pre that will go unfinished'
+html: '<pre><code>This is a pre that will go unfinished'
+---
+name: unclosed code tag
+in: 'This is a some <code>code that will go unfinished'
+html: '<p>This is a some <code>code that will go unfinished</p>'
