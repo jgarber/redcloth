@@ -29,11 +29,11 @@ html: |-
   if you break.</li>
   </ul>
 ---
-name: mixing of textile and HTML
+name: mixing of textile and XHTML
 in: |-
   <img src="test.jpg" />
 
-  Regular paragraph.
+  Regular *paragraph*.
 
   <div class="test">
   This is one paragraph.
@@ -50,7 +50,7 @@ in: |-
   Another paragraph.
 html: |-
   <p><img src="test.jpg" /></p>
-  <p>Regular paragraph.</p>
+  <p>Regular <strong>paragraph</strong>.</p>
   <div class="test">
   <p>This is one paragraph.</p>
   <p>This is another.</p>
@@ -62,9 +62,28 @@ html: |-
   </div>
   <p>Another paragraph.</p>
 ---
+name: mixing of textile and HTML
+in: |-
+  <img src="test.jpg">
+
+  Regular *paragraph*.
+html: |-
+  <p><img src="test.jpg"></p>
+  <p>Regular <strong>paragraph</strong>.</p>
+---
 name: wraps inline HTML in paragraphs
 in: '<em>asd</em> blabla "google":http://google.com'
 html: '<p><em>asd</em> blabla <a href="http://google.com">google</a></p>'
+---
+name: self closing XHTML with following text not recognized
+comment: it will not recognize the self-closing block element
+in: '<hr/> this has been a horizontal rule'
+html: '<p><hr/> this has been a horizontal rule</p>'
+---
+name: self closing HTML with following text not recognized
+comment: it will not recognize the self-closing block element
+in: '<hr> that was a horizontal rule too'
+html: '<hr> that was a horizontal rule too'
 ---
 name: preserves block html
 in: |-
@@ -78,6 +97,27 @@ html: |-
 name: preserves empty block standalone elements
 in: "<hr />"
 html: "<hr />"
+---
+name: unfinished standalone HTML
+in: |-
+  <div>
+  This is some div text.
+  
+  More div text.
+html: |-
+  <div>
+  <p>This is some div text.</p>
+  <p>More div text.</p>
+---
+name: unfinished HTML block
+in: |-
+  <div>This is some div text.
+  
+  More div text.
+html: |-
+  <div>This is some div text.<br />
+  <br />
+  More div text.
 ---
 name: complex example from real life
 in: |-

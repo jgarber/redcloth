@@ -29,9 +29,7 @@
   code_tag_start = "<code" [^>]* ">" ;
   code_tag_end = "</code>" ;
   script_tag = ( "<script" [^>]* ">" (default+ -- "</script>") "</script>" CRLF? ) >X >A %T ;
-  notextile_tag_start = "<notextile>" ;
-  notextile_tag_end = "</notextile>" ;
-  notextile = (notextile_tag_start default+ >A %T notextile_tag_end ) >X ;
+  notextile = "<notextile>" >X (default+ -- "</notextile>") >A %T "</notextile>";
   strong = "["? "*" >X mtext >A %T :> "*" "]"? ;
   b = "["? "**" >X mtext >A %T :> "**" "]"? ;
   em = "["? "_" >X mtext >A %T :> "_" "]"? ;

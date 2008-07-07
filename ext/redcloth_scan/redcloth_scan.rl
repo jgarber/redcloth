@@ -56,7 +56,7 @@ int SYM_escape_preformatted;
   block_start_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? ">" | "<" BlockTagName ">";
   block_empty_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? "/>" | "<" BlockTagName "/>" ;
   block_end_tag = "</" BlockTagName space* ">" ;
-  html_start = indent >B %{STORE_B(indent_before_start)} (block_start_tag | block_empty_tag) >B %{STORE_B(start_tag)}  indent >B %{STORE_B(indent_after_start)} ;
+  html_start = indent >B %{STORE_B(indent_before_start)} block_start_tag >B %{STORE_B(start_tag)}  indent >B %{STORE_B(indent_after_start)} ;
   html_end = indent >B %{STORE_B(indent_before_end)} block_end_tag >B %{STORE_B(end_tag)} (indent CRLF?) >B %{STORE_B(indent_after_end)} ;
   standalone_html = indent (block_start_tag | block_empty_tag | block_end_tag) indent CRLF+;
 
@@ -371,6 +371,9 @@ redcloth_html_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
   
   VALUE new_str = rb_str_new2("");
   StringValue(str);
+  
+  if (RSTRING(str)->len == 0)
+    return new_str;
   
   char *ts = RSTRING(str)->ptr, *te = RSTRING(str)->ptr + RSTRING(str)->len;
   char *t = ts, *t2 = ts, *ch = NULL;

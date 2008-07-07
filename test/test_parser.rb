@@ -30,6 +30,10 @@ class TestParser < Test::Unit::TestCase
     assert_match /td/, RedCloth.new(%Q{|one || |\nthree | four |}).to_html
   end
   
+  def test_unfinished_html_block_does_not_segfault_with_filter_html
+    assert_nothing_raised { RedCloth.new(%Q{<hr> Some text}, [:filter_html]).to_html }
+  end
+  
   def test_redcloth_version_in_output
     assert_equal "<p>#{RedCloth::VERSION}</p>", RedCloth.new("RedCloth::VERSION").to_html
   end

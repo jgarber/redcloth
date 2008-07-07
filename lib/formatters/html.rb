@@ -262,7 +262,7 @@ module RedCloth::Formatters::HTML
     if filter_html
       html_esc(opts[:text], :html_escape_preformatted)
     else
-      opts[:text]
+      "#{opts[:text]}" # nil-safe
     end
   end
   
