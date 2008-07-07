@@ -44,4 +44,16 @@ class TestParser < Test::Unit::TestCase
     assert_equal html, RedCloth.new(input).to_html
   end
 
+  def test_redcloth_version_with_label
+    input = "RedCloth::VERSION: RedCloth::VERSION"
+    html = "<p>RedCloth::VERSION: #{RedCloth::VERSION}</p>"
+    assert_equal html, RedCloth.new(input).to_html
+  end
+  
+  def test_redcloth_version_with_label_2
+    input = "RedCloth version RedCloth::VERSION"
+    html = "<p>RedCloth version #{RedCloth::VERSION}</p>"
+    assert_equal html, RedCloth.new(input).to_html
+  end
+
 end

@@ -72,7 +72,7 @@ int SYM_escape_preformatted;
   table = ( tdef? trows >{INLINE(table, table_open);} ) >{ reg = NULL; } ;
 
   # info
-  redcloth_version = "RedCloth::VERSION" (CRLF* EOF | double_return) ;
+  redcloth_version = ("RedCloth" >A ("::" | " " ) "VERSION"i ":"? " ")? %{STORE(prefix)} "RedCloth::VERSION" (CRLF* EOF | double_return) ;
 
   pre_tag := |*
     pre_tag_end         { CAT(block); DONE(block); fgoto main; };
