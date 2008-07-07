@@ -5,12 +5,13 @@
 * Markdown support has been removed.
 * Single newlines become <br> tags, just as in traditional RedCloth and other Textile parsers.
 * The restrictions parameter is observed just like previous versions (except :hard_breaks is now the default).
-* Arguments to to_html are called so extensions from the versions are compatible.
+* Arguments to RedCloth#to_html are called so extensions from the versions are compatible.
 * Custom block tags can be implemented as in the previous version, though the means of implementing them differs.
 * HTML embedded in the Textile input does not often need to be escaped from Textile parsing.
-* The parser will skip lines that begin with a space.
+* The parser will not wrap lines that begin with a space in paragraph tags.
 * Rudimentary support for LaTeX is built in.
+* RedCloth::VERSION on a line by itself inserts the version number into the output.
 * Output (less newlines and tabs) is identical to Textile 2 except a few cases where the RedCloth
   way was preferable.
-* RedCloth::VERSION on a line by itself inserts the version number into the output.
-* Oh yeah... and it's 40 times faster than the previous version.
+* Over 500 tests prevent regression
+* It's 40 times faster than the previous version.
