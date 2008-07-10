@@ -55,5 +55,11 @@ class TestParser < Test::Unit::TestCase
     html = "<p>RedCloth version #{RedCloth::VERSION}</p>"
     assert_equal html, RedCloth.new(input).to_html
   end
+  
+  def test_inline_redcloth_version
+    input = "The current RedCloth version is [RedCloth::VERSION]"
+    html = "<p>The current RedCloth version is #{RedCloth::VERSION}</p>"
+    assert_equal html, RedCloth.new(input).to_html
+  end
 
 end

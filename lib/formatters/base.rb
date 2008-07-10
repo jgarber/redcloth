@@ -29,6 +29,10 @@ module RedCloth::Formatters
     def redcloth_version(opts)
       p(:text => "#{opts[:prefix]}#{RedCloth::VERSION}")
     end
+
+    def inline_redcloth_version(opts)
+      RedCloth::VERSION
+    end
     
     def method_missing(method, opts)
       opts[:text] || ""

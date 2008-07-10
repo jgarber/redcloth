@@ -68,6 +68,9 @@
   cee = [Cc] ;
   copyright = ( "[" cee "]" | "(" cee ")" ) ;
   entity = ( "&" %A ( '#' digit+ | ( alpha ( alpha | digit )+ ) ) %T ';' ) >X ;
+  
+  # info
+  redcloth_version = "[RedCloth::VERSION]" ;
 
   other_phrase = phrase -- dim_noactions;
 
@@ -119,6 +122,8 @@
     end_tag { INLINE(block, inline_html); };
     empty_tag { INLINE(block, inline_html); };
     html_comment { INLINE(block, inline_html); };
+
+    redcloth_version { INLINE(block, inline_redcloth_version); };
 
     other_phrase => esc;
     PUNCT => esc;
