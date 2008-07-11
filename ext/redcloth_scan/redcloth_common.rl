@@ -12,7 +12,7 @@
   action ignore { rb_str_append(block, rb_funcall(self, rb_intern("ignore"), 1, regs)); }
 
   # simple
-  CRLF = ( '\r'? '\n' ) ;
+  LF = ( '\n' ) ;
   default = ^0 ;
   EOF = 0 ;
 
@@ -78,7 +78,7 @@
   AttrSet = ( Attr | Nmtoken space+ ) ;
   
   script_tag_start = ( "<script" [^>]* ">" ) >X >A %T ;
-  script_tag_end = ( "</script>" >A %T CRLF? ) >X ;
+  script_tag_end = ( "</script>" >A %T LF? ) >X ;
   
 
   # URI tokens (lifted from Mongrel)
@@ -107,7 +107,7 @@
   # common
   title = ( '(' default+ >A %{ STORE(title) } :> ')' ) ;
   word = ( alnum | safe | " " ) ;
-  mspace = ( ( " " | "\t" | CRLF )+ ) -- CRLF{2} ;
+  mspace = ( ( " " | "\t" | LF )+ ) -- LF{2} ;
   mtext = ( chars (mspace chars)* ) ;
 
 }%%;

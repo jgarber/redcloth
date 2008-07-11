@@ -20,11 +20,11 @@ int SYM_escape_preformatted;
 
   # blocks
   notextile_tag_start = "<notextile>" ;
-  notextile_tag_end = "</notextile>" CRLF? ;
+  notextile_tag_end = "</notextile>" LF? ;
   noparagraph_line_start = " "+ ;
   notextile_block_start = ( "notextile" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   pre_tag_start = "<pre" [^>]* ">" (space* "<code>")? ;
-  pre_tag_end = ("</code>" space*)? "</pre>" CRLF? ;
+  pre_tag_end = ("</code>" space*)? "</pre>" LF? ;
   pre_block_start = ( "pre" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   bc_start = ( "bc" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) ;
   bq_start = ( "bq" >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE(cite) } )? " "+ ) ;
@@ -33,7 +33,7 @@ int SYM_escape_preformatted;
   block_start = ( btype >A %{ STORE(type) } A C :> "." ( "." %extend | "" ) " "+ ) >B %{ STORE_B(fallback) };
   all_btypes = btype | non_ac_btype;
   next_block_start = ( all_btypes A_noactions C_noactions :> "."+ " " ) >A @{ p = reg - 1; } ;
-  double_return = CRLF{2,} ;
+  double_return = LF{2,} ;
   block_end = ( double_return | EOF );
   ftype = ( "fn" >A %{ STORE(type) } digit+ >A %{ STORE(id) } ) ;
   footnote_start = ( ftype A C :> dotspace ) ;
@@ -42,8 +42,8 @@ int SYM_escape_preformatted;
   list_start  = ( ( ul | ol )+ N A C :> " "+ ) >{nest = 0;} ;
   dl_start = "-" . " "+ ;
   dd_start = ":=" ;
-  long_dd  = dd_start " "* CRLF %{ ADD_BLOCK(); ASET(type, dd); } any+ >A %{ TRANSFORM(text) } :>> "=:" ;
-  blank_line = CRLF;
+  long_dd  = dd_start " "* LF %{ ADD_BLOCK(); ASET(type, dd); } any+ >A %{ TRANSFORM(text) } :>> "=:" ;
+  blank_line = LF;
   link_alias = ( "[" >{ ASET(type, ignore) } %A phrase %T "]" %A uri %{ STORE_URL(href); } ) ;
   
   # image lookahead
@@ -57,22 +57,22 @@ int SYM_escape_preformatted;
   block_empty_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? "/>" | "<" BlockTagName "/>" ;
   block_end_tag = "</" BlockTagName space* ">" ;
   html_start = indent >B %{STORE_B(indent_before_start)} block_start_tag >B %{STORE_B(start_tag)}  indent >B %{STORE_B(indent_after_start)} ;
-  html_end = indent >B %{STORE_B(indent_before_end)} block_end_tag >B %{STORE_B(end_tag)} (indent CRLF?) >B %{STORE_B(indent_after_end)} ;
-  standalone_html = indent (block_start_tag | block_empty_tag | block_end_tag) indent CRLF+;
+  html_end = indent >B %{STORE_B(indent_before_end)} block_end_tag >B %{STORE_B(end_tag)} (indent LF?) >B %{STORE_B(indent_after_end)} ;
+  standalone_html = indent (block_start_tag | block_empty_tag | block_end_tag) indent LF+;
 
   # tables
-  para = ( default+ ) -- CRLF ;
-  btext = para ( CRLF{2} )? ;
+  para = ( default+ ) -- LF ;
+  btext = para ( LF{2} )? ;
   tddef = ( D? S A C :> dotspace ) ;
   td = ( tddef? btext >A %T :> "|" >{PASS(table, text, td);} ) >X ;
   trdef = ( A C :> dotspace ) ;
   tr = ( trdef? "|" %{INLINE(table, tr_open);} td+ ) >X %{INLINE(table, tr_close);} ;
-  trows = ( tr (CRLF >X tr)* ) ;
-  tdef = ( "table" >X A C :> dotspace CRLF ) ;
+  trows = ( tr (LF >X tr)* ) ;
+  tdef = ( "table" >X A C :> dotspace LF ) ;
   table = ( tdef? trows >{INLINE(table, table_open);} ) >{ reg = NULL; } ;
 
   # info
-  redcloth_version = ("RedCloth" >A ("::" | " " ) "VERSION"i ":"? " ")? %{STORE(prefix)} "RedCloth::VERSION" (CRLF* EOF | double_return) ;
+  redcloth_version = ("RedCloth" >A ("::" | " " ) "VERSION"i ":"? " ")? %{STORE(prefix)} "RedCloth::VERSION" (LF* EOF | double_return) ;
 
   pre_tag := |*
     pre_tag_end         { CAT(block); DONE(block); fgoto main; };
@@ -111,7 +111,7 @@ int SYM_escape_preformatted;
   *|;
 
   noparagraph_line := |*
-    CRLF  { ADD_BLOCK(); fgoto main; };
+    LF  { ADD_BLOCK(); fgoto main; };
     default => cat;
   *|;
 
@@ -245,7 +245,7 @@ int SYM_escape_preformatted;
         fgoto main; 
       }      
     };
-    CRLF list_start { 
+    LF list_start { 
       ADD_BLOCK(); 
       list_layout = rb_ary_new(); 
       LIST_ITEM(); 
@@ -261,13 +261,13 @@ int SYM_escape_preformatted;
   *|;
 
   list := |*
-    CRLF list_start { ADD_BLOCK(); LIST_ITEM(); };
+    LF list_start { ADD_BLOCK(); LIST_ITEM(); };
     block_end       { ADD_BLOCK(); nest = 0; LIST_CLOSE(); fgoto main; };
     default => cat;
   *|;
 
   dl := |*
-    CRLF dl_start   { ADD_BLOCK(); ASET(type, dt); };
+    LF dl_start   { ADD_BLOCK(); ASET(type, dt); };
     dd_start        { ADD_BLOCK(); ASET(type, dd); };
     long_dd         { INLINE(html, dd); };
     block_end       { ADD_BLOCK(); INLINE(html, dl_close);  fgoto main; };
@@ -474,6 +474,7 @@ redcloth_to(self, formatter)
   char *pe, *p;
   int len = 0;
   
+  rb_funcall(self, rb_intern("delete!"), 1, rb_str_new2("\r"));
   VALUE working_copy = rb_obj_clone(self);
   rb_extend_object(working_copy, formatter);
   if (rb_funcall(working_copy, rb_intern("lite_mode"), 0) == Qtrue) {

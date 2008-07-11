@@ -244,3 +244,24 @@ html: |-
   		<td> 4 </td>
   	</tr>
   </table>
+---
+name: two adjacent tables
+in: |-
+  |a|b|c|
+  
+  |1|2|3|
+html: |-
+  <table>
+  	<tr>
+  		<td>a</td>
+  		<td>b</td>
+  		<td>c</td>
+  	</tr>
+  </table>
+  <table>
+  	<tr>
+  		<td>1</td>
+  		<td>2</td>
+  		<td>3</td>
+  	</tr>
+  </table>

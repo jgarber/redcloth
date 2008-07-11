@@ -61,5 +61,11 @@ class TestParser < Test::Unit::TestCase
     html = "<p>The current RedCloth version is #{RedCloth::VERSION}</p>"
     assert_equal html, RedCloth.new(input).to_html
   end
+  
+  def test_parser_strips_carriage_returns
+    input = "This is a paragraph\r\n\r\nThis is a\r\nline break.\r\n\r\n<div>\r\ntest\r\n\r\n</div>"
+    html = "<p>This is a paragraph</p>\n<p>This is a<br />\nline break.</p>\n<div>\n<p>test</p>\n</div>"
+    assert_equal html, RedCloth.new(input).to_html
+  end
 
 end
