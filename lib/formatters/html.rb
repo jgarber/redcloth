@@ -189,7 +189,7 @@ module RedCloth::Formatters::HTML
   
   def dim(opts)
     space = opts[:space] ? " " : ''
-    "#{opts[:x]}#{space}&#215;#{space}"
+    "#{opts[:text]}#{space}&#215;#{space}"
   end
   
   def trademark(opts)

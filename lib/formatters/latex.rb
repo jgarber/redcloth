@@ -203,7 +203,7 @@ module RedCloth::Formatters::LATEX
   
   def dim(opts)
     space = opts[:space] ? " " : ''
-    "#{opts[:x]}#{space}\\texttimes{}#{space}"
+    "#{opts[:text]}#{space}\\texttimes{}#{space}"
   end
   
   private

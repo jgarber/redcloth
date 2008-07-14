@@ -154,6 +154,14 @@ in: "Observe: 2x3x4."
 html: "<p>Observe: 2&#215;3&#215;4.</p>"
 lite_mode_html: "Observe: 2&#215;3&#215;4."
 --- 
+name: dimension sign with double quotes
+in: 'My mouse: 2.5" x 4".'
+html: '<p>My mouse: 2.5&quot; &#215; 4&quot;.</p>'
+--- 
+name: dimension sign with single quotes
+in: "My office: 5' x 4.5'."
+html: "<p>My office: 5&#8217; &#215; 4.5&#8217;.</p>"
+--- 
 name: trademark and copyright
 desc: Conversion of trademark and copyright symbols.
 in: one(TM), two(R), three(C).
