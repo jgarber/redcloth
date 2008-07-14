@@ -4,6 +4,7 @@
 * New SuperRedCloth (RedCloth 4.0) is a total rewrite using Ragel for the parsing.
 * Markdown support has been removed.
 * Single newlines become <br> tags, just as in traditional RedCloth and other Textile parsers.
+* HTML special characters are automatically escaped inside code signatures, like Textile 2.  This means you can simply write @<br />@ and the symbols are escaped whereas in RedCloth 3 you had to write @&lt;br /&gt;@ to make the code fragment readable.
 * The restrictions parameter is observed just like previous versions (except :hard_breaks is now the default).
 * Arguments to RedCloth#to_html are called so extensions from the versions are compatible.
 * Custom block tags can be implemented as in the previous version, though the means of implementing them differs.
