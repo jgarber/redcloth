@@ -16,7 +16,7 @@ html: |-
   	<dd>yes</dd>
   </dl>
 ---
-name: definition lists with line breaks
+name: with line breaks
 in: |-
   - term := you can have line breaks
   just like other lists

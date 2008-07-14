@@ -2,9 +2,7 @@ require 'redcloth_scan'
 
 $:.unshift(File.dirname(__FILE__))
 
-require 'formatters/base'
-require 'formatters/html'
-require 'formatters/latex'
+Dir[File.join(File.dirname(__FILE__), 'formatters/*.rb')].each {|f| require f }
 require 'version'
 
 class RedCloth
@@ -81,15 +79,22 @@ class RedCloth
   end
   
   def to_html( *rules )
-    rules.each do |r|
-      method(r).call(self) if self.respond_to?(r)
-    end
+    apply_rules(rules)
     
     to(RedCloth::Formatters::HTML)
   end
   
-  def to_latex
+  def to_latex( *rules )
+    apply_rules(rules)
+    
     to(RedCloth::Formatters::LATEX)
+  end
+  
+  private
+  def apply_rules(rules)
+    rules.each do |r|
+      method(r).call(self) if self.respond_to?(r)
+    end
   end
   
 end

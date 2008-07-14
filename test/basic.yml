@@ -48,6 +48,7 @@ in: |-
   notextile. I saw a ship. It ate my elephant.
 html: |-
   I saw a ship. It ate my elephant.
+valid_html: false
 ---
 name: extended notextile block containing block start
 in: |-
@@ -58,6 +59,7 @@ html: |-
   I saw a ship. It ate my elephant.
   
   When the elephant comes to take a p. you...
+valid_html: false
 --- 
 name: pre block containing block start
 in: |-
@@ -733,6 +735,7 @@ html: |-
   <div>Just a test.</div>
   <div>Second div.</div>
   A notextile block ends it.
+valid_html: false
 ---
 name: simple parentheses
 in: |-

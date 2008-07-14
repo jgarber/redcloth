@@ -27,6 +27,7 @@ name: no paragraph tags
 desc: A line beginning with a space will be left untouched, and not wrapped in <p> tags.
 in: " No paragraph tags here."
 html: "No paragraph tags here."
+valid_html: false
 ---
 name: smart quotes
 desc: Single and double typewriter quotation marks ' and " are transformed into typographically correct “curly” quote marks.
@@ -291,6 +292,7 @@ html: |-
   document.write("Hello World!");
   </script>
   <noscript>Your browser doesn't support Javascript</noscript>
+valid_html: false
 ---
 name: class attribute
 desc: CSS classes are specified with () parentheses.
@@ -424,8 +426,8 @@ html: <div class="mydiv">My div</div>
 ---
 name: paragraphs with inline xhtml
 desc: Paragraphs that consist only of inline XHTML tags, will be enclosed in <p>...</p> tags.
-in: <img src="/img.gif" />
-html: <p><img src="/img.gif" /></p>
+in: <img src="/img.gif" alt="image" />
+html: <p><img src="/img.gif" alt="image" /></p>
 ---
 name: paragraphs with inline xhtml 2
 in: <span class="myspan">I'll make my own way.</span>
@@ -499,6 +501,7 @@ html: |-
 #   p. Leave me alone
 #   </p>
 note: This syntax is supported for backwards compatibility only, and doesn’t always work as expected. The block modifier notextile. should be used instead.
+valid_html: false
 ---
 name: left aligned text
 desc: Left alignment is specified with a < less than symbol.

@@ -31,7 +31,7 @@ html: |-
 ---
 name: mixing of textile and XHTML
 in: |-
-  <img src="test.jpg" />
+  <img src="test.jpg" alt="test" />
 
   Regular *paragraph*.
 
@@ -49,7 +49,7 @@ in: |-
 
   Another paragraph.
 html: |-
-  <p><img src="test.jpg" /></p>
+  <p><img src="test.jpg" alt="test" /></p>
   <p>Regular <strong>paragraph</strong>.</p>
   <div class="test">
   <p>This is one paragraph.</p>
@@ -62,13 +62,13 @@ html: |-
   </div>
   <p>Another paragraph.</p>
 ---
-name: mixing of textile and HTML
+name: mixing of textile and XHTML
 in: |-
-  <img src="test.jpg">
+  <img src="test.jpg" alt="test" />
 
   Regular *paragraph*.
 html: |-
-  <p><img src="test.jpg"></p>
+  <p><img src="test.jpg" alt="test" /></p>
   <p>Regular <strong>paragraph</strong>.</p>
 ---
 name: wraps inline HTML in paragraphs
@@ -79,11 +79,13 @@ name: self closing XHTML with following text not recognized
 comment: it will not recognize the self-closing block element
 in: '<hr/> this has been a horizontal rule'
 html: '<p><hr/> this has been a horizontal rule</p>'
+valid_html: false
 ---
 name: self closing HTML with following text not recognized
 comment: it will not recognize the self-closing block element
 in: '<hr> that was a horizontal rule too'
 html: '<hr> that was a horizontal rule too'
+valid_html: false
 ---
 name: preserves block html
 in: |-
@@ -93,10 +95,12 @@ in: |-
 html: |-
   <div>123 Anystreet</div>
   <p foo="bar">Explicit paragraph</p>
+valid_html: false
 ---
 name: preserves empty block standalone elements
 in: "<hr />"
 html: "<hr />"
+valid_html: false
 ---
 name: unfinished standalone HTML
 in: |-
@@ -108,6 +112,7 @@ html: |-
   <div>
   <p>This is some div text.</p>
   <p>More div text.</p>
+valid_html: false
 ---
 name: unfinished HTML block
 in: |-
@@ -118,6 +123,7 @@ html: |-
   <div>This is some div text.<br />
   <br />
   More div text.
+valid_html: false
 ---
 name: complex example from real life
 in: |-
@@ -156,6 +162,7 @@ html: |-
   <h3>Jerry</h3>
   <p>(540) 555-1234</p>
   </div>
+valid_html: false
 ---
 name: embedded javascript
 in: |-

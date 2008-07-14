@@ -76,8 +76,10 @@ html: |-
   	<li>five</li>
   	<li>six</li>
   </ol>
+valid_html: false
+comment: there's not a good, valid alternative to the start attribute
 ---
-name: continue list after break
+name: continue after break
 in: |-
   # one
   # two
@@ -112,6 +114,8 @@ html: |-
   	<li>eight</li>
   	<li>nine</li>
   </ol>
+valid_html: false
+comment: there's not a good, valid alternative to the start attribute
 ---
 name: continue list when prior list contained nested list
 in: |-
@@ -148,6 +152,8 @@ html: |-
   	<li>eight</li>
   	<li>nine</li>
   </ol>
+valid_html: false
+comment: there's not a good, valid alternative to the start attribute
 ---
 name: list start number
 in: |-
@@ -169,6 +175,8 @@ html: |-
   	<li>ten</li>
   	<li>eleven</li>
   </ol>
+valid_html: false
+comment: there's not a good, valid alternative to the start attribute
 ---
 name: continue list after started list
 in: |-
@@ -190,6 +198,8 @@ html: |-
   	<li>thirteen</li>
   	<li>fourteen</li>
   </ol>
+valid_html: false
+comment: there's not a good, valid alternative to the start attribute
 ---
 name: end notes
 in: |-
