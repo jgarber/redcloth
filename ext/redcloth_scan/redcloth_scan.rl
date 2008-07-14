@@ -59,6 +59,7 @@ int SYM_escape_preformatted;
   html_start = indent >B %{STORE_B(indent_before_start)} block_start_tag >B %{STORE_B(start_tag)}  indent >B %{STORE_B(indent_after_start)} ;
   html_end = indent >B %{STORE_B(indent_before_end)} block_end_tag >B %{STORE_B(end_tag)} (indent LF?) >B %{STORE_B(indent_after_end)} ;
   standalone_html = indent (block_start_tag | block_empty_tag | block_end_tag) indent LF+;
+  html_end_terminating_block = ( indent block_end_tag ) >A @{ p = reg - 1; } ;
 
   # tables
   para = ( default+ ) -- LF ;
@@ -219,6 +220,18 @@ int SYM_escape_preformatted;
         fgoto main; 
       }
     };
+    html_end_terminating_block { 
+        if (NIL_P(extend)) { 
+          ADD_BLOCK(); 
+          INLINE(html, bq_close); 
+          fgoto main; 
+        } else {
+          ADD_EXTENDED_BLOCK(); 
+          INLINE(html, bq_close); 
+          END_EXTENDED(); 
+          fgoto main; 
+        }
+      };
     default => cat;
   *|;
 
@@ -236,6 +249,16 @@ int SYM_escape_preformatted;
       } 
     };
     double_return next_block_start { 
+      if (NIL_P(extend)) { 
+        ADD_BLOCK(); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCK(); 
+        END_EXTENDED(); 
+        fgoto main; 
+      }      
+    };
+    html_end_terminating_block { 
       if (NIL_P(extend)) { 
         ADD_BLOCK(); 
         fgoto main; 

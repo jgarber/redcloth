@@ -247,3 +247,25 @@ html: |-
   ;var i,c,x;while(eval(kode));}hivelogic_enkoder();
   /* ]]> */
   </script>.</p>
+---
+name: HTML end tag can end paragraph
+in: |-
+  <div>
+  This is a paragraph.
+  </div>
+html: |-
+  <div>
+  <p>This is a paragraph.</p>
+  </div>
+---
+name: HTML end tag can end blockquote
+in: |-
+  <div>
+  bq. This is a blockquote.
+  </div>
+html: |-
+  <div>
+  <blockquote>
+  <p>This is a blockquote.</p>
+  </blockquote>
+  </div>
