@@ -72,6 +72,7 @@ class RedCloth
   # any _restrictions_ specified.
   #
   #   r = RedCloth.new( "h1. A *bold* man" )
+  #     #=> "h1. A *bold* man"
   #   r.to_html
   #     #=>"<h1>A <b>bold</b> man</h1>"
   #
@@ -80,12 +81,24 @@ class RedCloth
     super( string )
   end
   
+  #
+  # Generates HTML from the Textile contents.
+  #
+  #   RedCloth.new( "And then? She *fell*!" ).to_html
+  #     #=>"<p>And then? She <strong>fell</strong>!</p>"
+  #
   def to_html( *rules )
     apply_rules(rules)
     
     to(RedCloth::Formatters::HTML)
   end
   
+  #
+  # Generates LaTeX from the Textile contents.
+  #
+  #   RedCloth.new( "And then? She *fell*!" ).to_latex
+  #     #=> "And then? She \\textbf{fell}!\n\n"
+  #
   def to_latex( *rules )
     apply_rules(rules)
     
