@@ -2,7 +2,9 @@ require 'redcloth_scan'
 
 $:.unshift(File.dirname(__FILE__))
 
-Dir[File.join(File.dirname(__FILE__), 'formatters/*.rb')].each {|f| require f }
+require 'formatters/base'
+require 'formatters/html'
+require 'formatters/latex'
 require 'version'
 
 class RedCloth
