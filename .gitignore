@@ -4,7 +4,6 @@ ext/redcloth_scan/*.bundle
 ext/redcloth_scan/*.so
 lib/*.bundle
 lib/*.so
-lib/version.rb
 doc/rdoc/*
 tmp/*
 pkg/*

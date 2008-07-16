@@ -8,8 +8,6 @@ require 'formatters/latex'
 require 'version'
 
 class RedCloth
-  include RedClothVersion
-  
   #
   # Accessors for setting security restrictions.
   #

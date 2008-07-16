@@ -5,12 +5,11 @@ require 'rake/rdoctask'
 require 'rake/testtask'
 require 'fileutils'
 include FileUtils
+require 'lib/version'
 
-NAME = "redcloth"
-OLD_NAME = "RedCloth"
-SUMMARY = "a fast library for formatting Textile as HTML"
-REV = (`#{ENV['GIT'] || "git"} rev-list HEAD`.split.length + 20).to_s
-VERS = ENV['VERSION'] || "3" + (REV ? ".#{REV}" : "")
+NAME = RedCloth::NAME
+SUMMARY = RedCloth::DESCRIPTION
+VERS = RedCloth::VERSION::STRING
 CLEAN.include ['ext/redcloth_scan/*.{bundle,so,obj,pdb,lib,def,exp,c,o,xml}', 'ext/redcloth_scan/Makefile', '**/.*.sw?', '*.gem', '.config']
 CLOBBER.include ['lib/*.{bundle,so,obj,pdb,lib,def,exp}']
 
@@ -18,7 +17,7 @@ desc "Does a full compile, test run"
 task :default => [:compile, :test]
 
 desc "Compiles all extensions"
-task :compile => [:version, :redcloth_scan] do
+task :compile => [:redcloth_scan] do
   if Dir.glob(File.join("lib","redcloth_scan.*")).length == 0
     STDERR.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     STDERR.puts "Gem actually failed to build.  Your system is"
@@ -74,7 +73,7 @@ end
 
 spec =
     Gem::Specification.new do |s|
-        s.name = OLD_NAME
+        s.name = NAME
         s.version = VERS
         s.platform = Gem::Platform::RUBY
         s.has_rdoc = true
@@ -153,7 +152,7 @@ PKG_FILES = FileList[
   "extras/**/*", "lib/redcloth_scan.so"]
 
 Win32Spec = Gem::Specification.new do |s|
-  s.name = OLD_NAME
+  s.name = NAME
   s.version = VERS
   s.platform = 'mswin32'
   s.has_rdoc = false
@@ -172,10 +171,10 @@ Win32Spec = Gem::Specification.new do |s|
   s.bindir = "bin"
 end
   
-WIN32_PKG_DIR = "pkg/#{OLD_NAME}-#{VERS}-mswin32"
+WIN32_PKG_DIR = "pkg/#{NAME}-#{VERS}-mswin32"
 
 file WIN32_PKG_DIR => [:package] do
-  cp_r "pkg/#{OLD_NAME}-#{VERS}", "#{WIN32_PKG_DIR}"
+  cp_r "pkg/#{NAME}-#{VERS}", "#{WIN32_PKG_DIR}"
 end
 
 desc "Cross-compile the redcloth_scan extension for win32"
@@ -199,22 +198,12 @@ CLEAN.include WIN32_PKG_DIR
 
 desc "Build and install the RedCloth gem on your system"
 task :install => [:package] do
-  sh %{sudo gem install pkg/#{OLD_NAME}-#{VERS}}
+  sh %{sudo gem install pkg/#{NAME}-#{VERS}}
 end
 
 desc "Uninstall the RedCloth gem from your system"
 task :uninstall => [:clean] do
-  sh %{sudo gem uninstall #{OLD_NAME}}
-end
-
-task :version do
-  File.open("lib/version.rb", "w") do |file|
-    file.puts <<EOD
-module RedClothVersion
-  VERSION = "#{VERS}"
-end
-EOD
-  end
+  sh %{sudo gem uninstall #{NAME}}
 end
 
 RAGEL_CODE_GENERATION_STYLES = {

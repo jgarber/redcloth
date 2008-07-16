@@ -3,6 +3,11 @@ $:.unshift(File.dirname(__FILE__) + '/../lib/')
 require 'optparse'
 require 'redcloth'
 
+if %w(--version -v).include? ARGV.first
+  puts "#{RedCloth::NAME} #{RedCloth::VERSION::STRING}"
+  exit(0)
+end
+
 output_as = "html"
 opts = OptionParser.new do |opts|
     opts.banner = "Usage: redcloth [options] [redcloth_formatted.txt]"

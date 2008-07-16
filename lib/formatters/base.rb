@@ -27,11 +27,11 @@ module RedCloth::Formatters
     alias_method :notextile, :ignore
     
     def redcloth_version(opts)
-      p(:text => "#{opts[:prefix]}#{RedCloth::VERSION}")
+      p(:text => "#{opts[:prefix]}#{RedCloth::VERSION::STRING}")
     end
 
     def inline_redcloth_version(opts)
-      RedCloth::VERSION
+      RedCloth::VERSION::STRING
     end
     
     def method_missing(method, opts)
