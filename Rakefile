@@ -87,7 +87,7 @@ spec =
         s.files = %w(COPYING README Rakefile) +
           Dir.glob("{bin,doc,test,lib,extras}/**/*") + 
           Dir.glob("ext/**/*.{h,c,rb,rl}") + 
-          %w[ext/redcloth_scan/redcloth_scan.c] # needed because it's generated later
+          %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
         
         s.require_path = "lib"
         #s.autorequire = "redcloth"  # no no no this is tHe 3v1l
