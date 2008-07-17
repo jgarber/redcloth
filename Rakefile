@@ -5,7 +5,7 @@ require 'rake/rdoctask'
 require 'rake/testtask'
 require 'fileutils'
 include FileUtils
-require 'lib/version'
+require 'lib/redcloth/version'
 
 NAME = RedCloth::NAME
 SUMMARY = RedCloth::DESCRIPTION

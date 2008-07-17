@@ -1,5 +1,5 @@
-class RedCloth #:nodoc:
-  module VERSION #:nodoc:
+module RedCloth
+  module VERSION
     MAJOR = 4
     MINOR = 0
     TINY  = 0

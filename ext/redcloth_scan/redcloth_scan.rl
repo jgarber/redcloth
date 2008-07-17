@@ -8,7 +8,7 @@
 #include <ruby.h>
 #include "redcloth.h"
 
-VALUE super_ParseError, super_RedCloth, super_HTML, super_LATEX;
+VALUE mRedCloth, super_ParseError, super_RedCloth, super_HTML, super_LATEX;
 int SYM_escape_preformatted;
 
 %%{
@@ -509,8 +509,10 @@ redcloth_to(self, formatter)
 
 void Init_redcloth_scan()
 {
- /* The RedCloth parser. See the README for Textile syntax. */
-  super_RedCloth = rb_define_class("RedCloth", rb_cString);
+  mRedCloth = rb_define_module("RedCloth");
+  /* A Textile document that can be converted to other formats. See
+   the README for Textile syntax. */
+  super_RedCloth = rb_define_class_under(mRedCloth, "TextileDoc", rb_cString);
   rb_define_method(super_RedCloth, "to", redcloth_to, 1);
   super_ParseError = rb_define_class_under(super_RedCloth, "ParseError", rb_eException);
   /* Escaping */

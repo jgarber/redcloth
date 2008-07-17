@@ -3,7 +3,7 @@
 
 /* variable defs */
 #ifndef redcloth_scan_c
-extern VALUE super_ParseError, super_RedCloth;
+extern VALUE super_ParseError, mRedCloth, super_RedCloth;
 extern int SYM_escape_preformatted;
 #endif
 
