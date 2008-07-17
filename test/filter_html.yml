@@ -18,6 +18,23 @@ filtered_html: |-
 in:  Just a little harmless xss <script src=http://ha.ckers.org/xss.js></script>
 filtered_html: <p>Just a little harmless xss &lt;script src=http://ha.ckers.org/xss.js&gt;&lt;/script&gt;</p>
 ---
+name: escapes partial inline script tag
+desc: The end tag is malformed, but it must be escaped since a browser would recognize it
+in:  Just a little harmless xss <script src=http://ha.ckers.org/xss.js></script
+filtered_html: <p>Just a little harmless xss &lt;script src=http://ha.ckers.org/xss.js&gt;&lt;/script</p>
+valid_html: false
+---
+name: escapes partial scanner-level script tag
+desc: The end tag is malformed, but it must be escaped since a browser would recognize it anyway.
+in: <script src=http://ha.ckers.org/xss.js></script
+filtered_html: '&lt;script src=http://ha.ckers.org/xss.js&gt;&lt;/script'
+valid_html: false
+---
+name: escapes self-closing scanner-level tag
+in: <hr />
+filtered_html: '&lt;hr /&gt;'
+valid_html: false
+---
 name: processes text beginning with space
 in: ' This should be <b>escaped</b>: <script type="text/javascript">alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");</script>'
 filtered_html: 'This should be &lt;b&gt;escaped&lt;/b&gt;: &lt;script type="text/javascript"&gt;alert("Hai. I`m in ya PC. Makin ya XSS viruzz! KThxBye");&lt;/script&gt;'

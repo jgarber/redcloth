@@ -101,7 +101,7 @@ in: |-
   <script>
   function main(){}
 html: |-
-  <script>
+  <script><br />
   function main(){}
 valid_html: false
 ---

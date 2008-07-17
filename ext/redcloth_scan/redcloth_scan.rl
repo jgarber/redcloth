@@ -107,7 +107,8 @@ int SYM_escape_preformatted;
   *|;
 
   script_tag := |*
-    script_tag_end     { CAT(block); ASET(type, ignore); ADD_BLOCK(); fgoto main; };
+    script_tag_end   { CAT(block); ASET(type, ignore); ADD_BLOCK(); fgoto main; };
+    EOF              { ASET(type, ignore); ADD_BLOCK(); fgoto main; };
     default => cat;
   *|;
 
