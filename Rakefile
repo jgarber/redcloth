@@ -71,6 +71,11 @@ Rake::RDocTask.new do |rdoc|
     rdoc.rdoc_files.add ['README', 'CHANGELOG', 'COPYING', 'lib/**/*.rb', 'ext/**/*.c']
 end
 
+PKG_FILES = %w(CHANGELOG COPYING README Rakefile) +
+  Dir.glob("{bin,doc,test,lib,extras}/**/*") + 
+  Dir.glob("ext/**/*.{h,c,rb,rl}") + 
+  %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
+
 spec =
     Gem::Specification.new do |s|
         s.name = NAME
@@ -82,12 +87,9 @@ spec =
         s.description = s.summary
         s.author = "Jason Garber"
         s.email = 'redcloth-upwards@rubyforge.org'
-        s.homepage = 'http://code.whytheluckystiff.net/redcloth/'
+        s.homepage = 'http://redcloth.org/'
 
-        s.files = %w(COPYING README Rakefile) +
-          Dir.glob("{bin,doc,test,lib,extras}/**/*") + 
-          Dir.glob("ext/**/*.{h,c,rb,rl}") + 
-          %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
+        s.files = PKG_FILES
         
         s.require_path = "lib"
         #s.autorequire = "redcloth"  # no no no this is tHe 3v1l
@@ -144,13 +146,6 @@ file "#{ext}/Makefile" => ["#{ext}/extconf.rb", "#{ext}/redcloth_scan.c","#{ext}
   Dir.chdir(ext) do ruby "extconf.rb" end
 end
 
-PKG_FILES = FileList[
-  "test/**/*.{rb,html,xhtml}",
-  "lib/**/*.rb",
-  "ext/**/*.{c,rb,h,rl}",
-  "CHANGELOG", "README", "Rakefile", "COPYING",
-  "extras/**/*", "lib/redcloth_scan.so"]
-
 Win32Spec = Gem::Specification.new do |s|
   s.name = NAME
   s.version = VERS
@@ -161,9 +156,9 @@ Win32Spec = Gem::Specification.new do |s|
   s.description = s.summary
   s.author = "Jason Garber"
   s.email = 'redcloth-upwards@rubyforge.org'
-  s.homepage = 'http://code.whytheluckystiff.net/redcloth/'
+  s.homepage = 'http://redcloth.org/'
 
-  s.files = PKG_FILES
+  s.files = PKG_FILES + ["lib/redcloth_scan.so"]
 
   s.require_path = "lib"
   #s.autorequire = "redcloth"  # no no no this is tHe 3v1l
@@ -216,6 +211,7 @@ RAGEL_CODE_GENERATION_STYLES = {
   'G2' => "Really fast goto-driven FSM"
 }
 
+desc "Find the fastest code generation style for Ragel"
 task :optimize do
   require 'extras/ragel_profiler'
   results = []
