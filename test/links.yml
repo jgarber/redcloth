@@ -200,3 +200,15 @@ html: '<p><a href="http://slashdot.org/">He said it is &#8220;very unlikely&#822
 name: linked quoted phrase
 in: '""Open the pod bay doors please, HAL."":http://www.youtube.com/watch?v=npN9l2Bd06s'
 html: '<p><a href="http://www.youtube.com/watch?v=npN9l2Bd06s">&#8220;Open the pod bay doors please, <span class="caps">HAL</span>.&#8221;</a></p>'
+---
+name: links containing underscores
+in: 'This is a link to a "Wikipedia article about Barack":http://en.wikipedia.org/wiki/Barack_Obama'
+html: '<p>This is a link to a <a href="http://en.wikipedia.org/wiki/Barack_Obama">Wikipedia article about Barack</a></p>'
+---
+name: links containing parentheses
+in: 'This is a link to a ["Wikipedia article about Textile":http://en.wikipedia.org/wiki/Textile_(markup_language)]'
+html: '<p>This is a link to a <a href="http://en.wikipedia.org/wiki/Textile_(markup_language)">Wikipedia article about Textile</a></p>'
+---
+name: links contained in parentheses
+in: 'This is a regular link (but in parentheses: "Google":http://www.google.com)'
+html: '<p>This is a regular link (but in parentheses: <a href="http://www.google.com">Google</a>)</p>'

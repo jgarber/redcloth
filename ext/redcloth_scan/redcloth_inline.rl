@@ -13,7 +13,8 @@
 
   # links
   link_says = ( C_noactions "."* " "* (mtext+ -- '":') ) >A %{ STORE(link_text); } ;
-  link = ( "["? '"' link_says  '":' %A uri %{ STORE_URL(href); } :> "]"? ) >X ;
+  link = ( '"' link_says  '":' %A uri %{ STORE_URL(href); } ) >X ;
+  bracketed_link = ( '["' link_says  '":' %A uri %{ STORE(href); } :> "]" ) >X ;
 
   # images
   image_src = ( uri ) >A %{ STORE(src) } ;
@@ -84,6 +85,7 @@
     image { INLINE(block, image); };
 
     link { PARSE_LINK_ATTR(link_text); PASS(block, name, link); };
+    bracketed_link { PARSE_LINK_ATTR(link_text); PASS(block, name, link); };
 
     code { PARSE_ATTR(text); PASS_CODE(block, text, code, opts); };
     code_tag_start { CAT(block); fgoto code_tag; };
