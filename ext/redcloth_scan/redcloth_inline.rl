@@ -39,7 +39,8 @@
   em = "["? "_" >X mtext >A %T :> "_" "]"? ;
   i = "["? "__" >X mtext >A %T :> "__" "]"? ;
   del = "[-" >X C ( mtext ) >A %T :>> "-]" ;
-  del_phrase = (" -") >X C ( mtext ) >A %T :>> ( "-" (" " | PUNCT) @{ fhold; } ) ;
+  emdash_parenthetical_phrase_with_spaces = " -- " mtext " -- " ;
+  del_phrase = ((" -") >X C ( mtext ) >A %T :>> ( "-" (" " | PUNCT) @{ fhold; } )) - emdash_parenthetical_phrase_with_spaces ;
   ins = "["? "+" >X mtext >A %T :> "+" "]"? ;
   sup = "["? "^" >X mtext >A %T :> "^" "]"? ;
   sub = "["? "~" >X mtext >A %T :> "~" "]"? ;

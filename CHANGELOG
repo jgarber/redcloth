@@ -1,5 +1,6 @@
 = Edge
 
+* Fixed parsing sentences that had two em dashes surrounded by spaces from becoming del phrases. #19
 * Fixed links including prior quoted phrases. #17
 
 

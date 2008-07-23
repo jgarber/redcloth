@@ -123,6 +123,18 @@ in: Observe -- very nice!
 html: <p>Observe &#8212; very nice!</p>
 latex: "Observe --- very nice!\n\n"
 --- 
+name: parenthetical phrase set off with em dashes
+desc: Sentences with two em dashes should not turn them into strikethroughs
+in: An emdash indicates a parenthetical thought--like this one--which is set apart from the rest of a sentence.
+html: "<p>An emdash indicates a parenthetical thought&#8212;like this one&#8212;which is set apart from the rest of a sentence.</p>"
+latex: "An emdash indicates a parenthetical thought---like this one---which is set apart from the rest of a sentence.\n\n"
+---
+name: parenthetical phrase set off with em dashes surrounded by spaces
+desc: Sentences with two em dashes should not turn them into strikethroughs
+in: An emdash indicates a parenthetical thought -- like this one -- which is set apart from the rest of a sentence.
+html: "<p>An emdash indicates a parenthetical thought &#8212; like this one &#8212; which is set apart from the rest of a sentence.</p>"
+latex: "An emdash indicates a parenthetical thought --- like this one --- which is set apart from the rest of a sentence.\n\n"
+---
 name: single hyphens with spaces
 desc: Single hyphens are replaced with en-dashes if they are surrounded by spaces.
 in: Observe - tiny and brief.
