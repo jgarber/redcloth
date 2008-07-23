@@ -12,9 +12,12 @@
   include redcloth_common "redcloth_common.rl";
 
   # links
-  link_says = ( C_noactions "."* " "* (mtext+ -- '":') ) >A %{ STORE(link_text); } ;
-  link = ( '"' link_says  '":' %A uri %{ STORE_URL(href); } ) >X ;
-  bracketed_link = ( '["' link_says  '":' %A uri %{ STORE(href); } :> "]" ) >X ;
+  quoted_mtext = '"' mtext '"' ;
+  mtext_including_quotes = (mtext ' "' mtext '" ' mtext?)+ ;
+  mtext_no_quotes = mtext -- '"' ;
+  link_says = ( C_noactions "."* " "* ((quoted_mtext | mtext_including_quotes | mtext_no_quotes) -- '":') ) >A %{ STORE(link_text); } ;
+  link = ( '"' link_says '":' %A uri %{ STORE_URL(href); } ) >X ;
+  bracketed_link = ( '["' link_says '":' %A uri %{ STORE(href); } :> "]" ) >X ;
 
   # images
   image_src = ( uri ) >A %{ STORE(src) } ;

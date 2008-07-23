@@ -197,6 +197,10 @@ name: link containing quotes
 in: '"He said it is "very unlikely" this works":http://slashdot.org/'
 html: '<p><a href="http://slashdot.org/">He said it is &#8220;very unlikely&#8221; this works</a></p>'
 ---
+name: link containing multiple quotes
+in: '"He said it is "very unlikely" the "economic stimulus" works":http://slashdot.org/'
+html: '<p><a href="http://slashdot.org/">He said it is &#8220;very unlikely&#8221; the &#8220;economic stimulus&#8221; works</a></p>'
+---
 name: linked quoted phrase
 in: '""Open the pod bay doors please, HAL."":http://www.youtube.com/watch?v=npN9l2Bd06s'
 html: '<p><a href="http://www.youtube.com/watch?v=npN9l2Bd06s">&#8220;Open the pod bay doors please, <span class="caps">HAL</span>.&#8221;</a></p>'
@@ -212,3 +216,8 @@ html: '<p>This is a link to a <a href="http://en.wikipedia.org/wiki/Textile_(mar
 name: links contained in parentheses
 in: 'This is a regular link (but in parentheses: "Google":http://www.google.com)'
 html: '<p>This is a regular link (but in parentheses: <a href="http://www.google.com">Google</a>)</p>'
+---
+name: quotes and follow link
+in: 'Some "text" followed by a "link":http://redcloth.org.'
+html: '<p>Some &#8220;text&#8221; followed by a <a href="http://redcloth.org">link</a>.</p>'
+lite_mode_html: 'Some &#8220;text&#8221; followed by a <a href="http://redcloth.org">link</a>.'
