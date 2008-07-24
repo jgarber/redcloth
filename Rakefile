@@ -92,7 +92,7 @@ spec =
         
         s.files = PKG_FILES
         
-        s.require_path = "lib"
+        s.require_paths << "lib/case_sensitive_require"
         #s.autorequire = "redcloth"  # no no no this is tHe 3v1l
         s.extensions = FileList["ext/**/extconf.rb"].to_a
         s.executables = ["redcloth"]
