@@ -88,7 +88,8 @@ spec =
         s.author = "Jason Garber"
         s.email = 'redcloth-upwards@rubyforge.org'
         s.homepage = 'http://redcloth.org/'
-
+        s.rubyforge_project = 'redcloth'
+        
         s.files = PKG_FILES
         
         s.require_path = "lib"
@@ -149,7 +150,7 @@ end
 Win32Spec = Gem::Specification.new do |s|
   s.name = NAME
   s.version = VERS
-  s.platform = 'mswin32'
+  s.platform = 'x86-mswin32-60'
   s.has_rdoc = false
   s.extra_rdoc_files = ["README", "CHANGELOG", "COPYING"]
   s.summary = SUMMARY 
@@ -157,6 +158,7 @@ Win32Spec = Gem::Specification.new do |s|
   s.author = "Jason Garber"
   s.email = 'redcloth-upwards@rubyforge.org'
   s.homepage = 'http://redcloth.org/'
+  s.rubyforge_project = 'redcloth'
 
   s.files = PKG_FILES + ["lib/redcloth_scan.so"]
 
