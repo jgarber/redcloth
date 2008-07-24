@@ -1,5 +1,6 @@
 = Edge
 
+* Fixed lines starting with dashes being recognized as a definition list when there were no definitions.
 * Created alias RedCloth.rb so Rails 2.1 gem dependency works on case-sensitive operating systems	.
 * Fixed parsing sentences that had two em dashes surrounded by spaces from becoming del phrases. #19
 * Fixed links including prior quoted phrases. #17

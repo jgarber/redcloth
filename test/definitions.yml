@@ -48,6 +48,17 @@ html: |-
   	<dd>woven threads</dd>
   </dl>
 ---
+name: not a definition list
+desc: a definition list with no definitions is not a definition list
+in: |-
+  - textile
+  - fabric
+  - cloth
+html: |-
+  <p>- textile<br />
+  - fabric<br />
+  - cloth</p>
+---
 name: long definition list
 in: |-
   here is a long definition

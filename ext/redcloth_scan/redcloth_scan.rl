@@ -40,9 +40,10 @@ int SYM_escape_preformatted;
   ul = "*" %{nest++; list_type = "ul";};
   ol = "#" %{nest++; list_type = "ol";};
   list_start  = ( ( ul | ol )+ N A C :> " "+ ) >{nest = 0;} ;
-  dl_start = "-" . " "+ ;
+  dt_start = "-" . " "+ ;
   dd_start = ":=" ;
   long_dd  = dd_start " "* LF %{ ADD_BLOCK(); ASET(type, dd); } any+ >A %{ TRANSFORM(text) } :>> "=:" ;
+  dl_start = (dt_start mtext (LF dt_start mtext)* " "* dd_start)  ;
   blank_line = LF;
   link_alias = ( "[" >{ ASET(type, ignore) } %A phrase %T "]" %A uri %{ STORE_URL(href); } ) ;
   
@@ -285,13 +286,13 @@ int SYM_escape_preformatted;
   *|;
 
   list := |*
-    LF list_start { ADD_BLOCK(); LIST_ITEM(); };
+    LF list_start   { ADD_BLOCK(); LIST_ITEM(); };
     block_end       { ADD_BLOCK(); nest = 0; LIST_CLOSE(); fgoto main; };
     default => cat;
   *|;
 
   dl := |*
-    LF dl_start   { ADD_BLOCK(); ASET(type, dt); };
+    LF dt_start     { ADD_BLOCK(); ASET(type, dt); };
     dd_start        { ADD_BLOCK(); ASET(type, dd); };
     long_dd         { INLINE(html, dd); };
     block_end       { ADD_BLOCK(); INLINE(html, dl_close);  fgoto main; };
@@ -312,7 +313,7 @@ int SYM_escape_preformatted;
     block_start     { fgoto block; };
     footnote_start  { fgoto footnote; };
     list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
-    dl_start        { INLINE(html, dl_open); ASET(type, dt); fgoto dl; };
+    dl_start        { p = ts; INLINE(html, dl_open); ASET(type, dt); fgoto dl; };
     table           { INLINE(table, table_close); DONE(table); fgoto block; };
     link_alias      { rb_hash_aset(refs_found, rb_hash_aref(regs, ID2SYM(rb_intern("text"))), rb_hash_aref(regs, ID2SYM(rb_intern("href")))); DONE(block); };
     aligned_image   { rb_hash_aset(regs, ID2SYM(rb_intern("type")), plain_block); fgoto block; };
