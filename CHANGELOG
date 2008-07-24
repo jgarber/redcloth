@@ -1,4 +1,4 @@
-= Edge
+= RedCloth 4.0.1
 
 * Fixed lines starting with dashes being recognized as a definition list when there were no definitions.
 * Created alias RedCloth.rb so Rails 2.1 gem dependency works on case-sensitive operating systems	.
@@ -6,7 +6,7 @@
 * Fixed links including prior quoted phrases. #17
 
 
-= RedCloth 4.0
+= RedCloth 4.0.0
 
 * New SuperRedCloth (RedCloth 4.0) is a total rewrite using Ragel for the parsing.
 * Markdown support has been removed.
