@@ -8,6 +8,16 @@ module RedCloth
     STRING = [MAJOR, MINOR, TINY].join('.')
     TAG = "REL_#{[MAJOR, MINOR, TINY, RELEASE_CANDIDATE].compact.join('_')}".upcase.gsub(/\.|-/, '_')
     FULL_VERSION = "#{[MAJOR, MINOR, TINY, RELEASE_CANDIDATE].compact.join('.')}"
+    
+    class << self
+      def to_s
+        STRING
+      end
+      
+      def ==(arg)
+        STRING == arg
+      end
+    end
   end
   
   NAME = "RedCloth"

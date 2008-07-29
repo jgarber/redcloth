@@ -1,5 +1,7 @@
 *Edge*
 
+* Added a RedCloth::VERSION.to_s and .== methods so you can puts and compare RedCloth::VERSION just like in previous RedCloth releases.
+
 * Fixed HTML block ending tags terminating blocks prematurely. #22
 
 

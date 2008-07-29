@@ -4,7 +4,7 @@ require 'optparse'
 require 'redcloth'
 
 if %w(--version -v).include? ARGV.first
-  puts "#{RedCloth::NAME} #{RedCloth::VERSION::STRING}"
+  puts "#{RedCloth::NAME} #{RedCloth::VERSION}"
   exit(0)
 end
 

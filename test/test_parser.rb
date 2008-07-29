@@ -15,6 +15,11 @@ class TestParser < Test::Unit::TestCase
     assert RedCloth::VERSION.const_defined?("STRING")
   end
   
+  def test_redcloth_version_to_s
+    assert_equal RedCloth::VERSION::STRING, RedCloth::VERSION.to_s
+    assert RedCloth::VERSION == RedCloth::VERSION::STRING
+  end
+  
   def test_badly_formatted_table_does_not_segfault
     assert_match /td/, RedCloth.new(%Q{| one | two |\nthree | four |}).to_html
   end
