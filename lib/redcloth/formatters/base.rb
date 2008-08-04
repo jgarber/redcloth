@@ -16,7 +16,7 @@ module RedCloth::Formatters
         opts[:style] = "#{a}:#{opts[a]}em;#{opts[:style]}" if opts[a]
       end
       [:style, :class, :lang, :id, :colspan, :rowspan, :title, :start, :align].each do |a|
-        atts << " #{a}=\"#{ opts[a] }\"" if opts[a]
+        atts << " #{a}=\"#{ html_esc(opts[a].to_s, :html_escape_attributes) }\"" if opts[a]
       end
       atts
     end

@@ -11,6 +11,11 @@ module RedCloth::Formatters::HTML
     html_esc(text, :html_escape_preformatted)
   end
   
+  # escaping for HTML attributes
+  def escape_attribute(text)
+    html_esc(text, :html_escape_attributes)
+  end
+  
   def after_transform(text)
     text.chomp!
   end
@@ -116,7 +121,7 @@ module RedCloth::Formatters::HTML
   
   def bq_open(opts)
     opts[:block] = true
-    cite = opts[:cite] ? " cite=\"#{ opts[:cite] }\"" : ''
+    cite = opts[:cite] ? " cite=\"#{ escape_attribute opts[:cite] }\"" : ''
     "<blockquote#{cite}#{pba(opts)}>\n"
   end
   
@@ -136,14 +141,14 @@ module RedCloth::Formatters::HTML
       opts[:name] = md[1]
       opts[:title] = md[2]
     end
-    "<a href=\"#{opts[:href].gsub(/&/, '&#38;')}\"#{pba(opts)}>#{opts[:name]}</a>"
+    "<a href=\"#{escape_attribute opts[:href]}\"#{pba(opts)}>#{opts[:name]}</a>"
   end
   
   def image(opts)
     opts.delete(:align)
     opts[:alt] = opts[:title]
-    img = "<img src=\"#{urlesc opts[:src]}\"#{pba(opts)} alt=\"#{opts[:alt]}\" />"  
-    img = "<a href=\"#{urlesc opts[:href]}\">#{img}</a>" if opts[:href]
+    img = "<img src=\"#{escape_attribute opts[:src]}\"#{pba(opts)} alt=\"#{escape_attribute opts[:alt].to_s}\" />"  
+    img = "<a href=\"#{escape_attribute opts[:href]}\">#{img}</a>" if opts[:href]
     img
   end
   
@@ -208,10 +213,6 @@ module RedCloth::Formatters::HTML
     "&#{opts[:text]};"
   end
   
-  def urlesc(txt)
-    txt.gsub(/&/, '&amp;')
-  end
-  
   def amp(opts)
     "&amp;"
   end
@@ -238,6 +239,10 @@ module RedCloth::Formatters::HTML
   
   def squot(opts)
     "&#8217;"
+  end
+  
+  def apos(opts)
+    "&#39;"
   end
   
   def html(opts)

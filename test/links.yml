@@ -75,19 +75,19 @@ in: '"link text":http://example.com/?foo=bar#a10'
 html: <p><a href="http://example.com/?foo=bar#a10">link text</a></p>
 ---
 in: '"link text":http://example.com/?foo=bar&a=b'
-html: <p><a href="http://example.com/?foo=bar&#38;a=b">link text</a></p>
+html: <p><a href="http://example.com/?foo=bar&amp;a=b">link text</a></p>
 ---
 in: '"link text":http://example.com/?foo=bar&a=b#1'
-html: <p><a href="http://example.com/?foo=bar&#38;a=b#1">link text</a></p>
+html: <p><a href="http://example.com/?foo=bar&amp;a=b#1">link text</a></p>
 ---
 in: '"link text":http://example.com/?foo=bar&a=b#a'
-html: <p><a href="http://example.com/?foo=bar&#38;a=b#a">link text</a></p>
+html: <p><a href="http://example.com/?foo=bar&amp;a=b#a">link text</a></p>
 ---
 in: '"link text":http://example.com/?foo=bar&a=b#a1'
-html: <p><a href="http://example.com/?foo=bar&#38;a=b#a1">link text</a></p>
+html: <p><a href="http://example.com/?foo=bar&amp;a=b#a1">link text</a></p>
 ---
 in: '"link text":http://example.com/?foo=bar&a=b#a10'
-html: <p><a href="http://example.com/?foo=bar&#38;a=b#a10">link text</a></p>
+html: <p><a href="http://example.com/?foo=bar&amp;a=b#a10">link text</a></p>
 ---
 in: 'This is a "link":http://example.com/'
 html: <p>This is a <a href="http://example.com/">link</a></p>
@@ -154,13 +154,13 @@ in: '"Lab Exercises":../lab/exercises/exercises.html.'
 html: <p><a href="../lab/exercises/exercises.html">Lab Exercises</a>.</p>
 ---
 in: 'Go to "discuss":http://www.dreammoods.com/cgibin/cutecast/cutecast.pl?forum=1&thread=26627 to discuss.'
-html: <p>Go to <a href="http://www.dreammoods.com/cgibin/cutecast/cutecast.pl?forum=1&#38;thread=26627">discuss</a> to discuss.</p>
+html: <p>Go to <a href="http://www.dreammoods.com/cgibin/cutecast/cutecast.pl?forum=1&amp;thread=26627">discuss</a> to discuss.</p>
 ---
 in: '* "rubylang":http://www.ruby-lang.org/en/'
 html: "<ul>\n\t<li><a href=\"http://www.ruby-lang.org/en/\">rubylang</a></li>\n</ul>"
 ---
 in: 'The ION coding style document found at "IONCodingStyleGuide.doc":http://perforce:8081/@md=d&cd=//&c=82E@//depot/systest/system/main/pub/doc/IONCodingStyleGuide.doc?ac=22 codifies a couple of rules to ensure reasonably consistent code and documentation of libraries in ION. Test text'
-html: <p>The <span class="caps">ION</span> coding style document found at <a href="http://perforce:8081/@md=d&#38;cd=//&#38;c=82E@//depot/systest/system/main/pub/doc/IONCodingStyleGuide.doc?ac=22">IONCodingStyleGuide.doc</a> codifies a couple of rules to ensure reasonably consistent code and documentation of libraries in <span class="caps">ION</span>. Test text</p>
+html: <p>The <span class="caps">ION</span> coding style document found at <a href="http://perforce:8081/@md=d&amp;cd=//&amp;c=82E@//depot/systest/system/main/pub/doc/IONCodingStyleGuide.doc?ac=22">IONCodingStyleGuide.doc</a> codifies a couple of rules to ensure reasonably consistent code and documentation of libraries in <span class="caps">ION</span>. Test text</p>
 ---
 in: '"testing":'
 html: "<p>&#8220;testing&#8221;:</p>"

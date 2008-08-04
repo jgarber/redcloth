@@ -9,7 +9,7 @@
 #include "redcloth.h"
 
 VALUE mRedCloth, super_ParseError, super_RedCloth, super_HTML, super_LATEX;
-int SYM_escape_preformatted;
+int SYM_escape_preformatted, SYM_escape_attributes;
 
 %%{
 
@@ -419,9 +419,11 @@ redcloth_html_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
     if (level != SYM_escape_preformatted) {
       switch (*t2)
       {
-        case '"':  ch = "quot";   break;
-        case '\'': ch = "squot";  break;
         case '\n': ch = "br";     break;
+        case '"' : ch = "quot";   break;
+        case '\'': 
+          ch = (level == SYM_escape_attributes) ? "apos" : "squot";
+          break;
       }
     }
     
@@ -521,4 +523,5 @@ void Init_redcloth_scan()
   rb_define_method(super_RedCloth, "html_esc", redcloth_html_esc, -1);
   rb_define_method(super_RedCloth, "latex_esc", redcloth_latex_esc, 1);
   SYM_escape_preformatted   = ID2SYM(rb_intern("html_escape_preformatted"));
+  SYM_escape_attributes     = ID2SYM(rb_intern("html_escape_attributes"));
 }

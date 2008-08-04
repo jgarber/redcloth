@@ -200,3 +200,15 @@ html: <p><img src="image.jpg" style="color:red;" alt="" /></p>
 name: image with style and dotspace
 in: "!{color:red}. image.jpg!"
 html: <p><img src="image.jpg" style="color:red;" alt="" /></p>
+---
+name: image attributes has ampersand html entity in alt and title
+in: "!/pictures/cat_and_fox.jpg(Trady Blix & The cartoon fox)!"
+html: '<p><img src="/pictures/cat_and_fox.jpg" title="Trady Blix &amp; The cartoon fox" alt="Trady Blix &amp; The cartoon fox" /></p>'
+---
+name: image attributes has double quote html entity in alt and title
+in: '!/pictures/bacon.jpg(The fox said: "Have some chunky bacon")!'
+html: '<p><img src="/pictures/bacon.jpg" title="The fox said: &quot;Have some chunky bacon&quot;" alt="The fox said: &quot;Have some chunky bacon&quot;" /></p>'
+---
+name: image attributes has single quote html entity in alt and title
+in: "!/pictures/bacon.jpg(The fox said: 'Have some chunky bacon')!"
+html: '<p><img src="/pictures/bacon.jpg" title="The fox said: &#39;Have some chunky bacon&#39;" alt="The fox said: &#39;Have some chunky bacon&#39;" /></p>'
