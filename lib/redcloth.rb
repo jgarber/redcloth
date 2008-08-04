@@ -1,5 +1,7 @@
 $:.unshift(File.dirname(__FILE__))
 
+Object.send(:remove_const, :RedCloth) if Object.const_defined?(:RedCloth) # in case this is a frozen gem in Rails 2.1 and RedCloth 3.0.4 was already loaded by Rails' ActionView::Helpers::TextHelper.  This appears to be fixed in Edge Rails [51e4106].
+
 require 'redcloth_scan'
 require 'redcloth/version'
 require 'redcloth/textile_doc'
