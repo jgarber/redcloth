@@ -1,6 +1,10 @@
 *Edge*
 
-* Added a RedCloth::VERSION.to_s and .== methods so you can puts and compare RedCloth::VERSION just like in previous RedCloth releases.
+* Cleaned up unused code that was causing a warning. #28
+
+* Workaround for Rails 2.1 bug that loads a previous version of RedCloth before loading the unpacked gem.  Has since been fixed in edge rails. #30
+
+* Added a RedCloth::VERSION.to_s and .== methods so you can puts and compare RedCloth::VERSION just like in previous RedCloth releases. #26
 
 * Fixed HTML block ending tags terminating blocks prematurely. #22
 
