@@ -21,15 +21,15 @@ class TestParser < Test::Unit::TestCase
   end
   
   def test_badly_formatted_table_does_not_segfault
-    assert_match /td/, RedCloth.new(%Q{| one | two |\nthree | four |}).to_html
+    assert_match(/td/, RedCloth.new(%Q{| one | two |\nthree | four |}).to_html)
   end
   
   def test_table_without_block_end_does_not_segfault
-    assert_match /h3/, RedCloth.new("| a | b |\n| c | d |\nh3. foo").to_html
+    assert_match(/h3/, RedCloth.new("| a | b |\n| c | d |\nh3. foo").to_html)
   end
   
   def test_table_with_empty_cells_does_not_segfault
-    assert_match /td/, RedCloth.new(%Q{|one || |\nthree | four |}).to_html
+    assert_match(/td/, RedCloth.new(%Q{|one || |\nthree | four |}).to_html)
   end
   
   def test_unfinished_html_block_does_not_segfault_with_filter_html

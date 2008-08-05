@@ -24,7 +24,7 @@ VALUE red_pass(VALUE, VALUE, VALUE, ID, VALUE);
 VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 
 /* parser macros */
-#define CLEAR_REGS()   regs = rb_hash_new(); rb_hash_aset(regs, ID2SYM(rb_intern("restrictions")), rb_iv_get(self, "@restrictions"));
+#define CLEAR_REGS()   regs = rb_hash_new();
 #define CAT(H)         rb_str_cat(H, ts, te-ts)
 #define CLEAR(H)       H = rb_str_new2("")
 #define INLINE(H, T)   rb_str_append(H, rb_funcall(self, rb_intern(#T), 1, regs))
