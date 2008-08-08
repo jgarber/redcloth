@@ -1,5 +1,7 @@
 *Edge*
 
+* Fixed HTML before tables causing the opening table tag to be emitted twice. #33
+
 * Cleaned up unused code that was causing a warning. #28
 
 * Workaround for Rails 2.1 bug that loads a previous version of RedCloth before loading the unpacked gem.  Has since been fixed in edge rails. #30

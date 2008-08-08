@@ -269,3 +269,27 @@ html: |-
   <p>This is a blockquote.</p>
   </blockquote>
   </div>
+---
+name: before table does not affect table
+in: |-
+  <div>
+  
+  h2. heading
+  
+  |a|b|c|
+  |d|e|f|
+html: |-
+  <div>
+  <h2>heading</h2>
+  <table>
+  	<tr>
+  		<td>a</td>
+  		<td>b</td>
+  		<td>c</td>
+  	</tr>
+  	<tr>
+  		<td>d</td>
+  		<td>e</td>
+  		<td>f</td>
+  	</tr>
+  </table>

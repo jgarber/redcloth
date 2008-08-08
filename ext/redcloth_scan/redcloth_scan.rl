@@ -71,7 +71,7 @@ int SYM_escape_preformatted, SYM_escape_attributes;
   tr = ( trdef? "|" %{INLINE(table, tr_open);} td+ ) >X %{INLINE(table, tr_close);} ;
   trows = ( tr (LF >X tr)* ) ;
   tdef = ( "table" >X A C :> dotspace LF ) ;
-  table = ( tdef? trows >{INLINE(table, table_open);} ) >{ reg = NULL; } ;
+  table = ( tdef? trows >{table = rb_str_new2(""); INLINE(table, table_open);} ) >{ reg = NULL; } ;
 
   # info
   redcloth_version = ("RedCloth" >A ("::" | " " ) "VERSION"i ":"? " ")? %{STORE(prefix)} "RedCloth::VERSION" (LF* EOF | double_return) ;
