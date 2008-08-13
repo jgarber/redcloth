@@ -265,6 +265,11 @@ name: subscript
 desc: To subscript, surround with tildes.
 in: log ~2~ x
 html: <p>log <sub>2</sub> x</p>
+---
+name: tight superscript and subscript
+desc: if you want your superscript or subscript to not be surrounded by spaces, you must use square brackets
+in: f(x, n) = log[~4~]x[^n^]
+html: '<p>f(x, n) = log<sub>4</sub>x<sup>n</sup></p>'
 --- 
 name: span
 desc: Lastly, if you find yourself needing to customize the style of a passage, use percent symbols to translate the passage as an HTML span.

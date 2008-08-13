@@ -52,10 +52,6 @@ module RedCloth::Formatters::HTML
     "<del#{pba(opts)}>#{opts[:text]}</del>"
   end
   
-  def del_phrase(opts)
-    " #{del(opts)}"
-  end
-  
   [:ol, :ul].each do |m|
     define_method("#{m}_open") do |opts|
       opts[:block] = true

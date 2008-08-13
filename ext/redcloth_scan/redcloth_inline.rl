@@ -29,6 +29,8 @@
   footno = "[" >X %A digit+ %T "]" ;
 
   # markup
+  begin_markup_phrase = " "? >A %{ STORE(beginning_space); };
+  end_markup_phrase = (" " | PUNCT | EOF | LF) @{ fhold; };
   code = "["? "@" >X mtext >A %T :> "@" "]"? ;
   code_tag_start = "<code" [^>]* ">" ;
   code_tag_end = "</code>" ;
@@ -40,10 +42,12 @@
   i = "["? "__" >X mtext >A %T :> "__" "]"? ;
   del = "[-" >X C ( mtext ) >A %T :>> "-]" ;
   emdash_parenthetical_phrase_with_spaces = " -- " mtext " -- " ;
-  del_phrase = ((" -") >X C ( mtext ) >A %T :>> ( "-" (" " | PUNCT) @{ fhold; } )) - emdash_parenthetical_phrase_with_spaces ;
+  del_phrase = (( " " >A %{ STORE(beginning_space); } "-") >X C ( mtext ) >A %T :>> ( "-" end_markup_phrase )) - emdash_parenthetical_phrase_with_spaces ;
   ins = "["? "+" >X mtext >A %T :> "+" "]"? ;
-  sup = "["? "^" >X mtext >A %T :> "^" "]"? ;
-  sub = "["? "~" >X mtext >A %T :> "~" "]"? ;
+  sup = "[^" >X mtext >A %T :> "^]" ;
+  sup_phrase = ( begin_markup_phrase "^") >X C ( mtext ) >A %T :>> ( "^" end_markup_phrase ) ;
+  sub = "[~" >X mtext >A %T :> "~]" ;
+  sub_phrase = ( begin_markup_phrase "~") >X C ( mtext ) >A %T :>> ( "~" end_markup_phrase ) ;
   span = "["? "%" >X mtext >A %T :> "%" "]"? ;
   cite = "["? "??" >X mtext >A %T :> "??" "]"? ;
   ignore = "["? "==" >X %A mtext %T :> "==" "]"? ;
@@ -102,7 +106,9 @@
     del_phrase { PASS(block, text, del_phrase); };
     ins { PARSE_ATTR(text); PASS(block, text, ins); };
     sup { PARSE_ATTR(text); PASS(block, text, sup); };
+    sup_phrase { PARSE_ATTR(text); PASS(block, text, sup_phrase); };
     sub { PARSE_ATTR(text); PASS(block, text, sub); };
+    sub_phrase { PARSE_ATTR(text); PASS(block, text, sub_phrase); };
     span { PARSE_ATTR(text); PASS(block, text, span); };
     cite { PARSE_ATTR(text); PASS(block, text, cite); };
     ignore => ignore;

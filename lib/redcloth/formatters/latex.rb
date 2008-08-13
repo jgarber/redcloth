@@ -68,10 +68,6 @@ module RedCloth::Formatters::LATEX
     end
   end
   
-  def del_phrase(opts)
-    " #{del(opts)}"
-  end
-  
   { :ol => 'enumerate',
     :ul => 'itemize',
     }.each do |m, env|

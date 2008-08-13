@@ -34,6 +34,13 @@ module RedCloth::Formatters
       RedCloth::VERSION::STRING
     end
     
+    [:del_phrase, :sup_phrase, :sub_phrase].each do |phrase_method|
+      method = phrase_method.to_s[0..2]
+      define_method(phrase_method) do |opts|
+        "#{opts[:beginning_space]}#{self.send(method, opts)}"
+      end
+    end
+    
     def method_missing(method, opts)
       opts[:text] || ""
     end
