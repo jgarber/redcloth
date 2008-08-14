@@ -68,8 +68,10 @@
   endash = " - " ;
   acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" default+ >A %{ STORE(title) } :> ")" ) >X ;
   caps = ( upper{3,} >A %*T ) >X ;
-  dim = ( ( digit+ ('.' [0-9]+)? ["']? ) >A %T (" x " @{ ASET(space, true)} | "x") digit @{ fhold; } ) >X ;
-  dim_noactions = digit+ ( (" x " | "x") digit+ )+ ;
+  dim_digit = [0-9.]+ ;
+  prime = ("'" | '"')?;
+  dim_noactions = dim_digit prime (("x" | " x ") dim_digit prime) (("x" | " x ") dim_digit prime)? ;
+  dim = dim_noactions >X >A %T ;
   tm = [Tt] [Mm] ;
   trademark = " "? ( "[" tm "]" | "(" tm ")" ) ;
   reg = [Rr] ;
@@ -122,7 +124,7 @@
     arrow { INLINE(block, arrow); };
     caps { INLINE(block, caps); };
     acronym { INLINE(block, acronym); };
-    dim { PASS(block, text, dim); };
+    dim { INLINE(block, dim); };
     trademark { INLINE(block, trademark); };
     registered { INLINE(block, registered); };
     copyright { INLINE(block, copyright); };
