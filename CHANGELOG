@@ -1,6 +1,6 @@
 *Edge*
 
-* Limit overzealous superscript and subscript.  Sup/sub phrases must be surrounded by spaces or square brackets. #35
+* Limit overzealous superscript and subscript.  Sup/sub phrases must be surrounded by spaces or square brackets, as in Textile 2. #35
 
 * Fixed HTML before tables causing the opening table tag to be emitted twice. #33
 
