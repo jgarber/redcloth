@@ -1,5 +1,7 @@
 *Edge*
 
+* Fixed link references/aliases not being recognized when they include hyphens. #36
+
 * Dimensions in feet and inches use correct typographic characters. #25
 
 * Limit overzealous superscript and subscript.  Sup/sub phrases must be surrounded by spaces or square brackets, as in Textile 2. #35

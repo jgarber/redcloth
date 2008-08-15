@@ -45,7 +45,7 @@ int SYM_escape_preformatted, SYM_escape_attributes;
   long_dd  = dd_start " "* LF %{ ADD_BLOCK(); ASET(type, dd); } any+ >A %{ TRANSFORM(text) } :>> "=:" ;
   dl_start = (dt_start mtext (LF dt_start mtext)* " "* dd_start)  ;
   blank_line = LF;
-  link_alias = ( "[" >{ ASET(type, ignore) } %A phrase %T "]" %A uri %{ STORE_URL(href); } ) ;
+  link_alias = ( "[" >{ ASET(type, ignore) } %A chars %T "]" %A uri %{ STORE_URL(href); } ) ;
   
   # image lookahead
   IMG_A_LEFT = "<" %{ ASET(float, left) } ;
