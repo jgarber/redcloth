@@ -4,6 +4,15 @@ module RedCloth::Formatters::LATEX
   include RedCloth::Formatters::Base
   
   ENTITIES = YAML::load(File.read(File.dirname(__FILE__)+'/latex_entities.yml')) 
+
+  module Settings
+    # Maps CSS style names to latex formatting options
+    def latex_image_styles
+      @latex_image_class_styles ||= {}
+    end
+  end
+
+  RedCloth::TextileDoc.send(:include, Settings)
   
   def escape(text)
     latex_esc(text)
@@ -136,8 +145,23 @@ module RedCloth::Formatters::LATEX
   end
   
   # FIXME: use includegraphics with security verification
+  #
+  # Remember to use '\RequirePackage{graphicx}' in your LaTeX header
+  # 
+  # FIXME: Look at dealing with width / height gracefully as this should be 
+  # specified in a unit like cm rather than px.
   def image(opts)
-    ""
+    # Don't know how to use remote links, plus can we trust them?
+    return "" if opts[:src] =~ /^\w+\:\/\//
+    # Resolve CSS styles if any have been set
+    styling = opts[:class].to_s.split(/\s+/).collect { |style| latex_image_styles[style] }.compact.join ','
+    # Build latex code
+    [ "\\begin{figure}[htp]",
+      "  \\includegraphics[#{styling}]{#{opts[:src]}}",
+     ("  \\caption{#{escape opts[:title]}}" if opts[:title]),
+     ("  \\label{#{escape opts[:alt]}}" if opts[:alt]),
+      "\\end{figure}",
+    ].compact.join "\n"
   end
   
   def footno(opts)
@@ -204,12 +228,14 @@ module RedCloth::Formatters::LATEX
   
   private
   
+  # Use this for block level commands that use \begin
   def begin_chunk(type)
     chunk_counter[type] += 1
     return "\\begin{#{type}}" if 1 == chunk_counter[type]
     ''
   end
   
+  # Use this for block level commands that use \end
   def end_chunk(type)
     chunk_counter[type] -= 1
     raise RuntimeError, "Bad latex #{type} nesting detected" if chunk_counter[type] < 0 # This should never need to happen
