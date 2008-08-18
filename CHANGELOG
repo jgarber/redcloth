@@ -1,3 +1,8 @@
+*Edge*
+
+* Fixed unititialized constant RedCloth::TextileDoc with Rails 2.1.  Came from a workaround for Rails bug #320 that was applied even when not necessary. #42
+
+
 *4.0.2 (August 15, 2008)*
 
 * Fixed link references/aliases not being recognized when they include hyphens. #36
