@@ -1,6 +1,11 @@
 $:.unshift(File.dirname(__FILE__))
 
-Object.send(:remove_const, :RedCloth) if Object.const_defined?(:RedCloth) # in case this is a frozen gem in Rails 2.1 and RedCloth 3.0.4 was already loaded by Rails' ActionView::Helpers::TextHelper.  This appears to be fixed in Edge Rails [51e4106].
+# If this is a frozen gem in Rails 2.1 and RedCloth 3.x was already
+# loaded by Rails' ActionView::Helpers::TextHelper, the user will get
+# "redcloth_scan.bundle: Class is not a module (TypeError)"
+# This hack is to work around that Rails loading problem.  The problem
+# appears to be fixed in Edge Rails [51e4106].
+Object.send(:remove_const, :RedCloth) if Object.const_defined?(:RedCloth) && RedCloth.is_a?(Class)
 
 require 'redcloth_scan'
 require 'redcloth/version'
