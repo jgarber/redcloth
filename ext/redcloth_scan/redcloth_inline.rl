@@ -70,7 +70,7 @@
   caps = ( upper{3,} >A %*T ) >X ;
   dim_digit = [0-9.]+ ;
   prime = ("'" | '"')?;
-  dim_noactions = dim_digit prime (("x" | " x ") dim_digit prime) (("x" | " x ") dim_digit prime)? ;
+  dim_noactions = dim_digit prime (("x" | " x ") dim_digit prime) %T (("x" | " x ") dim_digit prime)? ;
   dim = dim_noactions >X >A %T ;
   tm = [Tt] [Mm] ;
   trademark = " "? ( "[" tm "]" | "(" tm ")" ) ;

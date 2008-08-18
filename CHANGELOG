@@ -1,5 +1,7 @@
 *Edge*
 
+* Fix NoMethodError: private method gsub!' called for nil:NilClass when two dimensions followed by a space. #38
+
 * Fixed unititialized constant RedCloth::TextileDoc with Rails 2.1.  Came from a workaround for Rails bug #320 that was applied even when not necessary. #42
 
 

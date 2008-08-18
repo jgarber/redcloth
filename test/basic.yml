@@ -157,6 +157,10 @@ desc: The letter 'x' becomes a dimension sign when used between digits.
 in: "Observe: 2x3."
 html: "<p>Observe: 2&#215;3.</p>"
 --- 
+name: dimension sign with space after
+in: "The room is 2x3 inches big."
+html: "<p>The room is 2&#215;3 inches big.</p>"
+--- 
 name: dimension sign with spaces
 in: "Observe: 2 x 4."
 html: "<p>Observe: 2 &#215; 4.</p>"
