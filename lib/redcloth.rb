@@ -29,3 +29,16 @@ module RedCloth
   
 end
 
+class ERB
+  module Util
+    def redcloth_escape( s )
+      RedCloth.new( s.to_s ).to_html if s and s.respond_to? :to_s and s.to_s
+    end
+
+    alias r redcloth_escape
+    module_function :f # this voodoo makes the method available to instances of ERB as a private method
+    module_function :redcloth_escape # ditto for the textile method
+  end
+end
+
+    
