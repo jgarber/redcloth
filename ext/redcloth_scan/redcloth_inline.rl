@@ -52,8 +52,8 @@
   cite = "["? "??" >X mtext >A %T :> "??" "]"? ;
   ignore = "["? "==" >X %A mtext %T :> "==" "]"? ;
   snip = "["? "```" >X %A mtext %T :> "```" "]"? ;
-  quote1 = "["? "'" >X %A mtext %T :> "'" "]"? ;
-  quote2 = "["? '"' >X %A mtext %T :> '"' "]"? ;
+  quote1 = "'" >X %A mtext %T :> "'" ;
+  quote2 = '"' >X %A mtext %T :> '"' ;
   
   # html
   start_tag = ( "<" Name space+ AttrSet* (AttrEnd)? ">" | "<" Name ">" ) >X >A %T ;

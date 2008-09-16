@@ -830,3 +830,11 @@ html: |-
   <p>__Amanita__s are mushrooms.<br />
   Lungworts (<i>Lobaria</i>) are lichens.<br />
   Blah blah (normal text <b>bold</b>) blah.</p>
+---
+name: square brackets are preserved
+in: |-
+  citation ["(Berk.) Hilton"], see
+  [Papers "blah blah."]
+html: |-
+  <p>citation [&#8220;(Berk.) Hilton&#8221;], see<br />
+  [Papers &#8220;blah blah.&#8221;]</p>
