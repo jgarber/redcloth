@@ -1,3 +1,8 @@
+*EDGE*
+
+* Added some very basic support for images in LaTeX. [virtualfunction]
+
+
 *4.0.3 (August 18, 2008)*
 
 * Fix NoMethodError: private method gsub!' called for nil:NilClass when two dimensions followed by a space. #38
