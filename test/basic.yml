@@ -819,3 +819,14 @@ desc: Uppercase words of three or more characters that are in parentheses should
 in: IBM or (HAL)
 html: <p><span class="caps">IBM</span> or (<span class="caps">HAL</span>)</p>
 no_span_caps_html: <p>IBM or (HAL)</p>
+---
+name: phrase modifiers in parentheses
+desc: Inline modifiers are expected to work in parentheses as well.
+in: |-
+  __Amanita__s are mushrooms.
+  Lungworts (__Lobaria__) are lichens.
+  Blah blah (normal text **bold**) blah.
+html: |-
+  <p>__Amanita__s are mushrooms.<br />
+  Lungworts (<i>Lobaria</i>) are lichens.<br />
+  Blah blah (normal text <b>bold</b>) blah.</p>

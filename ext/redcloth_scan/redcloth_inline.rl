@@ -84,7 +84,7 @@
   # info
   redcloth_version = "[RedCloth::VERSION]" ;
 
-  other_phrase = phrase -- (dim_noactions | caps_noactions);
+  other_phrase = phrase -- dim_noactions;
 
   code_tag := |*
     code_tag_end { CAT(block); fgoto main; };
