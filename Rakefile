@@ -7,18 +7,30 @@ require 'fileutils'
 include FileUtils
 require 'lib/redcloth/version'
 
+# TODO: echoe will make our life much easier with things like Platform.java?, but I don't want to put in the time to convert the Rakefile if no one is going to build the java sources.
+begin
+  require 'rubygems'
+  gem 'echoe', '>=2.7.11'
+  require 'echoe'
+rescue LoadError
+  abort "You'll need to have `echoe' installed to use RedCloth's Rakefile"
+end
+
 NAME = RedCloth::NAME
 SUMMARY = RedCloth::DESCRIPTION
 VERS = RedCloth::VERSION::STRING
-CLEAN.include ['ext/redcloth_scan/*.{bundle,so,obj,pdb,lib,def,exp,c,o,xml}', 'ext/redcloth_scan/Makefile', '**/.*.sw?', '*.gem', '.config']
-CLOBBER.include ['lib/*.{bundle,so,obj,pdb,lib,def,exp}']
+ARCHLIB = "lib/#{::Config::CONFIG['arch']}"
+PKG = "#{NAME}-#{VERS}"
+BIN = "*.{bundle,jar,so,obj,pdb,lib,def,exp,class}"
+CLEAN.include ['ext/redcloth_scan/**/*.{bundle,so,obj,pdb,lib,def,exp,c,o,xml,java}', ARCHLIB, 'ext/redcloth_scan/Makefile', '**/.*.sw?', '*.gem', '.config', 'pkg']
+CLOBBER.include ["lib/**/#{BIN}"]
 
 desc "Does a full compile, test run"
 task :default => [:compile, :test]
 
 desc "Compiles all extensions"
 task :compile => [:redcloth_scan] do
-  if Dir.glob(File.join("lib","redcloth_scan.*")).length == 0
+  if Dir.glob(File.join(ARCHLIB,"redcloth_scan.*")).length == 0
     STDERR.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     STDERR.puts "Gem actually failed to build.  Your system is"
     STDERR.puts "NOT configured properly to build redcloth."
@@ -35,7 +47,7 @@ task :release => [:package, :rubygems_win32]
 
 desc "Run all the tests"
 Rake::TestTask.new do |t|
-    t.libs << "test"
+    t.libs << "test" << ARCHLIB
     t.test_files = FileList['test/test_*.rb']
     t.verbose = true
 end
@@ -119,7 +131,8 @@ file ext_so => ext_files do
   Dir.chdir(ext) do
     sh(PLATFORM =~ /win32/ ? 'nmake' : 'make')
   end
-  cp ext_so, "lib"
+  mkdir_p ARCHLIB
+  cp ext_so, ARCHLIB
 end
 
 task "lib" do
@@ -128,14 +141,11 @@ end
 
 ["#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c","#{ext}/redcloth_attributes.c"].each do |name|
   @code_style ||= "T0"
-  source = name.sub(/\.c$/, '.rl')
-  file name => [source, "#{ext}/redcloth_common.rl", "#{ext}/redcloth.h"] do
-    @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].split('.').map{|s| s.to_i}
-    if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[1] >= 2)
-      sh %{ragel #{source} -#{@code_style} -o #{name}}
-    else
-      STDERR.puts "Ragel 6.2 or greater is required to generate #{name}."
-      exit(1)
+  arch_source = name + '.rl'
+  ragel_source = name.sub(/\.c$/, '.rl')
+  file name => [arch_source, ragel_source, "#{ext}/redcloth_common.rl", "#{ext}/redcloth.h"] do
+    ensure_ragel_version(name) do
+      sh %{ragel #{arch_source} -#{@code_style} -o #{name}}
     end
   end
 end
@@ -168,10 +178,10 @@ Win32Spec = Gem::Specification.new do |s|
   s.bindir = "bin"
 end
   
-WIN32_PKG_DIR = "pkg/#{NAME}-#{VERS}-mswin32"
+WIN32_PKG_DIR = "pkg/#{PKG}-mswin32"
 
 file WIN32_PKG_DIR => [:package] do
-  cp_r "pkg/#{NAME}-#{VERS}", "#{WIN32_PKG_DIR}"
+  cp_r "pkg/#{PKG}", "#{WIN32_PKG_DIR}"
 end
 
 desc "Cross-compile the redcloth_scan extension for win32"
@@ -195,7 +205,7 @@ CLEAN.include WIN32_PKG_DIR
 
 desc "Build and install the RedCloth gem on your system"
 task :install => [:package] do
-  sh %{sudo gem install pkg/#{NAME}-#{VERS}}
+  sh %{sudo gem install pkg/#{PKG}}
 end
 
 desc "Uninstall the RedCloth gem from your system"
@@ -237,4 +247,97 @@ task :optimize do
     
   end
   puts RagelProfiler.results
+end
+
+# Here are the jruby tasks, stolen from Hpricot.  If this jruby version catches on, I'd like these tasks to be unified with the C tasks and use echoe's platform detection, like Mongrel.
+namespace "jruby" do
+
+  def ant(*args)
+    system "ant #{args.join(' ')}"
+  end
+
+  desc "Installs jruby in a subdirectory of ./test/"
+  task :install do
+    sh %{svn export http://svn.codehaus.org/jruby/trunk/jruby test/jruby}
+    Dir.chdir "test/jruby" do
+      ant; ant "jar-complete"; # ant "create-apidocs"
+    end
+    sh %{jruby -S gem install rake}
+    Rake::Task['add_path'].invoke
+  end
+
+  desc "Adds jruby to your PATH"
+  task :add_path do
+    ENV['PATH'] = ENV['PATH'] + ":" + File.join(File.dirname(__FILE__), "test/jruby/bin")
+  end
+  
+  # Java only supports the table-driven code 
+  # generation style at this point. 
+  desc "Generates the Java scanner code using the Ragel table-driven code generation style."
+  task :ragel_java => [:ragel_version] do
+    ensure_ragel_version("RedClothScanService.java") do
+      puts "compiling with ragel version #{@ragel_v}"
+      sh %{ragel -J -o ext/redcloth_scan/RedClothScanService.java ext/redcloth_scan/redcloth_scan.java.rl}
+    end
+  end
+  
+  def java_classpath_arg 
+    # A myriad of ways to discover the JRuby classpath
+    classpath = begin
+      require 'java' 
+      # Already running in a JRuby JVM
+      Java::java.lang.System.getProperty('java.class.path')
+    rescue LoadError
+      ENV['JRUBY_PARENT_CLASSPATH'] || ENV['JRUBY_HOME'] && FileList["#{ENV['JRUBY_HOME']}/lib/*.jar"].join(File::PATH_SEPARATOR)
+    end
+    classpath ? "-cp #{classpath}" : ""
+  end
+
+  def compile_java(filename, jarname)
+    sh %{javac -source 1.4 -target 1.4 #{java_classpath_arg} #{filename}}
+    sh %{jar cf #{jarname} *.class}
+  end
+
+  task :redcloth_scan_java => [:ragel_java] do
+    Dir.chdir "ext/redcloth_scan" do
+      compile_java("RedClothScanService.java", "redcloth_scan.jar")
+    end
+  end
+  
+  JRubySpec = spec.dup
+  JRubySpec.platform = 'jruby'
+  JRubySpec.files = PKG_FILES + ["#{ARCHLIB}/hpricot_scan.jar", "#{ARCHLIB}/fast_xs.jar"]
+  JRubySpec.extensions = []
+
+  JRUBY_PKG_DIR = "#{PKG}-jruby"
+
+  desc "Package up the JRuby distribution."
+  file JRUBY_PKG_DIR => [:ragel_java, :package] do
+    sh "tar zxf pkg/#{PKG}.tgz"
+    mv PKG, JRUBY_PKG_DIR
+  end
+
+  desc "Build the RubyGems package for JRuby"
+  task :package_jruby => JRUBY_PKG_DIR do
+    Dir.chdir("#{JRUBY_PKG_DIR}") do
+      Rake::Task[:hpricot_java].invoke
+      Gem::Builder.new(JRubySpec).build
+      verbose(true) {
+        mv Dir["*.gem"].first, "../pkg/#{JRUBY_PKG_DIR}.gem"
+      }
+    end
+  end
+
+  CLEAN.include JRUBY_PKG_DIR
+  
+end
+
+def ensure_ragel_version(name)
+  @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].split('.').map{|s| s.to_i}
+  if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[1] >= 2)
+    yield
+  else
+    STDERR.puts "Ragel 6.2 or greater is required to generate #{name}."
+    exit(1)
+  end
 end
