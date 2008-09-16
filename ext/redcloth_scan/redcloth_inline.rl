@@ -67,7 +67,8 @@
   arrow = "->" ;
   endash = " - " ;
   acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" default+ >A %{ STORE(title) } :> ")" ) >X ;
-  caps = ( upper{3,} >A %*T ) >X ;
+  caps_noactions = upper{3,} ;
+  caps = ( caps_noactions >A %*T ) >X ;
   dim_digit = [0-9.]+ ;
   prime = ("'" | '"')?;
   dim_noactions = dim_digit prime (("x" | " x ") dim_digit prime) %T (("x" | " x ") dim_digit prime)? ;
@@ -83,7 +84,7 @@
   # info
   redcloth_version = "[RedCloth::VERSION]" ;
 
-  other_phrase = phrase -- dim_noactions;
+  other_phrase = phrase -- (dim_noactions | caps_noactions);
 
   code_tag := |*
     code_tag_end { CAT(block); fgoto main; };
@@ -91,12 +92,12 @@
   *|;
 
   main := |*
-
+    
     image { INLINE(block, image); };
-
+    
     link { PARSE_LINK_ATTR(link_text); PASS(block, name, link); };
     bracketed_link { PARSE_LINK_ATTR(link_text); PASS(block, name, link); };
-
+    
     code { PARSE_ATTR(text); PASS_CODE(block, text, code, opts); };
     code_tag_start { CAT(block); fgoto code_tag; };
     notextile { INLINE(block, notextile); };
@@ -117,7 +118,7 @@
     snip { PASS(block, text, snip); };
     quote1 { PASS(block, text, quote1); };
     quote2 { PASS(block, text, quote2); };
-
+    
     ellipsis { INLINE(block, ellipsis); };
     emdash { INLINE(block, emdash); };
     endash { INLINE(block, endash); };
@@ -130,21 +131,21 @@
     copyright { INLINE(block, copyright); };
     footno { PASS(block, text, footno); };
     entity { INLINE(block, entity); };
-
+    
     script_tag { INLINE(block, inline_html); };
     start_tag { INLINE(block, inline_html); };
     end_tag { INLINE(block, inline_html); };
     empty_tag { INLINE(block, inline_html); };
     html_comment { INLINE(block, inline_html); };
-
+    
     redcloth_version { INLINE(block, inline_redcloth_version); };
-
+    
     other_phrase => esc;
     PUNCT => esc;
     space => esc;
-
+    
     EOF;
-
+    
   *|;
 
 }%%

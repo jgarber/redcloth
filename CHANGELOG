@@ -2,6 +2,8 @@
 
 * Added some very basic support for images in LaTeX. [virtualfunction]
 
+* Fixed missed caps wrapped in parentheses. #43
+
 
 *4.0.3 (August 18, 2008)*
 

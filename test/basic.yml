@@ -813,3 +813,9 @@ in: |-
    "one (two _three four_) five"
 html: |-
   <p>&#8220;one (two <em>three four</em>) five&#8221;</p>
+---
+name: caps in parentheses
+desc: Uppercase words of three or more characters that are in parentheses should be recognized as well as those not in parentheses.
+in: IBM or (HAL)
+html: <p><span class="caps">IBM</span> or (<span class="caps">HAL</span>)</p>
+no_span_caps_html: <p>IBM or (HAL)</p>
