@@ -65,7 +65,7 @@ redcloth_attributes(self, str)
 {
   StringValue(str);
   int cs = redcloth_attributes_en_inline;
-  return redcloth_attribute_parser(cs, self, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1);
+  return redcloth_attribute_parser(cs, self, RSTRING_PTR(str), RSTRING_PTR(str) + RSTRING_LEN(str) + 1);
 }
 
 VALUE
@@ -74,5 +74,5 @@ redcloth_link_attributes(self, str)
 {
   StringValue(str);
   int cs = redcloth_attributes_en_link_says;
-  return redcloth_attribute_parser(cs, self, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1);
+  return redcloth_attribute_parser(cs, self, RSTRING_PTR(str), RSTRING_PTR(str) + RSTRING_LEN(str) + 1);
 }

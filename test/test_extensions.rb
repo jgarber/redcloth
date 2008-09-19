@@ -11,7 +11,7 @@ class TestExtensions < Test::Unit::TestCase
     def refs_smiley(text)
       text.gsub!(/(\s)~(:P|:D|:O|:o|:S|:\||;\)|:'\(|:\)|:\()/) do |m|
         bef,ma = $~[1..2]
-        filename = "/images/emoticons/"+(ma.split(//).collect{|l| l[0] }.join('_'))+".png"
+        filename = "/images/emoticons/"+(ma.unpack("c*").join('_'))+".png"
         "#{bef}<img src='#{filename}' title='#{ma}' class='smiley' />"
       end
     end

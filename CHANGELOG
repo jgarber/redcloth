@@ -10,6 +10,8 @@
 
 * Reduced link eagerness so it wouldn't include preceding quoted phrases. #48
 
+* Fixed compatibility issues with Ruby 1.9 [Keita Yamaguchi]. #52, 53, 54
+
 
 *4.0.3 (August 18, 2008)*
 

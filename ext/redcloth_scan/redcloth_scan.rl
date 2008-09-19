@@ -361,7 +361,7 @@ redcloth_transform(self, p, pe, refs)
 
   %% write exec;
 
-  if (RSTRING(block)->len > 0)
+  if (RSTRING_LEN(block) > 0)
   {
     ADD_BLOCK();
   }
@@ -381,7 +381,7 @@ redcloth_transform2(self, str)
   rb_str_cat2(str, "\n");
   StringValue(str);
   rb_funcall(self, rb_intern("before_transform"), 1, str);
-  return redcloth_transform(self, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, Qnil);
+  return redcloth_transform(self, RSTRING_PTR(str), RSTRING_PTR(str) + RSTRING_LEN(str) + 1, Qnil);
 }
 
 /*
@@ -397,10 +397,10 @@ redcloth_html_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
   VALUE new_str = rb_str_new2("");
   StringValue(str);
   
-  if (RSTRING(str)->len == 0)
+  if (RSTRING_LEN(str) == 0)
     return new_str;
   
-  char *ts = RSTRING(str)->ptr, *te = RSTRING(str)->ptr + RSTRING(str)->len;
+  char *ts = RSTRING_PTR(str), *te = RSTRING_PTR(str) + RSTRING_LEN(str);
   char *t = ts, *t2 = ts, *ch = NULL;
   if (te <= ts) return;
 
@@ -452,7 +452,7 @@ redcloth_latex_esc(VALUE self, VALUE str)
   VALUE new_str = rb_str_new2("");
   StringValue(str);
   
-  char *ts = RSTRING(str)->ptr, *te = RSTRING(str)->ptr + RSTRING(str)->len;
+  char *ts = RSTRING_PTR(str), *te = RSTRING_PTR(str) + RSTRING_LEN(str);
   char *t = ts, *t2 = ts, *ch = NULL;
   if (te <= ts) return;
 

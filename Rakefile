@@ -117,7 +117,7 @@ ext_files = FileList[
 
 file ext_so => ext_files do
   Dir.chdir(ext) do
-    sh(PLATFORM =~ /win32/ ? 'nmake' : 'make')
+    sh(RUBY_PLATFORM =~ /win32/ ? 'nmake' : 'make')
   end
   cp ext_so, "lib"
 end

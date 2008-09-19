@@ -183,7 +183,7 @@ red_pass_code(VALUE self, VALUE regs, VALUE ref, ID meth)
   VALUE txt = rb_hash_aref(regs, ref);
   if (!NIL_P(txt)) {
     VALUE txt2 = rb_str_new2("");
-    rb_str_cat_escaped_for_preformatted(self, txt2, RSTRING(txt)->ptr, RSTRING(txt)->ptr + RSTRING(txt)->len);
+    rb_str_cat_escaped_for_preformatted(self, txt2, RSTRING_PTR(txt), RSTRING_PTR(txt) + RSTRING_LEN(txt));
     rb_hash_aset(regs, ref, txt2);
   }
   return rb_funcall(self, meth, 1, regs);
@@ -197,9 +197,9 @@ red_block(VALUE self, VALUE regs, VALUE block, VALUE refs)
   VALUE sym_text = ID2SYM(rb_intern("text"));
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
-  if ((RSTRING(block)->len > 0) && !NIL_P(btype))
+  if ((RSTRING_LEN(block) > 0) && !NIL_P(btype))
   {
-    method = rb_intern(RSTRING(btype)->ptr);
+    method = rb_intern(RSTRING_PTR(btype));
     if (method == rb_intern("notextile")) {
       rb_hash_aset(regs, sym_text, block);
     } else {
@@ -225,10 +225,10 @@ red_blockcode(VALUE self, VALUE regs, VALUE block)
 {
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
-  if (RSTRING(block)->len > 0)
+  if (RSTRING_LEN(block) > 0)
   {
     rb_hash_aset(regs, ID2SYM(rb_intern("text")), block);
-    block = rb_funcall(self, rb_intern(RSTRING(btype)->ptr), 1, regs);
+    block = rb_funcall(self, rb_intern(RSTRING_PTR(btype)), 1, regs);
   }
   return block;
 }
@@ -293,5 +293,5 @@ redcloth_inline2(self, str, refs)
   VALUE self, str, refs;
 {
   StringValue(str);
-  return redcloth_inline(self, RSTRING(str)->ptr, RSTRING(str)->ptr + RSTRING(str)->len + 1, refs);
+  return redcloth_inline(self, RSTRING_PTR(str), RSTRING_PTR(str) + RSTRING_LEN(str) + 1, refs);
 }

@@ -141,7 +141,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
       if (!NIL_P(end_list)) \
       { \
         StringValue(end_list); \
-        sprintf(listm, "%s_close", RSTRING(end_list)->ptr); \
+        sprintf(listm, "%s_close", RSTRING_PTR(end_list)); \
         rb_str_append(html, rb_funcall(self, rb_intern(listm), 1, regs)); \
       } \
     }
