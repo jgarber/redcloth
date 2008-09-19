@@ -291,6 +291,15 @@ html: |-
 lite_mode_html: |-
   I&#8217;m <span style="color:red;">unaware</span><br />
   of most soft drinks.
+---
+name: percent sign
+desc: though percent signs indicate a span, they shouldn't be overly greedy.
+in: |-
+  http://blah.com/one%20two%20three
+  (min)5%-95%(max)
+html: |-
+  <p>http://blah.com/one%20two%20three<br />
+  (min)5%-95%(max)</p>
 --- 
 name: css class
 desc: A block can be tagged with a CSS class by circling the class in parentheses and placing it just before the period which marks the block.

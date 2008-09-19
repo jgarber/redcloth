@@ -109,5 +109,10 @@
   word = ( alnum | safe | " " ) ;
   mspace = ( ( " " | "\t" | LF )+ ) -- LF{2} ;
   mtext = ( chars (mspace chars)* ) ;
+  
+  # conditionals
+  action starts_phrase {
+    p == orig_p || *(p-1) == '\r' || *(p-1) == '\n' || *(p-1) == '\f' || *(p-1) == ' '
+  }
 
 }%%;

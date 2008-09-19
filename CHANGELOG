@@ -6,6 +6,8 @@
 
 * Removed indication of quotes explicitly with square brackets.  Textile 2.0 does not support this and it wasn't in RedCloth 3. #46
 
+* Made percent signs less greedy.  They must surround a phrase or else they must be surrounded with square brackets, just like sup, sub, and del phrases. #47
+
 
 *4.0.3 (August 18, 2008)*
 
