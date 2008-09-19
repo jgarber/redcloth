@@ -205,6 +205,10 @@ name: linked quoted phrase
 in: '""Open the pod bay doors please, HAL."":http://www.youtube.com/watch?v=npN9l2Bd06s'
 html: '<p><a href="http://www.youtube.com/watch?v=npN9l2Bd06s">&#8220;Open the pod bay doors please, <span class="caps">HAL</span>.&#8221;</a></p>'
 ---
+name: link following quoted phrase
+in: '"quote" text "quote" text "link":http://google.com'
+html: '<p>&#8220;quote&#8221; text &#8220;quote&#8221; text <a href="http://google.com">link</a></p>'
+---
 name: links containing underscores
 in: 'This is a link to a "Wikipedia article about Barack":http://en.wikipedia.org/wiki/Barack_Obama'
 html: '<p>This is a link to a <a href="http://en.wikipedia.org/wiki/Barack_Obama">Wikipedia article about Barack</a></p>'

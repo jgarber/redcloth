@@ -8,6 +8,8 @@
 
 * Made percent signs less greedy.  They must surround a phrase or else they must be surrounded with square brackets, just like sup, sub, and del phrases. #47
 
+* Reduced link eagerness so it wouldn't include preceding quoted phrases. #48
+
 
 *4.0.3 (August 18, 2008)*
 
