@@ -44,9 +44,9 @@
   del_phrase = (( " " >A %{ STORE(beginning_space); } "-") >X C ( mtext ) >A %T :>> ( "-" end_markup_phrase )) - emdash_parenthetical_phrase_with_spaces ;
   ins = "["? "+" >X mtext >A %T :> "+" "]"? ;
   sup = "[^" >X mtext >A %T :> "^]" ;
-  sup_phrase = ( "^" when starts_phrase) >X C ( mtext ) >A %T :>> ( "^" end_markup_phrase ) ;
+  sup_phrase = ( "^" when starts_phrase) >X ( mtext ) >A %T :>> ( "^" end_markup_phrase ) ;
   sub = "[~" >X mtext >A %T :> "~]" ;
-  sub_phrase = ( "~" when starts_phrase) >X C ( mtext ) >A %T :>> ( "~" end_markup_phrase ) ;
+  sub_phrase = ( "~" when starts_phrase) >X ( mtext ) >A %T :>> ( "~" end_markup_phrase ) ;
   span = "[%" >X mtext >A %T :> "%]" ;
   span_phrase = (("%" when starts_phrase) >X ( mtext ) >A %T :>> ( "%" end_markup_phrase )) ;
   cite = "["? "??" >X mtext >A %T :> "??" "]"? ;

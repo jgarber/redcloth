@@ -14,6 +14,8 @@
 
 * Fixed an error when a link was badly nested in parentheses. #55
 
+* Fixed an error on superscript/subscript parenthetical phrase. #56
+
 
 *4.0.3 (August 18, 2008)*
 

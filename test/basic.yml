@@ -264,11 +264,19 @@ name: superscript
 desc: To superscript a phrase, surround with carets.
 in: a ^2^ + b ^2^ = c ^2^
 html: <p>a <sup>2</sup> + b <sup>2</sup> = c <sup>2</sup></p>
+---
+name: parenthetical superscript phrase
+in: '^(image courtesy NASA)^'
+html: '<p><sup>(image courtesy <span class="caps">NASA</span>)</sup></p>'
 --- 
 name: subscript
 desc: To subscript, surround with tildes.
 in: log ~2~ x
 html: <p>log <sub>2</sub> x</p>
+---
+name: parenthetical subscript phrase
+in: '~(image courtesy NASA)~'
+html: '<p><sub>(image courtesy <span class="caps">NASA</span>)</sub></p>'
 ---
 name: tight superscript and subscript
 desc: if you want your superscript or subscript to not be surrounded by spaces, you must use square brackets
