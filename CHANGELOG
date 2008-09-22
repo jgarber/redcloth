@@ -12,6 +12,8 @@
 
 * Fixed compatibility issues with Ruby 1.9 [Keita Yamaguchi]. #52, 53, 54
 
+* Fixed an error when a link was badly nested in parentheses. #55
+
 
 *4.0.3 (August 18, 2008)*
 

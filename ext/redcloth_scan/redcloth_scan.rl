@@ -395,6 +395,9 @@ redcloth_html_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
   rb_scan_args(argc, argv, "11", &str, &level);
   
   VALUE new_str = rb_str_new2("");
+  if (str == Qnil)
+    return new_str;
+    
   StringValue(str);
   
   if (RSTRING_LEN(str) == 0)
@@ -450,7 +453,14 @@ static VALUE
 redcloth_latex_esc(VALUE self, VALUE str)
 {  
   VALUE new_str = rb_str_new2("");
+  
+  if (str == Qnil)
+    return new_str;
+    
   StringValue(str);
+  
+  if (RSTRING_LEN(str) == 0)
+    return new_str;
   
   char *ts = RSTRING_PTR(str), *te = RSTRING_PTR(str) + RSTRING_LEN(str);
   char *t = ts, *t2 = ts, *ch = NULL;
