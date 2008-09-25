@@ -233,3 +233,21 @@ in: |-
   [google-rocks]http://google.com
 html: |-
   <p><a href="http://google.com">link</a></p>
+---
+name: contained in multi-paragraph quotes
+in: |-
+  "I first learned about "Redcloth":http://redcloth.org/ several years ago.
+
+  "It's wonderful."
+html: |-
+  <p>&#8220;I first learned about <a href="http://redcloth.org/">Redcloth</a> several years ago.</p>
+  <p>&#8220;It&#8217;s wonderful.&#8221;</p>
+---
+name: as html in notextile contained in multi-paragraph quotes
+in: |-
+  "Here is a <notextile><a href="http://redcloth.org/">link</a></notextile>.
+
+  "I like links."
+html: |-
+  <p>&#8220;Here is a <a href="http://redcloth.org/">link</a>.</p>
+  <p>&#8220;I like links.&#8221;</p>

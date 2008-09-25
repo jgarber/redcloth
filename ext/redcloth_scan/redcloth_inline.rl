@@ -52,8 +52,13 @@
   cite = "["? "??" >X mtext >A %T :> "??" "]"? ;
   ignore = "["? "==" >X %A mtext %T :> "==" "]"? ;
   snip = "["? "```" >X %A mtext %T :> "```" "]"? ;
+  
+  # quotes
   quote1 = "'" >X %A mtext %T :> "'" ;
-  quote2 = '"' >X %A mtext %T :> '"' ;
+  mtext_without_quotes = (mtext -- '"');
+  html_tag_up_to_attribute_quote = "<" Name space+ NameAttr space* "=" space* ;
+  quote2 = ('"' >X %A ( mtext_without_quotes - (mtext_without_quotes html_tag_up_to_attribute_quote ) ) %T :> '"' ) ;
+  multi_paragraph_quote = (('"' when starts_line) >X  %A ( chars -- '"' ) %T );
   
   # html
   start_tag = ( "<" Name space+ AttrSet* (AttrEnd)? ">" | "<" Name ">" ) >X >A %T ;
@@ -119,6 +124,7 @@
     snip { PASS(block, text, snip); };
     quote1 { PASS(block, text, quote1); };
     quote2 { PASS(block, text, quote2); };
+    multi_paragraph_quote { PASS(block, text, multi_paragraph_quote); };
     
     ellipsis { INLINE(block, ellipsis); };
     emdash { INLINE(block, emdash); };

@@ -110,6 +110,15 @@ name: curly quotes
 desc: Single- and double-quotes around words or phrases are converted to curly quotations, much easier on the eye.
 in: "\"Observe!\""
 html: <p>&#8220;Observe!&#8221;</p>
+---
+name: quotes contained in multi-paragraph quotes
+in: |-
+  "I first learned about this thing called "Redcloth" several years ago.
+
+  "It's wonderful."
+html: |-
+  <p>&#8220;I first learned about this thing called &#8220;Redcloth&#8221; several years ago.</p>
+  <p>&#8220;It&#8217;s wonderful.&#8221;</p>
 --- 
 name: double hyphens
 desc: Double hyphens are replaced with an em-dash.

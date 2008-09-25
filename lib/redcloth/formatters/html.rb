@@ -172,6 +172,10 @@ module RedCloth::Formatters::HTML
     "&#8220;#{opts[:text]}&#8221;"
   end
   
+  def multi_paragraph_quote(opts)
+    "&#8220;#{opts[:text]}"
+  end
+  
   def ellipsis(opts)
     "#{opts[:text]}&#8230;"
   end
