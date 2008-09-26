@@ -16,6 +16,8 @@
 
 * Fixed an error on superscript/subscript parenthetical phrase. #56
 
+* Fixed bold phrases starting with a number being recognized as unordered lists. #60
+
 
 *4.0.3 (August 18, 2008)*
 
