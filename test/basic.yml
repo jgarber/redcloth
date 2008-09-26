@@ -234,6 +234,11 @@ desc: Strength can be give to text by surrounding with asterisks.  In HTML, this
 in: And then? She *fell*!
 html: <p>And then? She <strong>fell</strong>!</p>
 lite_mode_html: "And then? She <strong>fell</strong>!"
+---
+name: strong phrase beginning with a number
+desc: A strong phrase at the beginning of a line that begins with a number should not be recognized as a ul with a start value (no such thing)
+in: "*10 times as many*"
+html: "<p><strong>10 times as many</strong></p>"
 --- 
 name: force bold italics
 desc: Both italics and bold can be forced by doubling the underscores or asterisks.
