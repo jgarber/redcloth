@@ -12,11 +12,13 @@
   include redcloth_common "redcloth_common.rl";
 
   # links
-  mtext_no_quotes = mtext -- '"' ;
-  quoted_mtext = '"' mtext_no_quotes '"' ;
-  mtext_including_quotes = (mtext_no_quotes ' "' mtext_no_quotes '" ' mtext_no_quotes?)+ ;
-  link_says = ( C_noactions "."* " "* ((quoted_mtext | mtext_including_quotes | mtext_no_quotes) -- '":') ) >A %{ STORE(link_text); } ;
+  mtext_noquotes = mtext -- '"' ;
+  quoted_mtext = '"' mtext_noquotes '"' ;
+  mtext_including_quotes = (mtext_noquotes ' "' mtext_noquotes '" ' mtext_noquotes?)+ ;
+  link_says = ( C_noactions "."* " "* ((quoted_mtext | mtext_including_quotes | mtext_noquotes) -- '":') ) >A %{ STORE(link_text); } ;
+  link_says_noquotes_noactions = ( C_noquotes_noactions "."* " "* ((mtext_noquotes) -- '":') ) ;
   link = ( '"' link_says '":' %A uri %{ STORE_URL(href); } ) >X ;
+  link_noquotes_noactions = ( '"' link_says_noquotes_noactions '":' uri ) ;
   bracketed_link = ( '["' link_says '":' %A uri %{ STORE(href); } :> "]" ) >X ;
 
   # images
@@ -55,9 +57,10 @@
   
   # quotes
   quote1 = "'" >X %A mtext %T :> "'" ;
-  mtext_without_quotes = (mtext -- '"');
+  non_quote_chars_or_link = (chars -- '"') | link_noquotes_noactions ;
+  mtext_inside_quotes = ( non_quote_chars_or_link (mspace non_quote_chars_or_link)* ) ;
   html_tag_up_to_attribute_quote = "<" Name space+ NameAttr space* "=" space* ;
-  quote2 = ('"' >X %A ( mtext_without_quotes - (mtext_without_quotes html_tag_up_to_attribute_quote ) ) %T :> '"' ) ;
+  quote2 = ('"' >X %A ( mtext_inside_quotes - (mtext_inside_quotes html_tag_up_to_attribute_quote ) ) %T :> '"' ) ;
   multi_paragraph_quote = (('"' when starts_line) >X  %A ( chars -- '"' ) %T );
   
   # html

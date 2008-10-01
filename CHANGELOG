@@ -18,6 +18,8 @@
 
 * Fixed bold phrases starting with a number being recognized as unordered lists. #60
 
+* Fixed behavior of unclosed (multi-paragraph) quotes and incorrect handling of links inside double quotations. #59, #63
+
 
 *4.0.3 (August 18, 2008)*
 

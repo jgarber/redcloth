@@ -251,3 +251,9 @@ in: |-
 html: |-
   <p>&#8220;Here is a <a href="http://redcloth.org/">link</a>.</p>
   <p>&#8220;I like links.&#8221;</p>
+---
+name: contained in para with multiple quotes
+in: |-
+  "My wife, Tipper, and I will donate 100% of the proceeds of the award to the "Alliance For Climate Protection":http://www.looktothestars.org/charity/638-alliance-for-climate-protection," said Gore in an email. "I am deeply honored to receive the Nobel Peace Prize."
+html: |-
+  <p>&#8220;My wife, Tipper, and I will donate 100% of the proceeds of the award to the <a href="http://www.looktothestars.org/charity/638-alliance-for-climate-protection">Alliance For Climate Protection</a>,&#8221; said Gore in an email. &#8220;I am deeply honored to receive the Nobel Peace Prize.&#8221;</p>
