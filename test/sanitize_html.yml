@@ -40,3 +40,26 @@ in: |-
   </script></script>
 sanitized_html: |-
   alert(&#8220;Hai. I`m in ya PC. Makin ya <span class="caps">XSS</span> viruzz! KThxBye&#8221;);
+---
+name: recognizes image floating right following floating left
+in: |-
+  !>http://hobix.com/sample.jpg!
+
+  !<http://hobix.com/sample.jpg!
+
+  text
+
+  !>http://hobix.com/sample.jpg!
+sanitized_html: |-
+  <p style="float:right;"><img src="http://hobix.com/sample.jpg" alt="" /></p>
+  <p style="float:left;"><img src="http://hobix.com/sample.jpg" alt="" /></p>
+  <p>text</p>
+  <p style="float:right;"><img src="http://hobix.com/sample.jpg" alt="" /></p>
+---
+name: will let html tags with exclamation slip through but they are escaped
+in: "Will it get through? <script src=http://ha.ckers.org/xss.js !>stuff</script !>"
+sanitized_html: "<p>Will it get through? &lt;script src=http://ha.ckers.org/xss.js !&gt;stuff&lt;/script !&gt;</p>"
+---
+name: will let html tags with exclamation before the end pass
+in: 'This is <a title="legitimate!">legit!</a>'
+sanitized_html: "<p>Will it get through? &lt;script src=http://ha.ckers.org/xss.js !&gt;stuff&lt;/script !&gt;</p>"
