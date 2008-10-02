@@ -296,7 +296,7 @@ int SYM_escape_preformatted, SYM_escape_attributes;
   dl := |*
     LF dt_start     { ADD_BLOCK(); ASET(type, dt); };
     dd_start        { ADD_BLOCK(); ASET(type, dd); };
-    long_dd         { INLINE(html, dd); };
+    long_dd         { INLINE(html, dd); CLEAR_REGS(); };
     block_end       { ADD_BLOCK(); INLINE(html, dl_close);  fgoto main; };
     default => cat;
   *|;

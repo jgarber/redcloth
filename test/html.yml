@@ -297,3 +297,9 @@ html: |-
 name: tilde in innerHTML is not altered
 in: '<a href="http://foo.com/bar?something=1~2~3">http://foo.com/bar?something=1~2~3</a>'
 html: '<p><a href="http://foo.com/bar?something=1~2~3">http://foo.com/bar?something=1~2~3</a></p>'
+---
+name: empty block
+in: |-
+  <embed src="test.swf"></embed>
+html: |-
+  <embed src="test.swf"></embed>

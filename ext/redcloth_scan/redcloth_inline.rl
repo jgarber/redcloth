@@ -206,7 +206,7 @@ red_block(VALUE self, VALUE regs, VALUE block, VALUE refs)
   VALUE sym_text = ID2SYM(rb_intern("text"));
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
-  if ((RSTRING_LEN(block) > 0) && !NIL_P(btype))
+  if ((!NIL_P(block)) && !NIL_P(btype))
   {
     method = rb_intern(RSTRING_PTR(btype));
     if (method == rb_intern("notextile")) {

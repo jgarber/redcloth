@@ -20,6 +20,8 @@
 
 * Fixed behavior of unclosed (multi-paragraph) quotes and incorrect handling of links inside double quotations. #59, #63
 
+* Fixed empty block HTML disappearing. #64
+
 
 *4.0.3 (August 18, 2008)*
 
