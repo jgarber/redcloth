@@ -1,6 +1,14 @@
 #ifndef redcloth_h
 #define redcloth_h
 
+/* Backward compatibility with Ruby < 1.8.6 */
+#ifndef RSTRING_LEN
+#define RSTRING_LEN(x) (RSTRING(x)->len)
+#endif
+#ifndef RSTRING_PTR
+#define RSTRING_PTR(x) (RSTRING(x)->ptr)
+#endif
+
 /* variable defs */
 #ifndef redcloth_scan_c
 extern VALUE super_ParseError, mRedCloth, super_RedCloth;
