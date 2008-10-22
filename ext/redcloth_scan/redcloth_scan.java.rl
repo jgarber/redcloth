@@ -6,12 +6,14 @@
 import java.io.IOException;
 
 import org.jruby.Ruby;
+import org.jruby.RubyArray;
 import org.jruby.RubyClass;
 import org.jruby.RubyHash;
 import org.jruby.RubyModule;
 import org.jruby.RubyNumeric;
 import org.jruby.RubyObject;
 import org.jruby.RubyString;
+import org.jruby.RubySymbol;
 import org.jruby.anno.JRubyMethod;
 import org.jruby.runtime.Block;
 import org.jruby.runtime.CallbackFactory;
@@ -27,7 +29,7 @@ public class RedclothScanService implements BasicLibraryService {
   machine redcloth_scan;
   include redcloth_common "redcloth_common.java.rl";
 
-  action extend { extend = ((RubyHash)regs).fastARef(runtime.newSymbol("type")); }
+  action extend { extend = ((RubyHash)regs).aref(runtime.newSymbol("type")); }
 
   # blocks
   notextile_tag_start = "<notextile>" ;
@@ -328,14 +330,14 @@ public class RedclothScanService implements BasicLibraryService {
     list_start      { list_layout = runtime.newArray(); LIST_ITEM(); fgoto list; };
     dl_start        { p = ts; INLINE(html, "dl_open"); ASET("type", "dt"); fgoto dl; };
     table           { INLINE(table, "table_close"); DONE(table); fgoto block; };
-    link_alias      { ((RubyHash)refs_found).fastASet(((RubyHash)regs).fastARef(runtime.newSymbol("text")), ((RubyHash)regs).fastARef(runtime.newSymbol("href"))); DONE(block); };
-    aligned_image   { ((RubyHash)regs).fastASet(runtime.newSymbol("type"), plain_block); fgoto block; };
+    link_alias      { ((RubyHash)refs_found).aset(((RubyHash)regs).aref(runtime.newSymbol("text")), ((RubyHash)regs).aref(runtime.newSymbol("href"))); DONE(block); };
+    aligned_image   { ((RubyHash)regs).aset(runtime.newSymbol("type"), plain_block); fgoto block; };
     redcloth_version { INLINE(html, "redcloth_version"); };
     blank_line => cat;
     default
     { 
       CLEAR_REGS();
-      ((RubyHash)regs).fastASet(runtime.newSymbol("type"), plain_block);
+      ((RubyHash)regs).aset(runtime.newSymbol("type"), plain_block);
       CAT(block);
       fgoto block;
     };
@@ -345,6 +347,155 @@ public class RedclothScanService implements BasicLibraryService {
 }%%
 
 %% write data nofinal;
+
+   public void LIST_ITEM() {
+     int aint = 0;
+     IRubyObject aval = ((RubyArray)list_index).entry(nest-1);
+     if(!aval.isNil()) { aint = RubyNumeric.fix2int(aval); }
+     if(list_type.equals("ol")) { 
+       ((RubyArray)list_index).store(nest-1, runtime.newFixnum(aint + 1));
+     }
+
+     if(nest > ((RubyArray)list_layout).getLength()) {
+       listm = list_type + "_open";       
+       if(list_continue == 1) {
+         list_continue = 0;
+         ((RubyHash)regs).aset(runtime.newSymbol("start"), ((RubyArray)list_index).entry(nest-1));
+       } else {
+         IRubyObject start = ((RubyHash)regs).aref(runtime.newSymbol("start"));
+         if(start.isNil()) {
+           ((RubyArray)list_index).store(nest-1, runtime.newFixnum(1));
+         } else {
+           IRubyObject start_num = start.callMethod(runtime.getCurrentContext(), "to_i");
+           ((RubyArray)list_index).store(nest-1, start_num);
+         }          
+       }
+       ((RubyHash)regs).aset(runtime.newSymbol("nest"), runtime.newFixnum(nest));
+       ((RubyString)html).append(self.callMethod(runtime.getCurrentContext(), listm, regs));
+       ((RubyArray)list_layout).store(nest-1, runtime.newString(list_type));
+       CLEAR_REGS();
+       ASET("first", "true");
+     }
+     LIST_CLOSE();
+     ((RubyHash)regs).aset(runtime.newSymbol("nest"), ((RubyArray)list_layout).length());
+     ASET("type", "li_open");
+   }
+
+   public void LIST_CLOSE() {
+     while(nest < ((RubyArray)list_layout).getLength()) {
+       ((RubyHash)regs).aset(runtime.newSymbol("nest"), ((RubyArray)list_layout).length());
+       IRubyObject end_list = ((RubyArray)list_layout).pop(runtime.getCurrentContext());
+       if(!end_list.isNil()) {
+         String s = end_list.convertToString().toString();
+         listm = s + "_close";
+         ((RubyString)html).append(self.callMethod(runtime.getCurrentContext(), listm, regs));
+       }
+     }
+   }
+
+   public void TRANSFORM(String T) {
+     if(p > reg && reg >= ts) {
+       IRubyObject str = RedclothScanService.transform(self, data, reg, p, refs);
+       ((RubyHash)regs).aset(runtime.newSymbol(T), str);
+     } else {
+       ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.getNil());
+     } 
+   }
+
+    public IRubyObject red_pass(IRubyObject self, IRubyObject regs, IRubyObject ref, String meth, IRubyObject refs) {
+      IRubyObject txt = ((RubyHash)regs).aref(ref);
+      if(!txt.isNil()) {
+        ((RubyHash)regs).aset(ref, inline2(self, txt, refs));
+      }
+      return self.callMethod(self.getRuntime().getCurrentContext(), meth, regs);
+    }
+
+   
+    public void PASS(IRubyObject H, String A, String T) {
+      ((RubyString)H).append(red_pass(self, regs, runtime.newSymbol(A), T, refs));
+    }   
+
+    public void STORE_URL(String T) {
+      if(p > reg && reg >= ts) {
+        boolean punct = true;
+        while(p > reg && punct) {
+          switch(data[p - 1]) {
+            case '!': case '"': case '#': case '$': case '%': case ']': case '[': case '&': case '\'':
+            case '*': case '+': case ',': case '-': case '.': case ')': case '(': case ':':
+            case ';': case '=': case '?': case '@': case '\\': case '^': case '_':
+            case '`': case '|': case '~': p--; break;
+            default: punct = false;
+          }
+        }
+        te = p;
+      }
+      STORE(T);
+      if(!refs.isNil() && refs.callMethod(runtime.getCurrentContext(), "has_key?", ((RubyHash)regs).aref(runtime.newSymbol(T))).isTrue()) {
+        ((RubyHash)regs).aset(runtime.newSymbol(T), ((RubyHash)refs).aref(((RubyHash)refs).aref(runtime.newSymbol(T))));
+      }
+    }
+
+    public void red_inc(IRubyObject regs, IRubyObject ref) {
+      int aint = 0;
+      IRubyObject aval = ((RubyHash)regs).aref(ref);
+      if(!aval.isNil()) {
+        aint = RubyNumeric.fix2int(aval);
+      }
+      ((RubyHash)regs).aset(ref, regs.getRuntime().newFixnum(aint+1));
+    }
+
+    public IRubyObject red_blockcode(IRubyObject self, IRubyObject regs, IRubyObject block) {
+      Ruby runtime = self.getRuntime();
+      IRubyObject btype = ((RubyHash)regs).aref(runtime.newSymbol("type"));
+      block = block.callMethod(runtime.getCurrentContext(), "strip");
+      if(((RubyString)block).getByteList().realSize > 0) {
+        ((RubyHash)regs).aset(runtime.newSymbol("text"), block);
+        block = self.callMethod(runtime.getCurrentContext(), btype.asJavaString(), regs);
+      }
+      return block;
+    }
+
+    public IRubyObject red_block(IRubyObject self, IRubyObject regs, IRubyObject block, IRubyObject refs) {
+      Ruby runtime = self.getRuntime();
+      RubySymbol method;
+      IRubyObject sym_text = runtime.newSymbol("text");
+      IRubyObject btype = ((RubyHash)regs).aref(runtime.newSymbol("type"));
+      block = block.callMethod(runtime.getCurrentContext(), "strip");
+      if(!block.isNil() && !btype.isNil()) {
+        method = btype.convertToString().intern();
+        if(method == runtime.newSymbol("notextile")) {
+          ((RubyHash)regs).aset(sym_text, block);
+        } else {
+          ((RubyHash)regs).aset(sym_text, inline2(self, block, refs));
+        }
+        if(self.respondsTo(method.asJavaString())) {
+          block = self.callMethod(runtime.getCurrentContext(), method.asJavaString(), regs);
+        } else {
+          IRubyObject fallback = ((RubyHash)regs).aref(runtime.newSymbol("fallback"));
+          if(!fallback.isNil()) {
+            ((RubyString)fallback).append(((RubyHash)regs).aref(sym_text));
+            CLEAR_REGS();
+            ((RubyHash)regs).aset(sym_text, fallback);
+          }
+          block = self.callMethod(runtime.getCurrentContext(), "p", regs);
+        }
+      }
+
+      return block;
+    }
+
+    public void strCatEscaped(IRubyObject self, IRubyObject str, byte[] data, int ts, int te) {
+      IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
+      IRubyObject escapedStr = self.callMethod(self.getRuntime().getCurrentContext(), "escape", sourceStr);
+      ((RubyString)str).concat(escapedStr);
+    }
+
+    public void strCatEscapedForPreformatted(IRubyObject self, IRubyObject str, byte[] data, int ts, int te) {
+      IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
+      IRubyObject escapedStr = self.callMethod(self.getRuntime().getCurrentContext(), "escape_pre", sourceStr);
+      ((RubyString)str).concat(escapedStr);
+    }
+
     public void CLEAR(IRubyObject obj) {
       if(block == obj) {
         block = RubyString.newEmptyString(runtime);
@@ -406,24 +557,24 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public void ASET(String T, String V) {
-      ((RubyHash)regs).fastASet(runtime.newSymbol(T), runtime.newString(V));
+      ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.newString(V));
     }
 
     public void STORE(String T) {
       if(p > reg && reg >= ts) {
         IRubyObject str = RubyString.newString(runtime, data, reg, p-reg);
-        ((RubyHash)regs).fastASet(runtime.newSymbol(T), str);
+        ((RubyHash)regs).aset(runtime.newSymbol(T), str);
       } else {
-        ((RubyHash)regs).fastASet(runtime.newSymbol(T), runtime.getNil());
+        ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.getNil());
       }
     }
 
     public void STORE_B(String T) {
       if(p > bck && bck >= ts) {
         IRubyObject str = RubyString.newString(runtime, data, bck, p-bck);
-        ((RubyHash)regs).fastASet(runtime.newSymbol(T), str);
+        ((RubyHash)regs).aset(runtime.newSymbol(T), str);
       } else {
-        ((RubyHash)regs).fastASet(runtime.newSymbol(T), runtime.getNil());
+        ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.getNil());
       }
     }
 
@@ -452,6 +603,7 @@ public class RedclothScanService implements BasicLibraryService {
     private int list_continue = 0;
     private IRubyObject plain_block;
     private IRubyObject extend;
+    private String listm = "";
     private IRubyObject refs_found;
 
     public Transformer(IRubyObject self, byte[] data, int p, int pe, IRubyObject refs) {
@@ -498,7 +650,7 @@ public class RedclothScanService implements BasicLibraryService {
     return new Transformer(self, data, p, pe, refs).transform();
   }
   
-  public static IRubyObject inline2(IRubyObject workingCopy, IRubyObject self, RubyHash hash) {
+  public static IRubyObject inline2(IRubyObject workingCopy, IRubyObject self, IRubyObject refs) {
     return workingCopy.getRuntime().getNil();
   }
 

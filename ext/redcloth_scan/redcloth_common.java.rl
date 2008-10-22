@@ -7,8 +7,8 @@
   action T { STORE("text"); }
   action X { CLEAR_REGS(); reg = -1; }
   action cat { CAT(block); }
-  action esc { rb_str_cat_escaped(self, block, ts, te); }
-  action esc_pre { rb_str_cat_escaped_for_preformatted(self, block, ts, te); }
+  action esc { strCatEscaped(self, block, data, ts, te); }
+  action esc_pre { strCatEscapedForPreformatted(self, block, data, ts, te); }
   action ignore { ((RubyString)block).append(self.callMethod(runtime.getCurrentContext(), "ignore", regs)); }
 
   # simple
