@@ -267,6 +267,8 @@ namespace "jruby" do
     ensure_ragel_version("RedclothScanService.java") do
       puts "compiling with ragel version #{@ragel_v}"
       sh %{ragel -J -o ext/redcloth_scan/RedclothScanService.java ext/redcloth_scan/redcloth_scan.java.rl}
+      sh %{ragel -J -o ext/redcloth_scan/RedclothAttributes.java ext/redcloth_scan/redcloth_attributes.java.rl}
+      sh %{ragel -J -o ext/redcloth_scan/RedclothInline.java ext/redcloth_scan/redcloth_inline.java.rl}
     end
   end
   
@@ -282,14 +284,14 @@ namespace "jruby" do
     classpath ? "-cp #{classpath}" : ""
   end
  
-  def compile_java(filename, jarname)
-    sh %{javac -source 1.5 -target 1.5 #{java_classpath_arg} #{filename}}
+  def compile_java(filenames, jarname)
+    sh %{javac -source 1.5 -target 1.5 #{java_classpath_arg} #{filenames.join(" ")}}
     sh %{jar cf #{jarname} *.class}
   end
  
   task :redcloth_scan_java => [:ragel_java] do
     Dir.chdir "ext/redcloth_scan" do
-      compile_java("RedclothScanService.java", "redcloth_scan.jar")
+      compile_java(["RedclothAttributes.java", "RedclothInline.java", "RedclothScanService.java"], "redcloth_scan.jar")
     end
     cp "ext/redcloth_scan/redcloth_scan.jar", "lib"
   end
