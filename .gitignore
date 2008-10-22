@@ -2,6 +2,9 @@ ext/redcloth_scan/Makefile
 ext/redcloth_scan/*.[co]
 ext/redcloth_scan/*.bundle
 ext/redcloth_scan/*.so
+ext/redcloth_scan/*.jar
+ext/redcloth_scan/*.class
+ext/redcloth_scan/*.java
 lib/*.bundle
 lib/*.so
 doc/rdoc/*
