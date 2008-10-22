@@ -7,7 +7,9 @@ ext/redcloth_scan/*.class
 ext/redcloth_scan/*.java
 lib/*.bundle
 lib/*.so
+lib/*.jar
 doc/rdoc/*
 tmp/*
 pkg/*
 .DS_Store
+*.log

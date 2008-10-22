@@ -291,9 +291,17 @@ namespace "jruby" do
     Dir.chdir "ext/redcloth_scan" do
       compile_java("RedclothScanService.java", "redcloth_scan.jar")
     end
+    cp "ext/redcloth_scan/redcloth_scan.jar", "lib"
   end
   
-  JRUBY_PKG_DIR = "pkg-jruby"
+  desc "Run all the tests using JRuby"
+  Rake::TestTask.new(:test => [:redcloth_scan_java]) do |t|
+    t.libs << "test"
+    t.test_files = FileList['test/test_*.rb']
+    t.verbose = true
+  end
+
+    JRUBY_PKG_DIR = "pkg-jruby"
  
   desc "Package up the JRuby distribution."
   file JRUBY_PKG_DIR => [:ragel_java, :package] do
