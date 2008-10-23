@@ -248,7 +248,7 @@ module RedCloth::Formatters::HTML
   end
   
   def html(opts)
-    ignored_line(opts)
+    "#{opts[:text]}\n"
   end
   
   def html_block(opts)
@@ -328,7 +328,6 @@ module RedCloth::Formatters::HTML
   
   # Clean unauthorized tags.
   def clean_html( text, allowed_tags = BASIC_TAGS )
-    text = text.to_s
     text.gsub!( /<!\[CDATA\[/, '' )
     text.gsub!( /<(\/*)([A-Za-z]\w*)([^>]*?)(\s?\/?)>/ ) do |m|
       raw = $~
@@ -356,4 +355,5 @@ module RedCloth::Formatters::HTML
       end
     end
   end
+  
 end
