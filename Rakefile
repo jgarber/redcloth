@@ -251,11 +251,11 @@ end
 
 # Here are the jruby tasks, stolen from Hpricot.  If this jruby version catches on, I'd like these tasks to be unified with the C tasks and use echoe's platform detection, like Mongrel.
 namespace "jruby" do
-
+ 
   def ant(*args)
     system "ant #{args.join(' ')}"
   end
-
+ 
   desc "Installs jruby in a subdirectory of ./test/"
   task :install do
     sh %{svn export http://svn.codehaus.org/jruby/trunk/jruby test/jruby}
@@ -265,43 +265,34 @@ namespace "jruby" do
     sh %{jruby -S gem install rake}
     Rake::Task['add_path'].invoke
   end
-
+  
   desc "Adds jruby to your PATH"
   task :add_path do
     ENV['PATH'] = ENV['PATH'] + ":" + File.join(File.dirname(__FILE__), "test/jruby/bin")
   end
   
-  # Java only supports the table-driven code 
-  # generation style at this point. 
+  # Java only supports the table-driven code
+  # generation style at this point.
   desc "Generates the Java scanner code using the Ragel table-driven code generation style."
   task :ragel_java => [:ragel_version] do
-    ensure_ragel_version("RedClothScanService.java") do
+    ensure_ragel_version("RedclothScanService.java") do
       puts "compiling with ragel version #{@ragel_v}"
-      sh %{ragel -J -o ext/redcloth_scan/RedClothScanService.java ext/redcloth_scan/redcloth_scan.java.rl}
+      sh %{ragel -J -o ext/redcloth_scan/RedclothScanService.java ext/redcloth_scan/redcloth_scan.java.rl}
+      sh %{ragel -J -o ext/redcloth_scan/RedclothAttributes.java ext/redcloth_scan/redcloth_attributes.java.rl}
+      sh %{ragel -J -o ext/redcloth_scan/RedclothInline.java ext/redcloth_scan/redcloth_inline.java.rl}
     end
   end
   
-  def java_classpath_arg 
+  def java_classpath_arg
     # A myriad of ways to discover the JRuby classpath
     classpath = begin
-      require 'java' 
+      require 'java'
       # Already running in a JRuby JVM
       Java::java.lang.System.getProperty('java.class.path')
     rescue LoadError
       ENV['JRUBY_PARENT_CLASSPATH'] || ENV['JRUBY_HOME'] && FileList["#{ENV['JRUBY_HOME']}/lib/*.jar"].join(File::PATH_SEPARATOR)
     end
     classpath ? "-cp #{classpath}" : ""
-  end
-
-  def compile_java(filename, jarname)
-    sh %{javac -source 1.4 -target 1.4 #{java_classpath_arg} #{filename}}
-    sh %{jar cf #{jarname} *.class}
-  end
-
-  task :redcloth_scan_java => [:ragel_java] do
-    Dir.chdir "ext/redcloth_scan" do
-      compile_java("RedClothScanService.java", "redcloth_scan.jar")
-    end
   end
   
   JRubySpec = spec.dup
@@ -315,6 +306,25 @@ namespace "jruby" do
   file JRUBY_PKG_DIR => [:ragel_java, :package] do
     sh "tar zxf pkg/#{PKG}.tgz"
     mv PKG, JRUBY_PKG_DIR
+  end
+  
+  def compile_java(filenames, jarname)
+    sh %{javac -source 1.5 -target 1.5 #{java_classpath_arg} #{filenames.join(" ")}}
+    sh %{jar cf #{jarname} *.class}
+  end
+ 
+  task :redcloth_scan_java => [:ragel_java] do
+    Dir.chdir "ext/redcloth_scan" do
+      compile_java(["RedclothAttributes.java", "RedclothInline.java", "RedclothScanService.java"], "redcloth_scan.jar")
+    end
+    cp "ext/redcloth_scan/redcloth_scan.jar", "lib"
+  end
+  
+  desc "Run all the tests using JRuby"
+  Rake::TestTask.new(:test => [:redcloth_scan_java]) do |t|
+    t.libs << "test"
+    t.test_files = FileList['test/test_*.rb']
+    t.verbose = true
   end
 
   desc "Build the RubyGems package for JRuby"

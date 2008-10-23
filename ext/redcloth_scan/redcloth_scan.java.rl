@@ -1,326 +1,842 @@
-
+/*
+ * redcloth_scan.java.rl
+ *
+ * Copyright (C) 2008 Jason Garber
+ */
 import java.io.IOException;
 
 import org.jruby.Ruby;
+import org.jruby.RubyArray;
 import org.jruby.RubyClass;
 import org.jruby.RubyHash;
 import org.jruby.RubyModule;
 import org.jruby.RubyNumeric;
-import org.jruby.RubyObjectAdapter;
+import org.jruby.RubyObject;
 import org.jruby.RubyString;
-import org.jruby.javasupport.JavaEmbedUtils;
+import org.jruby.RubySymbol;
+import org.jruby.anno.JRubyMethod;
+import org.jruby.runtime.Arity;
 import org.jruby.runtime.Block;
 import org.jruby.runtime.CallbackFactory;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.exceptions.RaiseException;
 import org.jruby.runtime.load.BasicLibraryService;
+import org.jruby.util.ByteList;
 
-public class RedClothScanService implements BasicLibraryService {
-       private static RubyObjectAdapter rubyApi;
+public class RedclothScanService implements BasicLibraryService {
 
-/***** This all came from Hpricot *******
+  public static class Base {
+   public void LIST_ITEM() {
+     int aint = 0;
+     IRubyObject aval = ((RubyArray)list_index).entry(nest-1);
+     if(!aval.isNil()) { aint = RubyNumeric.fix2int(aval); }
+     if(list_type.equals("ol")) { 
+       ((RubyArray)list_index).store(nest-1, runtime.newFixnum(aint + 1));
+     }
 
-       public void ELE(IRubyObject N) {
-         if (te > ts || text) {
-           IRubyObject raw_string = runtime.getNil();
-           ele_open = false; text = false;
-           if (ts != -1 && N != cdata && N != sym_text && N != procins && N != comment) { 
-             raw_string = runtime.newString(new String(buf,ts,te-ts));
-           } 
-           rb_yield_tokens(N, tag[0], attr, raw_string, taint);
-         }
-       }
-
-       public void SET(IRubyObject[] N, int E) {
-         int mark = 0;
-         if(N == tag) { 
-           if(mark_tag == -1 || E == mark_tag) {
-             tag[0] = runtime.newString("");
-           } else if(E > mark_tag) {
-             tag[0] = runtime.newString(new String(buf,mark_tag, E-mark_tag));
-           }
-         } else if(N == akey) {
-           if(mark_akey == -1 || E == mark_akey) {
-             akey[0] = runtime.newString("");
-           } else if(E > mark_akey) {
-             akey[0] = runtime.newString(new String(buf,mark_akey, E-mark_akey));
-           }
-         } else if(N == aval) {
-           if(mark_aval == -1 || E == mark_aval) {
-             aval[0] = runtime.newString("");
-           } else if(E > mark_aval) {
-             aval[0] = runtime.newString(new String(buf,mark_aval, E-mark_aval));
-           }
-         }
-       }
-
-       public void CAT(IRubyObject[] N, int E) {
-         if(N[0].isNil()) {
-           SET(N,E);
+     if(nest > ((RubyArray)list_layout).getLength()) {
+       listm = list_type + "_open";       
+       if(list_continue == 1) {
+         list_continue = 0;
+         ((RubyHash)regs).aset(runtime.newSymbol("start"), ((RubyArray)list_index).entry(nest-1));
+       } else {
+         IRubyObject start = ((RubyHash)regs).aref(runtime.newSymbol("start"));
+         if(start.isNil()) {
+           ((RubyArray)list_index).store(nest-1, runtime.newFixnum(1));
          } else {
-           int mark = 0;
-           if(N == tag) {
-             mark = mark_tag;
-           } else if(N == akey) {
-             mark = mark_akey;
-           } else if(N == aval) {
-             mark = mark_aval;
-           }
-           ((RubyString)(N[0])).append(runtime.newString(new String(buf, mark, E-mark)));
-         }
+           IRubyObject start_num = start.callMethod(runtime.getCurrentContext(), "to_i");
+           ((RubyArray)list_index).store(nest-1, start_num);
+         }          
        }
+       ((RubyHash)regs).aset(runtime.newSymbol("nest"), runtime.newFixnum(nest));
+       ((RubyString)html).append(self.callMethod(runtime.getCurrentContext(), listm, regs));
+       ((RubyArray)list_layout).store(nest-1, runtime.newString(list_type));
+       regs = RubyHash.newHash(runtime);
+       ASET("first", "true");
+     }
+     LIST_CLOSE();
+     ((RubyHash)regs).aset(runtime.newSymbol("nest"), ((RubyArray)list_layout).length());
+     ASET("type", "li_open");
+   }
 
-       public void SLIDE(Object N) {
-           int mark = 0;
-           if(N == tag) {
-             mark = mark_tag;
-           } else if(N == akey) {
-             mark = mark_akey;
-           } else if(N == aval) {
-             mark = mark_aval;
-           }
-           if(mark > ts) {
-             if(N == tag) {
-               mark_tag  -= ts;
-             } else if(N == akey) {
-               mark_akey -= ts;
-             } else if(N == aval) {
-               mark_aval -= ts;
-             }
-           }
+   public void LIST_CLOSE() {
+     while(nest < ((RubyArray)list_layout).getLength()) {
+       ((RubyHash)regs).aset(runtime.newSymbol("nest"), ((RubyArray)list_layout).length());
+       IRubyObject end_list = ((RubyArray)list_layout).pop(runtime.getCurrentContext());
+       if(!end_list.isNil()) {
+         String s = end_list.convertToString().toString();
+         listm = s + "_close";
+         ((RubyString)html).append(self.callMethod(runtime.getCurrentContext(), listm, regs));
        }
+     }
+   }
 
-       public void ATTR(IRubyObject K, IRubyObject V) {
-         if(!K.isNil()) {
-           if(attr.isNil()) {
-             attr = RubyHash.newHash(runtime);
-           }
-           ((RubyHash)attr).op_aset(runtime.getCurrentContext(),K,V);
-           // ((RubyHash)attr).aset(K,V);
-         }
-       }
+   public void TRANSFORM(String T) {
+     if(p > reg && reg >= ts) {
+       IRubyObject str = RedclothScanService.transform(self, data, reg, p-reg, refs);
+       ((RubyHash)regs).aset(runtime.newSymbol(T), str);
+     } else {
+       ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.getNil());
+     } 
+   }
 
-       public void ATTR(IRubyObject[] K, IRubyObject V) {
-         ATTR(K[0],V);
-       }
+    public IRubyObject red_pass(IRubyObject self, IRubyObject regs, IRubyObject ref, String meth, IRubyObject refs) {
+      IRubyObject txt = ((RubyHash)regs).aref(ref);
+      if(!txt.isNil()) {
+        ((RubyHash)regs).aset(ref, inline2(self, txt, refs));
+      }
+      return self.callMethod(self.getRuntime().getCurrentContext(), meth, regs);
+    }
 
-       public void ATTR(IRubyObject K, IRubyObject[] V) {
-         ATTR(K,V[0]);
-       }
+   
+    public void PASS(IRubyObject H, String A, String T) {
+      ((RubyString)H).append(red_pass(self, regs, runtime.newSymbol(A), T, refs));
+    }   
 
-       public void ATTR(IRubyObject[] K, IRubyObject[] V) {
-         ATTR(K[0],V[0]);
-       }
+    public void STORE_URL(String T) {
+      if(p > reg && reg >= ts) {
+        boolean punct = true;
+        while(p > reg && punct) {
+          switch(data[p - 1]) {
+            case '!': case '"': case '#': case '$': case '%': case ']': case '[': case '&': case '\'':
+            case '*': case '+': case ',': case '-': case '.': case ')': case '(': case ':':
+            case ';': case '=': case '?': case '@': case '\\': case '^': case '_':
+            case '`': case '|': case '~': p--; break;
+            default: punct = false;
+          }
+        }
+        te = p;
+      }
 
-       public void TEXT_PASS() {
-         if(!text) { 
-           if(ele_open) { 
-             ele_open = false; 
-             if(ts > -1) { 
-               mark_tag = ts; 
-             } 
-           } else {
-             mark_tag = p; 
-           } 
-           attr = runtime.getNil(); 
-           tag[0] = runtime.getNil(); 
-           text = true; 
-         }
-       }
+      STORE(T);
 
-       public void EBLK(IRubyObject N, int T) {
-         CAT(tag, p - T + 1);
-         ELE(N);
-       }
-*/
+      if(!refs.isNil() && refs.callMethod(runtime.getCurrentContext(), "has_key?", ((RubyHash)regs).aref(runtime.newSymbol(T))).isTrue()) {
+        ((RubyHash)regs).aset(runtime.newSymbol(T), ((RubyHash)refs).aref(((RubyHash)regs).aref(runtime.newSymbol(T))));
+      }
+    }
 
-       public void rb_raise(RubyClass error, String message) {
-              throw new RaiseException(runtime, error, message, true);
-       }
+    public void red_inc(IRubyObject regs, IRubyObject ref) {
+      int aint = 0;
+      IRubyObject aval = ((RubyHash)regs).aref(ref);
+      if(!aval.isNil()) {
+        aint = RubyNumeric.fix2int(aval);
+      }
+      ((RubyHash)regs).aset(ref, regs.getRuntime().newFixnum(aint+1));
+    }
 
-       public IRubyObject rb_str_new2(String s) {
-              return runtime.newString(s);
-       }
+    public IRubyObject red_blockcode(IRubyObject self, IRubyObject regs, IRubyObject block) {
+      Ruby runtime = self.getRuntime();
+      IRubyObject btype = ((RubyHash)regs).aref(runtime.newSymbol("type"));
+      block = block.callMethod(runtime.getCurrentContext(), "strip");
+      if(((RubyString)block).getByteList().realSize > 0) {
+        ((RubyHash)regs).aset(runtime.newSymbol("text"), block);
+        block = self.callMethod(runtime.getCurrentContext(), btype.asJavaString(), regs);
+      }
+      return block;
+    }
 
+    public IRubyObject red_block(IRubyObject self, IRubyObject regs, IRubyObject block, IRubyObject refs) {
+      Ruby runtime = self.getRuntime();
+      RubySymbol method;
+      IRubyObject sym_text = runtime.newSymbol("text");
+      IRubyObject btype = ((RubyHash)regs).aref(runtime.newSymbol("type"));
+      block = block.callMethod(runtime.getCurrentContext(), "strip");
+
+      if(!block.isNil() && !btype.isNil()) {
+        method = btype.convertToString().intern();
+
+        if(method == runtime.newSymbol("notextile")) {
+          ((RubyHash)regs).aset(sym_text, block);
+        } else {
+          ((RubyHash)regs).aset(sym_text, inline2(self, block, refs));
+        }
+
+        if(self.respondsTo(method.asJavaString())) {
+          block = self.callMethod(runtime.getCurrentContext(), method.asJavaString(), regs);
+        } else {
+          IRubyObject fallback = ((RubyHash)regs).aref(runtime.newSymbol("fallback"));
+          if(!fallback.isNil()) {
+            ((RubyString)fallback).append(((RubyHash)regs).aref(sym_text));
+            regs = RubyHash.newHash(runtime);
+            ((RubyHash)regs).aset(sym_text, fallback);
+          }
+          block = self.callMethod(runtime.getCurrentContext(), "p", regs);
+        }
+      }
+
+      return block;
+    }
+
+    public void strCatEscaped(IRubyObject self, IRubyObject str, byte[] data, int ts, int te) {
+      IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
+      IRubyObject escapedStr = self.callMethod(self.getRuntime().getCurrentContext(), "escape", sourceStr);
+      ((RubyString)str).concat(escapedStr);
+    }
+
+    public void strCatEscapedForPreformatted(IRubyObject self, IRubyObject str, byte[] data, int ts, int te) { 
+      IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
+      IRubyObject escapedStr = self.callMethod(self.getRuntime().getCurrentContext(), "escape_pre", sourceStr);
+      ((RubyString)str).concat(escapedStr);
+    }
+
+    public void CLEAR(IRubyObject obj) {
+      if(block == obj) {
+        block = RubyString.newEmptyString(runtime);
+      } else if(html == obj) { 
+        html = RubyString.newEmptyString(runtime);
+      } else if(table == obj) {
+        table = RubyString.newEmptyString(runtime);
+      }
+    }
+
+    public void ADD_BLOCK() {
+      ((RubyString)html).append(red_block(self, regs, block, refs));
+      extend = runtime.getNil();
+      CLEAR(block);
+      CLEAR_REGS();      
+    }
+
+    public void CLEAR_REGS() {
+      regs = RubyHash.newHash(runtime);
+    }
+
+    public void CAT(IRubyObject H) {
+      ((RubyString)H).cat(data, ts, te-ts);
+    }
+
+    public void INLINE(IRubyObject H, String T) {
+      ((RubyString)H).append(self.callMethod(runtime.getCurrentContext(), T, regs));
+    }
+
+    public void DONE(IRubyObject H) {
+      ((RubyString)html).append(H);
+      CLEAR(H);
+      CLEAR_REGS();
+    }
+
+    public void ADD_EXTENDED_BLOCK() {
+      ((RubyString)html).append(red_block(self, regs, block, refs));
+      CLEAR(block);
+    }
+
+    public void ADD_BLOCKCODE() {
+      ((RubyString)html).append(red_blockcode(self, regs, block));
+      CLEAR(block);
+      CLEAR_REGS();
+    }
+
+    public void ADD_EXTENDED_BLOCKCODE() {
+      ((RubyString)html).append(red_blockcode(self, regs, block));
+      CLEAR(block);
+    }
+
+    public void AINC(String T) {
+      red_inc(regs, runtime.newSymbol(T));
+    }
+
+    public void END_EXTENDED() {
+      extend = runtime.getNil();
+      CLEAR_REGS();
+    }
+
+    public void ASET(String T, String V) {
+      ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.newString(V));
+    }
+
+    public void STORE(String T) {
+      if(p > reg && reg >= ts) {
+      
+        IRubyObject str = RubyString.newString(runtime, data, reg, p-reg);
+        ((RubyHash)regs).aset(runtime.newSymbol(T), str);
+      } else {
+        ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.getNil());
+      }
+    }
+
+    public void STORE_B(String T) {
+      if(p > bck && bck >= ts) {
+        IRubyObject str = RubyString.newString(runtime, data, bck, p-bck);
+        ((RubyHash)regs).aset(runtime.newSymbol(T), str);
+      } else {
+        ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.getNil());
+      }
+    }
+
+    public IRubyObject self;
+    public byte[] data;
+    public int p, pe;
+    public IRubyObject refs;
+
+    public Ruby runtime;
+    public int orig_p, orig_pe;
+    public int cs, act, nest;
+    public int ts = -1;
+    public int te = -1;
+    public int reg = -1;
+    public int bck = -1;
+    public int eof = -1;
+
+    public IRubyObject html;
+    public IRubyObject table;
+    public IRubyObject block;
+    public IRubyObject regs;
+
+    public IRubyObject list_layout;
+    public String list_type = null;
+    public IRubyObject list_index;
+    public int list_continue = 0;
+    public IRubyObject plain_block;
+    public IRubyObject extend;
+    public String listm = "";
+    public IRubyObject refs_found;
+  }
+
+  private static class Transformer extends Base {
 %%{
+
   machine redcloth_scan;
-  include redcloth_scan "redcloth_scan.rl";
+  include redcloth_common "redcloth_common.java.rl";
+
+  action extend { extend = ((RubyHash)regs).aref(runtime.newSymbol("type")); }
+
+  # blocks
+  notextile_tag_start = "<notextile>" ;
+  notextile_tag_end = "</notextile>" LF? ;
+  noparagraph_line_start = " "+ ;
+  notextile_block_start = ( "notextile" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  pre_tag_start = "<pre" [^>]* ">" (space* "<code>")? ;
+  pre_tag_end = ("</code>" space*)? "</pre>" LF? ;
+  pre_block_start = ( "pre" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  bc_start = ( "bc" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  bq_start = ( "bq" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE("cite"); } )? " "+ ) ;
+  non_ac_btype = ( "bq" | "bc" | "pre" | "notextile" );
+  btype = (alpha alnum*) -- (non_ac_btype | "fn" digit+);
+  block_start = ( btype >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) >B %{ STORE_B("fallback"); };
+  all_btypes = btype | non_ac_btype;
+  next_block_start = ( all_btypes A_noactions C_noactions :> "."+ " " ) >A @{ p = reg - 1; } ;
+  double_return = LF{2,} ;
+  block_end = ( double_return | EOF );
+  ftype = ( "fn" >A %{ STORE("type"); } digit+ >A %{ STORE("id"); } ) ;
+  footnote_start = ( ftype A C :> dotspace ) ;
+  ul = "*" %{nest++; list_type = "ul";};
+  ol = "#" %{nest++; list_type = "ol";};
+  ul_start  = ( ul | ol )* ul A C :> " "+   ;
+  ol_start  = ( ul | ol )* ol N A C :> " "+ ;
+  list_start  = ( ul_start | ol_start ) >{nest = 0;} ;
+  dt_start = "-" . " "+ ;
+  dd_start = ":=" ;
+  long_dd  = dd_start " "* LF %{ ADD_BLOCK(); ASET("type", "dd"); } any+ >A %{ TRANSFORM("text"); } :>> "=:" ;
+  dl_start = (dt_start mtext (LF dt_start mtext)* " "* dd_start)  ;
+  blank_line = LF;
+  link_alias = ( "[" >{ ASET("type", "ignore"); } %A chars %T "]" %A uri %{ STORE_URL("href"); } ) ;
+  
+  # image lookahead
+  IMG_A_LEFT = "<" %{ ASET("float", "left"); } ;
+  IMG_A_RIGHT = ">" %{ ASET("float", "right"); } ;
+  aligned_image = ( "["? "!" (IMG_A_LEFT | IMG_A_RIGHT) ) >A @{ p = reg - 1; } ;
+  
+  # html blocks
+  BlockTagName = Name - ("pre" | "notextile" | "a" | "applet" | "basefont" | "bdo" | "br" | "font" | "iframe" | "img" | "map" | "object" | "param" | "q" | "script" | "span" | "sub" | "sup" | "abbr" | "acronym" | "cite" | "code" | "del" | "dfn" | "em" | "ins" | "kbd" | "samp" | "strong" | "var" | "b" | "big" | "i" | "s" | "small" | "strike" | "tt" | "u");
+  block_start_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? ">" | "<" BlockTagName ">";
+  block_empty_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? "/>" | "<" BlockTagName "/>" ;
+  block_end_tag = "</" BlockTagName space* ">" ;
+  html_start = indent >B %{STORE_B("indent_before_start");} block_start_tag >B %{STORE_B("start_tag");}  indent >B %{STORE_B("indent_after_start");} ;
+  html_end = indent >B %{STORE_B("indent_before_end");} block_end_tag >B %{STORE_B("end_tag");} (indent LF?) >B %{STORE_B("indent_after_end");} ;
+  standalone_html = indent (block_start_tag | block_empty_tag | block_end_tag) indent LF+;
+  html_end_terminating_block = ( LF indent block_end_tag ) >A @{ p = reg - 1; } ;
+
+  # tables
+  para = ( default+ ) -- LF ;
+  btext = para ( LF{2} )? ;
+  tddef = ( D? S A C :> dotspace ) ;
+  td = ( tddef? btext >A %T :> "|" >{PASS(table, "text", "td");} ) >X ;
+  trdef = ( A C :> dotspace ) ;
+  tr = ( trdef? "|" %{INLINE(table, "tr_open");} td+ ) >X %{INLINE(table, "tr_close");} ;
+  trows = ( tr (LF >X tr)* ) ;
+  tdef = ( "table" >X A C :> dotspace LF ) ;
+  table = ( tdef? trows >{table = RubyString.newEmptyString(runtime); INLINE(table, "table_open");} ) >{ reg = -1; } ;
+
+  # info
+  redcloth_version = ("RedCloth" >A ("::" | " " ) "VERSION"i ":"? " ")? %{STORE("prefix");} "RedCloth::VERSION" (LF* EOF | double_return) ;
+
+  pre_tag := |*
+    pre_tag_end         { CAT(block); DONE(block); fgoto main; };
+    default => esc_pre;
+  *|;
+  
+  pre_block := |*
+    EOF { 
+      ADD_BLOCKCODE(); 
+      fgoto main; 
+    };
+    double_return { 
+      if (extend.isNil()) { 
+        ADD_BLOCKCODE(); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCKCODE(); 
+      } 
+    };
+    double_return next_block_start { 
+      if (extend.isNil()) { 
+        ADD_BLOCKCODE(); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCKCODE(); 
+        END_EXTENDED(); 
+        fgoto main; 
+      } 
+    };
+    default => esc_pre;
+  *|;
+
+  script_tag := |*
+    script_tag_end   { CAT(block); ASET("type", "ignore"); ADD_BLOCK(); fgoto main; };
+    EOF              { ASET("type", "ignore"); ADD_BLOCK(); fgoto main; };
+    default => cat;
+  *|;
+
+  noparagraph_line := |*
+    LF  { ADD_BLOCK(); fgoto main; };
+    default => cat;
+  *|;
+
+  notextile_tag := |*
+    notextile_tag_end   { ADD_BLOCK(); fgoto main; };
+    default => cat;
+  *|;
+  
+  notextile_block := |*
+    EOF {
+      ADD_BLOCK();
+      fgoto main;
+    };
+    double_return {
+      if (extend.isNil()) {
+        ADD_BLOCK();
+        CAT(html);
+        fgoto main;
+      } else {
+        CAT(block);
+        ADD_EXTENDED_BLOCK();
+        CAT(html);
+      }
+    };
+    double_return next_block_start {
+      if (extend.isNil()) {
+        ADD_BLOCK();
+        CAT(html);
+        fgoto main;
+      } else {
+        CAT(block);
+        ADD_EXTENDED_BLOCK();
+        END_EXTENDED();
+        fgoto main; 
+      } 
+    };
+    default => cat;
+  *|;
+ 
+  html := |*
+    html_end        { ADD_BLOCK(); fgoto main; };
+    default => cat;
+  *|;
+
+  bc := |*
+    EOF { 
+      ADD_BLOCKCODE(); 
+      INLINE(html, "bc_close"); 
+      plain_block = runtime.newString("p");
+      fgoto main;
+    };
+    double_return { 
+      if (extend.isNil()) { 
+        ADD_BLOCKCODE(); 
+        INLINE(html, "bc_close"); 
+        plain_block = runtime.newString("p");
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCKCODE(); 
+        CAT(html); 
+      } 
+    };
+    double_return next_block_start { 
+      if (extend.isNil()) { 
+        ADD_BLOCKCODE(); 
+        INLINE(html, "bc_close"); 
+        plain_block = runtime.newString("p");
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCKCODE(); 
+        CAT(html); 
+        INLINE(html, "bc_close"); 
+        plain_block = runtime.newString("p");
+        END_EXTENDED(); 
+        fgoto main; 
+      } 
+    };
+    default => esc_pre;
+  *|;
+
+  bq := |*
+    EOF { 
+      ADD_BLOCK(); 
+      INLINE(html, "bq_close"); 
+      fgoto main; 
+    };
+    double_return { 
+      if (extend.isNil()) { 
+        ADD_BLOCK(); 
+        INLINE(html, "bq_close"); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCK(); 
+      } 
+    };
+    double_return next_block_start { 
+      if (extend.isNil()) { 
+        ADD_BLOCK(); 
+        INLINE(html, "bq_close"); 
+        fgoto main; 
+      } else {
+        ADD_EXTENDED_BLOCK(); 
+        INLINE(html, "bq_close"); 
+        END_EXTENDED(); 
+        fgoto main; 
+      }
+    };
+    html_end_terminating_block { 
+        if (extend.isNil()) { 
+          ADD_BLOCK(); 
+          INLINE(html, "bq_close"); 
+          fgoto main; 
+        } else {
+          ADD_EXTENDED_BLOCK(); 
+          INLINE(html, "bq_close"); 
+          END_EXTENDED(); 
+          fgoto main; 
+        }
+      };
+    default => cat;
+  *|;
+
+  block := |*
+    EOF { 
+      ADD_BLOCK(); 
+      fgoto main;
+    };
+    double_return {
+      if (extend.isNil()) { 
+        ADD_BLOCK(); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCK(); 
+      } 
+    };
+    double_return next_block_start { 
+      if (extend.isNil()) { 
+        ADD_BLOCK(); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCK(); 
+        END_EXTENDED(); 
+        fgoto main; 
+      }      
+    };
+    html_end_terminating_block { 
+      if (extend.isNil()) { 
+        ADD_BLOCK(); 
+        fgoto main; 
+      } else { 
+        ADD_EXTENDED_BLOCK(); 
+        END_EXTENDED(); 
+        fgoto main; 
+      }      
+    };
+    LF list_start { 
+      ADD_BLOCK(); 
+      list_layout = runtime.newArray();
+      LIST_ITEM(); 
+      fgoto list; 
+    };
+    
+    default => cat;
+  *|;
+
+  footnote := |*
+    block_end       { ADD_BLOCK(); fgoto main; };
+    default => cat;
+  *|;
+
+  list := |*
+    LF list_start   { ADD_BLOCK(); LIST_ITEM(); };
+    block_end       { ADD_BLOCK(); nest = 0; LIST_CLOSE(); fgoto main; };
+    default => cat;
+  *|;
+
+  dl := |*
+    LF dt_start     { ADD_BLOCK(); ASET("type", "dt"); };
+    dd_start        { ADD_BLOCK(); ASET("type", "dd"); };
+    long_dd         { INLINE(html, "dd"); CLEAR_REGS(); };
+    block_end       { ADD_BLOCK(); INLINE(html, "dl_close");  fgoto main; };
+    default => cat;
+  *|;
+
+  main := |*
+    noparagraph_line_start  { ASET("type", "ignored_line"); fgoto noparagraph_line; };
+    notextile_tag_start { ASET("type", "notextile"); fgoto notextile_tag; };
+    notextile_block_start { ASET("type", "notextile"); fgoto notextile_block; };
+    script_tag_start { CAT(block); fgoto script_tag; };
+    pre_tag_start       { ASET("type", "notextile"); CAT(block); fgoto pre_tag; };
+    pre_block_start { fgoto pre_block; };
+    standalone_html { ASET("type", "html"); CAT(block); ADD_BLOCK(); };
+    html_start      { ASET("type", "html_block"); fgoto html; };
+    bc_start        { INLINE(html, "bc_open"); ASET("type", "code"); plain_block = runtime.newString("code"); fgoto bc; };
+    bq_start        { INLINE(html, "bq_open"); ASET("type", "p"); fgoto bq; };
+    block_start     { fgoto block; };
+    footnote_start  { fgoto footnote; };
+    list_start      { list_layout = runtime.newArray(); LIST_ITEM(); fgoto list; };
+    dl_start        { p = ts; INLINE(html, "dl_open"); ASET("type", "dt"); fgoto dl; };
+    table           { INLINE(table, "table_close"); DONE(table); fgoto block; };
+    link_alias      { ((RubyHash)refs_found).aset(((RubyHash)regs).aref(runtime.newSymbol("text")), ((RubyHash)regs).aref(runtime.newSymbol("href"))); DONE(block); };
+    aligned_image   { ((RubyHash)regs).aset(runtime.newSymbol("type"), plain_block); fgoto block; };
+    redcloth_version { INLINE(html, "redcloth_version"); };
+    blank_line => cat;
+    default
+    { 
+      CLEAR_REGS();
+      ((RubyHash)regs).aset(runtime.newSymbol("type"), plain_block);
+      CAT(block);
+      fgoto block;
+    };
+    EOF;
+  *|;
 
 }%%
 
 %% write data nofinal;
 
-/***** This all came from Hpricot. *****
-public final static int BUFSIZE=16384;
+    public Transformer(IRubyObject self, byte[] data, int p, int pe, IRubyObject refs) {
+      if(p+pe > data.length) {
+        throw new RuntimeException("BLAHAHA");
+      }
+      this.self = self;
 
-private void rb_yield_tokens(IRubyObject sym, IRubyObject tag, IRubyObject attr, IRubyObject raw, boolean taint) {
-  IRubyObject ary;
-  if (sym == runtime.newSymbol("text")) {
-    raw = tag;
-  }
-  ary = runtime.newArray(new IRubyObject[]{sym, tag, attr, raw});
-  if (taint) { 
-    ary.setTaint(true);
-    tag.setTaint(true);
-    attr.setTaint(true);
-    raw.setTaint(true);
-  }
-  block.yield(runtime.getCurrentContext(), ary, null, null, false);
-}
+    // This is GROSS but necessary for EOF matching
+    this.data = new byte[pe+1];
+    System.arraycopy(data, p, this.data, 0, pe);
+    this.data[pe] = 0;
 
+    this.p = 0;
+    this.pe = pe+1;
+    this.eof = this.pe;
+    this.orig_p = 0;
+    this.orig_pe = this.pe;
 
-int cs, act, have = 0, nread = 0, curline = 1, p=-1;
-boolean text = false;
-int ts=-1, te;
-int eof=-1;
-char[] buf;
-Ruby runtime;
-IRubyObject attr, bufsize;
-IRubyObject[] tag, akey, aval;
-int mark_tag, mark_akey, mark_aval;
-boolean done = false, ele_open = false;
-int buffer_size = 0;        
-boolean taint = false;
-Block block = null;
+      this.refs = refs;
+      
+      runtime = self.getRuntime();
 
+      html = RubyString.newEmptyString(runtime);
+      table = RubyString.newEmptyString(runtime);
+      block = RubyString.newEmptyString(runtime);
+      CLEAR_REGS();
 
-IRubyObject xmldecl, doctype, procins, stag, etag, emptytag, comment,
-      cdata, sym_text;
-
-IRubyObject redcloth_scan(IRubyObject recv, IRubyObject port) {
-  attr = bufsize = runtime.getNil();
-  tag = new IRubyObject[]{runtime.getNil()};
-  akey = new IRubyObject[]{runtime.getNil()};
-  aval = new IRubyObject[]{runtime.getNil()};
-
-  RubyClass rb_eRedClothParseError = runtime.getModule("RedCloth").getClass("ParseError");
-
-  taint = port.isTaint();
-  if ( !port.respondsTo("read")) {
-    if ( port.respondsTo("to_str")) {
-      port = port.callMethod(runtime.getCurrentContext(),"to_str");
-    } else {
-      throw runtime.newArgumentError("bad RedCloth argument, String or IO only please.");
-    }
-  }
-
-  buffer_size = BUFSIZE;
-  if (rubyApi.getInstanceVariable(recv, "@buffer_size") != null) {
-    bufsize = rubyApi.getInstanceVariable(recv, "@buffer_size");
-    if (!bufsize.isNil()) {
-      buffer_size = RubyNumeric.fix2int(bufsize);
-    }
-  }
-  buf = new char[buffer_size];
-
-  %% write init;
-
-  while( !done ) {
-    IRubyObject str;
-    p = have;
-    int pe;
-    int len, space = buffer_size - have;
-
-    if ( space == 0 ) {
-      rb_raise(rb_eRedClothParseError, "ran out of buffer space on element <" + tag.toString() + ">, starting on line "+curline+".");
+      list_layout = runtime.getNil();
+      list_index = runtime.newArray();
+      plain_block = runtime.newString("p");
+      extend = runtime.getNil();
+      refs_found = RubyHash.newHash(runtime);
     }
 
-    if (port.respondsTo("read")) {
-      str = port.callMethod(runtime.getCurrentContext(),"read",runtime.newFixnum(space));
-    } else {
-      str = ((RubyString)port).substr(nread,space);
-    }
+    public IRubyObject transform() {
+      %% write init;
 
-    str = str.convertToString();
-    String sss = str.toString();
-    char[] chars = sss.toCharArray();
-    System.arraycopy(chars,0,buf,p,chars.length);
+      %% write exec;
 
-    len = sss.length();
-    nread += len;
+      if(((RubyString)block).getByteList().realSize > 0) {
+        ADD_BLOCK();
+      }
 
-    if ( len < space ) {
-      len++;
-      done = true;
-    }
-
-    pe = p + len;
-    char[] data = buf;
-
-    %% write exec;
-    
-    if ( cs == redcloth_scan_error ) {
-      if(!tag[0].isNil()) {
-        rb_raise(rb_eRedClothParseError, "parse error on element <"+tag.toString()+">, starting on line "+curline+".\n");
+      if(refs.isNil() && !refs_found.callMethod(runtime.getCurrentContext(), "empty?").isTrue()) {
+        return RedclothScanService.transform(self, data, orig_p, orig_pe, refs_found);
       } else {
-        rb_raise(rb_eRedClothParseError, "parse error on line "+curline+".\n");
+        self.callMethod(self.getRuntime().getCurrentContext(), "after_transform", html);
+        return html;
       }
     }
+  }
+
+  public static IRubyObject transform(IRubyObject self, byte[] data, int p, int pe, IRubyObject refs) {
+    return new Transformer(self, data, p, pe, refs).transform();
+  }
+  
+  public static IRubyObject inline2(IRubyObject workingCopy, IRubyObject self, IRubyObject refs) {
+    return RedclothInline.inline2(workingCopy, self, refs);
+  }
+
+  public static IRubyObject transform2(IRubyObject self, IRubyObject str) {
+    RubyString ss = str.convertToString();
+    ss.cat((byte)'\n');
+    self.callMethod(self.getRuntime().getCurrentContext(), "before_transform", ss);
+    return transform(self, ss.getByteList().bytes(), ss.getByteList().begin, ss.getByteList().realSize, self.getRuntime().getNil());
+  }
+
+  @JRubyMethod
+  public static IRubyObject to(IRubyObject self, IRubyObject formatter) {
+    Ruby runtime = self.getRuntime();
+    self.callMethod(runtime.getCurrentContext(), "delete!", runtime.newString("\r"));
+    IRubyObject workingCopy = self.rbClone();
+
+    ((RubyObject)workingCopy).extend(new IRubyObject[]{formatter});
     
-    if ( done && ele_open ) {
-      ele_open = false;
-      if(ts > -1) {
-        mark_tag = ts;
-        ts = -1;
-        text = true;
-      }
+    if(workingCopy.callMethod(runtime.getCurrentContext(), "lite_mode").isTrue()) { 
+      return inline2(workingCopy, self, RubyHash.newHash(runtime));
+    } else {
+      return transform2(workingCopy, self);
+    }
+  }
+
+  @JRubyMethod(rest=true)
+  public static IRubyObject html_esc(IRubyObject self, IRubyObject[] args) {
+    Ruby runtime = self.getRuntime();
+    IRubyObject str = runtime.getNil(), 
+                level = runtime.getNil();
+    if(Arity.checkArgumentCount(runtime, args, 1, 2) == 2) {
+      level = args[1];
+    }
+    str = args[0];
+
+    IRubyObject new_str = RubyString.newEmptyString(runtime);
+    if(str.isNil()) {
+      return new_str;
     }
 
-    if(ts == -1) {
-      have = 0;
-      if(mark_tag != -1 && text) {
-        if (done) {
-          if(mark_tag < p-1) {
-            CAT(tag, p-1);
-            ELE(sym_text);
-          }
-        } else {
-          CAT(tag, p);
+    ByteList bl = str.convertToString().getByteList();
+
+    if(bl.realSize == 0) {
+      return new_str;
+    }
+
+    byte[] bytes = bl.bytes;
+    int ts = bl.begin;
+    int te = ts + bl.realSize;
+    int t = ts, t2 = ts;
+    String ch = null;
+
+    if(te <= ts) {
+      return new_str;
+    }
+  
+    while(t2 < te) {
+      ch = null;
+      // normal + pre
+      switch(bytes[t2]) {
+        case '&':  ch = "amp";    break;
+        case '>':  ch = "gt";     break;
+        case '<':  ch = "lt";     break;
+      }
+
+      // normal (non-pre)
+      if(level != runtime.newSymbol("html_escape_preformatted")) {
+        switch(bytes[t2]) {
+          case '\n': ch = "br";     break;
+          case '"' : ch = "quot";   break;
+          case '\'': 
+            ch = (level == runtime.newSymbol("html_escape_attributes")) ? "apos" : "squot";
+          break;
         }
       }
-      mark_tag = 0;
-    } else {
-      have = pe - ts;
-      System.arraycopy(buf,ts,buf,0,have);
-      SLIDE(tag);
-      SLIDE(akey);
-      SLIDE(aval);
-      te = (te - ts);
-      ts = 0;
+
+      if(ch != null) {
+        if(t2 > t) {
+          ((RubyString)new_str).cat(bytes, t, t2-t);
+        }
+        ((RubyString)new_str).concat(self.callMethod(runtime.getCurrentContext(), ch, RubyHash.newHash(runtime)));
+        t = t2 + 1;
+      }
+
+      t2++;
     }
+
+
+    if(t2 > t) {
+      ((RubyString)new_str).cat(bytes, t, t2-t);
+    }
+  
+    return new_str;
   }
-  return runtime.getNil();
-}
 
-public static IRubyObject __redcloth_scan(IRubyObject recv, IRubyObject port, Block block) {
-  Ruby runtime = recv.getRuntime();
-  RedClothScanService service = new RedClothScanService();
-  service.runtime = runtime;
-  service.xmldecl = runtime.newSymbol("xmldecl");
-  service.doctype = runtime.newSymbol("doctype");
-  service.procins = runtime.newSymbol("procins");
-  service.stag = runtime.newSymbol("stag");
-  service.etag = runtime.newSymbol("etag");
-  service.emptytag = runtime.newSymbol("emptytag");
-  service.comment = runtime.newSymbol("comment");
-  service.cdata = runtime.newSymbol("cdata");
-  service.sym_text = runtime.newSymbol("text");
-  service.block = block;
-  return service.redcloth_scan(recv, port);
-}
+  @JRubyMethod
+  public static IRubyObject latex_esc(IRubyObject self, IRubyObject str) {
+    Ruby runtime = self.getRuntime();
+    IRubyObject new_str = RubyString.newEmptyString(runtime);
+    
+    if(str.isNil()) {
+      return new_str;
+    }
 
+    ByteList bl = str.convertToString().getByteList();
+    
+    if(bl.realSize == 0) {
+      return new_str;
+    }
+  
+    byte[] bytes = bl.bytes;
+    int ts = bl.begin;
+    int te = ts + bl.realSize;
+    int t = ts;
+    int t2 = ts;
+    String ch = null;
 
-public boolean basicLoad(final Ruby runtime) throws IOException {
-       Init_redcloth_scan(runtime);
-       return true;
-}
+    while(t2 < te) {
+      ch = null;
 
-public static void Init_redcloth_scan(Ruby runtime) {
-  RubyModule mRedCloth = runtime.defineModule("RedCloth");
-  mRedCloth.getMetaClass().attr_accessor(runtime.getCurrentContext(),new IRubyObject[]{runtime.newSymbol("buffer_size")});
-  CallbackFactory fact = runtime.callbackFactory(RedClothScanService.class);
-  mRedCloth.getMetaClass().defineMethod("scan",fact.getSingletonMethod("__redcloth_scan",IRubyObject.class));
-  mRedCloth.defineClassUnder("ParseError",runtime.getClass("Exception"),runtime.getClass("Exception").getAllocator());
-  rubyApi = JavaEmbedUtils.newObjectAdapter();
-}*/
+      switch(bytes[t2]) {
+        case '{':  ch = "#123";   break;
+        case '}':  ch = "#125";   break;
+        case '\\': ch = "#92";    break;
+        case '#':  ch = "#35";    break;
+        case '$':  ch = "#36";    break;
+        case '%':  ch = "#37";    break;
+        case '&':  ch = "amp";    break;
+        case '_':  ch = "#95";    break;
+        case '^':  ch = "circ";   break;
+        case '~':  ch = "tilde";  break;
+        case '<':  ch = "lt";     break;
+        case '>':  ch = "gt";     break;
+        case '\n': ch = "#10";    break;
+      }
+
+      if(ch != null) {
+        if(t2 > t) {
+          ((RubyString)new_str).cat(bytes, t, t2-t);
+        }
+        IRubyObject opts = RubyHash.newHash(runtime);
+        ((RubyHash)opts).aset(runtime.newSymbol("text"), runtime.newString(ch));
+        ((RubyString)new_str).concat(self.callMethod(runtime.getCurrentContext(), "entity", opts));
+        t = t2 + 1;
+      }
+
+      t2++;
+    }
+
+    if(t2 > t) {
+      ((RubyString)new_str).cat(bytes, t, t2-t);
+    }
+
+    return new_str;
+  }
+
+  public boolean basicLoad(final Ruby runtime) throws IOException {
+    Init_redcloth_scan(runtime);
+    return true;
+  }
+
+  public static void Init_redcloth_scan(Ruby runtime) {
+    RubyModule mRedCloth = runtime.defineModule("RedCloth");
+    RubyClass super_RedCloth = mRedCloth.defineClassUnder("TextileDoc", runtime.getString(), runtime.getString().getAllocator());
+    super_RedCloth.defineAnnotatedMethods(RedclothScanService.class);
+    super_RedCloth.defineClassUnder("ParseError",runtime.getClass("Exception"),runtime.getClass("Exception").getAllocator());
+  }
 }
