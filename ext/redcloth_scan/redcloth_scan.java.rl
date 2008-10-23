@@ -55,7 +55,7 @@ public class RedclothScanService implements BasicLibraryService {
        ((RubyHash)regs).aset(runtime.newSymbol("nest"), runtime.newFixnum(nest));
        ((RubyString)html).append(self.callMethod(runtime.getCurrentContext(), listm, regs));
        ((RubyArray)list_layout).store(nest-1, runtime.newString(list_type));
-       CLEAR_REGS();
+       regs = RubyHash.newHash(runtime);
        ASET("first", "true");
      }
      LIST_CLOSE();
@@ -154,6 +154,7 @@ public class RedclothScanService implements BasicLibraryService {
           System.err.println("-INLINE2");
           ((RubyHash)regs).aset(sym_text, inline2(self, block, refs));
         }
+        System.err.println("METHOD: " + method);
         if(self.respondsTo(method.asJavaString())) {
           System.err.println("-method: " + method);
           block = self.callMethod(runtime.getCurrentContext(), method.asJavaString(), regs);
@@ -161,8 +162,9 @@ public class RedclothScanService implements BasicLibraryService {
           System.err.println("-fallback");
           IRubyObject fallback = ((RubyHash)regs).aref(runtime.newSymbol("fallback"));
           if(!fallback.isNil()) {
+            System.err.println(" fallback is: " + fallback);
             ((RubyString)fallback).append(((RubyHash)regs).aref(sym_text));
-            CLEAR_REGS();
+            regs = RubyHash.newHash(runtime);
             ((RubyHash)regs).aset(sym_text, fallback);
           }
           block = self.callMethod(runtime.getCurrentContext(), "p", regs);
@@ -188,7 +190,7 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public void CLEAR(IRubyObject obj) {
-  System.err.println("CLEAR");
+//  System.err.println("CLEAR");
       if(block == obj) {
         block = RubyString.newEmptyString(runtime);
       } else if(html == obj) { 
@@ -199,68 +201,68 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public void ADD_BLOCK() {
-      System.err.println("ADD_BLOCK: [before] html=|" + html + "| block=|" + block + "| table=|" + table + "|");
+//      System.err.println("ADD_BLOCK: [before] html=|" + html + "| block=|" + block + "| table=|" + table + "|");
       ((RubyString)html).append(red_block(self, regs, block, refs));
-      System.err.println("           [after]  html=|" + html + "| block=|" + block + "| table=|" + table + "|");
+//      System.err.println("           [after]  html=|" + html + "| block=|" + block + "| table=|" + table + "|");
       extend = runtime.getNil();
       CLEAR(block);
       CLEAR_REGS();      
     }
 
     public void CLEAR_REGS() {
-  System.err.println("CLEAR_REGS");
+//  System.err.println("CLEAR_REGS");
       regs = RubyHash.newHash(runtime);
     }
 
     public void CAT(IRubyObject H) {
-      System.err.println("CAT: (ts="+ts+", te="+te+") \"" + new String(data, ts, te-ts) + "\"");
+//      System.err.println("CAT: (ts="+ts+", te="+te+") \"" + new String(data, ts, te-ts) + "\"");
       ((RubyString)H).cat(data, ts, te-ts);
     }
 
     public void INLINE(IRubyObject H, String T) {
-  System.err.println("INLINE: \"" + H + "\" for: " + T);
+//  System.err.println("INLINE: \"" + H + "\" for: " + T);
       ((RubyString)H).append(self.callMethod(runtime.getCurrentContext(), T, regs));
     }
 
     public void DONE(IRubyObject H) {
-  System.err.println("DONE");
+//  System.err.println("DONE");
       ((RubyString)html).append(H);
       CLEAR(H);
       CLEAR_REGS();
     }
 
     public void ADD_EXTENDED_BLOCK() {
-      System.err.println("ADD_EXTENDED_BLOCK");
+//      System.err.println("ADD_EXTENDED_BLOCK");
       ((RubyString)html).append(red_block(self, regs, block, refs));
       CLEAR(block);
     }
 
     public void ADD_BLOCKCODE() {
-      System.err.println("ADD_BLOCKCODE");
+//      System.err.println("ADD_BLOCKCODE");
       ((RubyString)html).append(red_blockcode(self, regs, block));
       CLEAR(block);
       CLEAR_REGS();
     }
 
     public void ADD_EXTENDED_BLOCKCODE() {
-  System.err.println("ADD_EXTENDED_BLOCKCODE");
+//  System.err.println("ADD_EXTENDED_BLOCKCODE");
       ((RubyString)html).append(red_blockcode(self, regs, block));
       CLEAR(block);
     }
 
     public void AINC(String T) {
-  System.err.println("AINC");
+//  System.err.println("AINC");
       red_inc(regs, runtime.newSymbol(T));
     }
 
     public void END_EXTENDED() {
-  System.err.println("END_EXTENDED");
+//  System.err.println("END_EXTENDED");
       extend = runtime.getNil();
       CLEAR_REGS();
     }
 
     public void ASET(String T, String V) {
-  System.err.println("ASET");
+//  System.err.println("ASET");
       ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.newString(V));
     }
 
@@ -276,7 +278,7 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public void STORE_B(String T) {
-      System.err.println("STORE_B: " + T + " p: " + p + " bck: " + bck);
+//      System.err.println("STORE_B: " + T + " p: " + p + " bck: " + bck);
       if(p > bck && bck >= ts) {
         IRubyObject str = RubyString.newString(runtime, data, bck, p-bck);
         ((RubyHash)regs).aset(runtime.newSymbol(T), str);

@@ -6,8 +6,8 @@
   action B { System.err.println("action B");bck = p; }
   action T { System.err.println("action T");STORE("text"); }
   action X { System.err.println("action X");CLEAR_REGS(); reg = -1; }
-  action cat { System.err.println("action cat");CAT(block); }
-  action esc { System.err.println("action esc");strCatEscaped(self, block, data, ts, te); }
+  action cat { CAT(block); }
+  action esc { strCatEscaped(self, block, data, ts, te); }
   action esc_pre { strCatEscapedForPreformatted(self, block, data, ts, te); }
   action ignore { ((RubyString)block).append(self.callMethod(runtime.getCurrentContext(), "ignore", regs)); }
 
