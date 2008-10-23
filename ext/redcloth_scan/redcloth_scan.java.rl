@@ -26,10 +26,6 @@ import org.jruby.util.ByteList;
 public class RedclothScanService implements BasicLibraryService {
 
   public static class Base {
-   public boolean print(String str) {
-      System.err.println(str);
-      return true;
-   }
    public void LIST_ITEM() {
      int aint = 0;
      IRubyObject aval = ((RubyArray)list_index).entry(nest-1);
@@ -111,9 +107,11 @@ public class RedclothScanService implements BasicLibraryService {
         }
         te = p;
       }
+
       STORE(T);
+
       if(!refs.isNil() && refs.callMethod(runtime.getCurrentContext(), "has_key?", ((RubyHash)regs).aref(runtime.newSymbol(T))).isTrue()) {
-        ((RubyHash)regs).aset(runtime.newSymbol(T), ((RubyHash)refs).aref(((RubyHash)refs).aref(runtime.newSymbol(T))));
+        ((RubyHash)regs).aset(runtime.newSymbol(T), ((RubyHash)refs).aref(((RubyHash)regs).aref(runtime.newSymbol(T))));
       }
     }
 
@@ -143,26 +141,21 @@ public class RedclothScanService implements BasicLibraryService {
       IRubyObject sym_text = runtime.newSymbol("text");
       IRubyObject btype = ((RubyHash)regs).aref(runtime.newSymbol("type"));
       block = block.callMethod(runtime.getCurrentContext(), "strip");
-      System.err.println(":red_block: \"" + block + "\"");
+
       if(!block.isNil() && !btype.isNil()) {
         method = btype.convertToString().intern();
 
         if(method == runtime.newSymbol("notextile")) {
-          System.err.println("-NOTEXTILE");
           ((RubyHash)regs).aset(sym_text, block);
         } else {
-          System.err.println("-INLINE2");
           ((RubyHash)regs).aset(sym_text, inline2(self, block, refs));
         }
-        System.err.println("METHOD: " + method);
+
         if(self.respondsTo(method.asJavaString())) {
-          System.err.println("-method: " + method);
           block = self.callMethod(runtime.getCurrentContext(), method.asJavaString(), regs);
         } else {
-          System.err.println("-fallback");
           IRubyObject fallback = ((RubyHash)regs).aref(runtime.newSymbol("fallback"));
           if(!fallback.isNil()) {
-            System.err.println(" fallback is: " + fallback);
             ((RubyString)fallback).append(((RubyHash)regs).aref(sym_text));
             regs = RubyHash.newHash(runtime);
             ((RubyHash)regs).aset(sym_text, fallback);
@@ -175,22 +168,18 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public void strCatEscaped(IRubyObject self, IRubyObject str, byte[] data, int ts, int te) {
-      System.err.println("strCatEscaped(str="+str+", ts="+ts+", te="+te+")");
       IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
-      System.err.println(" -- result: " + sourceStr);
       IRubyObject escapedStr = self.callMethod(self.getRuntime().getCurrentContext(), "escape", sourceStr);
       ((RubyString)str).concat(escapedStr);
     }
 
     public void strCatEscapedForPreformatted(IRubyObject self, IRubyObject str, byte[] data, int ts, int te) { 
-      System.err.println("strCatEscapedForPreformatted");
       IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
       IRubyObject escapedStr = self.callMethod(self.getRuntime().getCurrentContext(), "escape_pre", sourceStr);
       ((RubyString)str).concat(escapedStr);
     }
 
     public void CLEAR(IRubyObject obj) {
-//  System.err.println("CLEAR");
       if(block == obj) {
         block = RubyString.newEmptyString(runtime);
       } else if(html == obj) { 
@@ -201,73 +190,60 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public void ADD_BLOCK() {
-//      System.err.println("ADD_BLOCK: [before] html=|" + html + "| block=|" + block + "| table=|" + table + "|");
       ((RubyString)html).append(red_block(self, regs, block, refs));
-//      System.err.println("           [after]  html=|" + html + "| block=|" + block + "| table=|" + table + "|");
       extend = runtime.getNil();
       CLEAR(block);
       CLEAR_REGS();      
     }
 
     public void CLEAR_REGS() {
-//  System.err.println("CLEAR_REGS");
       regs = RubyHash.newHash(runtime);
     }
 
     public void CAT(IRubyObject H) {
-//      System.err.println("CAT: (ts="+ts+", te="+te+") \"" + new String(data, ts, te-ts) + "\"");
       ((RubyString)H).cat(data, ts, te-ts);
     }
 
     public void INLINE(IRubyObject H, String T) {
-//  System.err.println("INLINE: \"" + H + "\" for: " + T);
       ((RubyString)H).append(self.callMethod(runtime.getCurrentContext(), T, regs));
     }
 
     public void DONE(IRubyObject H) {
-//  System.err.println("DONE");
       ((RubyString)html).append(H);
       CLEAR(H);
       CLEAR_REGS();
     }
 
     public void ADD_EXTENDED_BLOCK() {
-//      System.err.println("ADD_EXTENDED_BLOCK");
       ((RubyString)html).append(red_block(self, regs, block, refs));
       CLEAR(block);
     }
 
     public void ADD_BLOCKCODE() {
-//      System.err.println("ADD_BLOCKCODE");
       ((RubyString)html).append(red_blockcode(self, regs, block));
       CLEAR(block);
       CLEAR_REGS();
     }
 
     public void ADD_EXTENDED_BLOCKCODE() {
-//  System.err.println("ADD_EXTENDED_BLOCKCODE");
       ((RubyString)html).append(red_blockcode(self, regs, block));
       CLEAR(block);
     }
 
     public void AINC(String T) {
-//  System.err.println("AINC");
       red_inc(regs, runtime.newSymbol(T));
     }
 
     public void END_EXTENDED() {
-//  System.err.println("END_EXTENDED");
       extend = runtime.getNil();
       CLEAR_REGS();
     }
 
     public void ASET(String T, String V) {
-//  System.err.println("ASET");
       ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.newString(V));
     }
 
     public void STORE(String T) {
-//      System.err.println("STORE: " + T + " p: " + p + " reg: " + reg + "(\""+new String(data, reg, p-reg)+"\")");
       if(p > reg && reg >= ts) {
       
         IRubyObject str = RubyString.newString(runtime, data, reg, p-reg);
@@ -278,7 +254,6 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public void STORE_B(String T) {
-//      System.err.println("STORE_B: " + T + " p: " + p + " bck: " + bck);
       if(p > bck && bck >= ts) {
         IRubyObject str = RubyString.newString(runtime, data, bck, p-bck);
         ((RubyHash)regs).aset(runtime.newSymbol(T), str);
@@ -642,7 +617,6 @@ public class RedclothScanService implements BasicLibraryService {
 %% write data nofinal;
 
     public Transformer(IRubyObject self, byte[] data, int p, int pe, IRubyObject refs) {
-  System.err.println("Transformer(data.len: " + data.length + ", p: " + p + ", pe: " + pe + ")");
       if(p+pe > data.length) {
         throw new RuntimeException("BLAHAHA");
       }
@@ -680,14 +654,9 @@ public class RedclothScanService implements BasicLibraryService {
 
       %% write exec;
 
-//      System.err.println("gah: p: " + p + " pe: " + pe);
       if(((RubyString)block).getByteList().realSize > 0) {
         ADD_BLOCK();
       }
-//      System.err.println("gah2: p: " + p + " pe: " + pe);
-//      System.err.println(" html: " + html);
-//      System.err.println(" table: " + table);
-//      System.err.println(" block: " + block);
 
       if(refs.isNil() && !refs_found.callMethod(runtime.getCurrentContext(), "empty?").isTrue()) {
         return RedclothScanService.transform(self, data, orig_p, orig_pe, refs_found);
@@ -737,18 +706,15 @@ public class RedclothScanService implements BasicLibraryService {
       level = args[1];
     }
     str = args[0];
-//System.err.println("html_esc called: " + self + ",,, args: " +str + ", " + level);
 
     IRubyObject new_str = RubyString.newEmptyString(runtime);
     if(str.isNil()) {
-//    System.err.println("isnil1");
       return new_str;
     }
 
     ByteList bl = str.convertToString().getByteList();
 
     if(bl.realSize == 0) {
-//    System.err.println("isnil2");
       return new_str;
     }
 
@@ -798,7 +764,6 @@ public class RedclothScanService implements BasicLibraryService {
       ((RubyString)new_str).cat(bytes, t, t2-t);
     }
   
-//    System.err.println(" returning: " + new_str);
     return new_str;
   }
 

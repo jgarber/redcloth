@@ -2,10 +2,10 @@
 
   machine redcloth_common;
 
-  action A { System.err.println("action A{reg=" + p + "}");reg = p; }
-  action B { System.err.println("action B");bck = p; }
-  action T { System.err.println("action T");STORE("text"); }
-  action X { System.err.println("action X");CLEAR_REGS(); reg = -1; }
+  action A { reg = p; }
+  action B { bck = p; }
+  action T { STORE("text"); }
+  action X { CLEAR_REGS(); reg = -1; }
   action cat { CAT(block); }
   action esc { strCatEscaped(self, block, data, ts, te); }
   action esc_pre { strCatEscapedForPreformatted(self, block, data, ts, te); }
@@ -115,7 +115,7 @@
     p == orig_p || data[(p-1)] == '\r' || data[(p-1)] == '\n' || data[(p-1)] == '\f'
   }
   action starts_phrase {
-    print("starts_phrase: " + (p == orig_p || data[(p-1)] == '\r' || data[(p-1)] == '\n' || data[(p-1)] == '\f' || data[(p-1)] == ' ')) && (p == orig_p || data[(p-1)] == '\r' || data[(p-1)] == '\n' || data[(p-1)] == '\f' || data[(p-1)] == ' ')
+    p == orig_p || data[(p-1)] == '\r' || data[(p-1)] == '\n' || data[(p-1)] == '\f' || data[(p-1)] == ' '
   }
 
 }%%;

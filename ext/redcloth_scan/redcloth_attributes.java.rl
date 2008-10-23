@@ -75,7 +75,6 @@ public class RedclothAttributes extends RedclothScanService.Base {
   private IRubyObject buf;
    
   public RedclothAttributes(int machine, IRubyObject self, byte[] data, int p, int pe) {
-  System.err.println("RedclothAttributes(data.len: " + data.length + ", p: " + p + ", pe: " + pe + ")");
     this.runtime = self.getRuntime();
     this.self = self;
 
