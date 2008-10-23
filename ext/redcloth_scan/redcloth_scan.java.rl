@@ -26,6 +26,10 @@ import org.jruby.util.ByteList;
 public class RedclothScanService implements BasicLibraryService {
 
   public static class Base {
+   public boolean print(String str) {
+      System.err.println(str);
+      return true;
+   }
    public void LIST_ITEM() {
      int aint = 0;
      IRubyObject aval = ((RubyArray)list_index).entry(nest-1);
@@ -139,16 +143,22 @@ public class RedclothScanService implements BasicLibraryService {
       IRubyObject sym_text = runtime.newSymbol("text");
       IRubyObject btype = ((RubyHash)regs).aref(runtime.newSymbol("type"));
       block = block.callMethod(runtime.getCurrentContext(), "strip");
+      System.err.println(":red_block: \"" + block + "\"");
       if(!block.isNil() && !btype.isNil()) {
         method = btype.convertToString().intern();
+
         if(method == runtime.newSymbol("notextile")) {
+          System.err.println("-NOTEXTILE");
           ((RubyHash)regs).aset(sym_text, block);
         } else {
+          System.err.println("-INLINE2");
           ((RubyHash)regs).aset(sym_text, inline2(self, block, refs));
         }
         if(self.respondsTo(method.asJavaString())) {
+          System.err.println("-method: " + method);
           block = self.callMethod(runtime.getCurrentContext(), method.asJavaString(), regs);
         } else {
+          System.err.println("-fallback");
           IRubyObject fallback = ((RubyHash)regs).aref(runtime.newSymbol("fallback"));
           if(!fallback.isNil()) {
             ((RubyString)fallback).append(((RubyHash)regs).aref(sym_text));
@@ -163,18 +173,22 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public void strCatEscaped(IRubyObject self, IRubyObject str, byte[] data, int ts, int te) {
+      System.err.println("strCatEscaped(str="+str+", ts="+ts+", te="+te+")");
       IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
+      System.err.println(" -- result: " + sourceStr);
       IRubyObject escapedStr = self.callMethod(self.getRuntime().getCurrentContext(), "escape", sourceStr);
       ((RubyString)str).concat(escapedStr);
     }
 
-    public void strCatEscapedForPreformatted(IRubyObject self, IRubyObject str, byte[] data, int ts, int te) {
+    public void strCatEscapedForPreformatted(IRubyObject self, IRubyObject str, byte[] data, int ts, int te) { 
+      System.err.println("strCatEscapedForPreformatted");
       IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
       IRubyObject escapedStr = self.callMethod(self.getRuntime().getCurrentContext(), "escape_pre", sourceStr);
       ((RubyString)str).concat(escapedStr);
     }
 
     public void CLEAR(IRubyObject obj) {
+  System.err.println("CLEAR");
       if(block == obj) {
         block = RubyString.newEmptyString(runtime);
       } else if(html == obj) { 
@@ -185,61 +199,75 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public void ADD_BLOCK() {
+      System.err.println("ADD_BLOCK: [before] html=|" + html + "| block=|" + block + "| table=|" + table + "|");
       ((RubyString)html).append(red_block(self, regs, block, refs));
+      System.err.println("           [after]  html=|" + html + "| block=|" + block + "| table=|" + table + "|");
       extend = runtime.getNil();
       CLEAR(block);
       CLEAR_REGS();      
     }
 
     public void CLEAR_REGS() {
+  System.err.println("CLEAR_REGS");
       regs = RubyHash.newHash(runtime);
     }
 
     public void CAT(IRubyObject H) {
+      System.err.println("CAT: (ts="+ts+", te="+te+") \"" + new String(data, ts, te-ts) + "\"");
       ((RubyString)H).cat(data, ts, te-ts);
     }
 
     public void INLINE(IRubyObject H, String T) {
+  System.err.println("INLINE: \"" + H + "\" for: " + T);
       ((RubyString)H).append(self.callMethod(runtime.getCurrentContext(), T, regs));
     }
 
     public void DONE(IRubyObject H) {
+  System.err.println("DONE");
       ((RubyString)html).append(H);
       CLEAR(H);
       CLEAR_REGS();
     }
 
     public void ADD_EXTENDED_BLOCK() {
+      System.err.println("ADD_EXTENDED_BLOCK");
       ((RubyString)html).append(red_block(self, regs, block, refs));
       CLEAR(block);
     }
 
     public void ADD_BLOCKCODE() {
+      System.err.println("ADD_BLOCKCODE");
       ((RubyString)html).append(red_blockcode(self, regs, block));
       CLEAR(block);
       CLEAR_REGS();
     }
 
     public void ADD_EXTENDED_BLOCKCODE() {
+  System.err.println("ADD_EXTENDED_BLOCKCODE");
       ((RubyString)html).append(red_blockcode(self, regs, block));
       CLEAR(block);
     }
 
     public void AINC(String T) {
+  System.err.println("AINC");
       red_inc(regs, runtime.newSymbol(T));
     }
 
     public void END_EXTENDED() {
+  System.err.println("END_EXTENDED");
       extend = runtime.getNil();
       CLEAR_REGS();
     }
 
     public void ASET(String T, String V) {
+  System.err.println("ASET");
       ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.newString(V));
     }
 
     public void STORE(String T) {
+//      System.err.println("STORE: " + T + " p: " + p + " reg: " + reg + "(\""+new String(data, reg, p-reg)+"\")");
       if(p > reg && reg >= ts) {
+      
         IRubyObject str = RubyString.newString(runtime, data, reg, p-reg);
         ((RubyHash)regs).aset(runtime.newSymbol(T), str);
       } else {
@@ -248,6 +276,7 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public void STORE_B(String T) {
+      System.err.println("STORE_B: " + T + " p: " + p + " bck: " + bck);
       if(p > bck && bck >= ts) {
         IRubyObject str = RubyString.newString(runtime, data, bck, p-bck);
         ((RubyHash)regs).aset(runtime.newSymbol(T), str);
@@ -611,20 +640,26 @@ public class RedclothScanService implements BasicLibraryService {
 %% write data nofinal;
 
     public Transformer(IRubyObject self, byte[] data, int p, int pe, IRubyObject refs) {
-//  System.err.println("Transformer(data.len: " + data.length + ", p: " + p + ", pe: " + pe + ")");
+  System.err.println("Transformer(data.len: " + data.length + ", p: " + p + ", pe: " + pe + ")");
       if(p+pe > data.length) {
         throw new RuntimeException("BLAHAHA");
       }
       this.self = self;
-      this.data = data;
-      this.p = p;
-      this.pe = p+pe;
-      this.eof = p+pe;
+
+    // This is GROSS but necessary for EOF matching
+    this.data = new byte[pe+1];
+    System.arraycopy(data, p, this.data, 0, pe);
+    this.data[pe] = 0;
+
+    this.p = 0;
+    this.pe = pe+1;
+    this.eof = this.pe;
+    this.orig_p = 0;
+    this.orig_pe = this.pe;
+
       this.refs = refs;
       
       runtime = self.getRuntime();
-      orig_p = p;
-      orig_pe = pe;
 
       html = RubyString.newEmptyString(runtime);
       table = RubyString.newEmptyString(runtime);

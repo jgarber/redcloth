@@ -75,13 +75,21 @@ public class RedclothAttributes extends RedclothScanService.Base {
   private IRubyObject buf;
    
   public RedclothAttributes(int machine, IRubyObject self, byte[] data, int p, int pe) {
-//  System.err.println("RedclothAttributes(data.len: " + data.length + ", p: " + p + ", pe: " + pe + ")");
+  System.err.println("RedclothAttributes(data.len: " + data.length + ", p: " + p + ", pe: " + pe + ")");
     this.runtime = self.getRuntime();
     this.self = self;
-    this.data = data;
-    this.p = p;
-    this.pe = p+pe;
-    this.eof = p+pe;
+
+    // This is GROSS but necessary for EOF matching
+    this.data = new byte[pe+1];
+    System.arraycopy(data, p, this.data, 0, pe);
+    this.data[pe] = 0;
+
+    this.p = 0;
+    this.pe = pe+1;
+    this.eof = this.pe;
+    this.orig_p = 0;
+    this.orig_pe = this.pe;
+
     this.regs = RubyHash.newHash(runtime);
     this.buf = runtime.getNil();
     this.machine = machine;

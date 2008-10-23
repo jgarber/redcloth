@@ -152,7 +152,7 @@ public class RedclothInline extends RedclothScanService.Base {
     emdash { INLINE(block, "emdash"); };
     endash { INLINE(block, "endash"); };
     arrow { INLINE(block, "arrow"); };
-    caps { INLINE(block, "caps"); };
+    caps { System.err.println("MATCHED caps"); INLINE(block, "caps"); };
     acronym { INLINE(block, "acronym"); };
     dim { INLINE(block, "dim"); };
     trademark { INLINE(block, "trademark"); };
@@ -204,14 +204,17 @@ public class RedclothInline extends RedclothScanService.Base {
   }
 
   public void PASS_CODE(IRubyObject H, String A, String T, int O) {
+  System.err.println("PASS_CODE");
     ((RubyString)H).append(red_pass_code(self, regs, runtime.newSymbol(A), T));
   }
 
   public void PARSE_ATTR(String A) {
+  System.err.println("PARSE_ATTR");
     red_parse_attr(self, regs, runtime.newSymbol(A));
   }
 
   public void PARSE_LINK_ATTR(String A) {
+  System.err.println("PARSE_LINK_ATTR");
     red_parse_link_attr(self, regs, runtime.newSymbol(A));
   }
 
@@ -219,13 +222,20 @@ public class RedclothInline extends RedclothScanService.Base {
   private IRubyObject buf;
 
   public RedclothInline(IRubyObject self, byte[] data, int p, int pe, IRubyObject refs) {
-//  System.err.println("RedclothInline(data.len: " + data.length + ", p: " + p + ", pe: " + pe + ")");
+  System.err.println("RedclothInline(data.len: " + data.length + ", p: " + p + ", pe: " + pe + ")");
     this.runtime = self.getRuntime();
     this.self = self;
-    this.data = data;
-    this.p = p;
-    this.pe = p+pe;
-    this.eof = p+pe;
+    
+    // This is GROSS but necessary for EOF matching
+    this.data = new byte[pe+1];
+    System.arraycopy(data, p, this.data, 0, pe);
+    this.data[pe] = 0;
+
+    this.p = 0;
+    this.pe = pe+1;
+    this.eof = this.pe;
+    this.orig_p = 0;
+    this.orig_pe = this.pe;
     this.refs = refs;
     this.block = RubyString.newEmptyString(runtime);
     this.regs = runtime.getNil();
@@ -237,6 +247,8 @@ public class RedclothInline extends RedclothScanService.Base {
   public IRubyObject inline() {
     %% write init;
     %% write exec;
+      System.err.println("gah: p: " + p + " pe: " + pe + " regs: " + regs + " refs: " + refs);
+      System.err.println(" reg: " + reg);
     return block;
   }
 
