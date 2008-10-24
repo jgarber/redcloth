@@ -9,6 +9,7 @@
 %%{
 
   machine redcloth_attributes;
+  include redcloth_common "redcloth_common.c.rl";
   include redcloth_attributes "redcloth_attributes.rl";
 
 }%%

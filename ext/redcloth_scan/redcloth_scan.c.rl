@@ -14,6 +14,10 @@ int SYM_escape_preformatted, SYM_escape_attributes;
 %%{
 
   machine redcloth_scan;
+  include redcloth_common "redcloth_common.c.rl";
+
+  action extend { extend = rb_hash_aref(regs, ID2SYM(rb_intern("type"))); }
+
   include redcloth_scan "redcloth_scan.rl";
 
 }%%

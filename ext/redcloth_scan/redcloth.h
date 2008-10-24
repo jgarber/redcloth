@@ -35,12 +35,12 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define CLEAR_REGS()   regs = rb_hash_new();
 #define CAT(H)         rb_str_cat(H, ts, te-ts)
 #define CLEAR(H)       H = rb_str_new2("")
-#define INLINE(H, T)   rb_str_append(H, rb_funcall(self, rb_intern(#T), 1, regs))
+#define INLINE(H, T)   rb_str_append(H, rb_funcall(self, rb_intern(T), 1, regs))
 #define DONE(H)        rb_str_append(html, H); CLEAR(H); CLEAR_REGS()
-#define PASS(H, A, T)  rb_str_append(H, red_pass(self, regs, ID2SYM(rb_intern(#A)), rb_intern(#T), refs))
-#define PARSE_ATTR(A)  red_parse_attr(self, regs, ID2SYM(rb_intern(#A)))
-#define PARSE_LINK_ATTR(A)  red_parse_link_attr(self, regs, ID2SYM(rb_intern(#A)))
-#define PASS_CODE(H, A, T, O) rb_str_append(H, red_pass_code(self, regs, ID2SYM(rb_intern(#A)), rb_intern(#T)))
+#define PASS(H, A, T)  rb_str_append(H, red_pass(self, regs, ID2SYM(rb_intern(A)), rb_intern(T), refs))
+#define PARSE_ATTR(A)  red_parse_attr(self, regs, ID2SYM(rb_intern(A)))
+#define PARSE_LINK_ATTR(A)  red_parse_link_attr(self, regs, ID2SYM(rb_intern(A)))
+#define PASS_CODE(H, A, T, O) rb_str_append(H, red_pass_code(self, regs, ID2SYM(rb_intern(A)), rb_intern(T)))
 #define ADD_BLOCK() \
   rb_str_append(html, red_block(self, regs, block, refs)); \
   extend = Qnil; \
@@ -50,8 +50,8 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define END_EXTENDED()     extend = Qnil; CLEAR_REGS();
 #define ADD_BLOCKCODE()    rb_str_append(html, red_blockcode(self, regs, block)); CLEAR(block); CLEAR_REGS()
 #define ADD_EXTENDED_BLOCKCODE()    rb_str_append(html, red_blockcode(self, regs, block)); CLEAR(block);
-#define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_str_new2(#V));
-#define AINC(T)        red_inc(regs, ID2SYM(rb_intern(#T)));
+#define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(T)), rb_str_new2(V));
+#define AINC(T)        red_inc(regs, ID2SYM(rb_intern(T)));
 #define SET_ATTRIBUTES() \
   VALUE buf = Qnil; \
   SET_ATTRIBUTE("class_buf", "class"); \
@@ -64,26 +64,26 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define TRANSFORM(T) \
   if (p > reg && reg >= ts) { \
     VALUE str = redcloth_transform(self, reg, p, refs); \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
-  /*  printf("TRANSFORM(" #T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
+    rb_hash_aset(regs, ID2SYM(rb_intern(T)), str); \
+  /*  printf("TRANSFORM(" T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
   } else { \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
+    rb_hash_aset(regs, ID2SYM(rb_intern(T)), Qnil); \
   }
 #define STORE(T)  \
   if (p > reg && reg >= ts) { \
     VALUE str = rb_str_new(reg, p-reg); \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
-  /*  printf("STORE(" #T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
+    rb_hash_aset(regs, ID2SYM(rb_intern(T)), str); \
+  /*  printf("STORE(" T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
   } else { \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
+    rb_hash_aset(regs, ID2SYM(rb_intern(T)), Qnil); \
   }
 #define STORE_B(T)  \
   if (p > bck && bck >= ts) { \
     VALUE str = rb_str_new(bck, p-bck); \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), str); \
-  /*  printf("STORE_B(" #T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
+    rb_hash_aset(regs, ID2SYM(rb_intern(T)), str); \
+  /*  printf("STORE_B(" T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
   } else { \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), Qnil); \
+    rb_hash_aset(regs, ID2SYM(rb_intern(T)), Qnil); \
   }
 #define STORE_URL(T) \
   if (p > reg && reg >= ts) { \
@@ -100,8 +100,8 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
     te = p; \
   } \
   STORE(T); \
-  if ( !NIL_P(refs) && rb_funcall(refs, rb_intern("has_key?"), 1, rb_hash_aref(regs, ID2SYM(rb_intern(#T)))) ) { \
-    rb_hash_aset(regs, ID2SYM(rb_intern(#T)), rb_hash_aref(refs, rb_hash_aref(regs, ID2SYM(rb_intern(#T))))); \
+  if ( !NIL_P(refs) && rb_funcall(refs, rb_intern("has_key?"), 1, rb_hash_aref(regs, ID2SYM(rb_intern(T)))) ) { \
+    rb_hash_aset(regs, ID2SYM(rb_intern(T)), rb_hash_aref(refs, rb_hash_aref(regs, ID2SYM(rb_intern(T))))); \
   }
 #define LIST_ITEM() \
     int aint = 0; \
@@ -136,11 +136,11 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
       rb_str_append(html, rb_funcall(self, rb_intern(listm), 1, regs)); \
       rb_ary_store(list_layout, nest-1, rb_str_new2(list_type)); \
       CLEAR_REGS(); \
-      ASET(first, true); \
+      ASET("first", "true"); \
     } \
     LIST_CLOSE(); \
     rb_hash_aset(regs, ID2SYM(rb_intern("nest")), INT2NUM(RARRAY(list_layout)->len)); \
-    ASET(type, li_open)
+    ASET("type", "li_open")
 #define LIST_CLOSE() \
     while (nest < RARRAY(list_layout)->len) \
     { \

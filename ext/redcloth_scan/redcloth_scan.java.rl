@@ -299,6 +299,8 @@ public class RedclothScanService implements BasicLibraryService {
 
   action extend { extend = ((RubyHash)regs).aref(runtime.newSymbol("type")); }
 
+  # include redcloth_scan "redcloth_scan.rl";
+
   # blocks
   notextile_tag_start = "<notextile>" ;
   notextile_tag_end = "</notextile>" LF? ;

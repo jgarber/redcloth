@@ -95,44 +95,38 @@ end
 
 task :compile => [filename]
 
-# C Ragel file dependencies
-c_header = "#{ext}/redcloth.h"
-c_redcloth_common = "#{ext}/redcloth_common.rl"
-file c_redcloth_common # => "#{ext}/redcloth_common.rl"
-file "#{ext}/redcloth_scan.c.rl" => ["#{ext}/redcloth_scan.rl", c_redcloth_common, c_header]
-file "#{ext}/redcloth_inline.c.rl" => ["#{ext}/redcloth_inline.rl", c_redcloth_common, c_header]
-file "#{ext}/redcloth_attributes.c.rl" => ["#{ext}/redcloth_attributes.rl", c_redcloth_common, c_header]
-
-# Java Ragel file dependencies
-java_redcloth_common = "#{ext}/redcloth_common.java.rl"
-file java_redcloth_common # => "#{ext}/redcloth_common.rl"
-file "#{ext}/redcloth_scan.java.rl" => ["#{ext}/redcloth_scan.rl", java_redcloth_common]
-file "#{ext}/redcloth_inline.java.rl" => ["#{ext}/redcloth_inline.rl", java_redcloth_common]
-file "#{ext}/redcloth_attributes.java.rl" => ["#{ext}/redcloth_attributes.rl", java_redcloth_common]
-
-GENERATED_SOURCE_FILES = {
-  "redcloth_scan.c" => "redcloth_scan.c.rl",
-  "redcloth_inline.c" => "redcloth_inline.c.rl",
-  "redcloth_attributes.c" => "redcloth_attributes.c.rl",
-  "RedclothScanService.java" => "redcloth_scan.java.rl",
-  "RedclothInline.java" => "redcloth_inline.java.rl",
-  "RedclothAttributes.java" => "redcloth_attributes.java.rl"
-}
-
-GENERATED_SOURCE_FILES.each do |target_name, source_name|
-  target_name = File.join(ext,target_name)
-  source_name = File.join(ext,source_name)
-  host_language = (target_name =~ /java$/) ? "J" : "C"
+def ragel(target_file, source_file)
+  host_language = (target_file =~ /java$/) ? "J" : "C"
   code_style = (host_language == "C") ? " -" + (@code_style || "T0") : ""
-  file target_name => source_name do
-    ensure_ragel_version(target_name) do
-      sh %{ragel #{source_name} -#{host_language}#{code_style} -o #{target_name}}
-    end
+  ensure_ragel_version(target_file) do
+    sh %{ragel #{source_file} -#{host_language}#{code_style} -o #{target_file}}
   end
 end
 
 # Make sure the .c files exist if you try the Makefile, otherwise Ragel will have to generate them.
 file "#{ext}/Makefile" => ["#{ext}/extconf.rb", "#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c","#{ext}/redcloth_attributes.c","#{ext}/redcloth_scan.o","#{ext}/redcloth_inline.o","#{ext}/redcloth_attributes.o"]
+
+# Ragel-generated C files
+file "#{ext}/redcloth_scan.c" =>  ["#{ext}/redcloth_scan.c.rl",   "#{ext}/redcloth_scan.rl", "#{ext}/redcloth_common.c.rl",   "#{ext}/redcloth_common.rl",  "#{ext}/redcloth.h"] do
+  ragel "#{ext}/redcloth_scan.c", "#{ext}/redcloth_scan.c.rl"
+end
+file "#{ext}/redcloth_inline.c" =>  ["#{ext}/redcloth_inline.c.rl",   "#{ext}/redcloth_inline.rl", "#{ext}/redcloth_common.c.rl",   "#{ext}/redcloth_common.rl",  "#{ext}/redcloth.h"] do
+  ragel "#{ext}/redcloth_inline.c", "#{ext}/redcloth_inline.c.rl"
+end
+file "#{ext}/redcloth_attributes.c" =>  ["#{ext}/redcloth_attributes.c.rl",   "#{ext}/redcloth_attributes.rl", "#{ext}/redcloth_common.c.rl",   "#{ext}/redcloth_common.rl",  "#{ext}/redcloth.h"] do
+  ragel "#{ext}/redcloth_attributes.c", "#{ext}/redcloth_attributes.c.rl"
+end
+
+# Ragel-generated Java files
+file "#{ext}/RedclothScanService.java" =>  ["#{ext}/redcloth_scan.java.rl",   "#{ext}/redcloth_scan.rl", "#{ext}/redcloth_common.java.rl",   "#{ext}/redcloth_common.rl"] do
+  ragel "#{ext}/RedclothScanService.java", "#{ext}/redcloth_scan.java.rl"
+end
+file "#{ext}/RedclothInline.java" =>  ["#{ext}/redcloth_inline.java.rl",   "#{ext}/redcloth_inline.rl", "#{ext}/redcloth_common.java.rl",   "#{ext}/redcloth_common.rl"] do
+  ragel "#{ext}/RedclothInline.java", "#{ext}/redcloth_inline.java.rl"
+end
+file "#{ext}/RedclothAttributes.java" =>  ["#{ext}/redcloth_attributes.java.rl",   "#{ext}/redcloth_attributes.rl", "#{ext}/redcloth_common.java.rl",   "#{ext}/redcloth_common.rl"] do
+  ragel "#{ext}/RedclothAttributes.java", "#{ext}/redcloth_attributes.java.rl"
+end
 
 
 #### Optimization

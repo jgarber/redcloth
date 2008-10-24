@@ -9,6 +9,7 @@
 %%{
 
   machine redcloth_inline;
+  include redcloth_common "redcloth_common.c.rl";
   include redcloth_inline "redcloth_inline.rl";
 
 }%%
