@@ -1,13 +1,5 @@
-require 'rake'
-require 'rake/clean'
-require 'rake/gempackagetask'
-require 'rake/rdoctask'
-require 'rake/testtask'
-require 'fileutils'
-include FileUtils
 require 'lib/redcloth/version'
 
-# TODO: echoe will make our life much easier with things like Platform.java?, but I don't want to put in the time to convert the Rakefile if no one is going to build the java sources.
 begin
   require 'rubygems'
   gem 'echoe', '>=2.7.11'
@@ -16,202 +8,134 @@ rescue LoadError
   abort "You'll need to have `echoe' installed to use RedCloth's Rakefile"
 end
 
-NAME = RedCloth::NAME
-SUMMARY = RedCloth::DESCRIPTION
-VERS = RedCloth::VERSION::STRING
-ARCHLIB = "lib/#{::Config::CONFIG['arch']}"
-PKG = "#{NAME}-#{VERS}"
-BIN = "*.{bundle,jar,so,obj,pdb,lib,def,exp,class}"
-CLEAN.include ['ext/redcloth_scan/**/*.{bundle,so,obj,pdb,lib,def,exp,c,o,xml,java}', ARCHLIB, 'ext/redcloth_scan/Makefile', '**/.*.sw?', '*.gem', '.config', 'pkg']
-CLOBBER.include ["lib/**/#{BIN}"]
-
-desc "Does a full compile, test run"
-task :default => [:compile, :test]
-
-desc "Compiles all extensions"
-task :compile => [:redcloth_scan] do
-  if Dir.glob(File.join(ARCHLIB,"redcloth_scan.*")).length == 0
-    STDERR.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    STDERR.puts "Gem actually failed to build.  Your system is"
-    STDERR.puts "NOT configured properly to build redcloth."
-    STDERR.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    exit(1)
-  end
-end
-
-desc "Packages up RedCloth."
-task :package => [:clean, :compile]
-
-desc "Releases packages for all RedCloth packages and platforms."
-task :release => [:package, :rubygems_win32]
-
-desc "Run all the tests"
-Rake::TestTask.new do |t|
-    t.libs << "test" << ARCHLIB
-    t.test_files = FileList['test/test_*.rb']
-    t.verbose = true
-end
-
-# Run specific tests or test files
-# 
-# rake test:parser
-# => Runs the full TestParser unit test
-# 
-# rake test:parser:textism
-# => Runs the tests matching /textism/ in the TestParser unit test
-rule "" do |t|
-  # test:file:method
-  if /test:(.*)(:([^.]+))?$/.match(t.name)
-    arguments = t.name.split(":")[1..-1]
-    file_name = arguments.first
-    test_name = arguments[1..-1] 
-    
-    if File.exist?("test/test_#{file_name}.rb")
-      run_file_name = "test_#{file_name}.rb"
-    end
-    
-    sh "ruby -Ilib:test test/#{run_file_name} -n /#{test_name}/" 
-  end
-end
-
-Rake::RDocTask.new do |rdoc|
-    rdoc.rdoc_dir = 'doc/rdoc'
-    # rdoc.options += RDOC_OPTS
-    # rdoc.template = "extras/flipbook_rdoc.rb"
-    rdoc.main = "README"
-    rdoc.title = "RedCloth Documentation"
-    rdoc.rdoc_files.add ['README', 'CHANGELOG', 'COPYING', 'lib/**/*.rb', 'ext/**/*.c']
-end
-
-PKG_FILES = %w(CHANGELOG COPYING README Rakefile) +
-  Dir.glob("{bin,doc,test,lib,extras}/**/*") + 
-  Dir.glob("ext/**/*.{h,c,rb,rl}") + 
-  %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
-
-spec =
-    Gem::Specification.new do |s|
-        s.name = NAME
-        s.version = VERS
-        s.platform = Gem::Platform::RUBY
-        s.has_rdoc = true
-        s.extra_rdoc_files = ["README", "CHANGELOG", "COPYING"]
-        s.summary = SUMMARY
-        s.description = s.summary
-        s.author = "Jason Garber"
-        s.email = 'redcloth-upwards@rubyforge.org'
-        s.homepage = 'http://redcloth.org/'
-        s.rubyforge_project = 'redcloth'
-        
-        s.files = PKG_FILES
-        
-        s.require_paths << "lib/case_sensitive_require"
-        #s.autorequire = "redcloth"  # no no no this is tHe 3v1l
-        s.extensions = FileList["ext/**/extconf.rb"].to_a
-        s.executables = ["redcloth"]
-    end
-
-Rake::GemPackageTask.new(spec) do |p|
-    p.need_tar = true
-    p.gem_spec = spec
-end
-
-extension = "redcloth_scan"
-ext = "ext/redcloth_scan"
-ext_so = "#{ext}/#{extension}.#{Config::CONFIG['DLEXT']}"
-ext_files = FileList[
-  "#{ext}/redcloth_scan.c",
-  "#{ext}/redcloth_inline.c",
-  "#{ext}/redcloth_attributes.c",
-  "#{ext}/extconf.rb",
-  "#{ext}/Makefile",
-  "lib"
-] 
-
-file ext_so => ext_files do
-  Dir.chdir(ext) do
-    sh(RUBY_PLATFORM =~ /win32/ ? 'nmake' : 'make')
-  end
-  mkdir_p ARCHLIB
-  cp ext_so, ARCHLIB
-end
-
-task "lib" do
-  directory "lib"
-end
-
-["#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c","#{ext}/redcloth_attributes.c"].each do |name|
-  @code_style ||= "T0"
-  arch_source = name + '.rl'
-  ragel_source = name.sub(/\.c$/, '.rl')
-  file name => [arch_source, ragel_source, "#{ext}/redcloth_common.rl", "#{ext}/redcloth.h"] do
-    ensure_ragel_version(name) do
-      sh %{ragel #{arch_source} -#{@code_style} -o #{name}}
-    end
-  end
-end
-
-desc "Builds just the #{extension} extension"
-task extension.to_sym => ["#{ext}/Makefile", ext_so ]
-
-file "#{ext}/Makefile" => ["#{ext}/extconf.rb", "#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c","#{ext}/redcloth_attributes.c"] do
-  Dir.chdir(ext) do ruby "extconf.rb" end
-end
-
-Win32Spec = Gem::Specification.new do |s|
-  s.name = NAME
-  s.version = VERS
-  s.platform = 'x86-mswin32-60'
-  s.has_rdoc = false
-  s.extra_rdoc_files = ["README", "CHANGELOG", "COPYING"]
-  s.summary = SUMMARY 
-  s.description = s.summary
-  s.author = "Jason Garber"
-  s.email = 'redcloth-upwards@rubyforge.org'
-  s.homepage = 'http://redcloth.org/'
-  s.rubyforge_project = 'redcloth'
-
-  s.files = PKG_FILES + ["lib/redcloth_scan.so"]
-
-  s.require_path = "lib"
-  #s.autorequire = "redcloth"  # no no no this is tHe 3v1l
-  s.extensions = []
-  s.bindir = "bin"
-end
+e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
+  p.summary = RedCloth::DESCRIPTION
+  p.author = "Jason Garber"
+  p.email = 'redcloth-upwards@rubyforge.org'
+  p.clean_pattern += ['ext/redcloth_scan/**/*.{bundle,so,obj,pdb,lib,def,exp,c,o,xml,class,jar,java}', 'lib/*.{bundle,so,o,obj,pdb,lib,def,exp,jar}', 'ext/redcloth_scan/Makefile']
+  p.url = "http://redcloth.org"
+  p.project = "redcloth"
+  p.rdoc_pattern = ['README', 'COPING', 'CHANGELOG', 'lib/**/*.rb', 'doc/**/*.rdoc']
+  p.ignore_pattern = /^(pkg|site|projects|doc|log)|CVS|\.log/
+  p.ruby_version = '>=1.8.4'
+  p.extension_pattern = nil
   
-WIN32_PKG_DIR = "pkg/#{PKG}-mswin32"
+  
+  if RUBY_PLATFORM =~ /mingw|mswin|java/
+    p.need_tar_gz = false
+  else
+    p.need_zip = true
+    p.need_tar_gz = true
+    p.extension_pattern = ["ext/**/extconf.rb"]
+  end
 
-file WIN32_PKG_DIR => [:package] do
-  cp_r "pkg/#{PKG}", "#{WIN32_PKG_DIR}"
+  p.eval = proc do
+    case RUBY_PLATFORM
+    when /mingw/
+      self.files += ['lib/redcloth_scan.so']
+      self.platform = 'x86-mswin32-60'
+    when /java/
+      self.files += ['lib/redcloth_scan.jar']
+      self.platform = 'jruby'
+    else
+      self.files += %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
+    end
+  end
+
 end
 
-desc "Cross-compile the redcloth_scan extension for win32"
-file "redcloth_scan_win32" => [WIN32_PKG_DIR] do
-  cp "extras/mingw-rbconfig.rb", "#{WIN32_PKG_DIR}/ext/redcloth_scan/rbconfig.rb"
-  sh "cd #{WIN32_PKG_DIR}/ext/redcloth_scan/ && ruby -I. extconf.rb && make"
-  mv "#{WIN32_PKG_DIR}/ext/redcloth_scan/redcloth_scan.so", "#{WIN32_PKG_DIR}/lib"
+#### Pre-compiled extensions for alternative platforms
+
+def move_extensions
+  Dir["ext/**/*.{bundle,so,jar}"].each { |file| mv file, "lib/" }
 end
 
-desc "Build the binary RubyGems package for win32"
-task :rubygems_win32 => ["redcloth_scan_win32"] do
-  Dir.chdir("#{WIN32_PKG_DIR}") do
-    Gem::Builder.new(Win32Spec).build
-    verbose(true) {
-      cp Dir["*.gem"].first, "../"
-    }
+def java_classpath_arg
+  # A myriad of ways to discover the JRuby classpath
+  classpath = begin
+    require 'java'
+    # Already running in a JRuby JVM
+    Java::java.lang.System.getProperty('java.class.path')
+  rescue LoadError
+    ENV['JRUBY_PARENT_CLASSPATH'] || ENV['JRUBY_HOME'] && FileList["#{ENV['JRUBY_HOME']}/lib/*.jar"].join(File::PATH_SEPARATOR)
+  end
+  classpath ? "-cp #{classpath}" : ""
+end
+
+ext = "ext/redcloth_scan"
+
+case RUBY_PLATFORM
+when /mingw/
+  
+  filename = "lib/redcloth_scan.so"
+  file filename => FileList["#{ext}/redcloth_scan.c", "#{ext}/redcloth_inline.c", "#{ext}/redcloth_attributes.c"] do
+    cp "ext/mingw-rbconfig.rb", "#{ext}/rbconfig.rb"
+    Dir.chdir("ext/redcloth_scan") do
+      ruby "-I. extconf.rb"
+      system(PLATFORM =~ /mswin/ ? 'nmake' : 'make')
+    end
+    move_extensions
+    rm "#{ext}/rbconfig.rb"
+  end
+
+when /java/
+
+  filename = "lib/redcloth_scan.jar"
+  file filename => FileList["#{ext}/RedclothScanService.java", "#{ext}/RedclothInline.java", "#{ext}/RedclothAttributes.java"] do
+    sources = FileList["#{ext}/**/*.java"].join(' ')
+    sh "javac -target 1.5 -source 1.5 -d #{ext} #{java_classpath_arg} #{sources}"
+    sh "jar cf lib/redcloth_scan.jar -C #{ext} ."
+    move_extensions
+  end
+  
+else
+  filename = "#{ext}/redcloth_scan.#{Config::CONFIG['DLEXT']}"
+  file filename => FileList["#{ext}/redcloth_scan.c", "#{ext}/redcloth_inline.c", "#{ext}/redcloth_attributes.c"]
+end
+
+task :compile => [filename]
+
+# C Ragel file dependencies
+c_header = "#{ext}/redcloth.h"
+c_redcloth_common = "#{ext}/redcloth_common.rl"
+file c_redcloth_common # => "#{ext}/redcloth_common.rl"
+file "#{ext}/redcloth_scan.c.rl" => ["#{ext}/redcloth_scan.rl", c_redcloth_common, c_header]
+file "#{ext}/redcloth_inline.c.rl" => ["#{ext}/redcloth_inline.rl", c_redcloth_common, c_header]
+file "#{ext}/redcloth_attributes.c.rl" => ["#{ext}/redcloth_attributes.rl", c_redcloth_common, c_header]
+
+# Java Ragel file dependencies
+java_redcloth_common = "#{ext}/redcloth_common.java.rl"
+file java_redcloth_common # => "#{ext}/redcloth_common.rl"
+file "#{ext}/redcloth_scan.java.rl" => ["#{ext}/redcloth_scan.rl", java_redcloth_common]
+file "#{ext}/redcloth_inline.java.rl" => ["#{ext}/redcloth_inline.rl", java_redcloth_common]
+file "#{ext}/redcloth_attributes.java.rl" => ["#{ext}/redcloth_attributes.rl", java_redcloth_common]
+
+GENERATED_SOURCE_FILES = {
+  "redcloth_scan.c" => "redcloth_scan.c.rl",
+  "redcloth_inline.c" => "redcloth_inline.c.rl",
+  "redcloth_attributes.c" => "redcloth_attributes.c.rl",
+  "RedclothScanService.java" => "redcloth_scan.java.rl",
+  "RedclothInline.java" => "redcloth_inline.java.rl",
+  "RedclothAttributes.java" => "redcloth_attributes.java.rl"
+}
+
+GENERATED_SOURCE_FILES.each do |target_name, source_name|
+  target_name = File.join(ext,target_name)
+  source_name = File.join(ext,source_name)
+  host_language = (target_name =~ /java$/) ? "J" : "C"
+  code_style = (host_language == "C") ? " -" + (@code_style || "T0") : ""
+  file target_name => source_name do
+    ensure_ragel_version(target_name) do
+      sh %{ragel #{source_name} -#{host_language}#{code_style} -o #{target_name}}
+    end
   end
 end
 
-CLEAN.include WIN32_PKG_DIR
+# Make sure the .c files exist if you try the Makefile, otherwise Ragel will have to generate them.
+file "#{ext}/Makefile" => ["#{ext}/extconf.rb", "#{ext}/redcloth_scan.c","#{ext}/redcloth_inline.c","#{ext}/redcloth_attributes.c","#{ext}/redcloth_scan.o","#{ext}/redcloth_inline.o","#{ext}/redcloth_attributes.o"]
 
-desc "Build and install the RedCloth gem on your system"
-task :install => [:package] do
-  sh %{sudo gem install pkg/#{PKG}}
-end
 
-desc "Uninstall the RedCloth gem from your system"
-task :uninstall => [:clean] do
-  sh %{sudo gem uninstall #{NAME}}
-end
+#### Optimization
 
 RAGEL_CODE_GENERATION_STYLES = {
   'T0' => "Table driven FSM (default)",
@@ -249,97 +173,31 @@ task :optimize do
   puts RagelProfiler.results
 end
 
-# Here are the jruby tasks, stolen from Hpricot.  If this jruby version catches on, I'd like these tasks to be unified with the C tasks and use echoe's platform detection, like Mongrel.
-namespace "jruby" do
- 
-  def ant(*args)
-    system "ant #{args.join(' ')}"
-  end
- 
-  desc "Installs jruby in a subdirectory of ./test/"
-  task :install do
-    sh %{svn export http://svn.codehaus.org/jruby/trunk/jruby test/jruby}
-    Dir.chdir "test/jruby" do
-      ant; ant "jar-complete"; # ant "create-apidocs"
-    end
-    sh %{jruby -S gem install rake}
-    Rake::Task['add_path'].invoke
-  end
-  
-  desc "Adds jruby to your PATH"
-  task :add_path do
-    ENV['PATH'] = ENV['PATH'] + ":" + File.join(File.dirname(__FILE__), "test/jruby/bin")
-  end
-  
-  # Java only supports the table-driven code
-  # generation style at this point.
-  desc "Generates the Java scanner code using the Ragel table-driven code generation style."
-  task :ragel_java => [:ragel_version] do
-    ensure_ragel_version("RedclothScanService.java") do
-      puts "compiling with ragel version #{@ragel_v}"
-      sh %{ragel -J -o ext/redcloth_scan/RedclothScanService.java ext/redcloth_scan/redcloth_scan.java.rl}
-      sh %{ragel -J -o ext/redcloth_scan/RedclothAttributes.java ext/redcloth_scan/redcloth_attributes.java.rl}
-      sh %{ragel -J -o ext/redcloth_scan/RedclothInline.java ext/redcloth_scan/redcloth_inline.java.rl}
-    end
-  end
-  
-  def java_classpath_arg
-    # A myriad of ways to discover the JRuby classpath
-    classpath = begin
-      require 'java'
-      # Already running in a JRuby JVM
-      Java::java.lang.System.getProperty('java.class.path')
-    rescue LoadError
-      ENV['JRUBY_PARENT_CLASSPATH'] || ENV['JRUBY_HOME'] && FileList["#{ENV['JRUBY_HOME']}/lib/*.jar"].join(File::PATH_SEPARATOR)
-    end
-    classpath ? "-cp #{classpath}" : ""
-  end
-  
-  JRubySpec = spec.dup
-  JRubySpec.platform = 'jruby'
-  JRubySpec.files = PKG_FILES + ["#{ARCHLIB}/hpricot_scan.jar", "#{ARCHLIB}/fast_xs.jar"]
-  JRubySpec.extensions = []
 
-  JRUBY_PKG_DIR = "#{PKG}-jruby"
+#### Custom testing tasks
 
-  desc "Package up the JRuby distribution."
-  file JRUBY_PKG_DIR => [:ragel_java, :package] do
-    sh "tar zxf pkg/#{PKG}.tgz"
-    mv PKG, JRUBY_PKG_DIR
-  end
-  
-  def compile_java(filenames, jarname)
-    sh %{javac -source 1.5 -target 1.5 #{java_classpath_arg} #{filenames.join(" ")}}
-    sh %{jar cf #{jarname} *.class}
-  end
- 
-  task :redcloth_scan_java => [:ragel_java] do
-    Dir.chdir "ext/redcloth_scan" do
-      compile_java(["RedclothAttributes.java", "RedclothInline.java", "RedclothScanService.java"], "redcloth_scan.jar")
+task :test => [:compile]
+
+# Run specific tests or test files
+# 
+# rake test:parser
+# => Runs the full TestParser unit test
+# 
+# rake test:parser:textism
+# => Runs the tests matching /textism/ in the TestParser unit test
+rule "" do |t|
+  # test:file:method
+  if /test:(.*)(:([^.]+))?$/.match(t.name)
+    arguments = t.name.split(":")[1..-1]
+    file_name = arguments.first
+    test_name = arguments[1..-1] 
+    
+    if File.exist?("test/test_#{file_name}.rb")
+      run_file_name = "test_#{file_name}.rb"
     end
-    cp "ext/redcloth_scan/redcloth_scan.jar", "lib"
+    
+    sh "ruby -Ilib:test test/#{run_file_name} -n /#{test_name}/" 
   end
-  
-  desc "Run all the tests using JRuby"
-  Rake::TestTask.new(:test => [:redcloth_scan_java]) do |t|
-    t.libs << "test"
-    t.test_files = FileList['test/test_*.rb']
-    t.verbose = true
-  end
-
-  desc "Build the RubyGems package for JRuby"
-  task :package_jruby => JRUBY_PKG_DIR do
-    Dir.chdir("#{JRUBY_PKG_DIR}") do
-      Rake::Task[:hpricot_java].invoke
-      Gem::Builder.new(JRubySpec).build
-      verbose(true) {
-        mv Dir["*.gem"].first, "../pkg/#{JRUBY_PKG_DIR}.gem"
-      }
-    end
-  end
-
-  CLEAN.include JRUBY_PKG_DIR
-  
 end
 
 def ensure_ragel_version(name)
