@@ -35,6 +35,8 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define CLEAR_REGS()   regs = rb_hash_new();
 #define CAT(H)         rb_str_cat(H, ts, te-ts)
 #define CLEAR(H)       H = rb_str_new2("")
+#define SET_PLAIN_BLOCK(T) plain_block = rb_str_new2(T)
+#define RESET_TYPE(T)  rb_hash_aset(regs, ID2SYM(rb_intern("type")), plain_block)
 #define INLINE(H, T)   rb_str_append(H, rb_funcall(self, rb_intern(T), 1, regs))
 #define DONE(H)        rb_str_append(html, H); CLEAR(H); CLEAR_REGS()
 #define PASS(H, A, T)  rb_str_append(H, red_pass(self, regs, ID2SYM(rb_intern(A)), rb_intern(T), refs))
@@ -48,6 +50,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
   CLEAR_REGS()
 #define ADD_EXTENDED_BLOCK()    rb_str_append(html, red_block(self, regs, block, refs)); CLEAR(block);
 #define END_EXTENDED()     extend = Qnil; CLEAR_REGS();
+#define IS_NOT_EXTENDED()     NIL_P(extend)
 #define ADD_BLOCKCODE()    rb_str_append(html, red_blockcode(self, regs, block)); CLEAR(block); CLEAR_REGS()
 #define ADD_EXTENDED_BLOCKCODE()    rb_str_append(html, red_blockcode(self, regs, block)); CLEAR(block);
 #define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(T)), rb_str_new2(V));
@@ -103,6 +106,9 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
   if ( !NIL_P(refs) && rb_funcall(refs, rb_intern("has_key?"), 1, rb_hash_aref(regs, ID2SYM(rb_intern(T)))) ) { \
     rb_hash_aset(regs, ID2SYM(rb_intern(T)), rb_hash_aref(refs, rb_hash_aref(regs, ID2SYM(rb_intern(T))))); \
   }
+#define STORE_LINK_ALIAS() \
+  rb_hash_aset(refs_found, rb_hash_aref(regs, ID2SYM(rb_intern("text"))), rb_hash_aref(regs, ID2SYM(rb_intern("href"))))
+#define CLEAR_LIST() list_layout = rb_ary_new()
 #define LIST_ITEM() \
     int aint = 0; \
     VALUE aval = rb_ary_entry(list_index, nest-1); \

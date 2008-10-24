@@ -18,7 +18,7 @@
   bracketed_link = ( '["' link_says '":' %A uri %{ STORE("href"); } :> "]" ) >X ;
 
   # images
-  image_src = ( uri ) >A %{ STORE("src") } ;
+  image_src = ( uri ) >A %{ STORE("src"); } ;
   image_is = ( A2 C ". "? image_src :> title? ) ;
   image_link = ( ":" uri >A %{ STORE_URL("href"); } ) ;
   image = ( "["? "!" image_is "!" %A image_link? "]"? ) >X ;
@@ -70,7 +70,7 @@
   emdash = "--" ;
   arrow = "->" ;
   endash = " - " ;
-  acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" default+ >A %{ STORE("title") } :> ")" ) >X ;
+  acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" default+ >A %{ STORE("title"); } :> ")" ) >X ;
   caps_noactions = upper{3,} ;
   caps = ( caps_noactions >A %*T ) >X ;
   dim_digit = [0-9.]+ ;

@@ -121,10 +121,10 @@ end
 file "#{ext}/RedclothScanService.java" =>  ["#{ext}/redcloth_scan.java.rl",   "#{ext}/redcloth_scan.rl", "#{ext}/redcloth_common.java.rl",   "#{ext}/redcloth_common.rl"] do
   ragel "#{ext}/RedclothScanService.java", "#{ext}/redcloth_scan.java.rl"
 end
-file "#{ext}/RedclothInline.java" =>  ["#{ext}/redcloth_inline.java.rl",   "#{ext}/redcloth_inline.rl", "#{ext}/redcloth_common.java.rl",   "#{ext}/redcloth_common.rl"] do
+file "#{ext}/RedclothInline.java" =>  ["#{ext}/redcloth_inline.java.rl",   "#{ext}/redcloth_inline.rl", "#{ext}/redcloth_common.java.rl",   "#{ext}/redcloth_common.rl", "#{ext}/redcloth_scan.java.rl"] do
   ragel "#{ext}/RedclothInline.java", "#{ext}/redcloth_inline.java.rl"
 end
-file "#{ext}/RedclothAttributes.java" =>  ["#{ext}/redcloth_attributes.java.rl",   "#{ext}/redcloth_attributes.rl", "#{ext}/redcloth_common.java.rl",   "#{ext}/redcloth_common.rl"] do
+file "#{ext}/RedclothAttributes.java" =>  ["#{ext}/redcloth_attributes.java.rl",   "#{ext}/redcloth_attributes.rl", "#{ext}/redcloth_common.java.rl",   "#{ext}/redcloth_common.rl", "#{ext}/redcloth_scan.java.rl"] do
   ragel "#{ext}/RedclothAttributes.java", "#{ext}/redcloth_attributes.java.rl"
 end
 

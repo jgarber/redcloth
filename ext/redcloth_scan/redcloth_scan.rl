@@ -11,20 +11,20 @@
   notextile_tag_start = "<notextile>" ;
   notextile_tag_end = "</notextile>" LF? ;
   noparagraph_line_start = " "+ ;
-  notextile_block_start = ( "notextile" >A %{ STORE("type") } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  notextile_block_start = ( "notextile" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
   pre_tag_start = "<pre" [^>]* ">" (space* "<code>")? ;
   pre_tag_end = ("</code>" space*)? "</pre>" LF? ;
-  pre_block_start = ( "pre" >A %{ STORE("type") } A C :> "." ( "." %extend | "" ) " "+ ) ;
-  bc_start = ( "bc" >A %{ STORE("type") } A C :> "." ( "." %extend | "" ) " "+ ) ;
-  bq_start = ( "bq" >A %{ STORE("type") } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE("cite") } )? " "+ ) ;
+  pre_block_start = ( "pre" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  bc_start = ( "bc" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  bq_start = ( "bq" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE("cite"); } )? " "+ ) ;
   non_ac_btype = ( "bq" | "bc" | "pre" | "notextile" );
   btype = (alpha alnum*) -- (non_ac_btype | "fn" digit+);
-  block_start = ( btype >A %{ STORE("type") } A C :> "." ( "." %extend | "" ) " "+ ) >B %{ STORE_B("fallback") };
+  block_start = ( btype >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) >B %{ STORE_B("fallback"); };
   all_btypes = btype | non_ac_btype;
   next_block_start = ( all_btypes A_noactions C_noactions :> "."+ " " ) >A @{ p = reg - 1; } ;
   double_return = LF{2,} ;
   block_end = ( double_return | EOF );
-  ftype = ( "fn" >A %{ STORE("type") } digit+ >A %{ STORE("id") } ) ;
+  ftype = ( "fn" >A %{ STORE("type"); } digit+ >A %{ STORE("id"); } ) ;
   footnote_start = ( ftype A C :> dotspace ) ;
   ul = "*" %{nest++; list_type = "ul";};
   ol = "#" %{nest++; list_type = "ol";};
@@ -33,14 +33,14 @@
   list_start  = ( ul_start | ol_start ) >{nest = 0;} ;
   dt_start = "-" . " "+ ;
   dd_start = ":=" ;
-  long_dd  = dd_start " "* LF %{ ADD_BLOCK(); ASET("type", "dd"); } any+ >A %{ TRANSFORM("text") } :>> "=:" ;
+  long_dd  = dd_start " "* LF %{ ADD_BLOCK(); ASET("type", "dd"); } any+ >A %{ TRANSFORM("text"); } :>> "=:" ;
   dl_start = (dt_start mtext (LF dt_start mtext)* " "* dd_start)  ;
   blank_line = LF;
-  link_alias = ( "[" >{ ASET("type", "ignore") } %A chars %T "]" %A uri %{ STORE_URL("href"); } ) ;
+  link_alias = ( "[" >{ ASET("type", "ignore"); } %A chars %T "]" %A uri %{ STORE_URL("href"); } ) ;
   
   # image lookahead
-  IMG_A_LEFT = "<" %{ ASET("float", "left") } ;
-  IMG_A_RIGHT = ">" %{ ASET("float", "right") } ;
+  IMG_A_LEFT = "<" %{ ASET("float", "left"); } ;
+  IMG_A_RIGHT = ">" %{ ASET("float", "right"); } ;
   aligned_image = ( "["? "!" (IMG_A_LEFT | IMG_A_RIGHT) ) >A @{ p = reg - 1; } ;
   
   # html blocks
@@ -48,8 +48,8 @@
   block_start_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? ">" | "<" BlockTagName ">";
   block_empty_tag = "<" BlockTagName space+ AttrSet* (AttrEnd)? "/>" | "<" BlockTagName "/>" ;
   block_end_tag = "</" BlockTagName space* ">" ;
-  html_start = indent >B %{STORE_B("indent_before_start")} block_start_tag >B %{STORE_B("start_tag")}  indent >B %{STORE_B("indent_after_start")} ;
-  html_end = indent >B %{STORE_B("indent_before_end")} block_end_tag >B %{STORE_B("end_tag")} (indent LF?) >B %{STORE_B("indent_after_end")} ;
+  html_start = indent >B %{STORE_B("indent_before_start");} block_start_tag >B %{STORE_B("start_tag");}  indent >B %{STORE_B("indent_after_start");} ;
+  html_end = indent >B %{STORE_B("indent_before_end");} block_end_tag >B %{STORE_B("end_tag");} (indent LF?) >B %{STORE_B("indent_after_end");} ;
   standalone_html = indent (block_start_tag | block_empty_tag | block_end_tag) indent LF+;
   html_end_terminating_block = ( LF indent block_end_tag ) >A @{ p = reg - 1; } ;
 
@@ -62,10 +62,10 @@
   tr = ( trdef? "|" %{INLINE(table, "tr_open");} td+ ) >X %{INLINE(table, "tr_close");} ;
   trows = ( tr (LF >X tr)* ) ;
   tdef = ( "table" >X A C :> dotspace LF ) ;
-  table = ( tdef? trows >{table = rb_str_new2(""); INLINE(table, "table_open");} ) >{ reg = NULL; } ;
+  table = ( tdef? trows >{CLEAR(table); INLINE(table, "table_open");} ) ;
 
   # info
-  redcloth_version = ("RedCloth" >A ("::" | " " ) "VERSION"i ":"? " ")? %{STORE("prefix")} "RedCloth::VERSION" (LF* EOF | double_return) ;
+  redcloth_version = ("RedCloth" >A ("::" | " " ) "VERSION"i ":"? " ")? %{STORE("prefix");} "RedCloth::VERSION" (LF* EOF | double_return) ;
 
   pre_tag := |*
     pre_tag_end         { CAT(block); DONE(block); fgoto main; };
@@ -78,7 +78,7 @@
       fgoto main; 
     };
     double_return { 
-      if (NIL_P(extend)) { 
+      if (IS_NOT_EXTENDED()) { 
         ADD_BLOCKCODE(); 
         fgoto main; 
       } else { 
@@ -86,7 +86,7 @@
       } 
     };
     double_return next_block_start { 
-      if (NIL_P(extend)) { 
+      if (IS_NOT_EXTENDED()) { 
         ADD_BLOCKCODE(); 
         fgoto main; 
       } else { 
@@ -120,7 +120,7 @@
       fgoto main;
     };
     double_return {
-      if (NIL_P(extend)) {
+      if (IS_NOT_EXTENDED()) {
         ADD_BLOCK();
         CAT(html);
         fgoto main;
@@ -131,7 +131,7 @@
       }
     };
     double_return next_block_start {
-      if (NIL_P(extend)) {
+      if (IS_NOT_EXTENDED()) {
         ADD_BLOCK();
         CAT(html);
         fgoto main;
@@ -154,14 +154,14 @@
     EOF { 
       ADD_BLOCKCODE(); 
       INLINE(html, "bc_close"); 
-      plain_block = rb_str_new2("p"); 
+      SET_PLAIN_BLOCK("p");
       fgoto main;
     };
     double_return { 
-      if (NIL_P(extend)) { 
+      if (IS_NOT_EXTENDED()) { 
         ADD_BLOCKCODE(); 
         INLINE(html, "bc_close"); 
-        plain_block = rb_str_new2("p"); 
+        SET_PLAIN_BLOCK("p");
         fgoto main; 
       } else { 
         ADD_EXTENDED_BLOCKCODE(); 
@@ -169,16 +169,16 @@
       } 
     };
     double_return next_block_start { 
-      if (NIL_P(extend)) { 
+      if (IS_NOT_EXTENDED()) { 
         ADD_BLOCKCODE(); 
         INLINE(html, "bc_close"); 
-        plain_block = rb_str_new2("p"); 
+        SET_PLAIN_BLOCK("p");
         fgoto main; 
       } else { 
         ADD_EXTENDED_BLOCKCODE(); 
         CAT(html); 
         INLINE(html, "bc_close"); 
-        plain_block = rb_str_new2("p");  
+        SET_PLAIN_BLOCK("p");
         END_EXTENDED(); 
         fgoto main; 
       } 
@@ -193,7 +193,7 @@
       fgoto main; 
     };
     double_return { 
-      if (NIL_P(extend)) { 
+      if (IS_NOT_EXTENDED()) { 
         ADD_BLOCK(); 
         INLINE(html, "bq_close"); 
         fgoto main; 
@@ -202,7 +202,7 @@
       } 
     };
     double_return next_block_start { 
-      if (NIL_P(extend)) { 
+      if (IS_NOT_EXTENDED()) { 
         ADD_BLOCK(); 
         INLINE(html, "bq_close"); 
         fgoto main; 
@@ -214,7 +214,7 @@
       }
     };
     html_end_terminating_block { 
-        if (NIL_P(extend)) { 
+        if (IS_NOT_EXTENDED()) { 
           ADD_BLOCK(); 
           INLINE(html, "bq_close"); 
           fgoto main; 
@@ -234,7 +234,7 @@
       fgoto main;
     };
     double_return {
-      if (NIL_P(extend)) { 
+      if (IS_NOT_EXTENDED()) { 
         ADD_BLOCK(); 
         fgoto main; 
       } else { 
@@ -242,7 +242,7 @@
       } 
     };
     double_return next_block_start { 
-      if (NIL_P(extend)) { 
+      if (IS_NOT_EXTENDED()) { 
         ADD_BLOCK(); 
         fgoto main; 
       } else { 
@@ -252,7 +252,7 @@
       }      
     };
     html_end_terminating_block { 
-      if (NIL_P(extend)) { 
+      if (IS_NOT_EXTENDED()) { 
         ADD_BLOCK(); 
         fgoto main; 
       } else { 
@@ -263,7 +263,7 @@
     };
     LF list_start { 
       ADD_BLOCK(); 
-      list_layout = rb_ary_new(); 
+      CLEAR_LIST(); 
       LIST_ITEM(); 
       fgoto list; 
     };
@@ -299,21 +299,21 @@
     pre_block_start { fgoto pre_block; };
     standalone_html { ASET("type", "html"); CAT(block); ADD_BLOCK(); };
     html_start      { ASET("type", "html_block"); fgoto html; };
-    bc_start        { INLINE(html, "bc_open"); ASET("type", "code"); plain_block = rb_str_new2("code"); fgoto bc; };
+    bc_start        { INLINE(html, "bc_open"); ASET("type", "code"); SET_PLAIN_BLOCK("code"); fgoto bc; };
     bq_start        { INLINE(html, "bq_open"); ASET("type", "p"); fgoto bq; };
     block_start     { fgoto block; };
     footnote_start  { fgoto footnote; };
-    list_start      { list_layout = rb_ary_new(); LIST_ITEM(); fgoto list; };
+    list_start      { CLEAR_LIST(); LIST_ITEM(); fgoto list; };
     dl_start        { p = ts; INLINE(html, "dl_open"); ASET("type", "dt"); fgoto dl; };
     table           { INLINE(table, "table_close"); DONE(table); fgoto block; };
-    link_alias      { rb_hash_aset(refs_found, rb_hash_aref(regs, ID2SYM(rb_intern("text"))), rb_hash_aref(regs, ID2SYM(rb_intern("href")))); DONE(block); };
-    aligned_image   { rb_hash_aset(regs, ID2SYM(rb_intern("type")), plain_block); fgoto block; };
+    link_alias      { STORE_LINK_ALIAS(); DONE(block); };
+    aligned_image   { RESET_TYPE(); fgoto block; };
     redcloth_version { INLINE(html, "redcloth_version"); };
     blank_line => cat;
     default
     { 
       CLEAR_REGS();
-      rb_hash_aset(regs, ID2SYM(rb_intern("type")), plain_block);
+      RESET_TYPE();
       CAT(block);
       fgoto block;
     };
