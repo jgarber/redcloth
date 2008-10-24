@@ -210,6 +210,10 @@ public class RedclothScanService implements BasicLibraryService {
       regs = RubyHash.newHash(runtime);
     }
 
+    public void RESET_REG() {
+      reg = -1;
+    }
+
     public void CAT(IRubyObject H) {
       ((RubyString)H).cat(data, ts, te-ts);
     }

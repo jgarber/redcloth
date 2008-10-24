@@ -62,7 +62,7 @@
   tr = ( trdef? "|" %{INLINE(table, "tr_open");} td+ ) >X %{INLINE(table, "tr_close");} ;
   trows = ( tr (LF >X tr)* ) ;
   tdef = ( "table" >X A C :> dotspace LF ) ;
-  table = ( tdef? trows >{CLEAR(table); INLINE(table, "table_open");} ) ;
+  table = ( tdef? trows >{CLEAR(table); INLINE(table, "table_open"); RESET_REG();} ) ;
 
   # info
   redcloth_version = ("RedCloth" >A ("::" | " " ) "VERSION"i ":"? " ")? %{STORE("prefix");} "RedCloth::VERSION" (LF* EOF | double_return) ;

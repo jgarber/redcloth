@@ -5,11 +5,8 @@
   action A { reg = p; }
   action B { bck = p; }
   action T { STORE("text"); }
-  action X { CLEAR_REGS(); reg = NULL; }
+  action X { CLEAR_REGS(); RESET_REG(); }
   action cat { CAT(block); }
-  action esc { rb_str_cat_escaped(self, block, ts, te); }
-  action esc_pre { rb_str_cat_escaped_for_preformatted(self, block, ts, te); }
-  action ignore { rb_str_append(block, rb_funcall(self, rb_intern("ignore"), 1, regs)); }
 
   # simple
   LF = ( '\n' ) ;
@@ -110,12 +107,5 @@
   mspace = ( ( " " | "\t" | LF )+ ) -- LF{2} ;
   mtext = ( chars (mspace chars)* ) ;
   
-  # conditionals
-  action starts_line {
-    p == orig_p || *(p-1) == '\r' || *(p-1) == '\n' || *(p-1) == '\f'
-  }
-  action starts_phrase {
-    p == orig_p || *(p-1) == '\r' || *(p-1) == '\n' || *(p-1) == '\f' || *(p-1) == ' '
-  }
 
 }%%;

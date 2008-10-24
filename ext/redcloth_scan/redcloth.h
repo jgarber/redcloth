@@ -33,6 +33,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 
 /* parser macros */
 #define CLEAR_REGS()   regs = rb_hash_new();
+#define RESET_REG()    reg = NULL
 #define CAT(H)         rb_str_cat(H, ts, te-ts)
 #define CLEAR(H)       H = rb_str_new2("")
 #define SET_PLAIN_BLOCK(T) plain_block = rb_str_new2(T)
