@@ -74,8 +74,7 @@ in: |-
   When the elephant comes to take a p. you...
 html: |-
   <pre>I saw a ship. It ate my elephant.</pre>
-
-  <pre>When the elephant comes to take a p. you&#8230;</pre>
+  <pre>When the elephant comes to take a p. you...</pre>
 --- 
 name: html tags
 desc: You can certainly use HTML tags inside your Textile documents.  HTML will only be escaped if it&#8217;s found in a <code>pre</code> or <code>code</code> block.
