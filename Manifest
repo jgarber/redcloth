@@ -7,6 +7,7 @@ ext/redcloth_scan/redcloth.h
 ext/redcloth_scan/redcloth_attributes.c.rl
 ext/redcloth_scan/redcloth_attributes.java.rl
 ext/redcloth_scan/redcloth_attributes.rl
+ext/redcloth_scan/redcloth_common.c.rl
 ext/redcloth_scan/redcloth_common.java.rl
 ext/redcloth_scan/redcloth_common.rl
 ext/redcloth_scan/redcloth_inline.c.rl
@@ -16,8 +17,8 @@ ext/redcloth_scan/redcloth_scan.c.rl
 ext/redcloth_scan/redcloth_scan.java.rl
 ext/redcloth_scan/redcloth_scan.rl
 extras/ragel_profiler.rb
-History.txt
 lib/case_sensitive_require/RedCloth.rb
+lib/redcloth/erb_extension.rb
 lib/redcloth/formatters/base.rb
 lib/redcloth/formatters/html.rb
 lib/redcloth/formatters/latex.rb
@@ -28,6 +29,7 @@ lib/redcloth.rb
 Manifest
 Rakefile
 README
+RedCloth.gemspec
 setup.rb
 test/basic.yml
 test/code.yml
@@ -45,6 +47,7 @@ test/poignant.yml
 test/sanitize_html.yml
 test/table.yml
 test/test_custom_tags.rb
+test/test_erb.rb
 test/test_extensions.rb
 test/test_formatters.rb
 test/test_parser.rb
