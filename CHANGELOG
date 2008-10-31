@@ -8,6 +8,8 @@
   Use it in an ERB template like this: <%=t my_textile_string %> or 
   <%=r %{Some *textile* if you please!} %>
 
+* Fix extended blockcode stripping whitespace following blank line. #78
+
 
 === 4.0.4 / October 1, 2008
 
