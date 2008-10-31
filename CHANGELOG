@@ -1,6 +1,12 @@
 === Edge
 
-*
+* JRuby support!  [olabini]
+  To run the tests with JRuby, you only need to: jruby -S rake
+  To compile the jruby version of the gem: jruby -S rake compile
+
+* Added textilize ERB utility method. [edraut]
+  Use it in an ERB template like this: <%=t my_textile_string %> or 
+  <%=r %{Some *textile* if you please!} %>
 
 
 === 4.0.4 / October 1, 2008
