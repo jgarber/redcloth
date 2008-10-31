@@ -29,3 +29,9 @@ module RedCloth
   
 end
 
+begin
+  require 'erb'
+  require 'redcloth/erb_extension'
+  include ERB::Util
+rescue LoadError
+end
