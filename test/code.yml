@@ -42,8 +42,7 @@ html: "<p>Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;6 &#62; $6. Oh, and 2 &d
 latex: "Math fact: 3 \\textless{} 5 \\& 5 \\textgreater{} 3 but \\pounds{}6 \\textgreater{} \\$6. Oh, and 2 \\textdiv{} 4 is \\sfrac{1}{2}.\n\n"
 ---
 name: escaping of existing entities in blockcode
-in: "bc. Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;5 &#62; $5.
-"
+in: "bc. Math fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;5 &#62; $5."
 html: "<pre><code>Math fact: 3 &amp;lt; 5 &amp;amp; 5 &amp;gt; 3 but &amp;pound;5 &amp;#62; $5.</code></pre>"
 latex: "\\begin{verbatim}\nMath fact: 3 &lt; 5 &amp; 5 &gt; 3 but &pound;5 &#62; $5.\\end{verbatim}\n"
 ---
@@ -145,6 +144,33 @@ html: |-
 
   </pre>
   <p>And then go back with a normal paragraph.</p>
+---
+name: extended block code preserves leading whitespace after blank line
+in: |-
+  bc.. class Foo
+      def bar
+          'bar'
+      end
+
+      def baz
+          'baz'
+      end
+  end
+
+  p. That's it!
+html: |-
+  <pre><code>class Foo
+      def bar
+          'bar'
+      end</code>
+
+  <code>    def baz
+          'baz'
+      end
+  end</code>
+  
+  </pre>
+  <p>That&#8217;s it!</p>
 ---
 name: block code containing code avoids nesting code tags
 in: |-

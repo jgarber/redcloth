@@ -50,7 +50,7 @@
   block_end_tag = "</" BlockTagName space* ">" ;
   html_start = indent >B %{STORE_B("indent_before_start");} block_start_tag >B %{STORE_B("start_tag");}  indent >B %{STORE_B("indent_after_start");} ;
   html_end = indent >B %{STORE_B("indent_before_end");} block_end_tag >B %{STORE_B("end_tag");} (indent LF?) >B %{STORE_B("indent_after_end");} ;
-  standalone_html = indent (block_start_tag | block_empty_tag | block_end_tag) indent LF+;
+  standalone_html = indent (block_start_tag | block_empty_tag | block_end_tag) indent (LF+ | EOF);
   html_end_terminating_block = ( LF indent block_end_tag ) >A @{ p = reg - 1; } ;
 
   # tables

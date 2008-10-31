@@ -137,7 +137,6 @@ public class RedclothScanService implements BasicLibraryService {
     public IRubyObject red_blockcode(IRubyObject self, IRubyObject regs, IRubyObject block) {
       Ruby runtime = self.getRuntime();
       IRubyObject btype = ((RubyHash)regs).aref(runtime.newSymbol("type"));
-      block = block.callMethod(runtime.getCurrentContext(), "strip");
       if(((RubyString)block).getByteList().realSize > 0) {
         ((RubyHash)regs).aset(runtime.newSymbol("text"), block);
         block = self.callMethod(runtime.getCurrentContext(), btype.asJavaString(), regs);
@@ -392,7 +391,6 @@ public class RedclothScanService implements BasicLibraryService {
 
   public static IRubyObject transform2(IRubyObject self, IRubyObject str) {
     RubyString ss = str.convertToString();
-    ss.cat((byte)'\n');
     self.callMethod(self.getRuntime().getCurrentContext(), "before_transform", ss);
     return transform(self, ss.getByteList().bytes(), ss.getByteList().begin, ss.getByteList().realSize, self.getRuntime().getNil());
   }

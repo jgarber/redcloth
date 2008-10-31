@@ -69,7 +69,6 @@ VALUE
 redcloth_transform2(self, str)
   VALUE self, str;
 {
-  rb_str_cat2(str, "\n");
   StringValue(str);
   rb_funcall(self, rb_intern("before_transform"), 1, str);
   return redcloth_transform(self, RSTRING_PTR(str), RSTRING_PTR(str) + RSTRING_LEN(str) + 1, Qnil);

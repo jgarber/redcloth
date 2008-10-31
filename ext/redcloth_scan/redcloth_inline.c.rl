@@ -87,7 +87,6 @@ VALUE
 red_blockcode(VALUE self, VALUE regs, VALUE block)
 {
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
-  block = rb_funcall(block, rb_intern("strip"), 0);
   if (RSTRING_LEN(block) > 0)
   {
     rb_hash_aset(regs, ID2SYM(rb_intern("text")), block);
