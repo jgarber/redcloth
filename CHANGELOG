@@ -1,4 +1,4 @@
-=== Edge
+=== 4.1.0 / October 31, 2008
 
 * JRuby support!  [olabini]
   To run the tests with JRuby, you only need to: jruby -S rake
