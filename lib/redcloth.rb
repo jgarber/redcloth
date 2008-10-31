@@ -32,7 +32,6 @@ end
 begin
   require 'erb'
   require 'redcloth/erb_extension'
-  
-  ERB::Util.send :include, RedCloth::ERB::Util
+  include ERB::Util
 rescue LoadError
 end

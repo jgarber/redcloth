@@ -1,19 +1,27 @@
-module RedCloth
-  module ERB
-    module Util
-      def included(base)
-        base.send :alias_method, :r, :redcloth_escape
-        base.send :module_function, :r # this voodoo makes the method available to instances of ERB as a private method
-        base.send :module_function, :redcloth_escape # ditto for the textile method
-      end
-      
-      def redcloth_escape( s )
-        if s && s.respond_to?(:to_s) && s = s.to_s
-          RedCloth.new( s ).to_html
-        end
-      end
+class ERB
+  module Util
 
-
+    #
+    # A utility method for transforming Textile in _s_ to HTML.
+    # 
+    # 	require "erb"
+    # 	include ERB::Util
+    # 	
+    # 	puts textilize("Isn't ERB *great*?")
+    # 
+    # _Generates_
+    # 
+    # 	<p>Isn&#8217;t <span class="caps">ERB</span> <strong>great</strong>?</p>
+    #
+    def textilize( s )
+      if s && s.respond_to?(:to_s)
+        RedCloth.new( s.to_s ).to_html
+      end
     end
+
+    alias t textilize
+    module_function :t
+    module_function :textilize
+
   end
 end
