@@ -36,7 +36,7 @@ e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
       self.platform = 'x86-mswin32-60'
     when /java/
       self.files += ['lib/redcloth_scan.jar']
-      self.platform = 'jruby'
+      self.platform = 'universal-java'
     else
       self.files += %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
     end
