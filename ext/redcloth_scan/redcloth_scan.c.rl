@@ -194,6 +194,9 @@ redcloth_latex_esc(VALUE self, VALUE str)
   return new_str;
 }
 
+/*
+ * Transforms a Textile document with +formatter+
+ */
 static VALUE
 redcloth_to(self, formatter)
   VALUE self, formatter;
