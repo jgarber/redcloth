@@ -1,3 +1,11 @@
+=== Edge
+
+* echoe was not being properly registered as a development dependency; a bug in RubyGems was making it a runtime dependency
+
+* Fixed "No definition for redcloth_to Installing RDoc documentation"
+
+* Fixed wrong platform names when cross-compiling java and win32 versions
+
 === 4.1.0 / October 31, 2008
 
 * JRuby support!  [olabini]

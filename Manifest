@@ -29,7 +29,6 @@ lib/redcloth.rb
 Manifest
 Rakefile
 README
-RedCloth.gemspec
 setup.rb
 test/basic.yml
 test/code.yml

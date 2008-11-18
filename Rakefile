@@ -1,12 +1,7 @@
 require 'lib/redcloth/version'
-
-begin
-  require 'rubygems'
-  gem 'echoe', '>=2.7.11'
-  require 'echoe'
-rescue LoadError
-  abort "You'll need to have `echoe' installed to use RedCloth's Rakefile"
-end
+require 'rubygems'
+gem 'echoe', '>= 3.0.1'
+require 'echoe'
 
 e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
   p.summary = RedCloth::DESCRIPTION
