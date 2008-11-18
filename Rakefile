@@ -20,6 +20,11 @@ e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
   p.ruby_version = '>=1.8.4'
   p.extension_pattern = nil
   
+  if Platform.gcc?
+    p.platform = 'x86-mswin32-60'
+  elsif Platform.java?
+    p.platform = 'universal-java'
+  end
   
   if RUBY_PLATFORM =~ /mingw|mswin|java/
     p.need_tar_gz = false
@@ -33,10 +38,8 @@ e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
     case RUBY_PLATFORM
     when /mingw/
       self.files += ['lib/redcloth_scan.so']
-      self.platform = 'x86-mswin32-60'
     when /java/
       self.files += ['lib/redcloth_scan.jar']
-      self.platform = 'universal-java'
     else
       self.files += %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
     end
