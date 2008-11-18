@@ -868,3 +868,51 @@ in: |-
 html: |-
   <p>citation [&#8220;(Berk.) Hilton&#8221;], see<br />
   [Papers &#8220;blah blah.&#8221;]</p>
+---
+name: horizontal rule using asterisks
+in: |-
+  Just some *** text
+  
+  ***
+  
+  Some more text.
+html: |-
+  <p>Just some <strong>*</strong> text</p>
+  <hr />
+  <p>Some more text.</p>
+---
+name: horizontal rule using more than three asterisks
+in: |-
+  Just some **** text
+
+  ****
+
+  Some more text.
+html: |-
+  <p>Just some **** text</p>
+  <hr />
+  <p>Some more text.</p>
+---
+name: horizontal rule using dashes
+in: |-
+  Just some --- text
+
+  ---
+
+  Some more text.
+html: |-
+  <p>Just some <del>-</del> text</p>
+  <hr />
+  <p>Some more text.</p>
+---
+name: horizontal rule using underscores
+in: |-
+  Just some ___ text
+
+  ___
+
+  Some more text.
+html: |-
+  <p>Just some <em>_</em> text</p>
+  <hr />
+  <p>Some more text.</p>

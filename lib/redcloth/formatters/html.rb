@@ -33,6 +33,10 @@ module RedCloth::Formatters::HTML
     end
   end
   
+  def hr(opts)
+    "<hr />\n"
+  end
+  
   def acronym(opts)
     opts[:block] = true
     "<acronym#{pba(opts)}>#{caps(:text => opts[:text])}</acronym>"

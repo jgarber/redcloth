@@ -37,6 +37,7 @@
   dl_start = (dt_start mtext (LF dt_start mtext)* " "* dd_start)  ;
   blank_line = LF;
   link_alias = ( "[" >{ ASET("type", "ignore"); } %A chars %T "]" %A uri %{ STORE_URL("href"); } ) ;
+  horizontal_rule = '*'{3,} | '-'{3,} | '_'{3,} ;
   
   # image lookahead
   IMG_A_LEFT = "<" %{ ASET("float", "left"); } ;
@@ -303,6 +304,7 @@
     bq_start        { INLINE(html, "bq_open"); ASET("type", "p"); fgoto bq; };
     block_start     { fgoto block; };
     footnote_start  { fgoto footnote; };
+    horizontal_rule { INLINE(html, "hr"); };
     list_start      { CLEAR_LIST(); LIST_ITEM(); fgoto list; };
     dl_start        { p = ts; INLINE(html, "dl_open"); ASET("type", "dt"); fgoto dl; };
     table           { INLINE(table, "table_close"); DONE(table); fgoto block; };

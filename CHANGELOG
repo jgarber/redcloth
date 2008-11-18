@@ -1,5 +1,7 @@
 === Edge
 
+* Added horizontal rules from RedCloth 3.  Three or more asterisks, dashes, or underscores between blocks triggers the HR tag.
+
 * echoe was not being properly registered as a development dependency; a bug in RubyGems was making it a runtime dependency
 
 * Fixed "No definition for redcloth_to Installing RDoc documentation"
