@@ -38,6 +38,8 @@ e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
     else
       self.files += %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
     end
+    
+    self.require_paths << "lib/case_sensitive_require"
   end
 
 end

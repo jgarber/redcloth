@@ -1,5 +1,7 @@
 === Edge
 
+* Added 'lib/case_sensitive_require' back into gemspec.  It got left out in the conversion to echoe. #88
+
 * Fixed <embed> being recognized as a block-level element when using the twice-cooked method of flash embedding. #87
 
 * Added horizontal rules from RedCloth 3.  Three or more asterisks, dashes, or underscores between blocks triggers the HR tag.
