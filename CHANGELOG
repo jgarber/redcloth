@@ -1,6 +1,6 @@
-=== Edge
+=== 4.1.1 / November 19, 2008
 
-* Added 'lib/case_sensitive_require' back into gemspec.  It got left out in the conversion to echoe. #88
+* Added 'lib/case_sensitive_require' back into gemspec.  It got left out in the conversion to echoe, so "require 'RedCloth'" didn't work. #88
 
 * Fixed <embed> being recognized as a block-level element when using the twice-cooked method of flash embedding. #87
 
