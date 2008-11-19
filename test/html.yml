@@ -300,6 +300,12 @@ html: '<p><a href="http://foo.com/bar?something=1~2~3">http://foo.com/bar?someth
 ---
 name: empty block
 in: |-
-  <embed src="test.swf"></embed>
+  <div class="test"></div>
 html: |-
-  <embed src="test.swf"></embed>
+  <div class="test"></div>
+---
+name: objects in paragraphs are not modified
+in: |-
+  <p><object width="340" height="280"><param name="movie" value="http://www.youtube.com/v/iUbK1cBHm6E"></param><param name="wmode" value="opaque"></param><param name="allowScriptAccess" value="sameDomain"></param><embed src="http://www.youtube.com/v/iUbK1cBHm6E" type="application/x-shockwave-flash" width="340" height="280" wmode="opaque" allowScriptAccess="sameDomain"></embed></object></p>
+html: |-
+  <p><object width="340" height="280"><param name="movie" value="http://www.youtube.com/v/iUbK1cBHm6E"></param><param name="wmode" value="opaque"></param><param name="allowScriptAccess" value="sameDomain"></param><embed src="http://www.youtube.com/v/iUbK1cBHm6E" type="application/x-shockwave-flash" width="340" height="280" wmode="opaque" allowScriptAccess="sameDomain"></embed></object></p>
