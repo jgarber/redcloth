@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'helper'
+require File.join(File.dirname(__FILE__), 'helper')
 
 class TestFormatters < Test::Unit::TestCase
   

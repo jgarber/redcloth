@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'helper'
+require File.join(File.dirname(__FILE__), 'helper')
+
 require 'erb'
 require 'w3c_validators'
 
