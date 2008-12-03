@@ -1,3 +1,7 @@
+=== Edge
+
+* Mentioned the three supported platforms and what's necessary to build RedCloth in the README file.
+
 === 4.1.1 / November 19, 2008
 
 * Added 'lib/case_sensitive_require' back into gemspec.  It got left out in the conversion to echoe, so "require 'RedCloth'" didn't work. #88

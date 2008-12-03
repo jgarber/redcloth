@@ -15,10 +15,38 @@ RedCloth is a Ruby library for converting Textile into HTML.
 
 RedCloth can be installed via RubyGems:
 
-  sudo gem install RedCloth
+  gem install RedCloth
 
-Or can be compiled from its Ragel source with <tt>rake compile</tt>.  Ragel 6.2 
-or greater is required to build RedCloth.
+It will install the appropriate Ruby, JRuby, or Win32 gem.  If using JRuby, version 1.1.5 or greater is required.
+
+== Compiling
+
+If you just want to use RedCloth, you do NOT need to build/compile it.  It is compiled from C sources automatically when you install the gem on the ruby platform.  Binary gems are provided for JRuby and Win32 platforms.
+
+RedCloth can be compiled with <tt>rake compile</tt>.  Ragel 6.3 or greater and the 
+echoe gem are needed to build, compile, and package RedCloth.  Again, Ragel and echoe are NOT needed to simply use RedCloth.
+
+You can cross-compile for JRuby with rake java compile and for Win32 with rake mingw compile.
+
+== Using RedCloth
+
+RedCloth is simply an extension of the String class, which can handle
+Textile formatting.  Use it like a String and output HTML with its
+RedCloth#to_html method.
+
+Simple use:
+ text = "This is *my* text."
+ RedCloth.new(text).to_html
+
+Multi-line example:
+
+ doc = RedCloth.new <<EOD
+ h2. Test document
+ 
+ Just a simple test.
+ EOD
+ puts doc.to_html
+
 
 == What is Textile?
 
@@ -140,17 +168,4 @@ Styles are applied with curly braces.
     table{border:1px solid black}.
     {background:#ddd;color:red}. |a|red|row|
 
-== Using RedCloth
-
-RedCloth is simply an extension of the String class, which can handle
-Textile formatting.  Use it like a String and output HTML with its
-RedCloth#to_html method.
-
- doc = RedCloth.new "
-
- h2. Test document
-
- Just a simple test."
-
- puts doc.to_html
 
