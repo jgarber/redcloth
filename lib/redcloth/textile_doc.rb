@@ -30,9 +30,7 @@ module RedCloth
     # Traditional RedCloth converted single newlines
     # to HTML break tags, but later versions required
     # +:hard_breaks+ be set to enable this behavior.
-    # +:hard_breaks+ is once again the default. The
-    # accessor is deprecated and will be removed in a
-    # future version.
+    # +:hard_breaks+ is once again the default.
     #
     attr_accessor :hard_breaks
 
