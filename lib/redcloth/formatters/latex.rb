@@ -38,7 +38,7 @@ module RedCloth::Formatters::LATEX
   # commands 
   { :strong => 'textbf',
     :em => 'emph',
-    :i  => 'emph',
+    :i  => 'textit',
     :b  => 'textbf',
     :ins => 'underline',
     :del => 'sout',
