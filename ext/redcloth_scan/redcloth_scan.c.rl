@@ -207,6 +207,13 @@ redcloth_to(self, formatter)
   rb_funcall(self, rb_intern("delete!"), 1, rb_str_new2("\r"));
   VALUE working_copy = rb_obj_clone(self);
   rb_extend_object(working_copy, formatter);
+  
+  VALUE working_copy_methods = rb_funcall(working_copy, rb_intern("methods"), 0);
+  VALUE class_instance_methods = rb_funcall(rb_obj_class(working_copy),rb_intern("instance_methods"), 0);
+  VALUE custom_tags = rb_funcall(working_copy_methods, rb_intern("-"), 1, class_instance_methods);
+  rb_iv_set(working_copy, "@custom_tags", custom_tags);
+  
+  
   if (rb_funcall(working_copy, rb_intern("lite_mode"), 0) == Qtrue) {
     return redcloth_inline2(working_copy, self, rb_hash_new());
   } else {

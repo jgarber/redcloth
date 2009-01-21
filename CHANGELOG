@@ -1,5 +1,7 @@
 === Edge
 
+* Fixed custom block signatures calling built-in Ruby String methods. #92
+
 * Mentioned the three supported platforms and what's necessary to build RedCloth in the README file.
 
 * Fixed a require problem that caused an error when you would gem check --test RedCloth. #91

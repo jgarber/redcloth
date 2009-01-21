@@ -68,7 +68,7 @@ red_block(VALUE self, VALUE regs, VALUE block, VALUE refs)
     } else {
       rb_hash_aset(regs, sym_text, redcloth_inline2(self, block, refs));
     }
-    if (rb_respond_to(self, method)) {
+    if (rb_ary_includes(rb_iv_get(self, "@custom_tags"), btype)) {
       block = rb_funcall(self, method, 1, regs);
     } else {
       fallback = rb_hash_aref(regs, ID2SYM(rb_intern("fallback")));

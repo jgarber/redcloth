@@ -160,7 +160,8 @@ public class RedclothScanService implements BasicLibraryService {
           ((RubyHash)regs).aset(sym_text, inline2(self, block, refs));
         }
 
-        if(self.respondsTo(method.asJavaString())) {
+        IRubyObject customTags = ((RubyObject)self).getInstanceVariable("@custom_tags");
+        if( ((RubyArray)customTags).includes(runtime.getCurrentContext(), btype) ) {
           block = self.callMethod(runtime.getCurrentContext(), method.asJavaString(), regs);
         } else {
           IRubyObject fallback = ((RubyHash)regs).aref(runtime.newSymbol("fallback"));
@@ -402,6 +403,11 @@ public class RedclothScanService implements BasicLibraryService {
     IRubyObject workingCopy = self.rbClone();
 
     ((RubyObject)workingCopy).extend(new IRubyObject[]{formatter});
+    
+    IRubyObject workingCopyMethods = workingCopy.callMethod(runtime.getCurrentContext(), "methods");
+    IRubyObject classInstanceMethods = workingCopy.getType().callMethod(runtime.getCurrentContext(), "instance_methods");
+    IRubyObject customTags = workingCopyMethods.callMethod(runtime.getCurrentContext(), "-", classInstanceMethods);
+    ((RubyObject)workingCopy).setInstanceVariable("@custom_tags", customTags);
     
     if(workingCopy.callMethod(runtime.getCurrentContext(), "lite_mode").isTrue()) { 
       return inline2(workingCopy, self, RubyHash.newHash(runtime));
