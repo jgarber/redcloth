@@ -1,5 +1,7 @@
 === Edge
 
+* Handle links containing parentheses.  Brackets are no longer required. #82 [Ryan Alyea]
+
 * Made italics use the correct LaTeX tag: textit rather than emph. #98
 
 * Fixed custom block signatures calling built-in Ruby String methods. #92

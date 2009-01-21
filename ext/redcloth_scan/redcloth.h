@@ -94,8 +94,22 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
     char punct = 1; \
     while (p > reg && punct == 1) { \
       switch (*(p - 1)) { \
+        case ')': \
+          { /*needed to keep inside chars scoped for less memory usage*/\
+            char *temp_p = p - 1; \
+            char level = -1; \
+            while (temp_p > reg) { \
+              switch(*(temp_p - 1)) { \
+                case '(': ++level; break; \
+                case ')': --level; break; \
+              } \
+              --temp_p; \
+            } \
+            if (level == 0) { punct = 0; } else { --p; } \
+          } \
+          break;  \
         case '!': case '"': case '#': case '$': case '%': case ']': case '[': case '&': case '\'': \
-        case '*': case '+': case ',': case '-': case '.': case ')': case '(': case ':':  \
+        case '*': case '+': case ',': case '-': case '.': case '(':  case ':':  \
         case ';': case '=': case '?': case '@': case '\\': case '^': case '_': \
         case '`': case '|': case '~': p--; break; \
         default: punct = 0; \

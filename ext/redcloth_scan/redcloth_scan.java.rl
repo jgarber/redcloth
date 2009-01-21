@@ -108,8 +108,20 @@ public class RedclothScanService implements BasicLibraryService {
         boolean punct = true;
         while(p > reg && punct) {
           switch(data[p - 1]) {
+            case ')':
+              int tempP = p - 1;
+              int level = -1;
+              while(tempP > reg) {
+                switch(data[tempP - 1]) {
+                  case '(': ++level; break;
+                  case ')': --level; break;
+                }
+                --tempP;
+              }
+              if (level == 0) { punct = false; } else { --p; }
+              break;
             case '!': case '"': case '#': case '$': case '%': case ']': case '[': case '&': case '\'':
-            case '*': case '+': case ',': case '-': case '.': case ')': case '(': case ':':
+            case '*': case '+': case ',': case '-': case '.': case '(': case ':':
             case ';': case '=': case '?': case '@': case '\\': case '^': case '_':
             case '`': case '|': case '~': p--; break;
             default: punct = false;
