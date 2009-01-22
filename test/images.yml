@@ -244,3 +244,11 @@ latex: |+
 name: image attributes has single quote html entity in alt and title
 in: "!/pictures/bacon.jpg(The fox said: 'Have some chunky bacon')!"
 html: '<p><img src="/pictures/bacon.jpg" title="The fox said: &#39;Have some chunky bacon&#39;" alt="The fox said: &#39;Have some chunky bacon&#39;" /></p>'
+---
+name: in square brackets
+in:  This is an [!image.jpg!] you see.
+html: <p>This is an <img src="image.jpg" alt="" /> you see.</p>
+---
+name: with link in square brackets
+in:  This is an [!image.jpg!:http://example.com/] you see.
+html: <p>This is an <a href="http://example.com/"><img src="image.jpg" alt="" /></a> you see.</p>
