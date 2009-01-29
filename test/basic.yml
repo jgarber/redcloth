@@ -916,3 +916,7 @@ html: |-
   <p>Just some <em>_</em> text</p>
   <hr />
   <p>Some more text.</p>
+---
+name: lang attribute cannot contain square brackets
+in: "some @[[code]]@"
+html: "<p>some <code>[[code]]</code></p>"

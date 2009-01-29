@@ -1,5 +1,7 @@
 === Edge
 
+* Don't allow square brackets inside lang attribute so double square brackets are interpreted like Textile 2 and RedCloth 3. #101
+
 * Improve LaTeX output for tables. #96
 
 * Fix bad parsing of bracketed image links (which would hang the interpreter in some cases). #97
