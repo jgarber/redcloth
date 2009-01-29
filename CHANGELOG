@@ -1,5 +1,7 @@
 === Edge
 
+* Improve LaTeX output for tables. #96
+
 * Fix bad parsing of bracketed image links (which would hang the interpreter in some cases). #97
 
 * Handle links containing parentheses.  Brackets are no longer required. #82 [Ryan Alyea]
