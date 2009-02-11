@@ -38,7 +38,7 @@
   i = "["? "__" >X mtext >A %T :> "__" "]"? ;
   del = "[-" >X C ( mtext ) >A %T :>> "-]" ;
   emdash_parenthetical_phrase_with_spaces = " -- " mtext " -- " ;
-  del_phrase = (( " " >A %{ STORE("beginning_space"); } "-") >X C ( mtext ) >A %T :>> ( "-" end_markup_phrase )) - emdash_parenthetical_phrase_with_spaces ;
+  del_phrase = (( " " >A %{ STORE("beginning_space"); } "-" | "-" when starts_line) >X C ( mtext ) >A %T :>> ( "-" end_markup_phrase )) - emdash_parenthetical_phrase_with_spaces ;
   ins = "["? "+" >X mtext >A %T :> "+" "]"? ;
   sup = "[^" >X mtext >A %T :> "^]" ;
   sup_phrase = ( "^" when starts_phrase) >X ( mtext ) >A %T :>> ( "^" end_markup_phrase ) ;

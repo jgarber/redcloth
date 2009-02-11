@@ -1,5 +1,7 @@
 === Edge
 
+* Recognize deleted phrases when they start at the beginning of a line. #83
+
 * Fix escaped <code> tag when it has the class attribute and is in a <pre> tag. #95
 
 * Fix dimensions and primes for LaTeX. #103
