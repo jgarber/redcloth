@@ -12,8 +12,8 @@
   notextile_tag_end = "</notextile>" LF? ;
   noparagraph_line_start = " "+ ;
   notextile_block_start = ( "notextile" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
-  pre_tag_start = "<pre" [^>]* ">" (space* "<code>")? ;
-  pre_tag_end = ("</code>" space*)? "</pre>" LF? ;
+  pre_tag_start = "<pre" [^>]* ">" (space* code_tag_start)? ;
+  pre_tag_end = (code_tag_end space*)? "</pre>" LF? ;
   pre_block_start = ( "pre" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
   bc_start = ( "bc" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
   bq_start = ( "bq" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE("cite"); } )? " "+ ) ;

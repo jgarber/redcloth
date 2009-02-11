@@ -77,6 +77,9 @@
   script_tag_start = ( "<script" [^>]* ">" ) >X >A %T ;
   script_tag_end = ( "</script>" >A %T LF? ) >X ;
   
+  code_tag_start = "<code" [^>]* ">" ;
+  code_tag_end = "</code>" ;
+  
 
   # URI tokens (lifted from Mongrel)
   CTL = (cntrl | 127);

@@ -30,8 +30,6 @@
   # markup
   end_markup_phrase = (" " | PUNCT | EOF | LF) @{ fhold; };
   code = "["? "@" >X mtext >A %T :> "@" "]"? ;
-  code_tag_start = "<code" [^>]* ">" ;
-  code_tag_end = "</code>" ;
   script_tag = ( "<script" [^>]* ">" (default+ -- "</script>") "</script>" LF? ) >X >A %T ;
   notextile = "<notextile>" >X (default+ -- "</notextile>") >A %T "</notextile>";
   strong = "["? "*" >X mtext >A %T :> "*" "]"? ;
