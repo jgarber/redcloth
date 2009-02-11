@@ -1,5 +1,7 @@
 === Edge
 
+* Allow leading spaces on lists for backward compatibility with RedCloth 3.x. #89
+
 * Recognize deleted phrases when they start at the beginning of a line. #83
 
 * Fix escaped <code> tag when it has the class attribute and is in a <pre> tag. #95

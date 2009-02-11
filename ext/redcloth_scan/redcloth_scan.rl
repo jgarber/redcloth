@@ -30,7 +30,7 @@
   ol = "#" %{nest++; list_type = "ol";};
   ul_start  = ( ul | ol )* ul A C :> " "+   ;
   ol_start  = ( ul | ol )* ol N A C :> " "+ ;
-  list_start  = ( ul_start | ol_start ) >{nest = 0;} ;
+  list_start  = " "* ( ul_start | ol_start ) >{nest = 0;} ;
   dt_start = "-" . " "+ ;
   dd_start = ":=" ;
   long_dd  = dd_start " "* LF %{ ADD_BLOCK(); ASET("type", "dd"); } any+ >A %{ TRANSFORM("text"); } :>> "=:" ;

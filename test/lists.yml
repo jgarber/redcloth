@@ -281,3 +281,21 @@ html: |-
   	<li>One</li>
   	<li>Two</li>
   </ul>
+---
+name: unordered list with leading spaces
+in: " * notice the leading space\n * RedCloth 3.0.4 used to accept it\n * Now we do too"
+html: |-
+  <ul>
+  	<li>notice the leading space</li>
+  	<li>RedCloth 3.0.4 used to accept it</li>
+  	<li>Now we do too</li>
+  </ul>
+---
+name: ordered list with leading spaces
+in: " # notice the leading space\n # RedCloth 3.0.4 used to accept it\n # Now we do too"
+html: |-
+  <ol>
+  	<li>notice the leading space</li>
+  	<li>RedCloth 3.0.4 used to accept it</li>
+  	<li>Now we do too</li>
+  </ol>
