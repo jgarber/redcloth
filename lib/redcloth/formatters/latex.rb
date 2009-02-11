@@ -248,8 +248,10 @@ module RedCloth::Formatters::LATEX
   end
   
   def dim(opts)
-    space = opts[:space] ? " " : ''
-    "#{opts[:text]}#{space}\\texttimes{}#{space}"
+    opts[:text].gsub!('x', '\times')
+    opts[:text].gsub!('"', "''")
+    period = opts[:text].slice!(/\.$/)
+    "$#{opts[:text]}$#{period}"
   end
   
   private

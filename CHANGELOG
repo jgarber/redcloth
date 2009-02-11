@@ -1,5 +1,7 @@
 === Edge
 
+* Fix dimensions and primes for LaTeX. #103
+
 * Don't allow square brackets inside lang attribute so double square brackets are interpreted like Textile 2 and RedCloth 3. #101
 
 * Improve LaTeX output for tables. #96

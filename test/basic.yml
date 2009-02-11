@@ -164,27 +164,33 @@ name: dimension sign
 desc: The letter 'x' becomes a dimension sign when used between digits.
 in: "Observe: 2x3."
 html: "<p>Observe: 2&#215;3.</p>"
+latex: "Observe: $2\\times3$.\n\n"
 --- 
 name: dimension sign with space after
 in: "The room is 2x3 inches big."
 html: "<p>The room is 2&#215;3 inches big.</p>"
+latex: "The room is $2\\times3$ inches big.\n\n"
 --- 
 name: dimension sign with spaces
 in: "Observe: 2 x 4."
 html: "<p>Observe: 2 &#215; 4.</p>"
+latex: "Observe: $2 \\times 4$.\n\n"
 --- 
 name: dimension signs chained
 in: "Observe: 2x3x4."
 html: "<p>Observe: 2&#215;3&#215;4.</p>"
 lite_mode_html: "Observe: 2&#215;3&#215;4."
+latex: "Observe: $2\\times3\\times4$.\n\n"
 --- 
 name: dimension signs with double primes
 in: 'My mouse: 2.5" x 4".'
 html: '<p>My mouse: 2.5&#8243; &#215; 4&#8243;.</p>'
+latex: "My mouse: $2.5'' \\times 4''$.\n\n"
 --- 
 name: dimension signs with single primes
 in: "My office: 5' x 4.5'."
 html: "<p>My office: 5&#8242; &#215; 4.5&#8242;.</p>"
+latex: "My office: $5' \\times 4.5'$.\n\n"
 --- 
 name: trademark and copyright
 desc: Conversion of trademark and copyright symbols.
