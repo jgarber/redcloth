@@ -96,7 +96,10 @@ in: |-
   <notextile>
   # *test*
 html: |-
-  # *test*
+  <p><notextile></p>
+  <ol>
+  	<li><strong>test</strong></li>
+  </ol>
 valid_html: false
 ---
 name: unfinished script tag

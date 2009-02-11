@@ -317,3 +317,9 @@ html: "<pre><code>some &lt;b&gt;bold&lt;/b&gt; text</code></pre>"
 name: in code with class attribute escaped properly
 in: "<pre><code class='myclass'>some <b>bold</b> text</code></pre>"
 html: "<pre><code class='myclass'>some &lt;b&gt;bold&lt;/b&gt; text</code></pre>"
+---
+name: notextile beginning the line
+in: |-
+  <notextile><a href="http://a.com">Sir Bobby Robson</a></notextile>, is a famous footballer
+html: |-
+  <p><a href="http://a.com">Sir Bobby Robson</a>, is a famous footballer</p>

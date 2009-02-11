@@ -80,7 +80,8 @@
   code_tag_start = "<code" [^>]* ">" ;
   code_tag_end = "</code>" ;
   
-
+  notextile = "<notextile>" >X (default+ -- "</notextile>") >A %T "</notextile>";
+  
   # URI tokens (lifted from Mongrel)
   CTL = (cntrl | 127);
   safe = ("$" | "-" | "_" | ".");
