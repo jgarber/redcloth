@@ -1,5 +1,7 @@
 === Edge
 
+* Remove extra preformatted line breaks after extended block code. #79
+
 * Fix inline <notextile> being recognized as block <notextile>. #81
 
 * Allow leading spaces on lists for backward compatibility with RedCloth 3.x. #89

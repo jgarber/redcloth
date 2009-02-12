@@ -36,6 +36,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define RESET_REG()    reg = NULL
 #define CAT(H)         rb_str_cat(H, ts, te-ts)
 #define CLEAR(H)       H = rb_str_new2("")
+#define RSTRIP_BANG(H)      rb_funcall(H, rb_intern("rstrip!"), 0)
 #define SET_PLAIN_BLOCK(T) plain_block = rb_str_new2(T)
 #define RESET_TYPE(T)  rb_hash_aset(regs, ID2SYM(rb_intern("type")), plain_block)
 #define INLINE(H, T)   rb_str_append(H, rb_funcall(self, rb_intern(T), 1, regs))

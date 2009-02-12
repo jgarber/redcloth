@@ -172,6 +172,7 @@
       } else { 
         ADD_EXTENDED_BLOCKCODE(); 
         CAT(html); 
+        RSTRIP_BANG(html);
         INLINE(html, "bc_close"); 
         SET_PLAIN_BLOCK("p");
         END_EXTENDED(); 

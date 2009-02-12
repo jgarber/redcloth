@@ -242,6 +242,10 @@ public class RedclothScanService implements BasicLibraryService {
       ((RubyString)H).append(self.callMethod(runtime.getCurrentContext(), T, regs));
     }
 
+    public void RSTRIP_BANG(IRubyObject H) {
+      ((RubyString)H).callMethod(runtime.getCurrentContext(), "rstrip!");
+    }
+
     public void DONE(IRubyObject H) {
       ((RubyString)html).append(H);
       CLEAR(H);

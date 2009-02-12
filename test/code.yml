@@ -143,9 +143,7 @@ html: |-
   <pre><code>./foo.pl%
   &lt;p&gt;foo outputs an HTML paragraph&lt;/p&gt;</code>
 
-  <code>&lt;p&gt;block of code keeps going until a different block signature is encountered&lt;/p&gt;</code>
-
-  </pre>
+  <code>&lt;p&gt;block of code keeps going until a different block signature is encountered&lt;/p&gt;</code></pre>
   <p>And then go back with a normal paragraph.</p>
 ---
 name: extended block code preserves leading whitespace after blank line
@@ -170,9 +168,7 @@ html: |-
   <code>    def baz
           'baz'
       end
-  end</code>
-  
-  </pre>
+  end</code></pre>
   <p>That&#8217;s it!</p>
 ---
 name: block code containing code avoids nesting code tags
