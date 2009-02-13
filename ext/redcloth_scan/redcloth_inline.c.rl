@@ -36,8 +36,44 @@ VALUE
 red_parse_link_attr(VALUE self, VALUE regs, VALUE ref)
 {
   VALUE txt = rb_hash_aref(regs, ref);
-  VALUE new_regs = redcloth_link_attributes(self, txt);
+  VALUE new_regs = red_parse_title(redcloth_link_attributes(self, txt), ref);
+  
   return rb_funcall(regs, rb_intern("update"), 1, new_regs);
+}
+
+VALUE
+red_parse_image_attr(VALUE self, VALUE regs, VALUE ref)
+{
+  
+  return red_parse_title(regs, ref);
+}
+
+VALUE
+red_parse_title(VALUE regs, VALUE ref)
+{
+  // Store title/alt
+  VALUE txt = rb_hash_aref(regs, ref);
+  if ( txt != Qnil ) {
+    char *p = RSTRING_PTR(txt) + RSTRING_LEN(txt);
+    if (*(p - 1) == ')') {
+      char level = -1;
+      p--;
+      while (p > RSTRING_PTR(txt) && level < 0) {
+        switch(*(p - 1)) {
+          case '(': ++level; break;
+          case ')': --level; break;
+        }
+        --p;
+      }
+      VALUE title = rb_str_new(p + 1, RSTRING_PTR(txt) + RSTRING_LEN(txt) - 2 - p );
+      if (p > RSTRING_PTR(txt) && *(p - 1) == ' ') --p;
+      if (p != RSTRING_PTR(txt)) {
+        rb_hash_aset(regs, ref, rb_str_new(RSTRING_PTR(txt), p - RSTRING_PTR(txt) ));
+        rb_hash_aset(regs, ID2SYM(rb_intern("title")), title);
+      }
+    }
+  }
+  return regs;
 }
 
 VALUE

@@ -90,32 +90,6 @@ public class RedclothAttributes extends RedclothScanService.Base {
 
     ByteList bl = str.convertToString().getByteList();
     int cs = redcloth_attributes_en_link_says;
-    IRubyObject regs = new RedclothAttributes(cs, self, bl.bytes, bl.begin, bl.realSize).parse();
-    
-    // Store title/alt
-    IRubyObject name = ((RubyHash)regs).aref(runtime.newSymbol("name"));
-    if ( !name.isNil() ) {
-      String s = name.convertToString().toString();
-      int p = s.length();
-      if (s.charAt(p - 1) == ')') {
-        int level = -1;
-        p--;
-        while (p > 0 && level < 0) {
-          switch(s.charAt(p - 1)) {
-            case '(': ++level; break;
-            case ')': --level; break;
-          }
-          --p;
-        }
-        IRubyObject title = runtime.newString(s.substring(p + 1, s.length() - 1));
-        if(p > 0 && s.charAt(p - 1) == ' ') --p;
-        if(p != 0) {
-          ((RubyHash)regs).aset(runtime.newSymbol("name"), runtime.newString(s.substring(0, p)));
-          ((RubyHash)regs).aset(runtime.newSymbol("title"), title);
-        }
-      }
-    }
-    
-    return regs;
+    return new RedclothAttributes(cs, self, bl.bytes, bl.begin, bl.realSize).parse();
   }
 }

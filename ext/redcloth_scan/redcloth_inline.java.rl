@@ -53,8 +53,38 @@ public class RedclothInline extends RedclothScanService.Base {
 
   public IRubyObject red_parse_link_attr(IRubyObject self, IRubyObject regs, IRubyObject ref) {
     IRubyObject txt = ((RubyHash)regs).aref(ref);
-    IRubyObject new_regs = RedclothAttributes.link_attributes(self, txt);
+    IRubyObject new_regs = red_parse_title(RedclothAttributes.link_attributes(self, txt), ref);
     return regs.callMethod(runtime.getCurrentContext(), "update", new_regs);
+  }
+
+  public IRubyObject red_parse_image_attr(IRubyObject self, IRubyObject regs, IRubyObject ref) {
+    return red_parse_title(regs, ref);
+  }
+
+  public IRubyObject red_parse_title(IRubyObject regs, IRubyObject ref) {
+    IRubyObject name = ((RubyHash)regs).aref(ref);
+    if ( !name.isNil() ) {
+      String s = name.convertToString().toString();
+      int p = s.length();
+      if (s.charAt(p - 1) == ')') {
+        int level = -1;
+        p--;
+        while (p > 0 && level < 0) {
+          switch(s.charAt(p - 1)) {
+            case '(': ++level; break;
+            case ')': --level; break;
+          }
+          --p;
+        }
+        IRubyObject title = runtime.newString(s.substring(p + 1, s.length() - 1));
+        if(p > 0 && s.charAt(p - 1) == ' ') --p;
+        if(p != 0) {
+          ((RubyHash)regs).aset(ref, runtime.newString(s.substring(0, p)));
+          ((RubyHash)regs).aset(runtime.newSymbol("title"), title);
+        }
+      }
+    }
+    return regs;
   }
 
   public void PASS_CODE(IRubyObject H, String A, String T, int O) {
@@ -67,6 +97,10 @@ public class RedclothInline extends RedclothScanService.Base {
 
   public void PARSE_LINK_ATTR(String A) {
     red_parse_link_attr(self, regs, runtime.newSymbol(A));
+  }
+
+  public void PARSE_IMAGE_ATTR(String A) {
+    red_parse_image_attr(self, regs, runtime.newSymbol(A));
   }
 
   private int opts;
