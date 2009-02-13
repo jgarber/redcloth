@@ -185,9 +185,13 @@ name: trailing period stays outside link
 in: '"Link":/foo.html.'
 html: "<p><a href=\"/foo.html\">Link</a>.</p>"
 ---
-name: parenthetical statement as a link
+name: whose text is a parenthetical statement
 in: '"(just in case you were wondering)":http://slashdot.org/'
 html: '<p><a href="http://slashdot.org/">(just in case you were wondering)</a></p>'
+---
+name: that has a class and whose text is a parenthetical statement
+in: '"(myclass) (just in case you were wondering)":http://slashdot.org/'
+html: '<p><a href="http://slashdot.org/" class="myclass">(just in case you were wondering)</a></p>'
 ---
 name: link containing parentheses
 in: '"It is (very) fortunate that this works":http://slashdot.org/'
@@ -273,3 +277,9 @@ in: |-
   "My wife, Tipper, and I will donate 100% of the proceeds of the award to the "Alliance For Climate Protection":http://www.looktothestars.org/charity/638-alliance-for-climate-protection," said Gore in an email. "I am deeply honored to receive the Nobel Peace Prize."
 html: |-
   <p>&#8220;My wife, Tipper, and I will donate 100% of the proceeds of the award to the <a href="http://www.looktothestars.org/charity/638-alliance-for-climate-protection">Alliance For Climate Protection</a>,&#8221; said Gore in an email. &#8220;I am deeply honored to receive the Nobel Peace Prize.&#8221;</p>
+---
+name: with caps in the title
+in: |-
+  "British Skin Foundation (BSF)":http://www.britishskinfoundation.org.uk
+html: |-
+  <p><a href="http://www.britishskinfoundation.org.uk" title="BSF">British Skin Foundation</a></p>

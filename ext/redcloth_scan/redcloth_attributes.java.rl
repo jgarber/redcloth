@@ -43,14 +43,12 @@ public class RedclothAttributes extends RedclothScanService.Base {
   }
 
   public void SET_ATTRIBUTE(String B, String A) {
-    buf = ((RubyHash)regs).aref(runtime.newSymbol(B));
-    if(!buf.isNil()) {
-      ((RubyHash)regs).aset(runtime.newSymbol(A), buf);
+    if(!((RubyHash)regs).aref(runtime.newSymbol(B)).isNil()) {
+      ((RubyHash)regs).aset(runtime.newSymbol(A), ((RubyHash)regs).aref(runtime.newSymbol(B)));
     }
   }
  
   private int machine;
-  private IRubyObject buf;
    
   public RedclothAttributes(int machine, IRubyObject self, byte[] data, int p, int pe) {
     this.runtime = self.getRuntime();
@@ -68,7 +66,6 @@ public class RedclothAttributes extends RedclothScanService.Base {
     this.orig_pe = this.pe;
 
     this.regs = RubyHash.newHash(runtime);
-    this.buf = runtime.getNil();
     this.machine = machine;
   }
 
@@ -89,8 +86,36 @@ public class RedclothAttributes extends RedclothScanService.Base {
   }
 
   public static IRubyObject link_attributes(IRubyObject self, IRubyObject str) {
+    Ruby runtime = self.getRuntime();
+
     ByteList bl = str.convertToString().getByteList();
     int cs = redcloth_attributes_en_link_says;
-    return new RedclothAttributes(cs, self, bl.bytes, bl.begin, bl.realSize).parse();
+    IRubyObject regs = new RedclothAttributes(cs, self, bl.bytes, bl.begin, bl.realSize).parse();
+    
+    // Store title/alt
+    IRubyObject name = ((RubyHash)regs).aref(runtime.newSymbol("name"));
+    if ( !name.isNil() ) {
+      String s = name.convertToString().toString();
+      int p = s.length();
+      if (s.charAt(p - 1) == ')') {
+        int level = -1;
+        p--;
+        while (p > 0 && level < 0) {
+          switch(s.charAt(p - 1)) {
+            case '(': ++level; break;
+            case ')': --level; break;
+          }
+          --p;
+        }
+        IRubyObject title = runtime.newString(s.substring(p + 1, s.length() - 1));
+        if(p > 0 && s.charAt(p - 1) == ' ') --p;
+        if(p != 0) {
+          ((RubyHash)regs).aset(runtime.newSymbol("name"), runtime.newString(s.substring(0, p)));
+          ((RubyHash)regs).aset(runtime.newSymbol("title"), title);
+        }
+      }
+    }
+    
+    return regs;
   }
 }

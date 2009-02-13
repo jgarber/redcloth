@@ -116,7 +116,6 @@ redcloth_inline(self, p, pe, refs)
   VALUE block = rb_str_new2("");
   VALUE regs = Qnil;
   unsigned int opts = 0;
-  VALUE buf = Qnil;
   
   %% write init;
 

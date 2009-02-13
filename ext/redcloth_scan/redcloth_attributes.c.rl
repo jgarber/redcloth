@@ -26,7 +26,6 @@ redcloth_attribute_parser(machine, self, p, pe)
   int cs, act;
   char *ts, *te, *reg, *bck, *eof;
   VALUE regs = rb_hash_new();
-  VALUE buf = Qnil;
 
   %% write init;
 
@@ -52,5 +51,30 @@ redcloth_link_attributes(self, str)
 {
   StringValue(str);
   int cs = redcloth_attributes_en_link_says;
-  return redcloth_attribute_parser(cs, self, RSTRING_PTR(str), RSTRING_PTR(str) + RSTRING_LEN(str) + 1);
+  VALUE regs = redcloth_attribute_parser(cs, self, RSTRING_PTR(str), RSTRING_PTR(str) + RSTRING_LEN(str) + 1);
+  
+  // Store title/alt
+  VALUE name = rb_hash_aref(regs, ID2SYM(rb_intern("name")));
+  if ( name != Qnil ) {
+    char *p = RSTRING_PTR(name) + RSTRING_LEN(name);
+    if (*(p - 1) == ')') {
+      char level = -1;
+      p--;
+      while (p > RSTRING_PTR(name) && level < 0) {
+        switch(*(p - 1)) {
+          case '(': ++level; break;
+          case ')': --level; break;
+        }
+        --p;
+      }
+      VALUE title = rb_str_new(p + 1, RSTRING_PTR(name) + RSTRING_LEN(name) - 2 - p );
+      if (p > RSTRING_PTR(name) && *(p - 1) == ' ') --p;
+      if (p != RSTRING_PTR(name)) {
+        rb_hash_aset(regs, ID2SYM(rb_intern("name")), rb_str_new(RSTRING_PTR(name), p - RSTRING_PTR(name) ));
+        rb_hash_aset(regs, ID2SYM(rb_intern("title")), title);
+      }
+    }
+  }
+  
+  return regs;
 }

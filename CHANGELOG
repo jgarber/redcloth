@@ -1,5 +1,7 @@
 === Edge
 
+* Handle caps properly in link titles. #77
+
 * Remove extra preformatted line breaks after extended block code. #79
 
 * Fix inline <notextile> being recognized as block <notextile>. #81

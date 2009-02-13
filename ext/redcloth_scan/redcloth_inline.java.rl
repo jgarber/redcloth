@@ -70,7 +70,6 @@ public class RedclothInline extends RedclothScanService.Base {
   }
 
   private int opts;
-  private IRubyObject buf;
 
   public RedclothInline(IRubyObject self, byte[] data, int p, int pe, IRubyObject refs) {
     this.runtime = self.getRuntime();
@@ -90,7 +89,6 @@ public class RedclothInline extends RedclothScanService.Base {
     this.block = RubyString.newEmptyString(runtime);
     this.regs = runtime.getNil();
     this.opts = 0;
-    this.buf = runtime.getNil();
   }
 
 
