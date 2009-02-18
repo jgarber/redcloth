@@ -14,6 +14,7 @@ e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
   p.ignore_pattern = /^(pkg|site|projects|doc|log)|CVS|\.log/
   p.ruby_version = '>=1.8.4'
   p.extension_pattern = nil
+  p.development_dependencies = [] # remove echoe from development dependencies
   
   if Platform.gcc?
     p.platform = 'x86-mswin32-60'
