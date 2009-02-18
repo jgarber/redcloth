@@ -373,9 +373,7 @@ html: |-
 
   <code>print "Hello, World";
   }
-  ?&gt;</code>
-
-  </pre>
+  ?&gt;</code></pre>
   <p>Following paragraph.</p>
 ---
 name: extended block attributes

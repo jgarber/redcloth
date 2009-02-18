@@ -33,6 +33,10 @@ module RedCloth::Formatters::HTML
     end
   end
   
+  def hr(opts)
+    "<hr />\n"
+  end
+  
   def acronym(opts)
     opts[:block] = true
     "<acronym#{pba(opts)}>#{caps(:text => opts[:text])}</acronym>"
@@ -125,18 +129,7 @@ module RedCloth::Formatters::HTML
     "</blockquote>\n"
   end
   
-  LINK_TEXT_WITH_TITLE_RE = /
-          ([^"]+?)         # $text
-          \s?
-          \(([^)]+?)\)     # $title
-          $
-      /x
   def link(opts)
-    if opts[:name] =~ LINK_TEXT_WITH_TITLE_RE
-      md = LINK_TEXT_WITH_TITLE_RE.match(opts[:name])
-      opts[:name] = md[1]
-      opts[:title] = md[2]
-    end
     "<a href=\"#{escape_attribute opts[:href]}\"#{pba(opts)}>#{opts[:name]}</a>"
   end
   

@@ -89,7 +89,7 @@ latex: "\\emph{a phrase}\n\n"
 ---
 in: __a phrase__
 html: <p><i>a phrase</i></p>
-latex: "\\emph{a phrase}\n\n"
+latex: "\\textit{a phrase}\n\n"
 ---
 in: '*a phrase*'
 html: <p><strong>a phrase</strong></p>

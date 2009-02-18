@@ -4,12 +4,9 @@
 
   action A { reg = p; }
   action B { bck = p; }
-  action T { STORE(text); }
-  action X { CLEAR_REGS(); reg = NULL; }
+  action T { STORE("text"); }
+  action X { CLEAR_REGS(); RESET_REG(); }
   action cat { CAT(block); }
-  action esc { rb_str_cat_escaped(self, block, ts, te); }
-  action esc_pre { rb_str_cat_escaped_for_preformatted(self, block, ts, te); }
-  action ignore { rb_str_append(block, rb_funcall(self, rb_intern("ignore"), 1, regs)); }
 
   # simple
   LF = ( '\n' ) ;
@@ -17,28 +14,28 @@
   EOF = 0 ;
 
   # textile modifiers
-  A_LEFT = "<" %{ ASET(align, left) } ;
-  A_RIGHT = ">" %{ ASET(align, right) } ;
-  A_JUSTIFIED = "<>" %{ ASET(align, justify) } ;
-  A_CENTER = "=" %{ ASET(align, center) } ;
-  A_PADLEFT = "(" >A %{ AINC(padding-left) } ;
-  A_PADRIGHT = ")" >A %{ AINC(padding-right) } ;
+  A_LEFT = "<" %{ ASET("align", "left"); } ;
+  A_RIGHT = ">" %{ ASET("align", "right"); } ;
+  A_JUSTIFIED = "<>" %{ ASET("align", "justify"); } ;
+  A_CENTER = "=" %{ ASET("align", "center"); } ;
+  A_PADLEFT = "(" >A %{ AINC("padding-left"); } ;
+  A_PADRIGHT = ")" >A %{ AINC("padding-right"); } ;
   A_HLGN = ( A_LEFT | A_RIGHT | A_JUSTIFIED | A_CENTER | A_PADLEFT | A_PADRIGHT ) ;
   A_LIMIT = ( A_LEFT | A_CENTER | A_RIGHT ) ;
-  A_VLGN = ( "-" %{ ASET(vertical-align, middle) } | "^" %{ ASET(vertical-align, top) } | "~" %{ ASET(vertical-align, bottom) } ) ;
-  C_CLAS = ( "(" ( [^)#]+ >A %{ STORE(class) } )? ("#" [^)]+ >A %{STORE(id)} )? ")" ) ;
-  C_LNGE = ( "[" [^\]]+ >A %{ STORE(lang) } "]" ) ;
-  C_STYL = ( "{" [^}]+ >A %{ STORE(style) } "}" ) ;
-  S_CSPN = ( "\\" [0-9]+ >A %{ STORE(colspan) } ) ;
-  S_RSPN = ( "/" [0-9]+ >A %{ STORE(rowspan) } ) ;
-  D_HEADER = "_" %{ ASET(th, true) } ;
+  A_VLGN = ( "-" %{ ASET("vertical-align", "middle"); } | "^" %{ ASET("vertical-align", "top"); } | "~" %{ ASET("vertical-align", "bottom"); } ) ;
+  C_CLAS = ( "(" ( [^)#]+ >A %{ STORE("class"); } )? ("#" [^)]+ >A %{STORE("id");} )? ")" ) ;
+  C_LNGE = ( "[" [^\]]+ >A %{ STORE("lang"); } "]" ) ;
+  C_STYL = ( "{" [^}]+ >A %{ STORE("style"); } "}" ) ;
+  S_CSPN = ( "\\" [0-9]+ >A %{ STORE("colspan"); } ) ;
+  S_RSPN = ( "/" [0-9]+ >A %{ STORE("rowspan"); } ) ;
+  D_HEADER = "_" %{ ASET("th", "true"); } ;
   A = ( ( A_HLGN | A_VLGN )* ) ;
   A2 = ( A_LIMIT? ) ;
   S = ( S_CSPN | S_RSPN )* ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
   D = ( D_HEADER ) ;
   N_CONT = "_" %{ list_continue = 1; };
-  N_NUM = digit+ >A %{ STORE(start) };
+  N_NUM = digit+ >A %{ STORE("start"); };
   N = ( N_CONT | N_NUM )? ;
   PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "," | "-" | "." | "/" | ":" | ";" | "=" | "?" | "\\" | "^" | "`" | "|" | "~" | "[" | "]" | "(" | ")" | "<" ) ;
   dotspace = ("." " "*) ;
@@ -80,7 +77,11 @@
   script_tag_start = ( "<script" [^>]* ">" ) >X >A %T ;
   script_tag_end = ( "</script>" >A %T LF? ) >X ;
   
-
+  code_tag_start = "<code" [^>]* ">" ;
+  code_tag_end = "</code>" ;
+  
+  notextile = "<notextile>" >X (default+ -- "</notextile>") >A %T "</notextile>";
+  
   # URI tokens (lifted from Mongrel)
   CTL = (cntrl | 127);
   safe = ("$" | "-" | "_" | ".");
@@ -105,17 +106,10 @@
   uri = (target | absolute_uri | absolute_path | rel_path) ;
 
   # common
-  title = ( '(' default+ >A %{ STORE(title) } :> ')' ) ;
+  title = ( '(' default+ >A %{ STORE("title"); } :> ')' ) ;
   word = ( alnum | safe | " " ) ;
   mspace = ( ( " " | "\t" | LF )+ ) -- LF{2} ;
   mtext = ( chars (mspace chars)* ) ;
   
-  # conditionals
-  action starts_line {
-    p == orig_p || *(p-1) == '\r' || *(p-1) == '\n' || *(p-1) == '\f'
-  }
-  action starts_phrase {
-    p == orig_p || *(p-1) == '\r' || *(p-1) == '\n' || *(p-1) == '\f' || *(p-1) == ' '
-  }
 
 }%%;

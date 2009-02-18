@@ -38,7 +38,7 @@ module RedCloth::Formatters::LATEX
   # commands 
   { :strong => 'textbf',
     :em => 'emph',
-    :i  => 'emph',
+    :i  => 'textit',
     :b  => 'textbf',
     :ins => 'underline',
     :del => 'sout',
@@ -102,24 +102,50 @@ module RedCloth::Formatters::LATEX
   end
   
   def td(opts)
-    "\t\t\t#{opts[:text]} &\n"
+    column = @table_row.size
+    if opts[:colspan]
+      opts[:text] = "\\multicolumn{#{opts[:colspan]}}{ #{"l " * opts[:colspan].to_i}}{#{opts[:text]}}"
+    end
+    if opts[:rowspan]
+      @table_multirow_next[column] = opts[:rowspan].to_i - 1
+      opts[:text] = "\\multirow{#{opts[:rowspan]}}{*}{#{opts[:text]}}"
+    end
+    @table_row.push(opts[:text])
+    return ""
   end
   
   def tr_open(opts)
-    "\t\t"
+    @table_row = []
+    return ""
   end
   
   def tr_close(opts)
-    "\t\t\\\\\n"
+    multirow_columns = @table_multirow.find_all {|c,n| n > 0}
+    multirow_columns.each do |c,n|
+      @table_row.insert(c,"")
+      @table_multirow[c] -= 1
+    end
+    @table_multirow.merge!(@table_multirow_next)
+    @table_multirow_next = {}
+    @table.push(@table_row)
+    return ""
   end
   
-  # FIXME: we need to know the column count before opening tabular context.
+  # We need to know the column count before opening tabular context.
   def table_open(opts)
-    "\\begin{align*}\n"
+    @table = []
+    @table_multirow = {}
+    @table_multirow_next = {}
+    return ""
   end
   
   def table_close(opts)
-    "\t\\end{align*}\n"
+    output = "\\begin{tabular}{ #{"l " * @table[0].size }}\n"
+    @table.each do |row|
+      output << "  #{row.join(" & ")} \\\\\n"
+    end
+    output << "\\end{tabular}\n"
+    output
   end
 
   def bc_open(opts)
@@ -222,8 +248,10 @@ module RedCloth::Formatters::LATEX
   end
   
   def dim(opts)
-    space = opts[:space] ? " " : ''
-    "#{opts[:text]}#{space}\\texttimes{}#{space}"
+    opts[:text].gsub!('x', '\times')
+    opts[:text].gsub!('"', "''")
+    period = opts[:text].slice!(/\.$/)
+    "$#{opts[:text]}$#{period}"
   end
   
   private

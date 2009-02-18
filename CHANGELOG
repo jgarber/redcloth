@@ -1,4 +1,65 @@
-*EDGE*
+=== Edge
+
+* Image URLs and image titles can now contain parentheses. #71
+
+* Handle caps properly in link titles. #77
+
+* Remove extra preformatted line breaks after extended block code. #79
+
+* Fix inline <notextile> being recognized as block <notextile>. #81
+
+* Allow leading spaces on lists for backward compatibility with RedCloth 3.x. #89
+
+* Recognize deleted phrases when they start at the beginning of a line. #83
+
+* Fix escaped <code> tag when it has the class attribute and is in a <pre> tag. #95
+
+* Fix dimensions and primes for LaTeX. #103
+
+* Don't allow square brackets inside lang attribute so double square brackets are interpreted like Textile 2 and RedCloth 3. #101
+
+* Improve LaTeX output for tables. #96
+
+* Fix bad parsing of bracketed image links (which would hang the interpreter in some cases). #97
+
+* Handle links containing parentheses.  Brackets are no longer required. #82 [Ryan Alyea]
+
+* Made italics use the correct LaTeX tag: textit rather than emph. #98
+
+* Fixed custom block signatures calling built-in Ruby String methods. #92
+
+* Mentioned the three supported platforms and what's necessary to build RedCloth in the README file.
+
+* Fixed a require problem that caused an error when you would gem check --test RedCloth. #91
+
+=== 4.1.1 / November 19, 2008
+
+* Added 'lib/case_sensitive_require' back into gemspec.  It got left out in the conversion to echoe, so "require 'RedCloth'" didn't work. #88
+
+* Fixed <embed> being recognized as a block-level element when using the twice-cooked method of flash embedding. #87
+
+* Added horizontal rules from RedCloth 3.  Three or more asterisks, dashes, or underscores between blocks triggers the HR tag.
+
+* echoe was not being properly registered as a development dependency; a bug in RubyGems was making it a runtime dependency
+
+* Fixed "No definition for redcloth_to Installing RDoc documentation"
+
+* Fixed wrong platform names when cross-compiling java and win32 versions
+
+=== 4.1.0 / October 31, 2008
+
+* JRuby support!  [olabini]
+  To run the tests with JRuby, you only need to: jruby -S rake
+  To compile the jruby version of the gem: jruby -S rake compile
+
+* Added textilize ERB utility method. [edraut]
+  Use it in an ERB template like this: <%=t my_textile_string %> or 
+  <%=r %{Some *textile* if you please!} %>
+
+* Fix extended blockcode stripping whitespace following blank line. #78
+
+
+=== 4.0.4 / October 1, 2008
 
 * Added some very basic support for images in LaTeX. [virtualfunction]
 
@@ -20,15 +81,17 @@
 
 * Fixed behavior of unclosed (multi-paragraph) quotes and incorrect handling of links inside double quotations. #59, #63
 
+* Fixed empty block HTML disappearing. #64
 
-*4.0.3 (August 18, 2008)*
+
+=== 4.0.3 / August 18, 2008
 
 * Fix NoMethodError: private method gsub!' called for nil:NilClass when two dimensions followed by a space. #38
 
 * Fixed unititialized constant RedCloth::TextileDoc with Rails 2.1.  Came from a workaround for Rails bug #320 that was applied even when not necessary. #42
 
 
-*4.0.2 (August 15, 2008)*
+=== 4.0.2 / August 15, 2008
 
 * Fixed link references/aliases not being recognized when they include hyphens. #36
 
@@ -47,7 +110,7 @@
 * Fixed HTML block ending tags terminating blocks prematurely. #22
 
 
-*4.0.1 (July 24, 2008)*
+=== 4.0.1 / July 24, 2008
 
 * Fixed lines starting with dashes being recognized as a definition list when there were no definitions.
 
@@ -57,7 +120,7 @@
 * Fixed links including prior quoted phrases. #17
 
 
-*4.0.0 (July 21, 2008)*
+=== 4.0.0 / July 21, 2008
 
 * New SuperRedCloth (RedCloth 4.0) is a total rewrite using Ragel for the parsing.
 

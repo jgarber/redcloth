@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'helper'
+require File.join(File.dirname(__FILE__), 'helper')
 
 class TestCustomTags < Test::Unit::TestCase
 
@@ -43,4 +43,16 @@ class TestCustomTags < Test::Unit::TestCase
 
     assert_equal "<p>fig()>[no]{color:red}. 1.1 | img.jpg</p>", str
   end
+  
+  # We don't want to call just any String method!
+  def test_does_not_call_standard_methods
+    r = RedCloth.new "next. "
+    r.extend FigureTag
+    str = r.to_html
+
+    html  = "<p>next. </p>"
+
+    assert_equal(html, str)
+  end
+  
 end

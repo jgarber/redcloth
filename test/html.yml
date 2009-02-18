@@ -297,3 +297,29 @@ html: |-
 name: tilde in innerHTML is not altered
 in: '<a href="http://foo.com/bar?something=1~2~3">http://foo.com/bar?something=1~2~3</a>'
 html: '<p><a href="http://foo.com/bar?something=1~2~3">http://foo.com/bar?something=1~2~3</a></p>'
+---
+name: empty block
+in: |-
+  <div class="test"></div>
+html: |-
+  <div class="test"></div>
+---
+name: objects in paragraphs are not modified
+in: |-
+  <p><object width="340" height="280"><param name="movie" value="http://www.youtube.com/v/iUbK1cBHm6E"></param><param name="wmode" value="opaque"></param><param name="allowScriptAccess" value="sameDomain"></param><embed src="http://www.youtube.com/v/iUbK1cBHm6E" type="application/x-shockwave-flash" width="340" height="280" wmode="opaque" allowScriptAccess="sameDomain"></embed></object></p>
+html: |-
+  <p><object width="340" height="280"><param name="movie" value="http://www.youtube.com/v/iUbK1cBHm6E"></param><param name="wmode" value="opaque"></param><param name="allowScriptAccess" value="sameDomain"></param><embed src="http://www.youtube.com/v/iUbK1cBHm6E" type="application/x-shockwave-flash" width="340" height="280" wmode="opaque" allowScriptAccess="sameDomain"></embed></object></p>
+---
+name: in code escaped properly
+in: "<pre><code>some <b>bold</b> text</code></pre>"
+html: "<pre><code>some &lt;b&gt;bold&lt;/b&gt; text</code></pre>"
+---
+name: in code with class attribute escaped properly
+in: "<pre><code class='myclass'>some <b>bold</b> text</code></pre>"
+html: "<pre><code class='myclass'>some &lt;b&gt;bold&lt;/b&gt; text</code></pre>"
+---
+name: notextile beginning the line
+in: |-
+  <notextile><a href="http://a.com">Sir Bobby Robson</a></notextile>, is a famous footballer
+html: |-
+  <p><a href="http://a.com">Sir Bobby Robson</a>, is a famous footballer</p>
