@@ -31,7 +31,7 @@ redcloth_transform(self, p, pe, refs)
   VALUE refs;
 {
   char *orig_p = p, *orig_pe = pe;
-  int cs, act, nest;
+  int cs, act, nest = 0;
   char *ts = NULL, *te = NULL, *reg = NULL, *bck = NULL, *eof = NULL;
   VALUE html = rb_str_new2("");
   VALUE table = rb_str_new2("");
@@ -95,7 +95,7 @@ redcloth_html_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
   
   char *ts = RSTRING_PTR(str), *te = RSTRING_PTR(str) + RSTRING_LEN(str);
   char *t = ts, *t2 = ts, *ch = NULL;
-  if (te <= ts) return;
+  if (te <= ts) return Qnil;
 
   while (t2 < te) {
     ch = NULL;
@@ -154,7 +154,7 @@ redcloth_latex_esc(VALUE self, VALUE str)
   
   char *ts = RSTRING_PTR(str), *te = RSTRING_PTR(str) + RSTRING_LEN(str);
   char *t = ts, *t2 = ts, *ch = NULL;
-  if (te <= ts) return;
+  if (te <= ts) return Qnil;
 
   while (t2 < te) {
     ch = NULL;
@@ -201,18 +201,9 @@ static VALUE
 redcloth_to(self, formatter)
   VALUE self, formatter;
 {
-  char *pe, *p;
-  int len = 0;
-  
   rb_funcall(self, rb_intern("delete!"), 1, rb_str_new2("\r"));
   VALUE working_copy = rb_obj_clone(self);
   rb_extend_object(working_copy, formatter);
-  
-  VALUE working_copy_methods = rb_funcall(working_copy, rb_intern("methods"), 0);
-  VALUE class_instance_methods = rb_funcall(rb_obj_class(working_copy),rb_intern("instance_methods"), 0);
-  VALUE custom_tags = rb_funcall(working_copy_methods, rb_intern("-"), 1, class_instance_methods);
-  rb_iv_set(working_copy, "@custom_tags", custom_tags);
-  
   
   if (rb_funcall(working_copy, rb_intern("lite_mode"), 0) == Qtrue) {
     return redcloth_inline2(working_copy, self, rb_hash_new());

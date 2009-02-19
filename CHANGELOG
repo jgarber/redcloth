@@ -1,5 +1,7 @@
 === Edge
 
+* Make compatible with Ruby 1.9 (*in progress*)
+
 * Image URLs and image titles can now contain parentheses. #71
 
 * Handle caps properly in link titles. #77

@@ -1,12 +1,10 @@
 #ifndef redcloth_h
 #define redcloth_h
 
-/* Backward compatibility with Ruby < 1.8.6 */
-#ifndef RSTRING_LEN
-#define RSTRING_LEN(x) (RSTRING(x)->len)
-#endif
-#ifndef RSTRING_PTR
-#define RSTRING_PTR(x) (RSTRING(x)->ptr)
+#ifndef RARRAY_LEN
+#define RARRAY_LEN(arr)  RARRAY(arr)->len
+#define RSTRING_LEN(str) RSTRING(str)->len
+#define RSTRING_PTR(str) RSTRING(str)->ptr
 #endif
 
 /* variable defs */
@@ -70,7 +68,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
   if (p > reg && reg >= ts) { \
     VALUE str = redcloth_transform(self, reg, p, refs); \
     rb_hash_aset(regs, ID2SYM(rb_intern(T)), str); \
-  /*  printf("TRANSFORM(" T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
+    /*printf("TRANSFORM(" T ") '%s' (p:'%s' reg:'%s')\n", RSTRING_PTR(str), p, reg);*/  \
   } else { \
     rb_hash_aset(regs, ID2SYM(rb_intern(T)), Qnil); \
   }
@@ -78,7 +76,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
   if (p > reg && reg >= ts) { \
     VALUE str = rb_str_new(reg, p-reg); \
     rb_hash_aset(regs, ID2SYM(rb_intern(T)), str); \
-  /*  printf("STORE(" T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
+    /*printf("STORE(" T ") '%s' (p:'%s' reg:'%s')\n", RSTRING_PTR(str), p, reg);*/  \
   } else { \
     rb_hash_aset(regs, ID2SYM(rb_intern(T)), Qnil); \
   }
@@ -86,7 +84,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
   if (p > bck && bck >= ts) { \
     VALUE str = rb_str_new(bck, p-bck); \
     rb_hash_aset(regs, ID2SYM(rb_intern(T)), str); \
-  /*  printf("STORE_B(" T ") '%s' (p:'%d' reg:'%d')\n", RSTRING(str)->ptr, p, reg);*/  \
+    /*printf("STORE_B(" T ") '%s' (p:'%s' reg:'%s')\n", RSTRING_PTR(str), p, reg);*/  \
   } else { \
     rb_hash_aset(regs, ID2SYM(rb_intern(T)), Qnil); \
   }

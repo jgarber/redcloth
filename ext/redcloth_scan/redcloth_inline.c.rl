@@ -104,7 +104,11 @@ red_block(VALUE self, VALUE regs, VALUE block, VALUE refs)
     } else {
       rb_hash_aset(regs, sym_text, redcloth_inline2(self, block, refs));
     }
-    if (rb_ary_includes(rb_iv_get(self, "@custom_tags"), btype)) {
+#if RUBY_VERSION_MAJOR <= 1 && RUBY_VERSION_MINOR < 9
+    if (rb_ary_includes(rb_funcall(self, rb_intern("singleton_methods"), 0), btype)) {
+#else
+    if (rb_ary_includes(rb_funcall(self, rb_intern("singleton_methods"), 0), rb_str_intern(btype))) {
+#endif
       block = rb_funcall(self, method, 1, regs);
     } else {
       fallback = rb_hash_aref(regs, ID2SYM(rb_intern("fallback")));
@@ -147,11 +151,10 @@ redcloth_inline(self, p, pe, refs)
   VALUE refs;
 {
   int cs, act;
-  char *ts, *te, *reg, *eof;
-  char *orig_p = p, *orig_pe = pe;
+  char *ts = NULL, *te = NULL, *reg = NULL, *eof = NULL;
+  char *orig_p = p;
   VALUE block = rb_str_new2("");
   VALUE regs = Qnil;
-  unsigned int opts = 0;
   
   %% write init;
 

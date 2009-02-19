@@ -24,7 +24,7 @@ redcloth_attribute_parser(machine, self, p, pe)
   char *p, *pe;
 {
   int cs, act;
-  char *ts, *te, *reg, *bck, *eof;
+  char *ts = 0, *te = 0, *reg = 0, *bck = NULL, *eof = NULL;
   VALUE regs = rb_hash_new();
 
   %% write init;
