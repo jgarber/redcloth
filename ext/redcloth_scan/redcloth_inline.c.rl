@@ -98,18 +98,14 @@ red_block(VALUE self, VALUE regs, VALUE block, VALUE refs)
   block = rb_funcall(block, rb_intern("strip"), 0);
   if ((!NIL_P(block)) && !NIL_P(btype))
   {
-    method = rb_intern(RSTRING_PTR(btype));
-    if (method == rb_intern("notextile")) {
+    method = rb_str_intern(btype);
+    if (method == ID2SYM(rb_intern("notextile"))) {
       rb_hash_aset(regs, sym_text, block);
     } else {
       rb_hash_aset(regs, sym_text, redcloth_inline2(self, block, refs));
     }
-#if RUBY_VERSION_MAJOR <= 1 && RUBY_VERSION_MINOR < 9
-    if (rb_ary_includes(rb_funcall(self, rb_intern("singleton_methods"), 0), btype)) {
-#else
-    if (rb_ary_includes(rb_funcall(self, rb_intern("singleton_methods"), 0), rb_str_intern(btype))) {
-#endif
-      block = rb_funcall(self, method, 1, regs);
+    if (rb_ary_includes(rb_funcall(self, rb_intern("formatter_methods"), 0), method)) {
+      block = rb_funcall(self, SYM2ID(method), 1, regs);
     } else {
       fallback = rb_hash_aref(regs, ID2SYM(rb_intern("fallback")));
       if (!NIL_P(fallback)) {

@@ -14,14 +14,6 @@ module RedCloth::Formatters::LATEX
 
   RedCloth::TextileDoc.send(:include, Settings)
   
-  def escape(text)
-    latex_esc(text)
-  end
-
-  def escape_pre(text)
-    text
-  end
-  
   # headers
   { :h1 => 'section*',
     :h2 => 'subsection*',
@@ -255,6 +247,14 @@ module RedCloth::Formatters::LATEX
   end
   
   private
+  
+  def escape(text)
+    latex_esc(text)
+  end
+
+  def escape_pre(text)
+    text
+  end
   
   # Use this for block level commands that use \begin
   def begin_chunk(type)

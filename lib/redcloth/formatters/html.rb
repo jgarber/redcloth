@@ -1,25 +1,6 @@
 module RedCloth::Formatters::HTML
   include RedCloth::Formatters::Base
   
-  # escapement for regular HTML (not in PRE tag)
-  def escape(text)
-    html_esc(text)
-  end
-
-  # escapement for HTML in a PRE tag
-  def escape_pre(text)
-    html_esc(text, :html_escape_preformatted)
-  end
-  
-  # escaping for HTML attributes
-  def escape_attribute(text)
-    html_esc(text, :html_escape_attributes)
-  end
-  
-  def after_transform(text)
-    text.chomp!
-  end
-    
   [:h1, :h2, :h3, :h4, :h5, :h6, :p, :pre, :div].each do |m|
     define_method(m) do |opts|
       "<#{m}#{pba(opts)}>#{opts[:text]}</#{m}>\n"
@@ -269,6 +250,28 @@ module RedCloth::Formatters::HTML
   def ignored_line(opts)
     opts[:text] + "\n"
   end
+  
+private
+  
+  # escapement for regular HTML (not in PRE tag)
+  def escape(text)
+    html_esc(text)
+  end
+
+  # escapement for HTML in a PRE tag
+  def escape_pre(text)
+    html_esc(text, :html_escape_preformatted)
+  end
+  
+  # escaping for HTML attributes
+  def escape_attribute(text)
+    html_esc(text, :html_escape_attributes)
+  end
+  
+  def after_transform(text)
+    text.chomp!
+  end
+  
   
   def before_transform(text)
     clean_html(text) if sanitize_html

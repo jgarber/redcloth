@@ -1,26 +1,6 @@
 module RedCloth::Formatters
   module Base
     
-    def pba(opts)
-      opts.delete(:style) if filter_styles
-      opts.delete(:class) if filter_classes
-      opts.delete(:id) if filter_ids
-
-      atts = ''
-      opts[:"text-align"] = opts.delete(:align)
-      opts[:style] += ';' if opts[:style] && (opts[:style][-1..-1] != ';')
-      [:float, :"text-align", :"vertical-align"].each do |a|
-        opts[:style] = "#{a}:#{opts[a]};#{opts[:style]}" if opts[a]
-      end
-      [:"padding-right", :"padding-left"].each do |a|
-        opts[:style] = "#{a}:#{opts[a]}em;#{opts[:style]}" if opts[a]
-      end
-      [:style, :class, :lang, :id, :colspan, :rowspan, :title, :start, :align].each do |a|
-        atts << " #{a}=\"#{ html_esc(opts[a].to_s, :html_escape_attributes) }\"" if opts[a]
-      end
-      atts
-    end
-    
     def ignore(opts)
       opts[:text]
     end
@@ -41,6 +21,28 @@ module RedCloth::Formatters
       end
     end
     
+  private
+    
+    def pba(opts)
+      opts.delete(:style) if filter_styles
+      opts.delete(:class) if filter_classes
+      opts.delete(:id) if filter_ids
+
+      atts = ''
+      opts[:"text-align"] = opts.delete(:align)
+      opts[:style] += ';' if opts[:style] && (opts[:style][-1..-1] != ';')
+      [:float, :"text-align", :"vertical-align"].each do |a|
+        opts[:style] = "#{a}:#{opts[a]};#{opts[:style]}" if opts[a]
+      end
+      [:"padding-right", :"padding-left"].each do |a|
+        opts[:style] = "#{a}:#{opts[a]}em;#{opts[:style]}" if opts[a]
+      end
+      [:style, :class, :lang, :id, :colspan, :rowspan, :title, :start, :align].each do |a|
+        atts << " #{a}=\"#{ html_esc(opts[a].to_s, :html_escape_attributes) }\"" if opts[a]
+      end
+      atts
+    end
+    
     def method_missing(method, opts)
       opts[:text] || ""
     end
@@ -51,6 +53,10 @@ module RedCloth::Formatters
     
     def after_transform(text)
       
+    end
+    
+    def formatter_methods
+      singleton_methods.map! {|method| method.to_sym }
     end
 
   end

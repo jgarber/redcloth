@@ -1,6 +1,6 @@
 === Edge
 
-* Make compatible with Ruby 1.9 (*in progress*)
+* Make compatible with Ruby 1.9
 
 * Image URLs and image titles can now contain parentheses. #71
 
