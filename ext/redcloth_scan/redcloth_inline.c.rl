@@ -65,10 +65,10 @@ red_parse_title(VALUE regs, VALUE ref)
         }
         --p;
       }
-      VALUE title = rb_str_new(p + 1, RSTRING_PTR(txt) + RSTRING_LEN(txt) - 2 - p );
+      VALUE title = STR_NEW(p + 1, RSTRING_PTR(txt) + RSTRING_LEN(txt) - 2 - p );
       if (p > RSTRING_PTR(txt) && *(p - 1) == ' ') --p;
       if (p != RSTRING_PTR(txt)) {
-        rb_hash_aset(regs, ref, rb_str_new(RSTRING_PTR(txt), p - RSTRING_PTR(txt) ));
+        rb_hash_aset(regs, ref, STR_NEW(RSTRING_PTR(txt), p - RSTRING_PTR(txt) ));
         rb_hash_aset(regs, ID2SYM(rb_intern("title")), title);
       }
     }
@@ -81,7 +81,7 @@ red_pass_code(VALUE self, VALUE regs, VALUE ref, ID meth)
 {
   VALUE txt = rb_hash_aref(regs, ref);
   if (!NIL_P(txt)) {
-    VALUE txt2 = rb_str_new2("");
+    VALUE txt2 = STR_NEW2("");
     rb_str_cat_escaped_for_preformatted(self, txt2, RSTRING_PTR(txt), RSTRING_PTR(txt) + RSTRING_LEN(txt));
     rb_hash_aset(regs, ref, txt2);
   }
@@ -149,7 +149,7 @@ redcloth_inline(self, p, pe, refs)
   int cs, act;
   char *ts = NULL, *te = NULL, *reg = NULL, *eof = NULL;
   char *orig_p = p;
-  VALUE block = rb_str_new2("");
+  VALUE block = STR_NEW2("");
   VALUE regs = Qnil;
   
   %% write init;
@@ -169,7 +169,7 @@ rb_str_cat_escaped(self, str, ts, te)
   VALUE self, str;
   char *ts, *te;
 {
-  VALUE source_str = rb_str_new(ts, te-ts);
+  VALUE source_str = STR_NEW(ts, te-ts);
   VALUE escaped_str = rb_funcall(self, rb_intern("escape"), 1, source_str);
   rb_str_concat(str, escaped_str);
 }
@@ -179,7 +179,7 @@ rb_str_cat_escaped_for_preformatted(self, str, ts, te)
   VALUE self, str;
   char *ts, *te;
 {
-  VALUE source_str = rb_str_new(ts, te-ts);
+  VALUE source_str = STR_NEW(ts, te-ts);
   VALUE escaped_str = rb_funcall(self, rb_intern("escape_pre"), 1, source_str);
   rb_str_concat(str, escaped_str);
 }
