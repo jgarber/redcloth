@@ -1,7 +1,7 @@
 /*
  * redcloth_scan.c.rl
  *
- * Copyright (C) 2008 Jason Garber
+ * Copyright (C) 2009 Jason Garber
  */
 #define redcloth_scan_c
 

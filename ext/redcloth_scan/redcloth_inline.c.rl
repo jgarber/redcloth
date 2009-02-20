@@ -1,7 +1,7 @@
 /*
  * redcloth_inline.c.rl
  *
- * Copyright (C) 2008 Jason Garber
+ * Copyright (C) 2009 Jason Garber
  */
 #include <ruby.h>
 #include "redcloth.h"

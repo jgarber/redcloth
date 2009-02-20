@@ -1,7 +1,7 @@
 /*
  * redcloth_attributes.rl
  *
- * Copyright (C) 2008 Jason Garber
+ * Copyright (C) 2009 Jason Garber
  */
 import java.io.IOException;
 
