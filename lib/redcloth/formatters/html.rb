@@ -48,6 +48,11 @@ module RedCloth::Formatters::HTML
   end
   
   def li_open(opts)
+    # Delete attributes that only apply to ul/ol
+    opts.delete(:align)
+    opts.delete(:class)
+    opts.delete(:style)
+    opts.delete(:lang)
     "#{li_close unless opts.delete(:first)}#{"\t" * opts[:nest]}<li#{pba(opts)}>#{opts[:text]}"
   end
   

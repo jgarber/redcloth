@@ -299,3 +299,29 @@ html: |-
   	<li>RedCloth 3.0.4 used to accept it</li>
   	<li>Now we do too</li>
   </ol>
+---
+name: unordered with classes
+in: |-
+  *(class-one) one
+  *(class-two) two
+  *(class-three) three
+html: |-
+  <ul class="class-one">
+  	<li>one</li>
+  	<li>two</li>
+  	<li>three</li>
+  </ul>
+---
+name: unordered with alignments
+in: |-
+  *< one
+  *> two
+  *<> three
+  *= four
+html: |-
+  <ul style="text-align:left;">
+  	<li>one</li>
+  	<li>two</li>
+  	<li>three</li>
+  	<li>four</li>
+  </ul>
