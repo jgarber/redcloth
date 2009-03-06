@@ -179,7 +179,7 @@ module RedCloth::Formatters::LATEX
     # Resolve CSS styles if any have been set
     styling = opts[:class].to_s.split(/\s+/).collect { |style| latex_image_styles[style] }.compact.join ','
     # Build latex code
-    [ "\\begin{figure}[htp]",
+    [ "\\begin{figure}[htbp]",
       "  \\includegraphics[#{styling}]{#{opts[:src]}}",
      ("  \\caption{#{escape opts[:title]}}" if opts[:title]),
      ("  \\label{#{escape opts[:alt]}}" if opts[:alt]),
