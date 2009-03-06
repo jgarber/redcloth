@@ -2,24 +2,31 @@
 name: inline code
 in: 'This is an empty dictionary: @{}@'
 html: '<p>This is an empty dictionary: <code>{}</code></p>'
+latex: "This is an empty dictionary: \\verb@{}@\n\n"
 ---
 name: inline code escapement
 in: 'Please type @cat "file.txt" > otherfile.txt@ at the prompt.'
 html: '<p>Please type <code>cat "file.txt" &gt; otherfile.txt</code> at the prompt.</p>'
+latex: "Please type \\verb@cat \"file.txt\" > otherfile.txt@ at the prompt.\n\n"
 ---
 name: inline code escapement with digits
 in: |-
   Regex-based string substitution with Ruby's gsub!: @"123<789".gsub!(/</, "") => "123789"@
 html: |-
   <p>Regex-based string substitution with Ruby&#8217;s gsub!: <code>"123&lt;789".gsub!(/&lt;/, "") =&gt; "123789"</code></p>
+latex: |+
+  Regex-based string substitution with Ruby's gsub!: \verb@"123<789".gsub!(/</, "") => "123789"@
+
 ---
 name: inlne code escapement describing textile paragraph styling 
 in: 'This paragraph is aligned left but if you add this: @p>.@ to the beginning it will be aligned right.'
 html: '<p>This paragraph is aligned left but if you add this: <code>p&gt;.</code> to the beginning it will be aligned right.</p>'
+latex: "This paragraph is aligned left but if you add this: \\verb@p>.@ to the beginning it will be aligned right.\n\n"
 ---
 name: escapes code snippet containing html tag
 in: 'At the top of each page, please put @<h2>Title</h2>@ in the HTML.'
 html: '<p>At the top of each page, please put <code>&lt;h2&gt;Title&lt;/h2&gt;</code> in the <span class="caps">HTML</span>.</p>'
+latex: "At the top of each page, please put \\verb@<h2>Title</h2>@ in the \\MakeUppercase{HTML}.\n\n"
 ---
 name: escaping in blockcode
 in: 'bc. This is within a block of code, so < and > should be entities.  You can talk about a <p class="foo"> tag if you wish and it will be properly escaped.'
@@ -127,6 +134,13 @@ html: |-
   	<li><code>bar</code></li>
   	<li>and <code>x</code> is also.</li>
   </ul>
+latex: |+
+  \begin{itemize}
+  	\item \verb@foo@
+  	\item \verb@bar@
+  	\item and \verb@x@ is also.
+  \end{itemize}
+
 ---
 name: extended block code
 in: |-
@@ -226,3 +240,4 @@ valid_html: false
 name: code containing parentheses
 in: 'p. @some_method(some_params, some => test);@ Oh dear this fails'
 html: '<p><code>some_method(some_params, some =&gt; test);</code> Oh dear this fails</p>'
+latex: "\\verb@some_method(some_params, some => test);@ Oh dear this fails\n\n"

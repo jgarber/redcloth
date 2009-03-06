@@ -41,7 +41,13 @@ module RedCloth::Formatters::LATEX
       "\\#{tag}{#{opts[:text]}}"
     end
   end
+
+  # inline verbatim
+  define_method(:code) do |opts|
+    opts[:block] ? opts[:text] : "\\verb@#{opts[:text]}@"
+  end
   
+  # sub/superscripts
   { :sup => '\ensuremath{^\textrm{#1}}',
     :sub => '\ensuremath{_\textrm{#1}}',
   }.each do |m, expr|
@@ -52,7 +58,6 @@ module RedCloth::Formatters::LATEX
   
   # environments
   { :pre  => 'verbatim',
-    :code => 'verbatim',
     :cite => 'quote',
     }.each do |m, env|
     define_method(m) do |opts|
