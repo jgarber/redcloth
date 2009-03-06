@@ -18,8 +18,8 @@ module RedCloth::Formatters::LATEX
   { :h1 => 'section*',
     :h2 => 'subsection*',
     :h3 => 'subsubsection*',
-    :h4 => 'textbf',
-    :h5 => 'textbf',
+    :h4 => 'paragraph*',
+    :h5 => 'subparagraph*',
     :h6 => 'textbf',
   }.each do |m,tag| 
     define_method(m) do |opts| 

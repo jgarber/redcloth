@@ -14,6 +14,16 @@ in: h3. Header 3
 html: <h3>Header 3</h3>
 latex: "\subsubsection*{Header 3}\n\n"
 ---
+name: header four
+in: h4. Header 4
+html: <h4>Header 4</h4>
+latex: "\paragraph*{Header 4}\n\n"
+---
+name: header five
+in: h5. Header 5
+html: <h5>Header 5</h5>
+latex: "\subparagraph*{Header 5}\n\n"
+---
 name: blockquote
 in: |-
   Any old text.
