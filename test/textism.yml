@@ -204,10 +204,12 @@ html: |-
   	</tr>
   </table>
 latex: |
-  \begin{tabular}{ l l l l l }
-    This & is & a & simple & table \\
-    This & is & a & simple & row \\
-  \end{tabular}
+  \begin{table}
+    \begin{tabular}{ l l l l l }
+      This & is & a & simple & table \\
+      This & is & a & simple & row \\
+    \end{tabular}
+  \end{table}
 ---
 in: |-
   table{border:1px solid black}.

@@ -137,7 +137,7 @@ module RedCloth::Formatters::LATEX
   end
   
   def table_close(opts)
-    output = "\\begin{table}[htbp]\n  \\begin{tabular}{ #{"l " * @table[0].size }}\n"
+    output = "\\begin{table}\n  \\begin{tabular}{ #{"l " * @table[0].size }}\n"
     @table.each do |row|
       output << "    #{row.join(" & ")} \\\\\n"
     end
@@ -179,7 +179,7 @@ module RedCloth::Formatters::LATEX
     # Resolve CSS styles if any have been set
     styling = opts[:class].to_s.split(/\s+/).collect { |style| latex_image_styles[style] }.compact.join ','
     # Build latex code
-    [ "\\begin{figure}[htbp]",
+    [ "\\begin{figure}",
       "  \\includegraphics[#{styling}]{#{opts[:src]}}",
      ("  \\caption{#{escape opts[:title]}}" if opts[:title]),
      ("  \\label{#{escape opts[:alt]}}" if opts[:alt]),
