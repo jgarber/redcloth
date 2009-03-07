@@ -136,12 +136,16 @@ module RedCloth::Formatters::LATEX
     return ""
   end
   
+  # FIXME: need caption and label elements similar to image -> figure
   def table_close(opts)
-    output = "\\begin{table}\n  \\begin{tabular}{ #{"l " * @table[0].size }}\n"
+    output  = "\\begin{table}\n"
+    output << "  \\centering\n"
+    output << "  \\begin{tabular}{ #{"l " * @table[0].size }}\n"
     @table.each do |row|
       output << "    #{row.join(" & ")} \\\\\n"
     end
-    output << "  \\end{tabular}\n\\end{table}\n"
+    output << "  \\end{tabular}\n"
+    output << "\\end{table}\n"
     output
   end
 
@@ -180,6 +184,7 @@ module RedCloth::Formatters::LATEX
     styling = opts[:class].to_s.split(/\s+/).collect { |style| latex_image_styles[style] }.compact.join ','
     # Build latex code
     [ "\\begin{figure}",
+      "  \\centering",
       "  \\includegraphics[#{styling}]{#{opts[:src]}}",
      ("  \\caption{#{escape opts[:title]}}" if opts[:title]),
      ("  \\label{#{escape opts[:alt]}}" if opts[:alt]),

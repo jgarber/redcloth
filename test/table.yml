@@ -20,6 +20,7 @@ html: |-
   <h3>A header after the table</h3>
 latex: |+
   \begin{table}
+    \centering
     \begin{tabular}{ l l l }
       a & b & c \\
       1 & 2 & 3 \\
@@ -67,6 +68,7 @@ html: |-
   </table>
 latex: |+
   \begin{table}
+    \centering
     \begin{tabular}{ l l l l l }
       This & is & a & simple & table \\
       This & is & a & simple & row \\
@@ -188,6 +190,7 @@ html: |-
   </table>
 latex: |+
   \begin{table}
+    \centering
     \begin{tabular}{ l l }
       Cell with gray background & Normal cell \\
       \multicolumn{2}{ l l }{Cell spanning 2 columns} \\
@@ -232,6 +235,7 @@ html: |-
   </table>
 latex: |+
   \begin{table}
+    \centering
     \begin{tabular}{ l l l }
       1 & 2 & 3 \\
       1 & \multirow{3}{*}{2} & 3 \\

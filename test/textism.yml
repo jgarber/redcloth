@@ -205,6 +205,7 @@ html: |-
   </table>
 latex: |
   \begin{table}
+    \centering
     \begin{tabular}{ l l l l l }
       This & is & a & simple & table \\
       This & is & a & simple & row \\
