@@ -48,8 +48,8 @@ module RedCloth::Formatters::LATEX
   end
   
   # sub/superscripts
-  { :sup => '\ensuremath{^\textrm{#1}}',
-    :sub => '\ensuremath{_\textrm{#1}}',
+  { :sup => '\textsuperscript{#1}',
+    :sub => '\textsubscript{#1}',
   }.each do |m, expr|
     define_method(m) do |opts|
       expr.sub('#1', opts[:text])

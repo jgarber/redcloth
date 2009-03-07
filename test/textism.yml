@@ -144,10 +144,11 @@ latex: "\\underline{a phrase}\n\n"
 ---
 in: ^a phrase^
 html: <p><sup>a phrase</sup></p>
-latex: "\\ensuremath{^\\textrm{a phrase}}\n\n"
+latex: "\\textsuperscript{a phrase}\n\n"
 ---
 in: ~a phrase~
 html: <p><sub>a phrase</sub></p>
+latex: "\\textsubscript{a phrase}\n\n"
 ---
 in: %(myclass)SPAN%
 html: <p><span class="myclass"><span class="caps">SPAN</span></span></p>
