@@ -93,7 +93,7 @@ module RedCloth::Formatters::LATEX
   def li_close(opts=nil)
     "\n"
   end
-  
+
   def p(opts)
     opts[:text] + "\n\n"
   end
@@ -137,11 +137,11 @@ module RedCloth::Formatters::LATEX
   end
   
   def table_close(opts)
-    output = "\\begin{tabular}{ #{"l " * @table[0].size }}\n"
+    output = "\\begin{table}[htbp]\n  \\begin{tabular}{ #{"l " * @table[0].size }}\n"
     @table.each do |row|
-      output << "  #{row.join(" & ")} \\\\\n"
+      output << "    #{row.join(" & ")} \\\\\n"
     end
-    output << "\\end{tabular}\n"
+    output << "  \\end{tabular}\n\\end{table}\n"
     output
   end
 

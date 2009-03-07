@@ -19,10 +19,12 @@ html: |-
   </table>
   <h3>A header after the table</h3>
 latex: |+
-  \begin{tabular}{ l l l }
-    a & b & c \\
-    1 & 2 & 3 \\
-  \end{tabular}
+  \begin{table}[htbp]
+    \begin{tabular}{ l l l }
+      a & b & c \\
+      1 & 2 & 3 \\
+    \end{tabular}
+  \end{table}
   \subsubsection*{A header after the table}
   
 ---
@@ -64,10 +66,12 @@ html: |-
   	</tr>
   </table>
 latex: |+
-  \begin{tabular}{ l l l l l }
-    This & is & a & simple & table \\
-    This & is & a & simple & row \\
-  \end{tabular}
+  \begin{table}[htbp]
+    \begin{tabular}{ l l l l l }
+      This & is & a & simple & table \\
+      This & is & a & simple & row \\
+    \end{tabular}
+  \end{table}
 ---
 in: |-
   table{border:1px solid black}.
@@ -183,13 +187,15 @@ html: |-
   	</tr>
   </table>
 latex: |+
-  \begin{tabular}{ l l }
-    Cell with gray background & Normal cell \\
-    \multicolumn{2}{ l l }{Cell spanning 2 columns} \\
-    \multirow{2}{*}{Cell spanning 2 rows} & one \\
-     & two \\
-    Right-aligned cell & Left-aligned cell \\
-  \end{tabular}
+  \begin{table}[htbp]
+    \begin{tabular}{ l l }
+      Cell with gray background & Normal cell \\
+      \multicolumn{2}{ l l }{Cell spanning 2 columns} \\
+      \multirow{2}{*}{Cell spanning 2 rows} & one \\
+       & two \\
+      Right-aligned cell & Left-aligned cell \\
+    \end{tabular}
+  \end{table}
 ---
 name: row spanning mid-row
 in: |-
@@ -225,13 +231,15 @@ html: |-
   	</tr>
   </table>
 latex: |+
-  \begin{tabular}{ l l l }
-    1 & 2 & 3 \\
-    1 & \multirow{3}{*}{2} & 3 \\
-    1 &  & 3 \\
-    1 &  & 3 \\
-    1 & 2 & 3 \\
-  \end{tabular}
+  \begin{table}[htbp]
+    \begin{tabular}{ l l l }
+      1 & 2 & 3 \\
+      1 & \multirow{3}{*}{2} & 3 \\
+      1 &  & 3 \\
+      1 &  & 3 \\
+      1 & 2 & 3 \\
+    \end{tabular}
+  \end{table}
 ---
 in: |
   {background:#ddd}. |S|Target|Complete|App|Milestone|
