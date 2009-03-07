@@ -18,8 +18,8 @@ module RedCloth::Formatters::LATEX
   { :h1 => 'section*',
     :h2 => 'subsection*',
     :h3 => 'subsubsection*',
-    :h4 => 'textbf',
-    :h5 => 'textbf',
+    :h4 => 'paragraph*',
+    :h5 => 'subparagraph*',
     :h6 => 'textbf',
   }.each do |m,tag| 
     define_method(m) do |opts| 
@@ -179,7 +179,7 @@ module RedCloth::Formatters::LATEX
     # Resolve CSS styles if any have been set
     styling = opts[:class].to_s.split(/\s+/).collect { |style| latex_image_styles[style] }.compact.join ','
     # Build latex code
-    [ "\\begin{figure}[htp]",
+    [ "\\begin{figure}[htbp]",
       "  \\includegraphics[#{styling}]{#{opts[:src]}}",
      ("  \\caption{#{escape opts[:title]}}" if opts[:title]),
      ("  \\label{#{escape opts[:alt]}}" if opts[:alt]),

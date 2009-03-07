@@ -2,7 +2,7 @@
 in:  This is an !image.jpg!
 html: <p>This is an <img src="image.jpg" alt="" /></p>
 latex: |+
-  This is an \begin{figure}[htp]
+  This is an \begin{figure}[htbp]
     \includegraphics[]{image.jpg}
   \end{figure}
 
@@ -10,7 +10,7 @@ latex: |+
 in:  This is an !image.jpg(with alt text)!
 html: <p>This is an <img src="image.jpg" title="with alt text" alt="with alt text" /></p>
 latex: |+
-  This is an \begin{figure}[htp]
+  This is an \begin{figure}[htbp]
     \includegraphics[]{image.jpg}
     \caption{with alt text}
   \end{figure}
@@ -192,7 +192,7 @@ name: image with relative src with dot
 in: "!../../image.jpg!"
 html: <p><img src="../../image.jpg" alt="" /></p>
 latex: |+
-  \begin{figure}[htp]
+  \begin{figure}[htbp]
     \includegraphics[]{../../image.jpg}
   \end{figure}
 
@@ -225,7 +225,7 @@ name: image attributes has ampersand html entity in alt and title
 in: "!/pictures/cat_and_fox.jpg(Trady Blix & The cartoon fox)!"
 html: '<p><img src="/pictures/cat_and_fox.jpg" title="Trady Blix &amp; The cartoon fox" alt="Trady Blix &amp; The cartoon fox" /></p>'
 latex: |+
-  \begin{figure}[htp]
+  \begin{figure}[htbp]
     \includegraphics[]{/pictures/cat_and_fox.jpg}
     \caption{Trady Blix \& The cartoon fox}
   \end{figure}
@@ -235,7 +235,7 @@ name: image attributes has double quote html entity in alt and title
 in: '!/pictures/bacon.jpg(The fox said: "Have some chunky bacon")!'
 html: '<p><img src="/pictures/bacon.jpg" title="The fox said: &quot;Have some chunky bacon&quot;" alt="The fox said: &quot;Have some chunky bacon&quot;" /></p>'
 latex: |+
-  \begin{figure}[htp]
+  \begin{figure}[htbp]
     \includegraphics[]{/pictures/bacon.jpg}
     \caption{The fox said: "Have some chunky bacon"}
   \end{figure}
