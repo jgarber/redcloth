@@ -15,11 +15,11 @@ module RedCloth::Formatters::LATEX
   RedCloth::TextileDoc.send(:include, Settings)
   
   # headers
-  { :h1 => 'section*',
-    :h2 => 'subsection*',
-    :h3 => 'subsubsection*',
-    :h4 => 'paragraph*',
-    :h5 => 'subparagraph*',
+  { :h1 => 'section',
+    :h2 => 'subsection',
+    :h3 => 'subsubsection',
+    :h4 => 'paragraph',
+    :h5 => 'subparagraph',
     :h6 => 'textbf',
   }.each do |m,tag| 
     define_method(m) do |opts| 

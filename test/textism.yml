@@ -2,27 +2,27 @@
 name: header one
 in: h1. Header 1
 html: <h1>Header 1</h1>
-latex: "\\section*{Header 1}\n\n"
+latex: "\\section{Header 1}\n\n"
 ---
 name: header two
 in: h2. Header 2
 html: <h2>Header 2</h2>
-latex: "\\subsection*{Header 2}\n\n"
+latex: "\\subsection{Header 2}\n\n"
 ---
 name: header three
 in: h3. Header 3
 html: <h3>Header 3</h3>
-latex: "\\subsubsection*{Header 3}\n\n"
+latex: "\\subsubsection{Header 3}\n\n"
 ---
 name: header four
 in: h4. Header 4
 html: <h4>Header 4</h4>
-latex: "\\paragraph*{Header 4}\n\n"
+latex: "\\paragraph{Header 4}\n\n"
 ---
 name: header five
 in: h5. Header 5
 html: <h5>Header 5</h5>
-latex: "\\subparagraph*{Header 5}\n\n"
+latex: "\\subparagraph{Header 5}\n\n"
 ---
 name: header six
 in: h6. Header 6

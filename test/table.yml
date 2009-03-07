@@ -25,7 +25,7 @@ latex: |+
       1 & 2 & 3 \\
     \end{tabular}
   \end{table}
-  \subsubsection*{A header after the table}
+  \subsubsection{A header after the table}
   
 ---
 in: |
