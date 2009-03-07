@@ -87,7 +87,7 @@ module RedCloth::Formatters::LATEX
   end
   
   def li_open(opts)
-    "#{li_close unless opts.delete(:first)}\t\\item #{opts[:text]}"
+    "#{li_close unless opts.delete(:first)}  \\item #{opts[:text]}"
   end
   
   def li_close(opts=nil)

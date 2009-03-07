@@ -136,9 +136,9 @@ html: |-
   </ul>
 latex: |+
   \begin{itemize}
-  	\item \verb@foo@
-  	\item \verb@bar@
-  	\item and \verb@x@ is also.
+    \item \verb@foo@
+    \item \verb@bar@
+    \item and \verb@x@ is also.
   \end{itemize}
 
 ---

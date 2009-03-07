@@ -69,10 +69,10 @@ html: |-
   </ol>
 latex: |+
   \begin{enumerate}
-  	\item A first item
-  	\item A second item
-  	\item A third item
-  	\item A fourth item
+    \item A first item
+    \item A second item
+    \item A third item
+    \item A fourth item
   \end{enumerate}
   
 ---
@@ -91,10 +91,10 @@ html: |-
   </ul>
 latex: |+
   \begin{itemize}
-  	\item A first item
-  	\item A second item
-  	\item A third item
-  	\item A fourth item
+    \item A first item
+    \item A second item
+    \item A third item
+    \item A fourth item
   \end{itemize}
   
 ---
