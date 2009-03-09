@@ -21,7 +21,7 @@
   block_start = ( btype >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) >B %{ STORE_B("fallback"); };
   all_btypes = btype | non_ac_btype;
   next_block_start = ( all_btypes A_noactions C_noactions :> "."+ " " ) >A @{ p = reg - 1; } ;
-  double_return = LF{2,} ;
+  double_return = LF [ \t]* LF ;
   block_end = ( double_return | EOF );
   ftype = ( "fn" >A %{ STORE("type"); } digit+ >A %{ STORE("id"); } ) ;
   footnote_start = ( ftype A C :> dotspace ) ;

@@ -9,6 +9,14 @@ html: |-
   <p>A single paragraph.</p>
   <p>Followed by another.</p>
 ---
+name: blocks with spaces on the blank line in between
+in: "This is line one\n \nThis is line two"
+html: "<p>This is line one</p>\n<p>This is line two</p>"
+---
+name: blocks with tabl on the blank line in between
+in: "This is line one\n\t\nThis is line two"
+html: "<p>This is line one</p>\n<p>This is line two</p>"
+---
 name: block containing block start
 in: |-
   I saw a ship. It ate my elephant.

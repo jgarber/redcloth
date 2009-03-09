@@ -1,5 +1,7 @@
 === Edge
 
+* Ignore spaces and tabs on blank lines between blocks. #120 [Jason Garber]
+
 * Allow HTML tags with quoted attributes to be inside link text.  To do this, I had to remove the possibility that attributes in HTML tags could have spaces around the equals sign or unquoted attributes.  This change also greatly expands the complexity of the state machine, so compilation takes a long time. Sorry. [Jason Garber]
 
 * Many improvements to the LaTeX formatter by Bil Kleb, a NASA scientist who's been working with LaTeX for 20 years.  Thanks, Bil!
