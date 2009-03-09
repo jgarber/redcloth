@@ -7,13 +7,27 @@
 
   machine redcloth_inline;
 
+  # html
+  start_tag_noactions = "<" Name space+ AttrSet* (AttrEnd)? ">" | "<" Name ">" ;
+  empty_tag_noactions = "<" Name space+ AttrSet* (AttrEnd)? "/>" | "<" Name "/>" ;
+  end_tag_noactions = "</" Name space* ">" ;
+  any_tag_noactions = ( start_tag_noactions | empty_tag_noactions | end_tag_noactions ) ;
+  
+  start_tag = start_tag_noactions >X >A %T ;
+  empty_tag = empty_tag_noactions >X >A %T ;
+  end_tag = end_tag_noactions >X >A %T ;
+  html_comment = ("<!--" (default+) :>> "-->") >X >A %T;
+  
   # links
-  mtext_noquotes = mtext -- '"' ;
-  quoted_mtext = '"' mtext_noquotes '"' ;
-  mtext_including_quotes = (mtext_noquotes ' "' mtext_noquotes '" ' mtext_noquotes?)+ ;
-  link_says = ( C_noactions "."* " "* ((quoted_mtext | mtext_including_quotes | mtext_noquotes) -- '":') ) >A %{ STORE("name"); } ;
-  link_says_noquotes_noactions = ( C_noquotes_noactions "."* " "* ((mtext_noquotes) -- '":') ) ;
-  link = ( '"' link_says '":' %A uri %{ STORE_URL("href"); } ) >X ;
+  link_text_char = (default - [ "<>]) ;
+  link_text_char_or_tag = ( link_text_char | any_tag_noactions ) ;
+  link_mtext = ( link_text_char+ (mspace link_text_char+)* ) ;
+  quoted_mtext = '"' link_mtext '"' ;
+  link_mtext_including_tags = ( link_text_char_or_tag+ (mspace link_text_char_or_tag+)* ) ;
+  mtext_including_quotes = (link_mtext ' "' link_mtext '" ' link_mtext?)+ ;
+  link_says = ( C_noactions "."* " "* (quoted_mtext | mtext_including_quotes | link_mtext_including_tags ) ) >A %{ STORE("name"); } ;
+  link_says_noquotes_noactions = ( C_noquotes_noactions "."* " "* ((link_mtext) -- '":') ) ;
+  link = ( '"' link_says :>> '":' %A uri %{ STORE_URL("href"); } ) >X ;
   link_noquotes_noactions = ( '"' link_says_noquotes_noactions '":' uri ) ;
   bracketed_link = ( '["' link_says '":' %A uri %{ STORE("href"); } :> "]" ) >X ;
 
@@ -57,12 +71,6 @@
   quote2 = ('"' >X %A ( mtext_inside_quotes - (mtext_inside_quotes html_tag_up_to_attribute_quote ) ) %T :> '"' ) ;
   multi_paragraph_quote = (('"' when starts_line) >X  %A ( chars -- '"' ) %T );
   
-  # html
-  start_tag = ( "<" Name space+ AttrSet* (AttrEnd)? ">" | "<" Name ">" ) >X >A %T ;
-  empty_tag = ( "<" Name space+ AttrSet* (AttrEnd)? "/>" | "<" Name "/>" ) >X >A %T ;
-  end_tag = ( "</" Name space* ">" ) >X >A %T ;
-  html_comment = ("<!--" (default+) :>> "-->") >X >A %T;
-
   # glyphs
   ellipsis = ( " "? >A %T "..." ) >X ;
   emdash = "--" ;

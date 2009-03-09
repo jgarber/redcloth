@@ -283,3 +283,9 @@ in: |-
   "British Skin Foundation (BSF)":http://www.britishskinfoundation.org.uk
 html: |-
   <p><a href="http://www.britishskinfoundation.org.uk" title="BSF">British Skin Foundation</a></p>
+---
+name: containing HTML tags with quotes
+in: |-
+  "<r:attachment:image name="checkmark.gif" alt="Apply online" />*apply online*":/admissions/apply/
+html: |-
+  <p><a href="/admissions/apply/"><r:attachment:image name="checkmark.gif" alt="Apply online" /><strong>apply online</strong></a></p>
