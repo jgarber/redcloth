@@ -15,11 +15,11 @@ module RedCloth::Formatters::LATEX
   RedCloth::TextileDoc.send(:include, Settings)
   
   # headers
-  { :h1 => 'section*',
-    :h2 => 'subsection*',
-    :h3 => 'subsubsection*',
-    :h4 => 'textbf',
-    :h5 => 'textbf',
+  { :h1 => 'section',
+    :h2 => 'subsection',
+    :h3 => 'subsubsection',
+    :h4 => 'paragraph',
+    :h5 => 'subparagraph',
     :h6 => 'textbf',
   }.each do |m,tag| 
     define_method(m) do |opts| 
@@ -41,9 +41,15 @@ module RedCloth::Formatters::LATEX
       "\\#{tag}{#{opts[:text]}}"
     end
   end
+
+  # inline verbatim
+  define_method(:code) do |opts|
+    opts[:block] ? opts[:text] : "\\verb@#{opts[:text]}@"
+  end
   
-  { :sup => '\ensuremath{^\textrm{#1}}',
-    :sub => '\ensuremath{_\textrm{#1}}',
+  # sub/superscripts
+  { :sup => '\textsuperscript{#1}',
+    :sub => '\textsubscript{#1}',
   }.each do |m, expr|
     define_method(m) do |opts|
       expr.sub('#1', opts[:text])
@@ -52,7 +58,6 @@ module RedCloth::Formatters::LATEX
   
   # environments
   { :pre  => 'verbatim',
-    :code => 'verbatim',
     :cite => 'quote',
     }.each do |m, env|
     define_method(m) do |opts|
@@ -82,13 +87,13 @@ module RedCloth::Formatters::LATEX
   end
   
   def li_open(opts)
-    "#{li_close unless opts.delete(:first)}\t\\item #{opts[:text]}"
+    "#{li_close unless opts.delete(:first)}  \\item #{opts[:text]}"
   end
   
   def li_close(opts=nil)
     "\n"
   end
-  
+
   def p(opts)
     opts[:text] + "\n\n"
   end
@@ -131,12 +136,16 @@ module RedCloth::Formatters::LATEX
     return ""
   end
   
+  # FIXME: need caption and label elements similar to image -> figure
   def table_close(opts)
-    output = "\\begin{tabular}{ #{"l " * @table[0].size }}\n"
+    output  = "\\begin{table}\n"
+    output << "  \\centering\n"
+    output << "  \\begin{tabular}{ #{"l " * @table[0].size }}\n"
     @table.each do |row|
-      output << "  #{row.join(" & ")} \\\\\n"
+      output << "    #{row.join(" & ")} \\\\\n"
     end
-    output << "\\end{tabular}\n"
+    output << "  \\end{tabular}\n"
+    output << "\\end{table}\n"
     output
   end
 
@@ -174,7 +183,8 @@ module RedCloth::Formatters::LATEX
     # Resolve CSS styles if any have been set
     styling = opts[:class].to_s.split(/\s+/).collect { |style| latex_image_styles[style] }.compact.join ','
     # Build latex code
-    [ "\\begin{figure}[htp]",
+    [ "\\begin{figure}",
+      "  \\centering",
       "  \\includegraphics[#{styling}]{#{opts[:src]}}",
      ("  \\caption{#{escape opts[:title]}}" if opts[:title]),
      ("  \\label{#{escape opts[:alt]}}" if opts[:alt]),
