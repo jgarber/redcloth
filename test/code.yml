@@ -4,6 +4,11 @@ in: 'This is an empty dictionary: @{}@'
 html: '<p>This is an empty dictionary: <code>{}</code></p>'
 latex: "This is an empty dictionary: \\verb@{}@\n\n"
 ---
+name: inline snip
+in: "The ```command``` is here."
+html:  "<p>The <pre><code>command</code></pre>\n is here.</p>"
+latex: "The \\verb`command` is here.\n\n"
+---
 name: inline code escapement
 in: 'Please type @cat "file.txt" > otherfile.txt@ at the prompt.'
 html: '<p>Please type <code>cat "file.txt" &gt; otherfile.txt</code> at the prompt.</p>'

@@ -203,7 +203,7 @@ module RedCloth::Formatters::LATEX
   end
   
   def snip(opts)
-    "\\begin{verbatim}#{opts[:text]}\\end{verbatim}"
+    "\\verb`#{opts[:text]}`"
   end
   
   def quote1(opts)
