@@ -2354,7 +2354,7 @@ tilde: \~{}
 #HORIZONTAL TABULATION
 "9": \>,\=
 #LINE FEED
-"10": \\
+"10": "\n"
 #SINGLE LEFT-POINTING ANGLE QUOTATION MARK
 #requires fontenc:T1
 lsaquo: \guilsinglleft{}
