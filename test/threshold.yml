@@ -279,6 +279,9 @@ in: |-
 html: |-
   <pre>Pre-formatted
   text</pre>
+latex: |-
+  \begin{verbatim}Pre-formatted
+  text\end{verbatim}
 ---
 name: notextile
 desc: The notextile. block modifier applies no Textile processing at all to a block. Raw XHTML characters are passed through untouched, so this may be used to insert explicit XHTML markup, or execute Javascript or PHP code.
