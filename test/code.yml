@@ -31,7 +31,7 @@ latex: "This paragraph is aligned left but if you add this: \\verb@p>.@ to the b
 name: escapes code snippet containing html tag
 in: 'At the top of each page, please put @<h2>Title</h2>@ in the HTML.'
 html: '<p>At the top of each page, please put <code>&lt;h2&gt;Title&lt;/h2&gt;</code> in the <span class="caps">HTML</span>.</p>'
-latex: "At the top of each page, please put \\verb@<h2>Title</h2>@ in the \\MakeUppercase{HTML}.\n\n"
+latex: "At the top of each page, please put \\verb@<h2>Title</h2>@ in the HTML.\n\n"
 ---
 name: escaping in blockcode
 in: 'bc. This is within a block of code, so < and > should be entities.  You can talk about a <p class="foo"> tag if you wish and it will be properly escaped.'

@@ -34,8 +34,6 @@ module RedCloth::Formatters::LATEX
     :b  => 'textbf',
     :ins => 'underline',
     :del => 'sout',
-    :acronym => 'MakeUppercase',
-    :caps => 'MakeUppercase',
   }.each do |m,tag|
     define_method(m) do |opts|
       "\\#{tag}{#{opts[:text]}}"
@@ -68,6 +66,8 @@ module RedCloth::Formatters::LATEX
   # ignore (or find a good solution later)
   [ :span,
     :div,
+    :acronym,
+    :caps
     ].each do |m|
     define_method(m) do |opts|
       opts[:text].to_s
