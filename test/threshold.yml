@@ -94,12 +94,14 @@ desc: Acronyms consist of three or more uppercase characters, followed immediate
 in: ABC(Always Be Closing)
 html: <p><acronym title="Always Be Closing"><span class="caps">ABC</span></acronym></p>
 no_span_caps_html: <p><acronym title="Always Be Closing">ABC</acronym></p>
+latex: "Always Be Closing (ABC)\n\n"
 ---
 name: uppercase
 desc: Uppercase words of three or more characters are enclosed with a special span element.
 in: IBM or HAL
 html: <p><span class="caps">IBM</span> or <span class="caps">HAL</span></p>
 no_span_caps_html: <p>IBM or HAL</p>
+latex: "IBM or HAL\n\n"
 ---
 name: emphasis
 desc: Emphasis is added with _ underscores.

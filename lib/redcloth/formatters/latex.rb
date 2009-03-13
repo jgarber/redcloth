@@ -44,6 +44,11 @@ module RedCloth::Formatters::LATEX
   define_method(:code) do |opts|
     opts[:block] ? opts[:text] : "\\verb@#{opts[:text]}@"
   end
+
+  # acronym
+  define_method(:acronym) do |opts|
+    "#{opts[:title]} (#{opts[:text]})"
+  end
   
   # sub/superscripts
   { :sup => '\textsuperscript{#1}',
@@ -66,7 +71,6 @@ module RedCloth::Formatters::LATEX
   # ignore (or find a good solution later)
   [ :span,
     :div,
-    :acronym,
     :caps
     ].each do |m|
     define_method(m) do |opts|
