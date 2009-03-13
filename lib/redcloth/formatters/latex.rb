@@ -2,7 +2,7 @@ require 'yaml'
 
 module RedCloth::Formatters::LATEX
   include RedCloth::Formatters::Base
-  
+
   ENTITIES = YAML::load(File.read(File.dirname(__FILE__)+'/latex_entities.yml')) 
 
   module Settings
@@ -13,7 +13,7 @@ module RedCloth::Formatters::LATEX
   end
 
   RedCloth::TextileDoc.send(:include, Settings)
-  
+
   # headers
   { :h1 => 'section',
     :h2 => 'subsection',
@@ -26,7 +26,7 @@ module RedCloth::Formatters::LATEX
       "\\#{tag}{#{opts[:text]}}\n\n" 
     end 
   end 
-  
+
   # commands 
   { :strong => 'textbf',
     :em => 'emph',
@@ -40,11 +40,16 @@ module RedCloth::Formatters::LATEX
     end
   end
 
-  # inline verbatim
-  define_method(:code) do |opts|
+  # inline code
+  def code(opts)
     opts[:block] ? opts[:text] : "\\verb@#{opts[:text]}@"
   end
-  
+
+  # acronyms
+  def acronym(opts)
+    "#{opts[:title]} (#{opts[:text]})"
+  end
+
   # sub/superscripts
   { :sup => '\textsuperscript{#1}',
     :sub => '\textsubscript{#1}',
@@ -53,7 +58,7 @@ module RedCloth::Formatters::LATEX
       expr.sub('#1', opts[:text])
     end
   end
-  
+
   # environments
   { :pre  => 'verbatim',
     :cite => 'quote',
@@ -62,18 +67,18 @@ module RedCloth::Formatters::LATEX
       begin_chunk(env) + opts[:text] + end_chunk(env)
     end
   end
-  
+
   # ignore (or find a good solution later)
   [ :span,
     :div,
-    :acronym,
     :caps
     ].each do |m|
     define_method(m) do |opts|
       opts[:text].to_s
     end
   end
-  
+
+  # lists
   { :ol => 'enumerate',
     :ul => 'itemize',
     }.each do |m, env|
@@ -85,19 +90,21 @@ module RedCloth::Formatters::LATEX
       "#{li_close}\\end{#{env}}\n\n"
     end
   end
-  
+
   def li_open(opts)
     "#{li_close unless opts.delete(:first)}  \\item #{opts[:text]}"
   end
-  
+
   def li_close(opts=nil)
     "\n"
   end
 
+  # paragraphs
   def p(opts)
     opts[:text] + "\n\n"
   end
-  
+
+  # tables
   def td(opts)
     column = @table_row.size
     if opts[:colspan]
@@ -110,12 +117,12 @@ module RedCloth::Formatters::LATEX
     @table_row.push(opts[:text])
     return ""
   end
-  
+
   def tr_open(opts)
     @table_row = []
     return ""
   end
-  
+
   def tr_close(opts)
     multirow_columns = @table_multirow.find_all {|c,n| n > 0}
     multirow_columns.each do |c,n|
@@ -127,7 +134,7 @@ module RedCloth::Formatters::LATEX
     @table.push(@table_row)
     return ""
   end
-  
+
   # We need to know the column count before opening tabular context.
   def table_open(opts)
     @table = []
@@ -135,7 +142,7 @@ module RedCloth::Formatters::LATEX
     @table_multirow_next = {}
     return ""
   end
-  
+
   # FIXME: need caption and label elements similar to image -> figure
   def table_close(opts)
     output  = "\\begin{table}\n"
@@ -149,6 +156,7 @@ module RedCloth::Formatters::LATEX
     output
   end
 
+  # code blocks
   def bc_open(opts)
     opts[:block] = true
     begin_chunk("verbatim") + "\n"
@@ -158,6 +166,7 @@ module RedCloth::Formatters::LATEX
     end_chunk("verbatim") + "\n"
   end
 
+  # block quotations
   def bq_open(opts)
     opts[:block] = true
     "\\begin{quotation}\n"
@@ -166,7 +175,8 @@ module RedCloth::Formatters::LATEX
   def bq_close(opts)
     "\\end{quotation}\n\n"
   end
-  
+
+  # links
   def link(opts)
     "\\href{#{opts[:href]}}{#{opts[:name]}}"
   end
@@ -191,73 +201,75 @@ module RedCloth::Formatters::LATEX
       "\\end{figure}",
     ].compact.join "\n"
   end
-  
+
+  # footnotes
   def footno(opts)
     # TODO: insert a placeholder until we know the footnote content.
     # For this to work, we need some kind of post-processing...
     "\\footnotemark[#{opts[:text]}]"
   end
-  
+
   def fn(opts)
     "\\footnotetext[#{opts[:id]}]{#{opts[:text]}}"
   end
-  
+
+  # inline verbatim
   def snip(opts)
     "\\verb`#{opts[:text]}`"
   end
-  
+
   def quote1(opts)
     "`#{opts[:text]}'"
   end
-  
+
   def quote2(opts)
     "``#{opts[:text]}\""
   end
-  
+
   def ellipsis(opts)
     "#{opts[:text]}\\ldots{}"
   end
-  
+
   def emdash(opts)
     "---"
   end
-  
+
   def endash(opts)
     "--"
   end
-  
+
   def arrow(opts)
     "\\rightarrow{}"
   end
-  
+
   def trademark(opts)
     "\\texttrademark{}"
   end
-  
+
   def registered(opts)
     "\\textregistered{}"
   end
-  
+
   def copyright(opts)
     "\\copyright{}"
   end
-  
+
   # TODO: what do we do with (unknown) unicode entities ? 
   #
   def entity(opts)
     text = opts[:text][0..0] == '#' ? opts[:text][1..-1] : opts[:text] 
     ENTITIES[text]
   end
-  
+
   def dim(opts)
     opts[:text].gsub!('x', '\times')
     opts[:text].gsub!('"', "''")
     period = opts[:text].slice!(/\.$/)
     "$#{opts[:text]}$#{period}"
   end
-  
+
   private
-  
+
   def escape(text)
     latex_esc(text)
   end
@@ -265,14 +277,14 @@ module RedCloth::Formatters::LATEX
   def escape_pre(text)
     text
   end
-  
+
   # Use this for block level commands that use \begin
   def begin_chunk(type)
     chunk_counter[type] += 1
     return "\\begin{#{type}}" if 1 == chunk_counter[type]
     ''
   end
-  
+
   # Use this for block level commands that use \end
   def end_chunk(type)
     chunk_counter[type] -= 1
@@ -280,7 +292,7 @@ module RedCloth::Formatters::LATEX
     return "\\end{#{type}}" if 0 == chunk_counter[type]
     ''
   end
-  
+
   def chunk_counter
     @chunk_counter ||= Hash.new 0
   end
