@@ -42,7 +42,6 @@ redcloth_transform(self, p, pe, refs)
   VALUE list_layout = Qnil;
   char *list_type = NULL;
   VALUE list_index = rb_ary_new();
-  int list_continue = 0;
   VALUE plain_block; SET_PLAIN_BLOCK("p");
   VALUE extend = Qnil;
   char listm[10] = "";

@@ -4,7 +4,7 @@ class RagelProfiler
   COMMANDS =  { :compile => %w(ragel rlgen-cd gcc-4.0 gnumake cc1),
                 :test    => %w(ruby) }
                 
-  FIELDS = %w(compile_time compile_max_rss test_time test_max_rss ext_so_size)
+  FIELDS = %w(compile_time compile_max_rss test_time test_max_rss file_size)
                 
   @@results = {}
 
@@ -32,8 +32,8 @@ class RagelProfiler
     store_result(type, "max_rss", t[:max])
   end
   
-  def ext_size(ext_so)
-    store_result(:ext_so, "size", File.size(ext_so) / MEM_CONVERSION)
+  def ext_size(file)
+    store_result(:file, "size", File.size(file) / MEM_CONVERSION)
   end
   
   def self.results

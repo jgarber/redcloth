@@ -109,7 +109,7 @@
     link { PARSE_LINK_ATTR("name"); PASS(block, "name", "link"); };
     bracketed_link { PARSE_LINK_ATTR("name"); PASS(block, "name", "link"); };
     
-    code { PARSE_ATTR("text"); PASS_CODE(block, "text", "code", opts); };
+    code { PARSE_ATTR("text"); PASS_CODE(block, "text", "code"); };
     code_tag_start { CAT(block); fgoto code_tag; };
     notextile { INLINE(block, "notextile"); };
     strong { PARSE_ATTR("text"); PASS(block, "text", "strong"); };

@@ -51,6 +51,8 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 /* parser macros */
 #define CLEAR_REGS()   regs = rb_hash_new();
 #define RESET_REG()    reg = NULL
+#define MARK()         reg = p;
+#define MARK_B()       bck = p;
 #define CAT(H)         rb_str_cat(H, ts, te-ts)
 #define CLEAR(H)       H = STR_NEW2("")
 #define RSTRIP_BANG(H)      rb_funcall(H, rb_intern("rstrip!"), 0)
@@ -62,7 +64,7 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define PARSE_ATTR(A)  red_parse_attr(self, regs, ID2SYM(rb_intern(A)))
 #define PARSE_LINK_ATTR(A)  red_parse_link_attr(self, regs, ID2SYM(rb_intern(A)))
 #define PARSE_IMAGE_ATTR(A)  red_parse_image_attr(self, regs, ID2SYM(rb_intern(A)))
-#define PASS_CODE(H, A, T, O) rb_str_append(H, red_pass_code(self, regs, ID2SYM(rb_intern(A)), rb_intern(T)))
+#define PASS_CODE(H, A, T) rb_str_append(H, red_pass_code(self, regs, ID2SYM(rb_intern(A)), rb_intern(T)))
 #define ADD_BLOCK() \
   rb_str_append(html, red_block(self, regs, block, refs)); \
   extend = Qnil; \
@@ -70,11 +72,11 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
   CLEAR_REGS()
 #define ADD_EXTENDED_BLOCK()    rb_str_append(html, red_block(self, regs, block, refs)); CLEAR(block);
 #define END_EXTENDED()     extend = Qnil; CLEAR_REGS();
-#define IS_NOT_EXTENDED()     NIL_P(extend)
 #define ADD_BLOCKCODE()    rb_str_append(html, red_blockcode(self, regs, block)); CLEAR(block); CLEAR_REGS()
 #define ADD_EXTENDED_BLOCKCODE()    rb_str_append(html, red_blockcode(self, regs, block)); CLEAR(block);
 #define ASET(T, V)     rb_hash_aset(regs, ID2SYM(rb_intern(T)), STR_NEW2(V));
 #define AINC(T)        red_inc(regs, ID2SYM(rb_intern(T)));
+#define INC(N)         N++;
 #define SET_ATTRIBUTES() \
   SET_ATTRIBUTE("class_buf", "class"); \
   SET_ATTRIBUTE("id_buf", "id"); \
@@ -141,6 +143,9 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 #define STORE_LINK_ALIAS() \
   rb_hash_aset(refs_found, rb_hash_aref(regs, ID2SYM(rb_intern("text"))), rb_hash_aref(regs, ID2SYM(rb_intern("href"))))
 #define CLEAR_LIST() list_layout = rb_ary_new()
+#define SET_LIST_TYPE(T) list_type = T;
+#define NEST() nest ++;
+#define RESET_NEST() nest = 0;
 #define LIST_ITEM() \
     int aint = 0; \
     VALUE aval = rb_ary_entry(list_index, nest-1); \
@@ -152,9 +157,9 @@ VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
     if (nest > RARRAY_LEN(list_layout)) \
     { \
       sprintf(listm, "%s_open", list_type); \
-      if (list_continue == 1) \
+      if (!NIL_P(rb_hash_aref(regs, ID2SYM(rb_intern("list_continue"))))) \
       { \
-        list_continue = 0; \
+        rb_hash_aset(regs, ID2SYM(rb_intern("list_continue")), Qnil); \
         rb_hash_aset(regs, ID2SYM(rb_intern("start")), rb_ary_entry(list_index, nest-1)); \
       } \
       else \

@@ -2,12 +2,13 @@ require 'lib/redcloth/version'
 require 'rubygems'
 gem 'echoe', '>= 3.0.1'
 require 'echoe'
+Dir["#{File.dirname(__FILE__)}/lib/tasks/*.rake"].sort.each { |ext| load(ext) }
 
 e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
   p.summary = RedCloth::DESCRIPTION
   p.author = "Jason Garber"
   p.email = 'redcloth-upwards@rubyforge.org'
-  p.clean_pattern += ['ext/redcloth_scan/**/*.{bundle,so,obj,pdb,lib,def,exp,c,o,xml,class,jar,java}', 'lib/*.{bundle,so,o,obj,pdb,lib,def,exp,jar}', 'ext/redcloth_scan/Makefile']
+  p.clean_pattern += ['ext/redcloth_scan/**/*.{bundle,so,obj,pdb,lib,def,exp,c,o,xml,class,jar,java}', 'lib/*.{bundle,so,o,obj,pdb,lib,def,exp,jar}', 'ext/redcloth_scan/**/redcloth_*.rb', 'lib/redcloth_scan.rb', 'ext/redcloth_scan/Makefile']
   p.url = "http://redcloth.org"
   p.project = "redcloth"
   p.rdoc_pattern = ['README', 'COPING', 'CHANGELOG', 'lib/**/*.rb', 'doc/**/*.rdoc']
@@ -20,10 +21,14 @@ e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
     p.platform = 'x86-mswin32-60'
   elsif Platform.java?
     p.platform = 'universal-java'
+  elsif RUBY_PLATFORM == 'pureruby'
+    p.platform = 'ruby'
   end
   
   if RUBY_PLATFORM =~ /mingw|mswin|java/
     p.need_tar_gz = false
+  elsif RUBY_PLATFORM == 'pureruby'
+    p.need_gem = false
   else
     p.need_zip = true
     p.need_tar_gz = true
@@ -36,6 +41,8 @@ e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
       self.files += ['lib/redcloth_scan.so']
     when /java/
       self.files += ['lib/redcloth_scan.jar']
+    when 'pureruby'
+      self.files += ['lib/redcloth_scan.rb']
     else
       self.files += %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
     end
@@ -45,7 +52,9 @@ e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
 
 end
 
-#### Pre-compiled extensions for alternative platforms
+def remove_other_platforms
+  Dir["lib/redcloth_scan.{bundle,so,jar,rb}"].each { |file| rm file }
+end
 
 def move_extensions
   Dir["ext/**/*.{bundle,so,jar}"].each { |file| mv file, "lib/" }
@@ -75,6 +84,7 @@ when /mingw/
       ruby "-I. extconf.rb"
       system(PLATFORM =~ /mswin/ ? 'nmake' : 'make')
     end
+    remove_other_platforms
     move_extensions
     rm "#{ext}/rbconfig.rb"
   end
@@ -86,7 +96,17 @@ when /java/
     sources = FileList["#{ext}/**/*.java"].join(' ')
     sh "javac -target 1.5 -source 1.5 -d #{ext} #{java_classpath_arg} #{sources}"
     sh "jar cf lib/redcloth_scan.jar -C #{ext} ."
+    remove_other_platforms
     move_extensions
+  end
+  
+when /pureruby/
+  filename = "lib/redcloth_scan.rb"
+  file filename => FileList["#{ext}/redcloth_scan.rb", "#{ext}/redcloth_inline.rb", "#{ext}/redcloth_attributes.rb"] do |task|
+    
+    remove_other_platforms
+    sources = task.prerequisites.join(' ')
+    sh "cat #{sources} > #{filename}"
   end
   
 else
@@ -97,8 +117,21 @@ end
 task :compile => [filename]
 
 def ragel(target_file, source_file)
-  host_language = (target_file =~ /java$/) ? "J" : "C"
-  code_style = (host_language == "C") ? " -" + (@code_style || "T0") : ""
+  host_language = case target_file
+  when /java$/
+    "J"
+  when /rb$/
+    "R"
+  else
+    "C"
+  end
+  preferred_code_style = case host_language
+  when "R"
+    "F1"
+  else
+    "T0"
+  end
+  code_style = " -" + (@code_style || preferred_code_style)
   ensure_ragel_version(target_file) do
     sh %{ragel #{source_file} -#{host_language}#{code_style} -o #{target_file}}
   end
@@ -129,23 +162,39 @@ file "#{ext}/RedclothAttributes.java" =>  ["#{ext}/redcloth_attributes.java.rl",
   ragel "#{ext}/RedclothAttributes.java", "#{ext}/redcloth_attributes.java.rl"
 end
 
+# Ragel-generated pureruby files
+file "#{ext}/redcloth_scan.rb" =>  ["#{ext}/redcloth_scan.rb.rl",   "#{ext}/redcloth_scan.rl", "#{ext}/redcloth_common.rb.rl",   "#{ext}/redcloth_common.rl"] do
+  ragel "#{ext}/redcloth_scan.rb", "#{ext}/redcloth_scan.rb.rl"
+end
+file "#{ext}/redcloth_inline.rb" =>  ["#{ext}/redcloth_inline.rb.rl",   "#{ext}/redcloth_inline.rl", "#{ext}/redcloth_common.rb.rl",   "#{ext}/redcloth_common.rl"] do
+  ragel "#{ext}/redcloth_inline.rb", "#{ext}/redcloth_inline.rb.rl"
+end
+file "#{ext}/redcloth_attributes.rb" =>  ["#{ext}/redcloth_attributes.rb.rl",   "#{ext}/redcloth_attributes.rl", "#{ext}/redcloth_common.rb.rl",   "#{ext}/redcloth_common.rl"] do
+  ragel "#{ext}/redcloth_attributes.rb", "#{ext}/redcloth_attributes.rb.rl"
+end
+
 
 #### Optimization
 
+# C/Ruby code styles
 RAGEL_CODE_GENERATION_STYLES = {
   'T0' => "Table driven FSM (default)",
   'T1' => "Faster table driven FSM",
   'F0' => "Flat table driven FSM",
-  'F1' => "Faster flat table-driven FSM",
+  'F1' => "Faster flat table-driven FSM"
+}
+# C only code styles
+RAGEL_CODE_GENERATION_STYLES.merge!({
   'G0' => "Goto-driven FSM",
   'G1' => "Faster goto-driven FSM",
   'G2' => "Really fast goto-driven FSM"
-}
+}) if RUBY_PLATFORM !~ /pureruby/
 
 desc "Find the fastest code generation style for Ragel"
 task :optimize do
   require 'extras/ragel_profiler'
   results = []
+  
   RAGEL_CODE_GENERATION_STYLES.each do |style, name|
     @code_style = style
     profiler = RagelProfiler.new(style + " " + name)
@@ -162,7 +211,7 @@ task :optimize do
     profiler.measure(:test) do
       Rake::Task['test'].invoke
     end
-    profiler.ext_size(ext_so)
+    profiler.ext_size(filename)
     
   end
   puts RagelProfiler.results

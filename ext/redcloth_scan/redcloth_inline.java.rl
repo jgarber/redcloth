@@ -48,13 +48,13 @@ public class RedclothInline extends RedclothScanService.Base {
   public IRubyObject red_parse_attr(IRubyObject self, IRubyObject regs, IRubyObject ref) {
     IRubyObject txt = ((RubyHash)regs).aref(ref);
     IRubyObject new_regs = RedclothAttributes.attributes(self, txt);
-    return regs.callMethod(runtime.getCurrentContext(), "update", new_regs);
+    return regs.callMethod(runtime.getCurrentContext(), "merge!", new_regs);
   }
 
   public IRubyObject red_parse_link_attr(IRubyObject self, IRubyObject regs, IRubyObject ref) {
     IRubyObject txt = ((RubyHash)regs).aref(ref);
     IRubyObject new_regs = red_parse_title(RedclothAttributes.link_attributes(self, txt), ref);
-    return regs.callMethod(runtime.getCurrentContext(), "update", new_regs);
+    return regs.callMethod(runtime.getCurrentContext(), "merge!", new_regs);
   }
 
   public IRubyObject red_parse_image_attr(IRubyObject self, IRubyObject regs, IRubyObject ref) {

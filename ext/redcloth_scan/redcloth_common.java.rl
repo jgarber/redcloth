@@ -14,5 +14,7 @@
   action starts_phrase {
     p == orig_p || data[(p-1)] == '\r' || data[(p-1)] == '\n' || data[(p-1)] == '\f' || data[(p-1)] == ' '
   }
+  action extended { !extend.isNil() }
+  action not_extended { extend.isNil() }
 
 }%%;

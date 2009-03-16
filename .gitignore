@@ -5,9 +5,11 @@ ext/redcloth_scan/*.so
 ext/redcloth_scan/*.jar
 ext/redcloth_scan/*.class
 ext/redcloth_scan/*.java
+ext/redcloth_scan/redcloth_*.rb
 lib/*.bundle
 lib/*.so
 lib/*.jar
+lib/redcloth_scan.rb
 doc/rdoc/*
 tmp/*
 pkg/*

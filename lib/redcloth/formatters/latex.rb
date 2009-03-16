@@ -267,7 +267,12 @@ module RedCloth::Formatters::LATEX
     period = opts[:text].slice!(/\.$/)
     "$#{opts[:text]}$#{period}"
   end
-
+  
+  # TODO: what do we do with HTML?
+  def inline_html(opts)
+    opts[:text] || ""
+  end
+  
   private
 
   def escape(text)

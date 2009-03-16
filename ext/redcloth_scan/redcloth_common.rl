@@ -2,8 +2,8 @@
 
   machine redcloth_common;
 
-  action A { reg = p; }
-  action B { bck = p; }
+  action A { MARK(); }
+  action B { MARK_B(); }
   action T { STORE("text"); }
   action X { CLEAR_REGS(); RESET_REG(); }
   action cat { CAT(block); }
@@ -34,7 +34,7 @@
   S = ( S_CSPN | S_RSPN )* ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
   D = ( D_HEADER ) ;
-  N_CONT = "_" %{ list_continue = 1; };
+  N_CONT = "_" %{ ASET("list_continue", "true"); };
   N_NUM = digit+ >A %{ STORE("start"); };
   N = ( N_CONT | N_NUM )? ;
   PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "," | "-" | "." | "/" | ":" | ";" | "=" | "?" | "\\" | "^" | "`" | "|" | "~" | "[" | "]" | "(" | ")" | "<" ) ;

@@ -14,5 +14,7 @@
   action starts_phrase {
     p == orig_p || *(p-1) == '\r' || *(p-1) == '\n' || *(p-1) == '\f' || *(p-1) == ' '
   }
+  action extended { !NIL_P(extend) }
+  action not_extended { NIL_P(extend) }
   
 }%%;

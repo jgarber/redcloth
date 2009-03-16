@@ -1,5 +1,7 @@
 === Edge
 
+* Added a pure-ruby version of the parser for times when you can't compile the C or Java extensions.  You should avoid using it if at all possible because it is 32 times slower (and has some other problems, too)! [Jason Garber]
+
 * Ignore spaces and tabs on blank lines between blocks. #120 [Jason Garber]
 
 * Allow HTML tags with quoted attributes to be inside link text.  To do this, I had to remove the possibility that attributes in HTML tags could have spaces around the equals sign or unquoted attributes.  This change also greatly expands the complexity of the state machine, so compilation takes a long time. Sorry. [Jason Garber]
