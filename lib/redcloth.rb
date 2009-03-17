@@ -7,7 +7,15 @@ $:.unshift(File.dirname(__FILE__))
 # appears to be fixed in Edge Rails [51e4106].
 Object.send(:remove_const, :RedCloth) if Object.const_defined?(:RedCloth) && RedCloth.is_a?(Class)
 
-require 'redcloth_scan'
+module RedCloth
+  class NotCompiledError < LoadError; end
+end
+
+begin
+  require 'redcloth_scan'
+rescue LoadError
+  raise RedCloth::NotCompiledError, "RedCloth is extremely fast but must be compiled first. Installing the RedCloth gem is the easiest method."
+end
 require 'redcloth/version'
 require 'redcloth/textile_doc'
 require 'redcloth/formatters/base'

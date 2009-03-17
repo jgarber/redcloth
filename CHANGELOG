@@ -1,5 +1,7 @@
 === Edge
 
+* Added a NotCompiledError to give a friendlier message when people just unpack RedCloth into their projects. [Jason Garber]
+
 * Added a pure-ruby version of the parser for times when you can't compile the C or Java extensions.  You should avoid using it if at all possible because it is 32 times slower (and has some other problems, too)! [Jason Garber]
 
 * Ignore spaces and tabs on blank lines between blocks. #120 [Jason Garber]
