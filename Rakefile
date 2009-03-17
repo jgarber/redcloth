@@ -84,7 +84,6 @@ when /mingw/
       ruby "-I. extconf.rb"
       system(PLATFORM =~ /mswin/ ? 'nmake' : 'make')
     end
-    remove_other_platforms
     move_extensions
     rm "#{ext}/rbconfig.rb"
   end
@@ -96,7 +95,6 @@ when /java/
     sources = FileList["#{ext}/**/*.java"].join(' ')
     sh "javac -target 1.5 -source 1.5 -d #{ext} #{java_classpath_arg} #{sources}"
     sh "jar cf lib/redcloth_scan.jar -C #{ext} ."
-    remove_other_platforms
     move_extensions
   end
   
@@ -104,7 +102,6 @@ when /pureruby/
   filename = "lib/redcloth_scan.rb"
   file filename => FileList["#{ext}/redcloth_scan.rb", "#{ext}/redcloth_inline.rb", "#{ext}/redcloth_attributes.rb"] do |task|
     
-    remove_other_platforms
     sources = task.prerequisites.join(' ')
     sh "cat #{sources} > #{filename}"
   end
@@ -114,7 +111,7 @@ else
   file filename => FileList["#{ext}/redcloth_scan.c", "#{ext}/redcloth_inline.c", "#{ext}/redcloth_attributes.c"]
 end
 
-task :compile => [filename]
+task :compile => [remove_other_platforms, filename]
 
 def ragel(target_file, source_file)
   host_language = case target_file
@@ -192,7 +189,7 @@ RAGEL_CODE_GENERATION_STYLES.merge!({
 
 desc "Find the fastest code generation style for Ragel"
 task :optimize do
-  require 'extras/ragel_profiler'
+  require 'test/ragel_profiler'
   results = []
   
   RAGEL_CODE_GENERATION_STYLES.each do |style, name|
