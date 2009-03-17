@@ -20,6 +20,12 @@ class TestParser < Test::Unit::TestCase
     assert RedCloth::VERSION == RedCloth::VERSION::STRING
   end
   
+  def test_redcloth_has_extension_language
+    assert RedCloth.const_defined?("EXTENSION_LANGUAGE")
+    assert ! RedCloth::EXTENSION_LANGUAGE.empty?
+    assert_match(RedCloth::EXTENSION_LANGUAGE, RedCloth::DESCRIPTION)
+  end
+  
   def test_badly_formatted_table_does_not_segfault
     assert_match(/td/, RedCloth.new(%Q{| one | two |\nthree | four |}).to_html)
   end

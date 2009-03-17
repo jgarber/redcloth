@@ -1,5 +1,7 @@
 === Edge
 
+* Added a RedCloth::EXTENSION_LANGUAGE constant so you can tell what version of the parser you are using. [Jason Garber]
+
 * Added a NotCompiledError to give a friendlier message when people just unpack RedCloth into their projects. [Jason Garber]
 
 * Added a pure-ruby version of the parser for times when you can't compile the C or Java extensions.  You should avoid using it if at all possible because it is 32 times slower (and has some other problems, too)! [Jason Garber]

@@ -14,7 +14,7 @@ end
 begin
   require 'redcloth_scan'
 rescue LoadError
-  raise RedCloth::NotCompiledError, "RedCloth is extremely fast but must be compiled first. Installing the RedCloth gem is the easiest method."
+  raise RedCloth::NotCompiledError, "RedCloth uses native extensions. It's extremely fast but must be compiled. Installing the RedCloth gem is the easiest method."
 end
 require 'redcloth/version'
 require 'redcloth/textile_doc'

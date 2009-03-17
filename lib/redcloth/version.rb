@@ -24,5 +24,5 @@ module RedCloth
   GEM_NAME = NAME
   URL  = "http://redcloth.org/"
 
-  DESCRIPTION = "#{NAME}-#{VERSION::FULL_VERSION} - Textile parser for Ruby.\n#{URL}"
+  DESCRIPTION = "#{NAME}-#{VERSION::FULL_VERSION}-#{EXTENSION_LANGUAGE} - Textile parser for Ruby.\n#{URL}"
 end

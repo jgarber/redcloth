@@ -17,6 +17,8 @@
 }%%
 
 module RedCloth
+  EXTENSION_LANGUAGE = "Ruby"
+  
   class TextileDoc < String
     def to(formatter)
       self.delete!("\r")

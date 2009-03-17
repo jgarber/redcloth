@@ -589,6 +589,7 @@ public class RedclothScanService implements BasicLibraryService {
 
   public static void Init_redcloth_scan(Ruby runtime) {
     RubyModule mRedCloth = runtime.defineModule("RedCloth");
+    mRedCloth.defineConstant("EXTENSION_LANGUAGE", runtime.newString("Java"));
     RubyClass super_RedCloth = mRedCloth.defineClassUnder("TextileDoc", runtime.getString(), runtime.getString().getAllocator());
     super_RedCloth.defineAnnotatedMethods(RedclothScanService.class);
     super_RedCloth.defineClassUnder("ParseError",runtime.getClass("Exception"),runtime.getClass("Exception").getAllocator());
