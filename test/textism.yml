@@ -163,6 +163,10 @@ html: <p><span lang="fr">rouge</span></p>
 in: _(big)red_
 html: <p><em class="big">red</em></p>
 ---
+in: p=. A centered paragraph.
+html: <p style="text-align:center;">A centered paragraph.</p>
+latex: "\\begin{center}A centered paragraph.\\end{center}\n\n"
+---
 in: p(bob). A paragraph
 html: <p class="bob">A paragraph</p>
 ---
@@ -177,6 +181,7 @@ html: <h2 style="padding-left:1em;padding-right:1em;text-align:right;">right-ali
 ---
 in: h3=. centered header
 html: <h3 style="text-align:center;">centered header</h3>
+latex: "\\begin{center}\\subsubsection{centered header}\\end{center}\n\n"
 ---
 in: '!>/image.gif! right-aligned image'
 html: <p style="float:right;"><img src="/image.gif" alt="" /> right-aligned image</p>

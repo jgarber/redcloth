@@ -3,7 +3,7 @@ require 'yaml'
 module RedCloth::Formatters::LATEX
   include RedCloth::Formatters::Base
 
-  ENTITIES = YAML::load(File.read(File.dirname(__FILE__)+'/latex_entities.yml')) 
+  ENTITIES = YAML::load(File.read(File.dirname(__FILE__)+'/latex_entities.yml'))
 
   module Settings
     # Maps CSS style names to latex formatting options
@@ -23,7 +23,16 @@ module RedCloth::Formatters::LATEX
     :h6 => 'textbf',
   }.each do |m,tag| 
     define_method(m) do |opts| 
-      "\\#{tag}{#{opts[:text]}}\n\n" 
+      case opts[:align]
+      when 'left' then
+        "\\begin{flushleft}\\#{tag}{#{opts[:text]}}\\end{flushleft}\n\n" 
+      when 'right' then
+        "\\begin{flushright}\\#{tag}{#{opts[:text]}}\\end{flushright}\n\n" 
+      when 'center' then
+        "\\begin{center}\\#{tag}{#{opts[:text]}}\\end{center}\n\n" 
+      else
+        "\\#{tag}{#{opts[:text]}}\n\n"
+      end
     end 
   end 
 
@@ -101,7 +110,16 @@ module RedCloth::Formatters::LATEX
 
   # paragraphs
   def p(opts)
-    opts[:text] + "\n\n"
+    case opts[:align]
+    when 'left' then
+      "\\begin{flushleft}#{opts[:text]}\\end{flushleft}\n\n" 
+    when 'right' then
+      "\\begin{flushright}#{opts[:text]}\\end{flushright}\n\n" 
+    when 'center' then
+      "\\begin{center}#{opts[:text]}\\end{center}\n\n" 
+    else
+      "#{opts[:text]}\n\n"
+    end
   end
 
   # tables
