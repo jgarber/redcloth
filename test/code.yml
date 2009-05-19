@@ -246,3 +246,8 @@ name: code containing parentheses
 in: 'p. @some_method(some_params, some => test);@ Oh dear this fails'
 html: '<p><code>some_method(some_params, some =&gt; test);</code> Oh dear this fails</p>'
 latex: "\\verb@some_method(some_params, some => test);@ Oh dear this fails\n\n"
+---
+name: code preserves initial square brackets
+description: usually square brackets are used for the language (English, French, Spanish...), but that doesn't make sense for code and apparently is needed for some computer languages.
+in: @[project]_dff.skjd@ 
+html: <p><code>[project]_dff.skjd</code></p>
