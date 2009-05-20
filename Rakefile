@@ -214,9 +214,10 @@ end
 #### Custom testing tasks
 
 require 'rubygems' 
-require 'spec/rake/spectask' 
-Spec::Rake::SpecTask.new do |t|
-  t.spec_opts = ["--color", "--diff=u"] 
+require 'spec/rake/spectask'
+Rake::Task[:default].prerequisites.clear
+Spec::Rake::SpecTask.new(:default) do |t|
+  t.spec_opts = ["--color", "--require=spec/differs/inline.rb", "--diff=RedClothDiffers::Inline"] 
   t.spec_files = FileList['spec/**/*_spec.rb'] 
 end 
 

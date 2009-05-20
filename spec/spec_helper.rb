@@ -4,7 +4,6 @@ require 'yaml'
 
 class FormatterExampleGroup < Spec::Example::ExampleGroup
   
-  
   def self.examples_from_yaml(&block)
     formatter = description.downcase
     define_method("format_as_#{formatter}", &block)
