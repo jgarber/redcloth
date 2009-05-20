@@ -32,11 +32,11 @@ redcloth_transform(self, p, pe, refs)
 {
   char *orig_p = p, *orig_pe = pe;
   int cs, act, nest = 0;
-  char *ts = NULL, *te = NULL, *reg = NULL, *bck = NULL, *eof = NULL;
+  char *ts = NULL, *te = NULL, *reg = NULL, *bck = NULL, *attr_reg = NULL, *eof = NULL;
   VALUE html = STR_NEW2("");
   VALUE table = STR_NEW2("");
   VALUE block = STR_NEW2("");
-  VALUE regs; CLEAR_REGS()
+  VALUE regs, attr_regs; CLEAR_REGS()
   
   
   VALUE list_layout = Qnil;

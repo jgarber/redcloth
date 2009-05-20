@@ -4,6 +4,8 @@
 
   action A { MARK(); }
   action B { MARK_B(); }
+  action ATTR { MARK_ATTR(); }
+  action SET_ATTR { SET_ATTRIBUTES(); }
   action T { STORE("text"); }
   action X { CLEAR_REGS(); RESET_REG(); }
   action cat { CAT(block); }
@@ -13,29 +15,29 @@
   default = ^0 ;
   EOF = 0 ;
 
-  # textile modifiers
-  A_LEFT = "<" %{ ASET("align", "left"); } ;
-  A_RIGHT = ">" %{ ASET("align", "right"); } ;
-  A_JUSTIFIED = "<>" %{ ASET("align", "justify"); } ;
-  A_CENTER = "=" %{ ASET("align", "center"); } ;
-  A_PADLEFT = "(" >A %{ AINC("padding-left"); } ;
-  A_PADRIGHT = ")" >A %{ AINC("padding-right"); } ;
+  # textile element attributes
+  A_LEFT = "<" %{ ATTR_SET("align", "left"); } ;
+  A_RIGHT = ">" %{ ATTR_SET("align", "right"); } ;
+  A_JUSTIFIED = "<>" %{ ATTR_SET("align", "justify"); } ;
+  A_CENTER = "=" %{ ATTR_SET("align", "center"); } ;
+  A_PADLEFT = "(" %{ ATTR_INC("padding-left"); } ;
+  A_PADRIGHT = ")" %{ ATTR_INC("padding-right"); } ;
   A_HLGN = ( A_LEFT | A_RIGHT | A_JUSTIFIED | A_CENTER | A_PADLEFT | A_PADRIGHT ) ;
   A_LIMIT = ( A_LEFT | A_CENTER | A_RIGHT ) ;
-  A_VLGN = ( "-" %{ ASET("vertical-align", "middle"); } | "^" %{ ASET("vertical-align", "top"); } | "~" %{ ASET("vertical-align", "bottom"); } ) ;
-  C_CLAS = ( "(" ( [^)#]+ >A %{ STORE("class"); } )? ("#" [^)]+ >A %{STORE("id");} )? ")" ) ;
-  C_LNGE = ( "[" [^\]]+ >A %{ STORE("lang"); } "]" ) ;
-  C_STYL = ( "{" [^}]+ >A %{ STORE("style"); } "}" ) ;
-  S_CSPN = ( "\\" [0-9]+ >A %{ STORE("colspan"); } ) ;
-  S_RSPN = ( "/" [0-9]+ >A %{ STORE("rowspan"); } ) ;
-  D_HEADER = "_" %{ ASET("th", "true"); } ;
+  A_VLGN = ( "-" %{ ATTR_SET("vertical-align", "middle"); } | "^" %{ ATTR_SET("vertical-align", "top"); } | "~" %{ ATTR_SET("vertical-align", "bottom"); } ) ;
+  C_CLAS = ( "(" ( [^)#]+ >ATTR %{ STORE_ATTR("class"); } )? ("#" [^)]+ >ATTR %{STORE_ATTR("id");} )? ")" ) ;
+  C_LNGE = ( "[" [^\]]+ >ATTR %{ STORE_ATTR("lang"); } "]" ) ;
+  C_STYL = ( "{" [^}]+ >ATTR %{ STORE_ATTR("style"); } "}" ) ;
+  S_CSPN = ( "\\" [0-9]+ >ATTR %{ STORE_ATTR("colspan"); } ) ;
+  S_RSPN = ( "/" [0-9]+ >ATTR %{ STORE_ATTR("rowspan"); } ) ;
+  D_HEADER = "_" %{ ATTR_SET("th", "true"); } ;
   A = ( ( A_HLGN | A_VLGN )* ) ;
   A2 = ( A_LIMIT? ) ;
   S = ( S_CSPN | S_RSPN )* ;
   C = ( C_CLAS | C_STYL | C_LNGE )* ;
   D = ( D_HEADER ) ;
-  N_CONT = "_" %{ ASET("list_continue", "true"); };
-  N_NUM = digit+ >A %{ STORE("start"); };
+  N_CONT = "_" %{ ATTR_SET("list_continue", "true"); };
+  N_NUM = digit+ >ATTR %{ STORE_ATTR("start"); };
   N = ( N_CONT | N_NUM )? ;
   PUNCT = ( "!" | '"' | "#" | "$" | "%" | "&" | "'" | "," | "-" | "." | "/" | ":" | ";" | "=" | "?" | "\\" | "^" | "`" | "|" | "~" | "[" | "]" | "(" | ")" | "<" ) ;
   dotspace = ("." " "*) ;
@@ -106,7 +108,7 @@
   uri = (target | absolute_uri | absolute_path | rel_path) ;
 
   # common
-  title = ( '(' default+ >A %{ STORE("title"); } :> ')' ) ;
+  title = ( '(' default+ >ATTR %{ STORE_ATTR("title"); } :> ')' ) ;
   word = ( alnum | safe | " " ) ;
   mspace = ( ( " " | "\t" | LF )+ ) -- LF{2} ;
   mtext = ( chars (mspace chars)* ) ;

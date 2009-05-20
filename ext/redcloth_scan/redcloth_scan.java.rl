@@ -26,7 +26,22 @@ import org.jruby.util.ByteList;
 public class RedclothScanService implements BasicLibraryService {
 
   public static class Base {
+    
+    public void SET_ATTRIBUTES() {
+      SET_ATTRIBUTE("class_buf", "class");
+      SET_ATTRIBUTE("id_buf", "id");
+      SET_ATTRIBUTE("lang_buf", "lang");
+      SET_ATTRIBUTE("style_buf", "style");
+      regs.callMethod(runtime.getCurrentContext(), "merge!", attr_regs);
+      attr_regs = RubyHash.newHash(runtime);
+    }
 
+    public void SET_ATTRIBUTE(String B, String A) {
+      if(!((RubyHash)regs).aref(runtime.newSymbol(B)).isNil()) {
+        ((RubyHash)regs).aset(runtime.newSymbol(A), ((RubyHash)regs).aref(runtime.newSymbol(B)));
+      }
+    }
+    
     public void CLEAR_LIST() {
       list_layout = runtime.newArray();
     }
@@ -232,6 +247,7 @@ public class RedclothScanService implements BasicLibraryService {
 
     public void CLEAR_REGS() {
       regs = RubyHash.newHash(runtime);
+      attr_regs = RubyHash.newHash(runtime);
     }
 
     public void RESET_REG() {
@@ -244,6 +260,10 @@ public class RedclothScanService implements BasicLibraryService {
 
     public void MARK_B() {
       bck = p;
+    }
+
+    public void MARK_ATTR() {
+      attr_reg = p;
     }
 
     public void CAT(IRubyObject H) {
@@ -288,8 +308,9 @@ public class RedclothScanService implements BasicLibraryService {
       CLEAR(block);
     }
 
-    public void AINC(String T) {
-      red_inc(regs, runtime.newSymbol(T));
+
+    public void ATTR_INC(String T) {
+      red_inc(attr_regs, runtime.newSymbol(T));
     }
 
     public void INC(int N) {
@@ -303,6 +324,10 @@ public class RedclothScanService implements BasicLibraryService {
 
     public void ASET(String T, String V) {
       ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.newString(V));
+    }
+
+    public void ATTR_SET(String T, String V) {
+      ((RubyHash)attr_regs).aset(runtime.newSymbol(T), runtime.newString(V));
     }
 
     public void STORE(String T) {
@@ -324,6 +349,15 @@ public class RedclothScanService implements BasicLibraryService {
       }
     }
 
+    public void STORE_ATTR(String T) {
+      if(p > attr_reg && attr_reg >= ts) {
+        IRubyObject str = RubyString.newString(runtime, data, attr_reg, p-attr_reg);
+        ((RubyHash)attr_regs).aset(runtime.newSymbol(T), str);
+      } else {
+        ((RubyHash)attr_regs).aset(runtime.newSymbol(T), runtime.getNil());
+      }
+    }
+
     public IRubyObject self;
     public byte[] data;
     public int p, pe;
@@ -336,12 +370,14 @@ public class RedclothScanService implements BasicLibraryService {
     public int te = -1;
     public int reg = -1;
     public int bck = -1;
+    public int attr_reg = -1;
     public int eof = -1;
 
     public IRubyObject html;
     public IRubyObject table;
     public IRubyObject block;
     public IRubyObject regs;
+    public IRubyObject attr_regs;
 
     public IRubyObject list_layout;
     public String list_type = null;

@@ -346,3 +346,25 @@ html: |-
   		<td>3</td>
   	</tr>
   </table>
+---
+name: with cell attributes
+in: |[en]. lang-ok|{color:red;}. style-ok|(myclass). class-ok|
+html: |-
+  <table>
+  	<tr>
+  		<td lang="en">lang-ok</td>
+  		<td style="color:red;">style-ok</td>
+  		<td class="myclass">class-ok</td>
+  	</tr>
+  </table>
+---
+name: with improper cell attributes
+in: |[en]lang-bad|{color:red;}style-bad|(myclass)class-bad|
+html: |-
+  <table>
+  	<tr>
+  		<td>[en]lang-bad</td>
+  		<td>{color:red;}style-bad</td>
+  		<td>(myclass)class-bad</td>
+  	</tr>
+  </table>

@@ -1,5 +1,7 @@
 === Edge
 
+* Separated attributes out to have their own mark/store variable and regs.  This way, they won't conflict with captured text or backtracked text. [Jason Garber]
+
 * Added a RedCloth::EXTENSION_LANGUAGE constant so you can tell what version of the parser you are using. [Jason Garber]
 
 * Added a NotCompiledError to give a friendlier message when people just unpack RedCloth into their projects. [Jason Garber]

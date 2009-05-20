@@ -85,7 +85,7 @@ module RedCloth
     attr_accessor :p, :pe, :refs
     attr_reader :data
     attr_accessor :orig_data, :cs, :act, :ts, :te, :reg, :bck, :eof,
-      :html, :table, :block, :regs
+      :html, :table, :block, :regs, :attr_regs
     attr_accessor :list_layout, :list_type, :list_index, :list_continue, :listm, 
       :refs_found, :plain_block
 
@@ -98,8 +98,12 @@ module RedCloth
     def MARK_B()
       @bck = @p
     end
+    def MARK_ATTR()
+      @attr_reg = @p
+    end
     def CLEAR_REGS()
       @regs = {}
+      @attr_regs = {}
     end
     def RESET_REG()
       @reg = nil
@@ -168,14 +172,18 @@ module RedCloth
     def ASET(t, v)
       @regs[t.to_sym] = v
     end
-    def AINC(t)
-      red_inc(@regs, t.to_sym)
+    def ATTR_SET(t, v)
+      @attr_regs[t.to_sym] = v
+    end
+    def ATTR_INC(t)
+      red_inc(@attr_regs, t.to_sym)
     end
     def SET_ATTRIBUTES()
       SET_ATTRIBUTE("class_buf", "class")
       SET_ATTRIBUTE("id_buf", "id")
       SET_ATTRIBUTE("lang_buf", "lang")
       SET_ATTRIBUTE("style_buf", "style")
+      @regs.merge!(@attr_regs)
     end
     def SET_ATTRIBUTE(b, a)
       @regs[a.to_sym] = @regs[b.to_sym] unless @regs[b.to_sym].nil?
@@ -205,6 +213,15 @@ module RedCloth
         # /*printf("STORE_B(" T ") '%s' (p:'%s' reg:'%s')\n", RSTRING_PTR(str), p, reg);*/  \
       else
         @regs[t.to_sym] = nil
+      end
+    end
+    def STORE_ATTR(t)
+      if (@attr_reg && @p > @attr_reg && @attr_reg >= @ts)
+        str = @data[@attr_reg, @p - @attr_reg]
+        @attr_regs[t.to_sym] = str
+        # /*printf("STORE_B(" T ") '%s' (p:'%s' reg:'%s')\n", RSTRING_PTR(str), p, reg);*/  \
+      else
+        @attr_regs[t.to_sym] = nil
       end
     end
     def STORE_URL(t)

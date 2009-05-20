@@ -35,19 +35,6 @@ public class RedclothAttributes extends RedclothScanService.Base {
 
 %% write data nofinal;
 
-  public void SET_ATTRIBUTES() {
-    SET_ATTRIBUTE("class_buf", "class");
-    SET_ATTRIBUTE("id_buf", "id");
-    SET_ATTRIBUTE("lang_buf", "lang");
-    SET_ATTRIBUTE("style_buf", "style");
-  }
-
-  public void SET_ATTRIBUTE(String B, String A) {
-    if(!((RubyHash)regs).aref(runtime.newSymbol(B)).isNil()) {
-      ((RubyHash)regs).aset(runtime.newSymbol(A), ((RubyHash)regs).aref(runtime.newSymbol(B)));
-    }
-  }
- 
   private int machine;
    
   public RedclothAttributes(int machine, IRubyObject self, byte[] data, int p, int pe) {
@@ -66,6 +53,7 @@ public class RedclothAttributes extends RedclothScanService.Base {
     this.orig_pe = this.pe;
 
     this.regs = RubyHash.newHash(runtime);
+    this.attr_regs = RubyHash.newHash(runtime);
     this.machine = machine;
   }
 

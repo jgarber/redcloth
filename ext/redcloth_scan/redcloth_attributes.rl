@@ -7,10 +7,7 @@
 
   machine redcloth_attributes;
   
-  C2_CLAS = ( "(" ( [^)#]+ >A %{ STORE("class_buf"); } )? ("#" [^)]+ >A %{STORE("id_buf");} )? ")" ) ;
-  C2_LNGE = ( "[" [^\[\]]+ >A %{ STORE("lang_buf"); } "]" ) ;
-  C2_STYL = ( "{" [^}]+ >A %{ STORE("style_buf"); } "}" ) ;
-  C2 = ( C2_CLAS | C2_STYL | C2_LNGE )+ ;
+  C2 = ( C_CLAS | C_STYL | C_LNGE )+ ;
 
   mtext_with_attributes = ( C2 mtext >A %T ) >X ;
 

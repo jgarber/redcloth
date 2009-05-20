@@ -121,10 +121,12 @@ def ragel(target_file, source_file)
   preferred_code_style = case host_language
   when "R"
     "F1"
-  else
+  when "C"
     "T0"
+  else
+    nil
   end
-  code_style = " -" + (@code_style || preferred_code_style)
+  code_style = preferred_code_style ? " -" + (@code_style || preferred_code_style) : ""
   ensure_ragel_version(target_file) do
     sh %{ragel #{source_file} -#{host_language}#{code_style} -o #{target_file}}
   end
@@ -216,11 +218,12 @@ end
 require 'rubygems' 
 require 'spec/rake/spectask'
 Rake::Task[:default].prerequisites.clear
-Spec::Rake::SpecTask.new(:default) do |t|
-  t.spec_opts = ["--color", "--require=spec/differs/inline.rb", "--diff=RedClothDiffers::Inline"] 
+Spec::Rake::SpecTask.new do |t|
+  t.spec_opts = ["--options #{File.dirname(__FILE__) + '/spec/spec.opts'}"] 
   t.spec_files = FileList['spec/**/*_spec.rb'] 
 end 
 
+task :default => :spec
 task :spec => [:compile]
 
 task :remove_other_platforms do

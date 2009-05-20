@@ -87,7 +87,7 @@ public class RedclothInline extends RedclothScanService.Base {
     return regs;
   }
 
-  public void PASS_CODE(IRubyObject H, String A, String T, int O) {
+  public void PASS_CODE(IRubyObject H, String A, String T) {
     ((RubyString)H).append(red_pass_code(self, regs, runtime.newSymbol(A), T));
   }
 
@@ -122,6 +122,7 @@ public class RedclothInline extends RedclothScanService.Base {
     this.refs = refs;
     this.block = RubyString.newEmptyString(runtime);
     this.regs = runtime.getNil();
+    this.attr_regs = runtime.getNil();
     this.opts = 0;
   }
 

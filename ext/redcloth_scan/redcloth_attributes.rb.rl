@@ -25,6 +25,7 @@ module RedCloth
     def redcloth_attribute_parser(cs, data)
       @data = data + "\0"
       @regs = {}
+      @attr_regs = {}
       @p = 0
       @pe = @data.length
 

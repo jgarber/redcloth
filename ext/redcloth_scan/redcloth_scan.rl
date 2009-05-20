@@ -10,25 +10,25 @@
   # blocks
   notextile_tag = notextile (LF | EOF) ;
   noparagraph_line_start = " "+ ;
-  notextile_block_start = ( "notextile" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
+  notextile_block_start = ( "notextile" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) %SET_ATTR ;
   pre_tag_start = "<pre" [^>]* ">" (space* code_tag_start)? ;
   pre_tag_end = (code_tag_end space*)? "</pre>" LF? ;
-  pre_block_start = ( "pre" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
-  bc_start = ( "bc" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) ;
-  bq_start = ( "bq" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE("cite"); } )? " "+ ) ;
+  pre_block_start = ( "pre" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) %SET_ATTR ;
+  bc_start = ( "bc" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) %SET_ATTR ;
+  bq_start = ( "bq" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE("cite"); } )? " "+ ) %SET_ATTR ;
   non_ac_btype = ( "bq" | "bc" | "pre" | "notextile" | "table" );
   btype = (alpha alnum*) -- (non_ac_btype | "fn" digit+);
-  block_start = ( btype >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) >B %{ STORE_B("fallback"); };
+  block_start = ( btype >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) >B %{ STORE_B("fallback"); } %SET_ATTR ;
   all_btypes = btype | non_ac_btype;
   next_block_start = ( all_btypes A_noactions C_noactions :> "."+ " " ) >A @{ fexec(reg); } ;
   double_return = LF [ \t]* LF ;
   block_end = ( double_return | EOF );
   ftype = ( "fn" >A %{ STORE("type"); } digit+ >A %{ STORE("id"); } ) ;
-  footnote_start = ( ftype A C :> dotspace ) ;
+  footnote_start = ( ftype A C :> dotspace ) %SET_ATTR ;
   ul = "*" %{NEST(); SET_LIST_TYPE("ul");};
   ol = "#" %{NEST(); SET_LIST_TYPE("ol");};
-  ul_start  = ( ul | ol )* ul A C :> " "+   ;
-  ol_start  = ( ul | ol )* ol N A C :> " "+ ;
+  ul_start  = ( ul | ol )* ul A C :> " "+ %SET_ATTR;
+  ol_start  = ( ul | ol )* ol N A C :> " "+ %SET_ATTR ;
   list_start  = " "* ( ul_start | ol_start ) >{RESET_NEST();} ;
   dt_start = "-" . " "+ ;
   dd_start = ":=" ;
@@ -56,12 +56,12 @@
   # tables
   para = ( default+ ) -- LF ;
   btext = para ( LF{2} )? ;
-  tddef = ( D? S A C :> dotspace ) ;
+  tddef = ( D? S A C :> dotspace ) %SET_ATTR ;
   td = ( tddef? btext >A %T :> "|" >{PASS(table, "text", "td");} ) >X ;
-  trdef = ( A C :> dotspace ) ;
+  trdef = ( A C :> dotspace ) %SET_ATTR ;
   tr = ( trdef? "|" %{INLINE(table, "tr_open");} td+ ) >X %{INLINE(table, "tr_close");} ;
   trows = ( tr (LF >X tr)* ) ;
-  tdef = ( "table" >X A C :> dotspace LF ) ;
+  tdef = ( "table" >X A C :> dotspace LF ) %SET_ATTR ;
   table = ( tdef? trows >{CLEAR(table); INLINE(table, "table_open"); RESET_REG();} ) ;
 
   # info

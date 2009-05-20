@@ -96,6 +96,7 @@ red_block(VALUE self, VALUE regs, VALUE block, VALUE refs)
   VALUE sym_text = ID2SYM(rb_intern("text"));
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
+  VALUE attr_regs = rb_hash_new();
   if ((!NIL_P(block)) && !NIL_P(btype))
   {
     method = rb_str_intern(btype);
@@ -147,10 +148,11 @@ redcloth_inline(self, p, pe, refs)
   VALUE refs;
 {
   int cs, act;
-  char *ts = NULL, *te = NULL, *reg = NULL, *eof = NULL;
+  char *ts = NULL, *te = NULL, *reg = NULL, *attr_reg = NULL, *eof = NULL;
   char *orig_p = p;
   VALUE block = STR_NEW2("");
   VALUE regs = Qnil;
+  VALUE attr_regs = Qnil;
   
   %% write init;
 

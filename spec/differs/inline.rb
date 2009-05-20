@@ -16,7 +16,7 @@ module RedClothDiffers
       }
 
       def diff_as_string(data_new, data_old)
-        output = ""
+        output = "\e[0m"
         last_action = nil
         sdiff = Diff::LCS.sdiff(data_old, data_new)
         sdiff.each do |change|
