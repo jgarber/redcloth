@@ -52,10 +52,6 @@ e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
 
 end
 
-def remove_other_platforms
-  Dir["lib/redcloth_scan.{bundle,so,jar,rb}"].each { |file| rm file }
-end
-
 def move_extensions
   Dir["ext/**/*.{bundle,so,jar}"].each { |file| mv file, "lib/" }
 end
@@ -111,7 +107,7 @@ else
   file filename => FileList["#{ext}/redcloth_scan.c", "#{ext}/redcloth_inline.c", "#{ext}/redcloth_attributes.c"]
 end
 
-task :compile => [remove_other_platforms, filename]
+task :compile => [:remove_other_platforms, filename]
 
 def ragel(target_file, source_file)
   host_language = case target_file
@@ -217,28 +213,17 @@ end
 
 #### Custom testing tasks
 
-task :test => [:compile]
+require 'rubygems' 
+require 'spec/rake/spectask' 
+Spec::Rake::SpecTask.new do |t|
+  t.spec_opts = ["--color", "--diff=u"] 
+  t.spec_files = FileList['spec/**/*_spec.rb'] 
+end 
 
-# Run specific tests or test files
-# 
-# rake test:parser
-# => Runs the full TestParser unit test
-# 
-# rake test:parser:textism
-# => Runs the tests matching /textism/ in the TestParser unit test
-rule "" do |t|
-  # test:file:method
-  if /test:(.*)(:([^.]+))?$/.match(t.name)
-    arguments = t.name.split(":")[1..-1]
-    file_name = arguments.first
-    test_name = arguments[1..-1] 
-    
-    if File.exist?("test/test_#{file_name}.rb")
-      run_file_name = "test_#{file_name}.rb"
-    end
-    
-    sh "ruby -Ilib:test test/#{run_file_name} -n /#{test_name}/" 
-  end
+task :spec => [:compile]
+
+task :remove_other_platforms do
+  Dir["lib/redcloth_scan.{bundle,so,jar,rb}"].each { |file| rm file }
 end
 
 def ensure_ragel_version(name)

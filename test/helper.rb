@@ -1,54 +1,7 @@
 require 'test/unit'
 $:.unshift File.dirname(__FILE__) + "/../lib"
 require 'redcloth'
-require 'yaml'
 
-module Test
-  module Unit
-    
-    class TestCase
-      def self.generate_formatter_tests(formatter, &block)
-        define_method("format_as_#{formatter}", &block)
-        
-        fixtures.each do |name, doc|
-          if doc[formatter]
-            define_method("test_#{formatter}_#{name}") do
-              output = method("format_as_#{formatter}").call(doc)
-              assert_equal doc[formatter], output
-            end
-          else
-            define_method("test_#{formatter}_#{name}_raises_nothing") do
-              assert_nothing_raised(Exception) { method("format_as_#{formatter}").call(doc) }
-            end
-          end
-        end
-      end
-      
-      def self.fixtures
-        return @fixtures if @fixtures
-        @fixtures = {}
-        Dir[File.join(File.dirname(__FILE__), "*.yml")].each do |testfile|
-          testgroup = File.basename(testfile, '.yml')
-          num = 0
-          YAML::load_documents(File.open(testfile)) do |doc|
-            name = doc['name'] ? doc['name'].downcase.gsub(/[- ]/, '_') : num
-            @fixtures["#{testgroup}_#{name}"] = doc
-            num += 1
-          end
-        end
-        @fixtures
-      end
-      
-    end
-    
-    module Assertions
-      # Browsers ignore tabs and newlines (generally), so don't quibble
-      def assert_html_equal(expected, actual, message=nil)
-        assert_equal(expected.gsub(/[\n\t]+/, ''), actual.gsub(/[\n\t]+/, ''), message)
-      end
-    end
-  end
-end
 
 # Colorize differences in assert_equal failure messages.
 begin  

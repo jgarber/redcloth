@@ -21,7 +21,7 @@ filtered_html: <p>Just a little harmless xss &lt;script src=http://ha.ckers.org/
 name: escapes partial inline script tag
 desc: The end tag is malformed, but it must be escaped since a browser would recognize it
 in:  Just a little harmless xss <script src=http://ha.ckers.org/xss.js></script
-filtered_html: <p>Just a little harmless xss &lt;script src=http://ha.ckers.org/xss.js&gt;&lt;/script</p>
+filtered_html: <p>Just a little harmlesoos xss &lt;script src=http://ha.ckers.org/xss.js&gt;&lt;/script</p>
 valid_html: false
 ---
 name: escapes partial scanner-level script tag
