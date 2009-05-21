@@ -43,17 +43,12 @@ module RedCloth::Formatters::HTML
       "#{"\n" if opts[:nest] > 1}#{"\t" * (opts[:nest] - 1)}<#{m}#{pba(opts)}>\n"
     end
     define_method("#{m}_close") do |opts|
-      "#{li_close}#{"\t" * (opts[:nest] - 1)}</#{m}>#{"\n" if opts[:nest] <= 1}"
+      "#{"\t" * (opts[:nest] - 1)}</#{m}>#{"\n" if opts[:nest] <= 1}"
     end
   end
   
   def li_open(opts)
-    # Delete attributes that only apply to ul/ol
-    opts.delete(:align)
-    opts.delete(:class)
-    opts.delete(:style)
-    opts.delete(:lang)
-    "#{li_close unless opts.delete(:first)}#{"\t" * opts[:nest]}<li#{pba(opts)}>#{opts[:text]}"
+    "#{"\t" * opts[:nest]}<li#{pba(opts)}>#{opts[:text]}"
   end
   
   def li_close(opts=nil)

@@ -274,7 +274,7 @@ module RedCloth
     def RESET_NEST()
       @nest = 0
     end
-    def LIST_ITEM()
+    def LIST_ITEM_OPEN()
       aint = 0
       aval = @list_index[@nest-1]
       aint = aval.to_i unless aval.nil?
@@ -305,12 +305,16 @@ module RedCloth
       @regs[:nest] = @list_layout.length
       ASET("type", "li_open")
     end
+    def LIST_ITEM_CLOSE()
+      @html << @textile_doc.send("li_close", @regs) unless @regs[:first]
+    end
     def LIST_CLOSE()
       while (@nest < @list_layout.length)
         @regs[:nest] = @list_layout.length
         end_list = @list_layout.pop
         if (!end_list.nil?)
           listm = sprintf("%s_close", end_list)
+          LIST_ITEM_CLOSE()
           @html << @textile_doc.send(listm, @regs)
         end
       end

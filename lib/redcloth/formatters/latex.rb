@@ -96,12 +96,12 @@ module RedCloth::Formatters::LATEX
       "\\begin{#{env}}\n"
     end
     define_method("#{m}_close") do |opts|
-      "#{li_close}\\end{#{env}}\n\n"
+      "\\end{#{env}}\n\n"
     end
   end
 
   def li_open(opts)
-    "#{li_close unless opts.delete(:first)}  \\item #{opts[:text]}"
+    "  \\item #{opts[:text]}"
   end
 
   def li_close(opts=nil)

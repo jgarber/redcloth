@@ -134,7 +134,7 @@
     double_return next_block_start when not_extended { ADD_BLOCK(); fgoto main; };
     html_end_terminating_block when extended { ADD_EXTENDED_BLOCK(); END_EXTENDED(); fgoto main; };
     html_end_terminating_block when not_extended { ADD_BLOCK(); fgoto main; };
-    LF list_start { ADD_BLOCK(); CLEAR_LIST(); LIST_ITEM(); fgoto list; };
+    LF list_start { ADD_BLOCK(); CLEAR_LIST(); LIST_ITEM_OPEN(); fgoto list; };
     
     default => cat;
   *|;
@@ -145,8 +145,8 @@
   *|;
 
   list := |*
-    LF list_start   { ADD_BLOCK(); LIST_ITEM(); };
-    block_end       { ADD_BLOCK(); RESET_NEST(); LIST_CLOSE(); fgoto main; };
+    LF list_start   { LIST_ITEM_CLOSE(); ADD_BLOCK(); LIST_ITEM_OPEN(); };
+    block_end       { LIST_ITEM_CLOSE(); ADD_BLOCK(); RESET_NEST(); LIST_CLOSE(); fgoto main; };
     default => cat;
   *|;
 
@@ -172,7 +172,7 @@
     block_start     { fgoto block; };
     footnote_start  { fgoto footnote; };
     horizontal_rule { INLINE(html, "hr"); };
-    list_start      { CLEAR_LIST(); LIST_ITEM(); fgoto list; };
+    list_start      { CLEAR_LIST(); LIST_ITEM_OPEN(); fgoto list; };
     dl_start        { fexec(ts + 1); INLINE(html, "dl_open"); ASET("type", "dt"); fgoto dl; };
     table           { INLINE(table, "table_close"); DONE(table); fgoto block; };
     link_alias      { STORE_LINK_ALIAS(); DONE(block); };
