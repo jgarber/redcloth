@@ -1,5 +1,3 @@
-$:.unshift(File.dirname(__FILE__))
-
 # If this is a frozen gem in Rails 2.1 and RedCloth 3.x was already
 # loaded by Rails' ActionView::Helpers::TextHelper, the user will get
 # "redcloth_scan.bundle: Class is not a module (TypeError)"

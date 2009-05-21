@@ -325,3 +325,27 @@ html: |-
   	<li>three</li>
   	<li>four</li>
   </ul>
+---
+name: with attributes that apply to the whole list
+in: |-
+  (class#id)# one
+  # two
+  # three
+html: |-
+  <ol class="class" id="id">
+  	<li>one</li>
+  	<li>two</li>
+  	<li>three</li>
+  </ol>
+---
+name: with attributes that apply to the first list item
+in: |-
+  #(class#id) one
+  # two
+  # three
+html: |-
+  <ol>
+  	<li class="class" id="id">one</li>
+  	<li>two</li>
+  	<li>three</li>
+  </ol>
