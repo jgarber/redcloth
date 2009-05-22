@@ -7,7 +7,7 @@
 
   machine redcloth_attributes;
   
-  C2 = ( C_CLAS | C_STYL | C_LNGE )+ ;
+  C2 = ( C_CLASS_ID | C_STYL | C_LNGE )+ ;
 
   mtext_with_attributes = ( C2 mtext >A %T ) >X ;
 

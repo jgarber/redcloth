@@ -27,9 +27,10 @@
   footnote_start = ( ftype A C :> dotspace ) %SET_ATTR ;
   ul = "*" %{NEST(); SET_LIST_TYPE("ul");};
   ol = "#" %{NEST(); SET_LIST_TYPE("ol");};
-  ul_start  = ( ul | ol )* ul A C :> " "+ %SET_ATTR;
-  ol_start  = ( ul | ol )* ol N A C :> " "+ %SET_ATTR ;
-  list_start  = " "* ( ul_start | ol_start ) >{RESET_NEST();} ;
+  ul_start  = ( ul | ol )* ul A_noactions C_noactions :> " "+ ;
+  ol_start  = ( ul | ol )* ol N A_noactions C_noactions :> " "+ ;
+  list_start  = " "* A C ( ul_start | ol_start ) >B >{RESET_NEST();} @{ fexec(bck); } ;
+  
   dt_start = "-" . " "+ ;
   dd_start = ":=" ;
   long_dd  = dd_start " "* LF %{ ADD_BLOCK(); ASET("type", "dd"); } any+ >A %{ TRANSFORM("text"); } :>> "=:" ;
@@ -134,7 +135,7 @@
     double_return next_block_start when not_extended { ADD_BLOCK(); fgoto main; };
     html_end_terminating_block when extended { ADD_EXTENDED_BLOCK(); END_EXTENDED(); fgoto main; };
     html_end_terminating_block when not_extended { ADD_BLOCK(); fgoto main; };
-    LF list_start { ADD_BLOCK(); CLEAR_LIST(); LIST_ITEM_OPEN(); fgoto list; };
+    LF list_start { ADD_BLOCK(); CLEAR_LIST(); LIST_LAYOUT(); fgoto list_item; };
     
     default => cat;
   *|;
@@ -143,10 +144,14 @@
     block_end       { ADD_BLOCK(); fgoto main; };
     default => cat;
   *|;
-
-  list := |*
-    LF list_start   { LIST_ITEM_CLOSE(); ADD_BLOCK(); LIST_ITEM_OPEN(); };
-    block_end       { LIST_ITEM_CLOSE(); ADD_BLOCK(); RESET_NEST(); LIST_CLOSE(); fgoto main; };
+  
+  ul_item  = ( ul | ol )* ul A C :> " "+ ;
+  ol_item  = ( ul | ol )* ol N_noactions A C :> " "+ ;
+  list_item  := (" "* ( ul_item | ol_item )) @{ SET_ATTRIBUTES(); fgoto list_content; } ;
+  
+  list_content := |*
+    LF list_start { ADD_BLOCK(); LIST_LAYOUT(); fgoto list_item; };
+    block_end     { ADD_BLOCK(); RESET_NEST(); LIST_LAYOUT(); fgoto main; };
     default => cat;
   *|;
 
@@ -172,7 +177,7 @@
     block_start     { fgoto block; };
     footnote_start  { fgoto footnote; };
     horizontal_rule { INLINE(html, "hr"); };
-    list_start      { CLEAR_LIST(); LIST_ITEM_OPEN(); fgoto list; };
+    list_start      { CLEAR_LIST(); LIST_LAYOUT(); fgoto list_item; };
     dl_start        { fexec(ts + 1); INLINE(html, "dl_open"); ASET("type", "dt"); fgoto dl; };
     table           { INLINE(table, "table_close"); DONE(table); fgoto block; };
     link_alias      { STORE_LINK_ALIAS(); DONE(block); };

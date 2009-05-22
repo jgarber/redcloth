@@ -20,12 +20,14 @@
   A_RIGHT = ">" %{ ATTR_SET("align", "right"); } ;
   A_JUSTIFIED = "<>" %{ ATTR_SET("align", "justify"); } ;
   A_CENTER = "=" %{ ATTR_SET("align", "center"); } ;
-  A_PADLEFT = "(" %{ ATTR_INC("padding-left"); } ;
+  A_PADLEFT = "(" when following_hash_is_ol_not_id %{ ATTR_INC("padding-left"); } ;
   A_PADRIGHT = ")" %{ ATTR_INC("padding-right"); } ;
   A_HLGN = ( A_LEFT | A_RIGHT | A_JUSTIFIED | A_CENTER | A_PADLEFT | A_PADRIGHT ) ;
   A_LIMIT = ( A_LEFT | A_CENTER | A_RIGHT ) ;
   A_VLGN = ( "-" %{ ATTR_SET("vertical-align", "middle"); } | "^" %{ ATTR_SET("vertical-align", "top"); } | "~" %{ ATTR_SET("vertical-align", "bottom"); } ) ;
-  C_CLAS = ( "(" ( [^)#]+ >ATTR %{ STORE_ATTR("class"); } )? ("#" [^)]+ >ATTR %{STORE_ATTR("id");} )? ")" ) ;
+  C_CLASS = [^()#]+ >ATTR %{ STORE_ATTR("class"); } ;
+  C_ID = "#" [^) ]+ >ATTR %{STORE_ATTR("id");} ;
+  C_CLASS_ID = "(" ( C_CLASS | C_ID | C_CLASS C_ID ) ")" ;
   C_LNGE = ( "[" [^\]]+ >ATTR %{ STORE_ATTR("lang"); } "]" ) ;
   C_STYL = ( "{" [^}]+ >ATTR %{ STORE_ATTR("style"); } "}" ) ;
   S_CSPN = ( "\\" [0-9]+ >ATTR %{ STORE_ATTR("colspan"); } ) ;
@@ -34,7 +36,7 @@
   A = ( ( A_HLGN | A_VLGN )* ) ;
   A2 = ( A_LIMIT? ) ;
   S = ( S_CSPN | S_RSPN )* ;
-  C = ( C_CLAS | C_STYL | C_LNGE )* ;
+  C = ( C_CLASS_ID | C_STYL | C_LNGE )* ;
   D = ( D_HEADER ) ;
   N_CONT = "_" %{ ATTR_SET("list_continue", "true"); };
   N_NUM = digit+ >ATTR %{ STORE_ATTR("start"); };
@@ -52,12 +54,15 @@
   A_PADRIGHT_noactions = ")"  ;
   A_HLGN_noactions = ( A_LEFT_noactions | A_RIGHT_noactions | A_JUSTIFIED_noactions | A_CENTER_noactions | A_PADLEFT_noactions | A_PADRIGHT_noactions ) ;
   A_VLGN_noactions = ( "-" | "^" | "~" ) ;
-  C_CLAS_noactions = ( "(" ( [^)#]+ )? ("#" [^)]+ )? ")" ) ;
+  C_CLASS_noactions = ( "(" ( [^)#]+ )? ("#" [^)]+ )? ")" ) ;
   C_LNGE_noactions = ( "[" [^\]]+ "]" ) ;
   C_STYL_noactions = ( "{" [^}]+ "}" ) ;
   A_noactions = ( ( A_HLGN_noactions | A_VLGN_noactions )* ) ;
-  C_noactions = ( C_CLAS_noactions | C_STYL_noactions | C_LNGE_noactions )* ;
+  C_noactions = ( C_CLASS_noactions | C_STYL_noactions | C_LNGE_noactions )* ;
   C_noquotes_noactions = C_noactions -- '"' ;
+  N_CONT_noactions = "_" ;
+  N_NUM_noactions = digit+ ;
+  N_noactions = ( N_CONT_noactions | N_NUM_noactions )? ;
 
   # text blocks
   trailing = PUNCT - ("'" | '"') ;

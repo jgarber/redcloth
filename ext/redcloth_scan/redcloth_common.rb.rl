@@ -1,7 +1,6 @@
 %%{
   
   machine redcloth_common;
-  include redcloth_common "redcloth_common.rl";
   
   action esc { rb_str_cat_escaped(@block, @ts, @te); }
   action esc_pre { rb_str_cat_escaped_for_preformatted(@block, STR_NEW(@ts, @te-@ts)); }
@@ -16,5 +15,15 @@
   }
   action extended { !@extend.nil? }
   action not_extended { @extend.nil? }
+  action following_hash_is_ol_not_id { 
+    if @data[(@p+1), 1] == "#"
+      @data[(@p+2), 1] == "#" || @data[(@p+2), 1] == "*" || @data[(@p+2), 1] == " "
+    else
+      true
+    end
+  }
+  
+  
+  include redcloth_common "redcloth_common.rl";
   
 }%%;

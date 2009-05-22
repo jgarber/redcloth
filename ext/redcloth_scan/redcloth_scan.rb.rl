@@ -216,7 +216,7 @@ module RedCloth
       end
     end
     def STORE_ATTR(t)
-      if (@attr_reg && @p > @attr_reg && @attr_reg >= @ts)
+      if (@attr_reg && @p > @attr_reg && (@attr_reg >= (@ts || 0)))
         str = @data[@attr_reg, @p - @attr_reg]
         @attr_regs[t.to_sym] = str
         # /*printf("STORE_B(" T ") '%s' (p:'%s' reg:'%s')\n", RSTRING_PTR(str), p, reg);*/  \
@@ -274,14 +274,15 @@ module RedCloth
     def RESET_NEST()
       @nest = 0
     end
-    def LIST_ITEM_OPEN()
+    def LIST_LAYOUT()
       aint = 0
       aval = @list_index[@nest-1]
       aint = aval.to_i unless aval.nil?
-      if (@list_type == "ol")
+      if (@list_type == "ol" && @nest > 0)
         @list_index[@nest-1] = aint + 1
       end
       if (@nest > @list_layout.length)
+        SET_ATTRIBUTES();
         listm = sprintf("%s_open", @list_type)
         if (@regs[:list_continue])
           @regs[:list_continue] = nil
@@ -302,6 +303,8 @@ module RedCloth
         ASET("first", true)
       end
       LIST_CLOSE()
+      LIST_ITEM_CLOSE() unless @nest == 0
+      CLEAR_REGS()
       @regs[:nest] = @list_layout.length
       ASET("type", "li_open")
     end

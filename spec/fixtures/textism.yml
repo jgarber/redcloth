@@ -282,7 +282,7 @@ in: |-
   
   Simple list:
   
-  #{color:blue} one
+  # one
   # two
   # three
   
@@ -305,7 +305,7 @@ html: |-
   <p lang="fr">This is a block quote. I&#8217;ll admit it&#8217;s not the most exciting block quote ever devised.</p>
   </blockquote>
   <p>Simple list:</p>
-  <ol style="color:blue;">
+  <ol>
   	<li>one</li>
   	<li>two</li>
   	<li>three</li>

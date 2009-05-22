@@ -1,5 +1,16 @@
 === Edge
 
+* Change to list attributes so you can give style/class to list items (taken from PyTextile).  Breaks backwards compatibility.
+  
+  Before, the style applied to the first list item applied to the entire list.  Now, class/id/style placed
+  before the list applies to the list element and after the hash or asterisk applies to the list item.  For
+  example:
+                                   <ul id="groceries">
+    (#groceries)# Milk               <li>milk</li>
+    # Eggs                           <li>eggs</li>
+    #(optional) granola              <li class="optional">granola</li>
+                                   </ul>
+
 * Separated attributes out to have their own mark/store variable and regs.  This way, they won't conflict with captured text or backtracked text. [Jason Garber]
 
 * Added a RedCloth::EXTENSION_LANGUAGE constant so you can tell what version of the parser you are using. [Jason Garber]

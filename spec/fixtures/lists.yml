@@ -306,10 +306,10 @@ in: |-
   *(class-two) two
   *(class-three) three
 html: |-
-  <ul class="class-one">
-  	<li>one</li>
-  	<li>two</li>
-  	<li>three</li>
+  <ul>
+  	<li class="class-one">one</li>
+  	<li class="class-two">two</li>
+  	<li class="class-three">three</li>
   </ul>
 ---
 name: unordered with alignments
@@ -319,11 +319,11 @@ in: |-
   *<> three
   *= four
 html: |-
-  <ul style="text-align:left;">
-  	<li>one</li>
-  	<li>two</li>
-  	<li>three</li>
-  	<li>four</li>
+  <ul>
+  	<li style="text-align:left;">one</li>
+  	<li style="text-align:right;">two</li>
+  	<li style="text-align:justify;">three</li>
+  	<li style="text-align:center;">four</li>
   </ul>
 ---
 name: with attributes that apply to the whole list
@@ -338,6 +338,42 @@ html: |-
   	<li>three</li>
   </ol>
 ---
+name: with id on the list
+in: |-
+  (#my-id)# one
+  # two
+  # three
+html: |-
+  <ol id="my-id">
+  	<li>one</li>
+  	<li>two</li>
+  	<li>three</li>
+  </ol>
+---
+name: with class on the list
+in: |-
+  (my-class)# one
+  # two
+  # three
+html: |-
+  <ol class="my-class">
+  	<li>one</li>
+  	<li>two</li>
+  	<li>three</li>
+  </ol>
+---
+name: with id on the list item
+in: |-
+  # one
+  #(#my-item) two
+  # three
+html: |-
+  <ol>
+  	<li>one</li>
+  	<li id="my-item">two</li>
+  	<li>three</li>
+  </ol>
+---
 name: with attributes that apply to the first list item
 in: |-
   #(class#id) one
@@ -348,4 +384,79 @@ html: |-
   	<li class="class" id="id">one</li>
   	<li>two</li>
   	<li>three</li>
+  </ol>
+---
+name: changed from textism basics
+desc: "This was in Textism basics, but when I changed the format of list styles, I removed it"
+in: |-
+  {color:blue}# one
+  # two
+  # three
+html: |-
+  <ol style="color:blue;">
+  	<li>one</li>
+  	<li>two</li>
+  	<li>three</li>
+  </ol>
+---
+name: changed from threshold list attributes
+desc: "Was: 'Attributes applied to the first list item will apply to the list itself.' but then we changed it"
+in: |-
+  *{color:red} Item one
+  * Item two
+  * Item three
+html: |-
+  <ul>
+  	<li style="color:red;">Item one</li>
+  	<li>Item two</li>
+  	<li>Item three</li>
+  </ul>
+---
+name: with one padding-left increment
+in: "(# one"
+html: |-
+  <ol style="padding-left:1em;">
+  	<li>one</li>
+  </ol>
+---
+name: with one padding-left increment and class
+in: "((myclass)# one"
+html: |-
+  <ol style="padding-left:1em;" class="myclass">
+  	<li>one</li>
+  </ol>
+---
+name: with two padding-left increments
+in: "((# two"
+html: |-
+  <ol style="padding-left:2em;">
+  	<li>two</li>
+  </ol>
+---
+name: with one padding-right increment
+in: ")# one"
+html: |-
+  <ol style="padding-right:1em;">
+  	<li>one</li>
+  </ol>
+---
+name: with padding-left and padding-right increments
+in: "()# two"
+html: |-
+  <ol style="padding-left:1em;padding-right:1em;">
+  	<li>two</li>
+  </ol>
+---
+name: with padding-left and padding-right increments switched
+in: ")(# two"
+html: |-
+  <ol style="padding-left:1em;padding-right:1em;">
+  	<li>two</li>
+  </ol>
+---
+name: with padding-left and padding-right increments and class
+in: "()(myclass)# two"
+html: |-
+  <ol style="padding-left:1em;padding-right:1em;" class="myclass">
+  	<li>two</li>
   </ol>
