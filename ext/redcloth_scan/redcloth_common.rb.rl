@@ -16,11 +16,7 @@
   action extended { !@extend.nil? }
   action not_extended { @extend.nil? }
   action following_hash_is_ol_not_id { 
-    if @data[(@p+1), 1] == "#"
-      @data[(@p+2), 1] == "#" || @data[(@p+2), 1] == "*" || @data[(@p+2), 1] == " "
-    else
-      true
-    end
+    @data[(@p+1), 1] == "#" ? (@data[(@p+2), 1] == "#" || @data[(@p+2), 1] == "*" || @data[(@p+2), 1] == " ") : true
   }
   
   
