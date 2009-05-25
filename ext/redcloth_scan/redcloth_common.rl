@@ -16,6 +16,13 @@
   EOF = 0 ;
 
   # textile element attributes
+  class = [a-z0-9\- _]+ ;
+  id = [a-z0-9\-_]+ ;
+  style_chars = [a-z0-9: ;\-_#&];
+  style_url = "url(" [a-z0-9'".\\/#?=+@_\-]+ ")";
+  style = style_chars (style_chars+ | style_url)* ; # maybe put in uri when in url()
+  language = [a-z\-_]+ ;
+
   A_LEFT = "<" %{ ATTR_SET("align", "left"); } ;
   A_RIGHT = ">" %{ ATTR_SET("align", "right"); } ;
   A_JUSTIFIED = "<>" %{ ATTR_SET("align", "justify"); } ;
@@ -25,11 +32,11 @@
   A_HLGN = ( A_LEFT | A_RIGHT | A_JUSTIFIED | A_CENTER | A_PADLEFT | A_PADRIGHT ) ;
   A_LIMIT = ( A_LEFT | A_CENTER | A_RIGHT ) ;
   A_VLGN = ( "-" %{ ATTR_SET("vertical-align", "middle"); } | "^" %{ ATTR_SET("vertical-align", "top"); } | "~" %{ ATTR_SET("vertical-align", "bottom"); } ) ;
-  C_CLASS = [^()#]+ >ATTR %{ STORE_ATTR("class"); } ;
-  C_ID = "#" [^) ]+ >ATTR %{ STORE_ATTR("id"); } ;
+  C_CLASS = class >ATTR %{ STORE_ATTR("class"); } ;
+  C_ID = "#" id >ATTR %{ STORE_ATTR("id"); } ;
   C_CLASS_ID = "(" ( C_CLASS | C_ID | C_CLASS C_ID ) ")" ;
-  C_LNGE = ( "[" [^\]]+ >ATTR %{ STORE_ATTR("lang"); } "]" ) ;
-  C_STYL = ( "{" [^}]+ >ATTR %{ STORE_ATTR("style"); } "}" ) ;
+  C_LNGE = ( "[" language >ATTR %{ STORE_ATTR("lang"); } "]" ) ;
+  C_STYL = ( "{" style >ATTR %{ STORE_ATTR("style"); } "}" ) ;
   S_CSPN = ( "\\" [0-9]+ >ATTR %{ STORE_ATTR("colspan"); } ) ;
   S_RSPN = ( "/" [0-9]+ >ATTR %{ STORE_ATTR("rowspan"); } ) ;
   D_HEADER = "_" %{ ATTR_SET("th", "true"); } ;
@@ -54,9 +61,9 @@
   A_PADRIGHT_noactions = ")"  ;
   A_HLGN_noactions = ( A_LEFT_noactions | A_RIGHT_noactions | A_JUSTIFIED_noactions | A_CENTER_noactions | A_PADLEFT_noactions | A_PADRIGHT_noactions ) ;
   A_VLGN_noactions = ( "-" | "^" | "~" ) ;
-  C_CLASS_noactions = ( "(" ( [^)#]+ )? ("#" [^)]+ )? ")" ) ;
-  C_LNGE_noactions = ( "[" [^\]]+ "]" ) ;
-  C_STYL_noactions = ( "{" [^}]+ "}" ) ;
+  C_CLASS_noactions = ( "(" ( class )? ("#" id )? ")" ) ;
+  C_LNGE_noactions = ( "[" language "]" ) ;
+  C_STYL_noactions = ( "{" style "}" ) ;
   A_noactions = ( ( A_HLGN_noactions | A_VLGN_noactions )* ) ;
   C_noactions = ( C_CLASS_noactions | C_STYL_noactions | C_LNGE_noactions )* ;
   C_noquotes_noactions = C_noactions -- '"' ;
