@@ -26,7 +26,7 @@
   A_LIMIT = ( A_LEFT | A_CENTER | A_RIGHT ) ;
   A_VLGN = ( "-" %{ ATTR_SET("vertical-align", "middle"); } | "^" %{ ATTR_SET("vertical-align", "top"); } | "~" %{ ATTR_SET("vertical-align", "bottom"); } ) ;
   C_CLASS = [^()#]+ >ATTR %{ STORE_ATTR("class"); } ;
-  C_ID = "#" [^) ]+ >ATTR %{STORE_ATTR("id");} ;
+  C_ID = "#" [^) ]+ >ATTR %{ STORE_ATTR("id"); } ;
   C_CLASS_ID = "(" ( C_CLASS | C_ID | C_CLASS C_ID ) ")" ;
   C_LNGE = ( "[" [^\]]+ >ATTR %{ STORE_ATTR("lang"); } "]" ) ;
   C_STYL = ( "{" [^}]+ >ATTR %{ STORE_ATTR("style"); } "}" ) ;

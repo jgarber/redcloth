@@ -1,7 +1,6 @@
 %%{
   
   machine redcloth_common;
-  include redcloth_common "redcloth_common.rl";
   
   action esc { rb_str_cat_escaped(self, block, ts, te); }
   action esc_pre { rb_str_cat_escaped_for_preformatted(self, block, ts, te); }
@@ -16,5 +15,11 @@
   }
   action extended { !NIL_P(extend) }
   action not_extended { NIL_P(extend) }
+  action following_hash_is_ol_not_id { 
+    (*(p+1) == '#') ? (*(p+2) == '#' || *(p+2) == '*' || *(p+2) == ' ') : 1 == 1
+  }
+
+
+  include redcloth_common "redcloth_common.rl";
   
 }%%;
