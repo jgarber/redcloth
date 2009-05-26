@@ -58,15 +58,16 @@ public class RedclothScanService implements BasicLibraryService {
       nest = 0;
     }
     
-   public void LIST_ITEM() {
+   public void LIST_LAYOUT() {
      int aint = 0;
      IRubyObject aval = ((RubyArray)list_index).entry(nest-1);
      if(!aval.isNil()) { aint = RubyNumeric.fix2int(aval); }
-     if(list_type.equals("ol")) { 
+     if(list_type.equals("ol") && nest > 0) { 
        ((RubyArray)list_index).store(nest-1, runtime.newFixnum(aint + 1));
      }
 
      if(nest > ((RubyArray)list_layout).getLength()) {
+       SET_ATTRIBUTES();
        listm = list_type + "_open";       
        if( !((RubyHash)regs).aref(runtime.newSymbol("list_continue")).isNil() ) {
          ((RubyHash)regs).aset(runtime.newSymbol("list_continue"), runtime.getNil());
@@ -87,8 +88,15 @@ public class RedclothScanService implements BasicLibraryService {
        ASET("first", "true");
      }
      LIST_CLOSE();
+     if (nest != 0) LIST_ITEM_CLOSE();
+     CLEAR_REGS();
      ((RubyHash)regs).aset(runtime.newSymbol("nest"), ((RubyArray)list_layout).length());
      ASET("type", "li_open");
+   }
+
+   public void LIST_ITEM_CLOSE() {
+     if ( ((RubyHash)regs).aref(runtime.newSymbol("first")).isNil() )
+          ((RubyString)html).append(self.callMethod(runtime.getCurrentContext(), "li_close", regs));
    }
 
    public void LIST_CLOSE() {
@@ -98,6 +106,7 @@ public class RedclothScanService implements BasicLibraryService {
        if(!end_list.isNil()) {
          String s = end_list.convertToString().toString();
          listm = s + "_close";
+         LIST_ITEM_CLOSE();
          ((RubyString)html).append(self.callMethod(runtime.getCurrentContext(), listm, regs));
        }
      }
