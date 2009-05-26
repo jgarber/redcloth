@@ -29,6 +29,21 @@ html: |-
   if you break.</li>
   </ul>
 ---
+name: line breaks
+desc: Explicit HTML line breaks are not double-broken
+in: |-
+  I spoke.<br />
+  And none replied.
+html: |-
+  <p>I spoke.<br />
+  And none replied.</p>
+html_no_breaks: |-
+  <p>I spoke.<br />
+  And none replied.</p>
+lite_mode_html: |-
+  I spoke.<br />
+  And none replied.
+---
 name: mixing of textile and XHTML
 in: |-
   <img src="test.jpg" alt="test" />

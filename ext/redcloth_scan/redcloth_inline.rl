@@ -17,6 +17,7 @@
   empty_tag = empty_tag_noactions >X >A %T ;
   end_tag = end_tag_noactions >X >A %T ;
   html_comment = ("<!--" (default+) :>> "-->") >X >A %T;
+  html_break = ("<br" space* AttrSet* (AttrEnd)? "/"? ">" LF?) >X >A %T ;
   
   # links
   link_text_char = (default - [ "<>]) ;
@@ -150,6 +151,7 @@
     end_tag { INLINE(block, "inline_html"); };
     empty_tag { INLINE(block, "inline_html"); };
     html_comment { INLINE(block, "inline_html"); };
+    html_break { INLINE(block, "inline_html"); };
     
     redcloth_version { INLINE(block, "inline_redcloth_version"); };
     

@@ -1,5 +1,7 @@
 === Edge
 
+* Don't add hard break after preexisting <br />. [Jason Garber]
+
 * Change to list attributes so you can give style/class to list items (taken from PyTextile).  Breaks backwards compatibility.
   
   Before, the style applied to the first list item applied to the entire list.  Now, class/id/style placed
