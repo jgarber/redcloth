@@ -938,3 +938,25 @@ html: |-
 name: lang attribute cannot contain square brackets
 in: "some @[[code]]@"
 html: "<p>some <code>[[code]]</code></p>"
+---
+name: pre blocks preserve leading whitespace
+in: |-
+  pre.      Text in a pre block
+  is displayed in a fixed-width
+       font. It preserves
+    s p a c e s, line breaks
+       and ascii bunnies.
+html: |-
+  <pre>     Text in a pre block
+  is displayed in a fixed-width
+       font. It preserves
+    s p a c e s, line breaks
+       and ascii bunnies.</pre>
+---
+name: code blocks preserve leading whitespace
+in: |-
+  bc.   false
+  } else {
+html: |-
+  <pre><code>  false
+  } else {</code></pre>

@@ -1,5 +1,7 @@
 === Edge
 
+* Preserve leading whitespace in pre and bc blocks. [Jason Garber]
+
 * Don't add hard break after preexisting <br />. [Jason Garber]
 
 * Change to list attributes so you can give style/class to list items (taken from PyTextile).  Breaks backwards compatibility.

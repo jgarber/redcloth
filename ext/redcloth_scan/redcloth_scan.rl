@@ -13,8 +13,8 @@
   notextile_block_start = ( "notextile" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) %SET_ATTR ;
   pre_tag_start = "<pre" [^>]* ">" (space* code_tag_start)? ;
   pre_tag_end = (code_tag_end space*)? "</pre>" LF? ;
-  pre_block_start = ( "pre" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) %SET_ATTR ;
-  bc_start = ( "bc" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) %SET_ATTR ;
+  pre_block_start = ( "pre" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " " ) %SET_ATTR ;
+  bc_start = ( "bc" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " " ) %SET_ATTR ;
   bq_start = ( "bq" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) ( ":" %A uri %{ STORE("cite"); } )? " "+ ) %SET_ATTR ;
   non_ac_btype = ( "bq" | "bc" | "pre" | "notextile" | "table" );
   btype = (alpha alnum*) -- (non_ac_btype | "fn" digit+);
