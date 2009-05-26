@@ -55,8 +55,8 @@
   html_end_terminating_block = ( LF indent block_end_tag ) >A @{ fexec(reg); } ;
 
   # tables
-  para = ( default+ ) -- LF ;
-  btext = para ( LF{2} )? ;
+  td_text = (default - LF)+ ;
+  btext = td_text (LF td_text)* ( LF{2} )? ;
   tddef = ( D? S A C :> dotspace ) %SET_ATTR ;
   td = ( tddef? btext >A %T :> "|" >{PASS(table, "text", "td");} ) >X ;
   trdef = ( A C :> dotspace ) %SET_ATTR ;

@@ -368,3 +368,23 @@ html: |-
   		<td>(myclass)class-bad</td>
   	</tr>
   </table>
+---
+name: with line breaks in the cell
+in: |-
+  |a|b
+  b|
+  |c
+  c|d|
+html: |-
+  <table>
+  	<tr>
+  		<td>a</td>
+  		<td>b<br />
+  b</td>
+  	</tr>
+  	<tr>
+  		<td>c<br />
+  c</td>
+  		<td>d</td>
+  	</tr>
+  </table>
