@@ -720,7 +720,7 @@ html: |-
   	</tr>
   </table>
 --- 
-name: black attributes applied to a table
+name: block attributes applied to a table
 desc: Table-wide attributes can be applied before the first row of the table.  On its own line, followed by a period.
 in: |-
   table{border:1px solid black}.
@@ -742,7 +742,7 @@ html: |-
   	</tr>
   </table>
 --- 
-name: black attributes applied to a table row
+name: block attributes applied to a table row
 desc: Attributes can be applied to a single row by supplying the attribute before the row starts, using a <code>table</code> modifier and following it by a period.
 in: |-
   |This|is|a|row|
