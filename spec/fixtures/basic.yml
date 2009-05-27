@@ -51,6 +51,24 @@ html: |-
   <p>When the elephant comes to take a p. you&#8230;</p>
   </blockquote>
 --- 
+name: notextile block
+in: |-
+  Some text:
+  
+  <notextile>
+  <div class="example"><pre>
+  Some code
+  </pre></div>
+  </notextile>
+  
+  Some more text.
+html: |-
+  <p>Some text:</p>
+  <div class="example"><pre>
+  Some code
+  </pre></div>
+  <p>Some more text.</p>
+---
 name: notextile block containing block start
 in: |-
   notextile. I saw a ship. It ate my elephant.

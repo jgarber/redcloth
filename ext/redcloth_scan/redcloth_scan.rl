@@ -8,7 +8,7 @@
   machine redcloth_scan;
 
   # blocks
-  notextile_tag = notextile (LF | EOF) ;
+  notextile_tag = notextile (LF+ | EOF) ;
   noparagraph_line_start = " "+ ;
   notextile_block_start = ( "notextile" >A %{ STORE("type"); } A C :> "." ( "." %extend | "" ) " "+ ) %SET_ATTR ;
   pre_tag_start = "<pre" [^>]* ">" (space* code_tag_start)? ;
@@ -165,7 +165,7 @@
 
   main := |*
     noparagraph_line_start  { ASET("type", "ignored_line"); fgoto noparagraph_line; };
-    notextile_tag   { INLINE(block, "notextile"); };
+    notextile_tag   { INLINE(html, "notextile"); };
     notextile_block_start { ASET("type", "notextile"); fgoto notextile_block; };
     script_tag_start { CAT(block); fgoto script_tag; };
     pre_tag_start       { ASET("type", "notextile"); CAT(block); fgoto pre_tag; };
