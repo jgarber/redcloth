@@ -1,5 +1,7 @@
 === Edge
 
+* Include an ending question mark in a citation. [Jason Garber]
+
 * Preserve leading whitespace in pre and bc blocks. [Jason Garber]
 
 * Don't add hard break after preexisting <br />. [Jason Garber]

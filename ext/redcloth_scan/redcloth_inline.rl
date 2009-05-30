@@ -60,7 +60,7 @@
   sub_phrase = ( "~" when starts_phrase) >X ( mtext ) >A %T :>> ( "~" end_markup_phrase ) ;
   span = "[%" >X mtext >A %T :> "%]" ;
   span_phrase = (("%" when starts_phrase) >X ( mtext ) >A %T :>> ( "%" end_markup_phrase )) ;
-  cite = "["? "??" >X mtext >A %T :> "??" "]"? ;
+  cite = "["? "??" >X mtext >A >ATTR :>> ("?" @T ( "?" | "?" @{ STORE_ATTR("text"); } "?" %SET_ATTR ))  "]"? ;
   ignore = "["? "==" >X %A mtext %T :> "==" "]"? ;
   snip = "["? "```" >X %A mtext %T :> "```" "]"? ;
   

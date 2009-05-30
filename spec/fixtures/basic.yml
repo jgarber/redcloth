@@ -978,3 +978,13 @@ in: |-
 html: |-
   <pre><code>  false
   } else {</code></pre>
+---
+name: citation ending with question mark
+in: "??What the Story Morning Glory???"
+html: |-
+  <p><cite>What the Story Morning Glory?</cite></p>
+---
+name: citation including question mark
+in: "??What's the Matter with Kansas? How Conservatives Won the Heart of America?? is a great book!"
+html: |-
+  <p><cite>What&#8217;s the Matter with Kansas? How Conservatives Won the Heart of America</cite> is a great book!</p>
