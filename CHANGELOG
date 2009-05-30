@@ -1,5 +1,7 @@
 === Edge
 
+* Allow emphasized phrases to include underscores. [Jason Garber]
+
 * Include an ending question mark in a citation. [Jason Garber]
 
 * Preserve leading whitespace in pre and bc blocks. [Jason Garber]

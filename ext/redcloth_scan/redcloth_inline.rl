@@ -48,8 +48,10 @@
   script_tag = ( "<script" [^>]* ">" (default+ -- "</script>") "</script>" LF? ) >X >A %T ;
   strong = "["? "*" >X mtext >A %T :> "*" "]"? ;
   b = "["? "**" >X mtext >A %T :> "**" "]"? ;
-  em = "["? "_" >X mtext >A %T :> "_" "]"? ;
-  i = "["? "__" >X mtext >A %T :> "__" "]"? ;
+  mtext_excluding_underscore = mtext -- "_" ;
+  emtext = mtext_excluding_underscore ("_" mtext_excluding_underscore)*;
+  em = "["? "_" >X emtext >A %T "_" "]"? ;
+  i = "["? "__" >X emtext >A %T :>> ("__" "]"?) ;
   del = "[-" >X C ( mtext ) >A %T :>> "-]" ;
   emdash_parenthetical_phrase_with_spaces = " -- " mtext " -- " ;
   del_phrase = (( " " >A %{ STORE("beginning_space"); } "-" | "-" when starts_line) >X C ( mtext ) >A %T :>> ( "-" end_markup_phrase )) - emdash_parenthetical_phrase_with_spaces ;

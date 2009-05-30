@@ -949,7 +949,7 @@ in: |-
 
   Some more text.
 html: |-
-  <p>Just some <em>_</em> text</p>
+  <p>Just some ___ text</p>
   <hr />
   <p>Some more text.</p>
 ---
@@ -988,3 +988,11 @@ name: citation including question mark
 in: "??What's the Matter with Kansas? How Conservatives Won the Heart of America?? is a great book!"
 html: |-
   <p><cite>What&#8217;s the Matter with Kansas? How Conservatives Won the Heart of America</cite> is a great book!</p>
+---
+name: emphasized word including underscore
+in: |-
+  _trythis_ it will keep the empahsis.
+  _and_this_too_ it should keep the emphasis but does not with redcloth.
+html: |-
+  <p><em>trythis</em> it will keep the empahsis.<br />
+  <em>and_this_too</em> it should keep the emphasis but does not with redcloth.</p>
