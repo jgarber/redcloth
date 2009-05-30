@@ -44,7 +44,7 @@
 
   # markup
   end_markup_phrase = (" " | PUNCT | EOF | LF) @{ fhold; };
-  code = "["? "@" >X mtext >A %T :> "@" "]"? ;
+  code = ("@" >X mtext >A %T :> "@") | ("[@" >X default+ >A %T :>> "@]") ;
   script_tag = ( "<script" [^>]* ">" (default+ -- "</script>") "</script>" LF? ) >X >A %T ;
   strong = "["? "*" >X mtext >A %T :> "*" "]"? ;
   b = "["? "**" >X mtext >A %T :> "**" "]"? ;

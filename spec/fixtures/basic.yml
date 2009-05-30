@@ -996,3 +996,7 @@ in: |-
 html: |-
   <p><em>trythis</em> it will keep the empahsis.<br />
   <em>and_this_too</em> it should keep the emphasis but does not with redcloth.</p>
+---
+name: code captures spaces when made explicit with square brackets
+in: "Start a paragraph with [@p. @] (that's p, a period, and a space)."
+html: "<p>Start a paragraph with <code>p. </code> (that&#8217;s p, a period, and a space).</p>"
