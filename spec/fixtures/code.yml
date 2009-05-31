@@ -251,3 +251,7 @@ name: code preserves initial square brackets
 description: usually square brackets are used for the language (English, French, Spanish...), but that doesn't make sense for code and apparently is needed for some computer languages.
 in: @[project]_dff.skjd@ 
 html: <p><code>[project]_dff.skjd</code></p>
+---
+name: following also bracketed code in same line
+in: "Some [@code@] and some [@more code@]."
+html: "<p>Some <code>code</code> and some <code>more code</code>.</p>"
