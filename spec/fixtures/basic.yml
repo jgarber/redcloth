@@ -1004,3 +1004,11 @@ html: "<p>Start a paragraph with <code>p. </code> (that&#8217;s p, a period, and
 name: unrecognized block starting with t not eaten
 in: "tel. 0 700 123 123"
 html: "<p>tel. 0 700 123 123</p>"
+---
+name: bolded number at start of phrase
+in: "*22 watermelons* is my limit"
+html: "<p><strong>22 watermelons</strong> is my limit</p>"
+---
+name: FIXME
+in: "*- I would expect it to be a bolded paragraph.*"
+html: <p><strong>- I would expect it to be a bolded paragraph.</strong></p>

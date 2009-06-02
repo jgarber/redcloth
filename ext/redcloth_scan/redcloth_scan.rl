@@ -27,9 +27,9 @@
   footnote_start = ( ftype A C :> dotspace ) %SET_ATTR ;
   ul = "*" %{NEST(); SET_LIST_TYPE("ul");};
   ol = "#" %{NEST(); SET_LIST_TYPE("ol");};
-  ul_start  = ( ul | ol )* ul A_noactions C_noactions :> " "+ ;
-  ol_start  = ( ul | ol )* ol N A_noactions C_noactions :> " "+ ;
-  list_start  = " "* A C ( ul_start | ol_start ) >B >{RESET_NEST();} @{ fexec(bck); } ;
+  ul_start  = ( ul | ol )* ul A_HLGN_noactions* C_noactions :> " "+ ;
+  ol_start  = ( ul | ol )* ol N A_HLGN_noactions* C_noactions :> " "+ ;
+  list_start  = " "* A_HLGN* C ( ul_start | ol_start ) >B >{RESET_NEST();} @{ fexec(bck); } ;
   
   dt_start = "-" . " "+ ;
   dd_start = ":=" ;
@@ -145,8 +145,8 @@
     default => cat;
   *|;
   
-  ul_item  = ( ul | ol )* ul A C :> " "+ ;
-  ol_item  = ( ul | ol )* ol N_noactions A C :> " "+ ;
+  ul_item  = ( ul | ol )* ul A_HLGN* C :> " "+ ;
+  ol_item  = ( ul | ol )* ol N_noactions A_HLGN* C :> " "+ ;
   list_item  := (" "* ( ul_item | ol_item )) @{ SET_ATTRIBUTES(); fgoto list_content; } ;
   
   list_content := |*
