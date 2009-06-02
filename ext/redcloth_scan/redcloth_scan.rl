@@ -56,7 +56,7 @@
 
   # tables
   td_text = (default - LF)+ ;
-  btext = td_text (LF td_text)* ( LF{2} )? ;
+  btext = (td_text (LF td_text)* ( LF{2} )?) | [\t ]* ;
   tddef = ( D? S A C :> dotspace ) %SET_ATTR ;
   td = ( tddef? btext >A %T :> "|" >{PASS(table, "text", "td");} ) >X ;
   trdef = ( A C :> dotspace ) %SET_ATTR ;

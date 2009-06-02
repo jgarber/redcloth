@@ -1,5 +1,7 @@
 === Edge
 
+* Allow table cells to be empty. [Jason Garber]
+
 * Resolve conflict between table signature and blocks beginning with t. [Jason Garber]
 
 * Enable code signature to capture trailing space when in square brackets. [Jason Garber]

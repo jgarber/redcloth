@@ -388,3 +388,47 @@ html: |-
   		<td>d</td>
   	</tr>
   </table>
+---
+name: with missing cells
+desc: This is improper formatting, so as long as it doesn't choke, I don't care how it is handled
+in: |-
+  |a|b|
+  |a|
+  |a|b|
+html: |-
+  <table>
+  	<tr>
+  		<td>a</td>
+  		<td>b</td>
+  	</tr>
+  	<tr>
+  		<td>a</td>
+  	</tr>
+  	<tr>
+  		<td>a</td>
+  		<td>b</td>
+  	</tr>
+  </table>
+---
+name: with empty cells
+desc: cells can be empty. Textile2 skips empties, but we don't want to do that.
+in: |-
+  ||b|
+  |a||
+  |a| |
+html: |-
+  <table>
+  	<tr>
+  		<td></td>
+  		<td>b</td>
+  	</tr>
+  	<tr>
+  		<td>a</td>
+  		<td></td>
+  	</tr>
+  	<tr>
+  		<td>a</td>
+  		<td> </td>
+  	</tr>
+  </table>
+  
