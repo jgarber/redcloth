@@ -62,7 +62,7 @@
   trdef = ( A C :> dotspace ) %SET_ATTR ;
   tr = ( trdef? "|" %{INLINE(table, "tr_open");} td+ ) >X %{INLINE(table, "tr_close");} ;
   trows = ( tr (LF >X tr)* ) ;
-  tdef = ( "table" >X A C :> dotspace LF ) %SET_ATTR ;
+  tdef = ( "table" %X A C :> dotspace LF ) %SET_ATTR ;
   table = ( tdef? trows >{CLEAR(table); INLINE(table, "table_open"); RESET_REG();} ) ;
 
   # info

@@ -1,14 +1,22 @@
 === Edge
 
+* Resolve conflict between table signature and blocks beginning with t. [Jason Garber]
+
 * Enable code signature to capture trailing space when in square brackets. [Jason Garber]
 
 * Allow emphasized phrases to include underscores. [Jason Garber]
 
 * Include an ending question mark in a citation. [Jason Garber]
 
+* Fix <notextile> blocks being included in following paragraph. [Jason Garber]
+
 * Preserve leading whitespace in pre and bc blocks. [Jason Garber]
 
 * Don't add hard break after preexisting <br />. [Jason Garber]
+
+* Switched tests from Test::Unit to Rspec. [Jason Garber]
+
+* Accept multiline content in table cells. [Jason Garber]
 
 * Change to list attributes so you can give style/class to list items (taken from PyTextile).  Breaks backwards compatibility.
   

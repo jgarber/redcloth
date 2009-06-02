@@ -1000,3 +1000,7 @@ html: |-
 name: code captures spaces when made explicit with square brackets
 in: "Start a paragraph with [@p. @] (that's p, a period, and a space)."
 html: "<p>Start a paragraph with <code>p. </code> (that&#8217;s p, a period, and a space).</p>"
+---
+name: unrecognized block starting with t not eaten
+in: "tel. 0 700 123 123"
+html: "<p>tel. 0 700 123 123</p>"
