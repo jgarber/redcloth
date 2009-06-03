@@ -431,4 +431,25 @@ html: |-
   		<td> </td>
   	</tr>
   </table>
-  
+---
+name: containing vertical pipe in notextile
+in: "|a a <notextile>|*b*</notextile> b|c c|<notextile>|</notextile>|"
+html: |-
+  <table>
+  	<tr>
+  		<td>a a |*b* b</td>
+  		<td>c c</td>
+  		<td>|</td>
+  	</tr>
+  </table>
+---
+name: containing vertical pipe in ignore signature
+in: "|a a ==|*b*== b|c c|==|==|"
+html: |-
+  <table>
+  	<tr>
+  		<td>a a |*b* b</td>
+  		<td>c c</td>
+  		<td>|</td>
+  	</tr>
+  </table>

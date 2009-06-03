@@ -55,10 +55,14 @@
   html_end_terminating_block = ( LF indent block_end_tag ) >A @{ fexec(reg); } ;
 
   # tables
-  td_text = (default - LF)+ ;
+  td_char = default - LF - "|" ;
+  td_ignore = "==|==";
+  # td_notextile = "<notextile>" (td_char | "|")+ :>> "</notextile>" ;
+  td_text = (td_char | td_ignore )+ ;
   btext = (td_text (LF td_text)* ( LF{2} )?) | [\t ]* ;
   tddef = ( D? S A C :> dotspace ) %SET_ATTR ;
-  td = ( tddef? btext >A %T :> "|" >{PASS(table, "text", "td");} ) >X ;
+  td = ( btext >A %T "|" >{PASS(table, "text", "td");} ) >X ;
+  # td = ( tddef? btext >A %T "|" >{PASS(table, "text", "td");} ) >X ;
   trdef = ( A C :> dotspace ) %SET_ATTR ;
   tr = ( trdef? "|" %{INLINE(table, "tr_open");} td+ ) >X %{INLINE(table, "tr_close");} ;
   trows = ( tr (LF >X tr)* ) ;
