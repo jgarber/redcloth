@@ -1,5 +1,7 @@
 === Edge
 
+* Fixed image with title, href, and text afterward not being made a link. [Jason Garber]
+
 * Pass string encoding through in Ruby 1.9. [Jason Garber]
 
 * Allow two-letter acronyms. [Jason Garber]

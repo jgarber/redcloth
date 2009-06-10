@@ -36,8 +36,8 @@
   image_title = ( '(' mtext ')' ) ;
   image_is = ( A2 C ". "? (uri image_title?) >A %{ STORE("src"); } ) ;
   image_link = ( ":" uri >A %{ STORE_URL("href"); } ) ;
-  image = ( "!" image_is "!" %A image_link? ) >X %SET_ATTR ;
-  bracketed_image = ( "[!" image_is "!" %A image_link? "]" ) >X %SET_ATTR ;
+  image = ( "!" image_is :> "!" %A image_link? ) >X %SET_ATTR ;
+  bracketed_image = ( "[!" image_is :> "!" %A image_link? "]" ) >X %SET_ATTR ;
 
   # footnotes
   footno = "[" >X %A digit+ %T "]" ;

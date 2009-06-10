@@ -272,3 +272,8 @@ name: with link that contains parentheses
 in: "!image.jpg(Alt text with (parentheses).)!"
 html: |-
   <p><img src="image.jpg" title="Alt text with (parentheses)." alt="Alt text with (parentheses)." /></p>
+---
+name: with link and title and text afterward
+in: "!/image_r.jpg(description)!:image.jpg text."
+html: |-
+  <p><a href="image.jpg"><img src="/image_r.jpg" title="description" alt="description" /></a> text.</p>
