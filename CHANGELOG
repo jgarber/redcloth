@@ -1,5 +1,7 @@
 === Edge
 
+* Pass string encoding through in Ruby 1.9. [Jason Garber]
+
 * Allow two-letter acronyms. [Jason Garber]
 
 * Removed vertical alignment in lists. It doesn't make sense and it conflicts with other things. [Jason Garber]

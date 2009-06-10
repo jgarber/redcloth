@@ -36,7 +36,7 @@ VALUE
 red_parse_link_attr(VALUE self, VALUE regs, VALUE ref)
 {
   VALUE txt = rb_hash_aref(regs, ref);
-  VALUE new_regs = red_parse_title(redcloth_link_attributes(self, txt), ref);
+  VALUE new_regs = red_parse_title(self, redcloth_link_attributes(self, txt), ref);
   
   return rb_funcall(regs, rb_intern("merge!"), 1, new_regs);
 }
@@ -45,11 +45,11 @@ VALUE
 red_parse_image_attr(VALUE self, VALUE regs, VALUE ref)
 {
   
-  return red_parse_title(regs, ref);
+  return red_parse_title(self, regs, ref);
 }
 
 VALUE
-red_parse_title(VALUE regs, VALUE ref)
+red_parse_title(VALUE self, VALUE regs, VALUE ref)
 {
   // Store title/alt
   VALUE txt = rb_hash_aref(regs, ref);

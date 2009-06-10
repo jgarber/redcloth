@@ -14,8 +14,8 @@
 // For Ruby 1.9
 #ifdef HAVE_RUBY_ENCODING_H
 #include "ruby/encoding.h"
-#define STR_NEW(p,n) rb_enc_str_new((p),(n),rb_utf8_encoding())
-#define STR_NEW2(p) rb_enc_str_new((p),strlen(p),rb_utf8_encoding())
+#define STR_NEW(p,n) rb_enc_str_new((p),(n),rb_enc_from_index(ENCODING_GET(self)))
+#define STR_NEW2(p) rb_enc_str_new((p),strlen(p),rb_enc_from_index(ENCODING_GET(self)))
 
 // For Ruby 1.8
 #else
@@ -39,7 +39,7 @@ VALUE redcloth_inline2(VALUE, VALUE, VALUE);
 VALUE redcloth_attribute_parser(int, VALUE, char *, char *);
 VALUE redcloth_attributes(VALUE, VALUE);
 VALUE redcloth_link_attributes(VALUE, VALUE);
-VALUE red_parse_title(VALUE, VALUE);
+VALUE red_parse_title(VALUE, VALUE, VALUE);
 VALUE redcloth_transform(VALUE, char *, char *, VALUE);
 VALUE redcloth_transform2(VALUE, VALUE);
 void red_inc(VALUE, VALUE);

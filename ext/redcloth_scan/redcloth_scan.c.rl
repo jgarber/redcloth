@@ -214,7 +214,7 @@ redcloth_to(self, formatter)
 void Init_redcloth_scan()
 {
   mRedCloth = rb_define_module("RedCloth");
-  rb_define_const( mRedCloth, "EXTENSION_LANGUAGE", STR_NEW2("C") );
+  rb_define_const( mRedCloth, "EXTENSION_LANGUAGE", rb_str_new2("C") );
   /* A Textile document that can be converted to other formats. See
    the README for Textile syntax. */
   super_RedCloth = rb_define_class_under(mRedCloth, "TextileDoc", rb_cString);
