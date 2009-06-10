@@ -1,5 +1,7 @@
 === Edge
 
+* Allow two-letter acronyms. [Jason Garber]
+
 * Removed vertical alignment in lists. It doesn't make sense and it conflicts with other things. [Jason Garber]
 
 * Allow table cells to be empty. [Jason Garber]

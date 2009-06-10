@@ -79,7 +79,7 @@
   emdash = "--" ;
   arrow = "->" ;
   endash = " - " ;
-  acronym = ( [A-Z] >A [A-Z0-9]{2,} %T "(" default+ >A %{ STORE("title"); } :> ")" ) >X ;
+  acronym = ( [A-Z] >A [A-Z0-9]{1,} %T "(" default+ >A %{ STORE("title"); } :> ")" ) >X ;
   caps_noactions = upper{3,} ;
   caps = ( caps_noactions >A %*T ) >X ;
   dim_digit = [0-9.]+ ;
