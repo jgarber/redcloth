@@ -224,7 +224,21 @@ Spec::Rake::SpecTask.new do |t|
 end 
 
 task :default => :spec
-task :spec => [:compile]
+task :spec => [:ensure_diff_lcs, :compile]
+
+task :ensure_diff_lcs do
+  # A little insurance against rake on JRuby not passing the error from load-diff-lcs.rb
+  begin
+    require 'diff/lcs'
+  rescue LoadError
+    begin
+      require 'rubygems' unless ENV['NO_RUBYGEMS']
+      require 'diff/lcs'
+    rescue LoadError
+      raise "You must gem install diff-lcs to run the specs."
+    end
+  end
+end
 
 task :remove_other_platforms do
   Dir["lib/redcloth_scan.{bundle,so,jar,rb}"].each { |file| rm file }
