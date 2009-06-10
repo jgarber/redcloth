@@ -17,16 +17,28 @@ RedCloth can be installed via RubyGems:
 
   gem install RedCloth
 
-It will install the appropriate Ruby, JRuby, or Win32 gem.  If using JRuby, version 1.1.5 or greater is required.
+It will install the appropriate Ruby, JRuby, or Win32 gem. If using JRuby,
+version 1.1.5 or greater is required.
 
 == Compiling
 
-If you just want to use RedCloth, you do NOT need to build/compile it.  It is compiled from C sources automatically when you install the gem on the ruby platform.  Binary gems are provided for JRuby and Win32 platforms.
+If you just want to use RedCloth, you do NOT need to build/compile it. It is
+compiled from C sources automatically when you install the gem on the ruby
+platform. Precompiled binary gems are provided for JRuby and Win32 platforms.
 
-RedCloth can be compiled with <tt>rake compile</tt>.  Ragel 6.3 or greater and the 
-echoe gem are needed to build, compile, and package RedCloth.  Again, Ragel and echoe are NOT needed to simply use RedCloth.
+RedCloth can be compiled with <tt>rake compile</tt>. Ragel 6.3 or greater and
+the echoe gem are needed to build, compile, and package RedCloth. Again, Ragel
+and echoe are NOT needed to simply use RedCloth.
 
-You can cross-compile for JRuby with rake java compile and for Win32 with rake mingw compile.
+=== Supported platforms
+
+By default, the rake compile task builds a native C Ruby extension that works
+with Ruby 1.8 or 1.9. You can cross-compile for JRuby 1.3 with rake java
+compile and for Win32 with rake mingw compile. A pure Ruby version can be
+generated with rake pureruby compile, but the parser it produces is slow and
+incompatible with Ruby 1.9. The JRuby and pure-Ruby extensions don't support
+multi-byte characters. The RedCloth::EXTENSION_LANGUAGE constant indicates in
+which language your copy of RedCloth is compiled.
 
 == Using RedCloth
 
