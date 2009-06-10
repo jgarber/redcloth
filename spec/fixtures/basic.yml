@@ -1013,6 +1013,6 @@ name: bolded number at start of phrase
 in: "*22 watermelons* is my limit"
 html: "<p><strong>22 watermelons</strong> is my limit</p>"
 ---
-name: FIXME
+name: bolded paragraph
 in: "*- I would expect it to be a bolded paragraph.*"
 html: <p><strong>- I would expect it to be a bolded paragraph.</strong></p>
