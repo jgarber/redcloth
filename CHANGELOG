@@ -1,3 +1,5 @@
+=== 4.2.1 / June 16, 2009
+
 * Fix regression where period wasn't accepted in style attribute. [Jason Garber]
 
 === 4.2.0 / June 10, 2009
