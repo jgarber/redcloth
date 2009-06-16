@@ -341,13 +341,13 @@ name: style span
 desc: This way, you can apply style settings, as described in the next section to arbitrary phrases.
 in: |-
   I'm %{color:red}unaware%
-  of most soft drinks.
+  of most %{font-size:0.5em;}soft drinks%.
 html: |-
   <p>I&#8217;m <span style="color:red;">unaware</span><br />
-  of most soft drinks.</p>
+  of most <span style="font-size:0.5em;">soft drinks</span>.</p>
 lite_mode_html: |-
   I&#8217;m <span style="color:red;">unaware</span><br />
-  of most soft drinks.
+  of most <span style="font-size:0.5em;">soft drinks</span>.
 ---
 name: percent sign
 desc: though percent signs indicate a span, they shouldn't be overly greedy.
