@@ -18,7 +18,7 @@
   # textile element attributes
   class = [a-z0-9\- _]+ ;
   id = [a-z0-9\-_]+ ;
-  style_chars = [a-z0-9: ;\-_#&.];
+  style_chars = [a-z0-9: ;\-_#&.%];
   style_url = "url(" [a-z0-9'".\\/#?=+@_\-]+ ")";
   style = style_chars (style_chars+ | style_url)* ; # maybe put in uri when in url()
   language = [a-z\-_]+ ;
