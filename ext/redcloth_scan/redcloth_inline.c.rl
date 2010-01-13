@@ -56,7 +56,7 @@ red_parse_title(VALUE self, VALUE regs, VALUE ref)
   if ( txt != Qnil ) {
     char *p = RSTRING_PTR(txt) + RSTRING_LEN(txt);
     if (*(p - 1) == ')') {
-      char level = -1;
+      signed char level = -1;
       p--;
       while (p > RSTRING_PTR(txt) && level < 0) {
         switch(*(p - 1)) {
