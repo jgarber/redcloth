@@ -17,9 +17,9 @@ e = Echoe.new('RedCloth', RedCloth::VERSION.to_s) do |p|
   p.extension_pattern = nil
   p.development_dependencies = [] # remove echoe from development dependencies
   
-  if Platform.gcc?
+  if Echoe::Platform.gcc?
     p.platform = 'x86-mswin32-60'
-  elsif Platform.java?
+  elsif Echoe::Platform.java?
     p.platform = 'universal-java'
   elsif RUBY_PLATFORM == 'pureruby'
     p.platform = 'ruby'
