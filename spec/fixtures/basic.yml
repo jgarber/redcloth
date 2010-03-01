@@ -367,6 +367,11 @@ name: css id
 desc: An element ID can be given by prefixing the ID with a pound symbol and using it in place of the class.
 in: p(#big-red). Red here
 html: <p id="big-red">Red here</p>
+---
+name: css id with initial uppercase
+desc: CSS IDs are supposed to be lowercase, but Textile understands the invalid capitalization nonetheless
+in: p(#Foo). bar
+html: <p id="Foo">bar</p>
 --- 
 name: class and id combined
 desc: Class and ID can be combined by placing the class first.
