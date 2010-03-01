@@ -40,6 +40,10 @@ incompatible with Ruby 1.9. The JRuby and pure-Ruby extensions don't support
 multi-byte characters. The RedCloth::EXTENSION_LANGUAGE constant indicates in
 which language your copy of RedCloth is compiled.
 
+== Bugs
+
+Please submit bugs to http://jgarber.lighthouseapp.com/projects/13054-redcloth/overview
+
 == Using RedCloth
 
 RedCloth is simply an extension of the String class, which can handle
