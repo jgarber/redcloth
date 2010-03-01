@@ -1,3 +1,12 @@
+=== Edge
+
+* Allow uppercase letters in ID attribute even though it's invalid [Jason Garber]
+* Fix compatibility with newer Echoe, by using full-name for Platform [Flameeyes]
+* Fixes for PPC/PPC64 [Flameeyes]
+* Added a modified copy of 'Textile Reference' to a doc folder [codesponge]
+* Add footnote return links [Jonathan Rudenberg]
+* Add bug report link to the README
+
 === 4.2.2 / June 30, 2009
 
 * Fix regression where percent wasn't accepted in style attribute. [Jason Garber]
