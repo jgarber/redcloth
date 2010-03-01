@@ -1,6 +1,6 @@
 require 'lib/redcloth/version'
 require 'rubygems'
-gem 'echoe', '>= 3.0.1'
+gem 'echoe', '>= 4.1'
 require 'echoe'
 Dir["#{File.dirname(__FILE__)}/lib/tasks/*.rake"].sort.each { |ext| load(ext) }
 
