@@ -124,14 +124,14 @@ module RedCloth::Formatters::HTML
   
   def footno(opts)
     opts[:id] ||= opts[:text]
-    %Q{<sup class="footnote"><a href=\"#fn#{opts[:id]}\">#{opts[:text]}</a></sup>}
+    %Q{<sup class="footnote" id=\"fnr#{opts[:id]}\"><a href=\"#fn#{opts[:id]}\">#{opts[:text]}</a></sup>}
   end
   
   def fn(opts)
     no = opts[:id]
     opts[:id] = "fn#{no}"
     opts[:class] = ["footnote", opts[:class]].compact.join(" ")
-    "<p#{pba(opts)}><sup>#{no}</sup> #{opts[:text]}</p>\n"
+    "<p#{pba(opts)}><a href=\"#fnr#{no}\"><sup>#{no}</sup></a> #{opts[:text]}</p>\n"
   end
   
   def snip(opts)

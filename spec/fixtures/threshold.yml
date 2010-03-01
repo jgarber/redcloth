@@ -252,8 +252,8 @@ in: |-
   
   fn1. The footnote.
 html: |-
-  <p>A footnote reference<sup class="footnote"><a href="#fn1">1</a></sup>.</p>
-  <p class="footnote" id="fn1"><sup>1</sup> The footnote.</p>
+  <p>A footnote reference<sup class="footnote" id="fnr1"><a href="#fn1">1</a></sup>.</p>
+  <p class="footnote" id="fn1"><a href="#fnr1"><sup>1</sup></a> The footnote.</p>
 # html: |-
 #   <p>A footnote reference<sup class="footnote"><a href="#fn1216642796463b1223ae29d">1</a></sup>.</p>
 #   <p class="footnote" id="fn1216642796463b1223ae29d"><sup>1</sup> The footnote.</p>
@@ -755,7 +755,7 @@ in: |-
 html: |-
   <p>A close<img src="/img.gif" alt="" />image.<br />
   A tight<a href="http://thresholdstate.com/">text</a>link.<br />
-  A <a href="http://thresholdstate.com/">footnoted link</a><sup class="footnote"><a href="#fn1">1</a></sup>.</p>
+  A <a href="http://thresholdstate.com/">footnoted link</a><sup class="footnote" id="fnr1"><a href="#fn1">1</a></sup>.</p>
 # html: |-
 #   <p>A close<img src="/img.gif" alt="" />image.<br />
 #   A tight<a href="http://thresholdstate.com/">text</a>link.<br />

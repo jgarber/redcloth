@@ -247,12 +247,12 @@ html: |-
 name: footnote reference
 desc: Numeric references within text to footnotes appear between square brackets.
 in: This is covered elsewhere[1].
-html: <p>This is covered elsewhere<sup class="footnote"><a href="#fn1">1</a></sup>.</p>
+html: <p>This is covered elsewhere<sup class="footnote" id="fnr1"><a href="#fn1">1</a></sup>.</p>
 --- 
 name: footnote
 desc: To create the footnote that corresponds to its reference within the text, begin a new paragraph with fn and the footnote&#8217;s number, followed by a dot and a space.
 in: fn1. Down here, in fact.
-html: <p class="footnote" id="fn1"><sup>1</sup> Down here, in fact.</p>
+html: <p class="footnote" id="fn1"><a href="#fnr1"><sup>1</sup></a> Down here, in fact.</p>
 --- 
 name: em
 desc: Emphasis to text is added by surrounding a phrase with underscores.  In HTML, this often appears as <em>italics</em>.
