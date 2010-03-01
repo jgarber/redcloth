@@ -16,7 +16,7 @@
   EOF = 0 ;
 
   # textile element attributes
-  class = [a-z0-9\- _]+ ;
+  class = [A-Za-z0-9\- _]+ ;
   id = [A-Za-z0-9\-_]+ ;
   style_chars = [A-Za-z0-9: ;\-_#&.%'"];
   style_url = "url(" [a-z0-9'".\\/#?=+@_\-]+ ")";

@@ -372,7 +372,12 @@ name: css id with initial uppercase
 desc: CSS IDs are supposed to be lowercase, but Textile understands the invalid capitalization nonetheless
 in: p(#Foo). bar
 html: <p id="Foo">bar</p>
---- 
+---
+name: css class uppercase
+desc: CSS classes are supposed to be lowercase, but Textile understands the invalid capitalization nonetheless
+in: p(fooBar). baz
+html: <p class="fooBar">baz</p>
+---
 name: class and id combined
 desc: Class and ID can be combined by placing the class first.
 in: p(example1#big-red2). Red here
