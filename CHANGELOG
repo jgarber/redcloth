@@ -1,5 +1,6 @@
 === Edge
 
+* Allow quotes in styles so you can do things like listing font-families. [Jason Garber]
 * Fix uninitialized constant Gem::Specification::PLATFORM_CROSS_TARGETS in Rails [Jason Garber]
 * Allow uppercase letters in ID attribute even though it's invalid [Jason Garber]
 * Fix compatibility with newer Echoe, by using full-name for Platform [Flameeyes]

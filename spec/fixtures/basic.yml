@@ -380,8 +380,8 @@ html: <p class="example1" id="big-red2">Red here</p>
 --- 
 name: css style
 desc: Style settings can be provided directly by surrounding them in curly braces.
-in: p{color:blue;margin:30px;font-size:120%;}. Spacey blue
-html: <p style="color:blue;margin:30px;font-size:120%;">Spacey blue</p>
+in: p{color:blue;margin:30px;font-size:120%;font-family:'Comic Sans'}. Spacey blue
+html: <p style="color:blue;margin:30px;font-size:120%;font-family:&#39;Comic Sans&#39;;">Spacey blue</p>
 --- 
 name: language designations
 desc: Language designations can be given between angel brackets.
