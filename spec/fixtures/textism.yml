@@ -150,14 +150,14 @@ in: ~a phrase~
 html: <p><sub>a phrase</sub></p>
 latex: "\\textsubscript{a phrase}\n\n"
 ---
-in: %(myclass)SPAN%
+in: "%(myclass)SPAN%"
 html: <p><span class="myclass"><span class="caps">SPAN</span></span></p>
 no_span_caps_html: <p><span class="myclass">SPAN</span></p>
 ---
-in: %{color:red}red%
+in: "%{color:red}red%"
 html: <p><span style="color:red;">red</span></p>
 ---
-in: %[fr]rouge%
+in: "%[fr]rouge%"
 html: <p><span lang="fr">rouge</span></p>
 ---
 in: _(big)red_

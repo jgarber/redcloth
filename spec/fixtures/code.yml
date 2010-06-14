@@ -219,18 +219,18 @@ html: '<pre><code>Can I talk about &lt;h2&gt;Headings&lt;/h2&gt; here?</code></p
 name: escape latex standard symbols 
 in: "standard symbols # $ % & _ { }" 
 latex: "standard symbols \\# \\$ \\% \\& \\_ \\{ \\}\n\n" 
---- 
+---
 name: escape latex text symbols 
 in: "text symbols \\ ~ ^" 
 latex: "text symbols \\textbackslash{} \\~{} \\^{}\n\n" 
---- 
+---
 name: named html entities to latex 
 in: "&hellip; &frac12;" 
-latex: "\ldots{} \sfrac{1}{2}\n\n" 
---- 
+latex: "\\ldots{} \\sfrac{1}{2}\n\n" 
+---
 name: numeric html entities to latex 
 in: "&#8230; &#189;" 
-latex: "\ldots{} \sfrac{1}{2}\n\n"
+latex: "\\ldots{} \\sfrac{1}{2}\n\n"
 ---
 name: unclosed pre tag
 in: '<pre><code>This is a pre that will go unfinished'
@@ -249,7 +249,7 @@ latex: "\\verb@some_method(some_params, some => test);@ Oh dear this fails\n\n"
 ---
 name: code preserves initial square brackets
 description: usually square brackets are used for the language (English, French, Spanish...), but that doesn't make sense for code and apparently is needed for some computer languages.
-in: @[project]_dff.skjd@ 
+in: "@[project]_dff.skjd@"
 html: <p><code>[project]_dff.skjd</code></p>
 ---
 name: following also bracketed code in same line

@@ -348,7 +348,7 @@ html: |-
   </table>
 ---
 name: with cell attributes
-in: |[en]. lang-ok|{color:red;}. style-ok|(myclass). class-ok|
+in: "|[en]. lang-ok|{color:red;}. style-ok|(myclass). class-ok|"
 html: |-
   <table>
   	<tr>
@@ -359,7 +359,7 @@ html: |-
   </table>
 ---
 name: with improper cell attributes
-in: |[en]lang-bad|{color:red;}style-bad|(myclass)class-bad|
+in: "|[en]lang-bad|{color:red;}style-bad|(myclass)class-bad|"
 html: |-
   <table>
   	<tr>

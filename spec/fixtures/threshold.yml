@@ -588,7 +588,7 @@ html: |-
 ---
 name: tables
 desc: Tables can be constructed using | “pipe” symbols to separate cells.
-in: |a|simple|table|
+in: "|a|simple|table|"
 html: |-
   <table>
   	<tr>
@@ -619,7 +619,7 @@ html: |-
 ---
 name: cell attributes
 desc: Attributes may be applied separately to individual cells, rows, and entire tables. Cell attributes are placed within each cell.
-in: |a|{color:red}. styled|cell|
+in: "|a|{color:red}. styled|cell|"
 html: |-
   <table>
   	<tr>
@@ -663,7 +663,7 @@ html: |-
 ---
 name: vertical alignment
 desc: Special alignment symbols are available for vertical alignment within table cells.
-in: |^. top alignment|
+in: "|^. top alignment|"
 html: |-
   <table>
   	<tr>

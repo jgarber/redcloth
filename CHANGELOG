@@ -1,3 +1,7 @@
+=== *edge*
+
+* Fix invalid YAML for Ruby 1.9.2 [Aaron Patterson]
+
 === 4.2.3 / March 1, 2010
 
 * Allow quotes in styles so you can do things like listing font-families. [Jason Garber]
