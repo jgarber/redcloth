@@ -4,7 +4,7 @@ CLEAN.include [
   'pkg', 'tmp',
   'ext/redcloth_scan/**/*.{bundle,so,obj,pdb,lib,def,exp,c,o,xml,class,jar,java}',
   'ext/redcloth_scan/**/redcloth_*.rb', 
-  'ext/redcloth_scan/Makefile'
+  'ext/redcloth_scan/Makefile',
   'lib/*.{bundle,so,o,obj,pdb,lib,def,exp,jar}', 
   'lib/redcloth_scan.rb', 
 ]

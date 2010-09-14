@@ -1,0 +1,21 @@
+PATH
+  remote: .
+  specs:
+    redcloth (4.2.3)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    rake (0.8.7)
+    rake-compiler (0.7.1)
+      rake (>= 0.8.3, < 0.9)
+    rspec (1.3.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rake (~> 0.8.7)
+  rake-compiler (~> 0.7.1)
+  redcloth!
+  rspec (>= 1.3.0)

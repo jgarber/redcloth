@@ -26,8 +26,9 @@ module RedCloth
   description = "Textile parser for Ruby."
 
   if RedCloth.const_defined?(:EXTENSION_LANGUAGE)
-    DESCRIPTION = "#{NAME}-#{VERSION::FULL_VERSION}-#{EXTENSION_LANGUAGE} - #{description}\n#{URL}"
+    SUMMARY = "#{NAME}-#{VERSION::FULL_VERSION}-#{EXTENSION_LANGUAGE}"
   else
-    DESCRIPTION = "#{NAME}-#{VERSION::FULL_VERSION} - #{description}\n#{URL}"
+    SUMMARY = "#{NAME}-#{VERSION::FULL_VERSION}"
   end
+  DESCRIPTION = SUMMARY + " - #{description}\n#{URL}"
 end
