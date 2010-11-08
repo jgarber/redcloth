@@ -2,7 +2,7 @@ CLEAN.include [
   'pkg', 'tmp',
   'ext/redcloth_scan/**/*.{bundle,so,obj,pdb,lib,def,exp,c,o,xml,class,jar,java}',
   'ext/redcloth_scan/**/redcloth_*.rb', 
-  'ext/redcloth_scan/Makefile',
+  'ext/redcloth_scan/Makefile',  'ext/redcloth_scan/extconf.rb',
   'lib/*.{bundle,so,o,obj,pdb,lib,def,exp,jar}', 
   'lib/redcloth_scan.rb', 
 ]
@@ -21,9 +21,6 @@ begin
 if !defined?(JRUBY_VERSION)
   require 'rake/extensiontask'
   require File.dirname(__FILE__) + '/ragel_extension_task'
-  require File.dirname(__FILE__) + '/ragel_task'
-  
-  c = RagelTask.new('c')
 
   extconf = "ext/redcloth_scan/extconf.rb"
   file extconf do
@@ -40,9 +37,7 @@ EOF
     end
   end
 
-  Rake::RagelExtensionTask.new("redcloth_scan") do |ext|
-    ext.source_files = ["#{ext.ext_dir}/redcloth_scan.c", "#{ext.ext_dir}/redcloth_inline.c", "#{ext.ext_dir}/redcloth_attributes.c"]
-    
+  Rake::RagelExtensionTask.new("redcloth_scan") do |ext|    
     if ENV['RUBY_CC_VERSION']
       ext.cross_compile = true
       ext.cross_platform = 'i386-mingw32'

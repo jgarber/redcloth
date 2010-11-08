@@ -3,6 +3,7 @@ require 'rubygems'
 require 'bundler'
 Bundler.setup
 Bundler::GemHelper.install_tasks
+ENV['RUBYOPT'] = nil # Necessary to prevent Bundler from *&^%$#ing up rake-compiler.
 
 require 'rake/clean'
 
