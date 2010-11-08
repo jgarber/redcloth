@@ -1,5 +1,6 @@
 module Rake
   class RagelExtensionTask < ExtensionTask
+    RAGEL_INCLUDE_PATTERN = /include \w+ "([^"]+)";/
     
     attr_accessor :source_files
     attr_accessor :rl_dir
@@ -20,7 +21,7 @@ module Rake
     
     def define_tasks
       %w(scan inline attributes).each do |machine|
-        file target(machine) => [*ragel_dependencies(machine)] do
+        file target(machine) => [*ragel_sources(machine)] do
           mkdir_p(File.dirname(target(machine))) unless File.directory?(File.dirname(target(machine)))
           ensure_ragel_version(target(machine)) do
             sh "ragel #{flags} #{lang_ragel(machine)} -o #{target(machine)}"
@@ -55,18 +56,31 @@ module Rake
       "#{@rl_dir}/redcloth_#{machine}.#{@lang}.rl"
     end
 
-    def ragel_dependencies(machine)
-      [lang_ragel(machine),   "#{@rl_dir}/redcloth_#{machine}.rl", "#{@rl_dir}/redcloth_common.#{@lang}.rl",   "#{@rl_dir}/redcloth_common.rl"] + (@lang == 'c' ? ["#{@ext_dir}/redcloth.h"] : [])
+    def ragel_sources(machine)
+      deps = [lang_ragel(machine), ragel_file_dependencies(lang_ragel(machine))].flatten.dup
+      deps += ["#{@ext_dir}/redcloth.h"] if @lang == 'c'
+      deps
       # FIXME: merge that header file into other places so it can be eliminated?
+    end
+    
+    def ragel_file_dependencies(ragel_file)
+      found = find_ragel_includes(ragel_file)
+      found + found.collect {|file| ragel_file_dependencies(file)}
+    end
+    
+    def find_ragel_includes(file)
+      File.open(file).grep(RAGEL_INCLUDE_PATTERN) { $1 }.map do |file|
+        "#{@rl_dir}/#{file}"
+      end
     end
 
     def flags
       # FIXME: reinstate @code_style being passed from optimize rake task?
       code_style_flag = preferred_code_style ? " -" + preferred_code_style : ""
-      "-#{host_language}#{code_style_flag}"
+      "-#{host_language_flag}#{code_style_flag}"
     end
 
-    def host_language
+    def host_language_flag
       {
         'c'      => 'C',
         'java'   => 'J',
