@@ -1,8 +1,8 @@
 require 'yaml'
 
 class RagelTask
-  RL_OUTPUT_DIR = File.dirname(__FILE__) + "/../ragel"
-  EXT_DIR = File.dirname(__FILE__) + "/../ext/redcloth_scan"
+  RL_OUTPUT_DIR = "ragel"
+  EXT_DIR = "ext/redcloth_scan"
 
   def initialize(lang)
     @lang     = lang

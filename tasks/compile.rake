@@ -21,8 +21,9 @@ begin
 if !defined?(JRUBY_VERSION)
   require 'rake/extensiontask'
   require File.dirname(__FILE__) + '/ragel_extension_task'
+  require File.dirname(__FILE__) + '/ragel_task'
   
-  # c = RagelTask.new('c')
+  c = RagelTask.new('c')
 
   extconf = "ext/redcloth_scan/extconf.rb"
   file extconf do
@@ -46,22 +47,7 @@ EOF
       ext.cross_compile = true
       ext.cross_platform = 'i386-mingw32'
     end
-    
-    puts "*" * 100
-    puts ext.send(:source_files)
-    puts "+" * 100
-    
   end
-  
-  # # The way tasks are defined with compile:xxx (but without namespace) in rake-compiler forces us
-  # # to use these hacks for setting up dependencies. Ugly!
-  # Rake::Task["compile:redcloth_scan"].prerequisites.unshift(extconf)
-  # Rake::Task["compile:redcloth_scan"].prerequisites.unshift(c.target('scan'))
-  # Rake::Task["compile:redcloth_scan"].prerequisites.unshift(rb.target('scan'))
-  # 
-  # Rake::Task["compile"].prerequisites.unshift(extconf)
-  # Rake::Task["compile"].prerequisites.unshift(c.target('scan'))
-  # Rake::Task["compile"].prerequisites.unshift(rb.target('scan'))
   
 end
 rescue LoadError
@@ -70,10 +56,4 @@ rescue LoadError
     $c_warned = true
     task :compile # no-op
   end
-end
-
-rule( /\.c$/ => [
-proc {|task_name| task_name.sub(/redcloth_([^.]+)\.(.+)$/, "redcloth_#{$1}.#{$2}.rl") }
-]) do |t|
-  sh "cc #{t.source} -c -o #{t.name}"
 end

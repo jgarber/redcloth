@@ -1,4 +1,5 @@
 ext/redcloth_scan/Makefile
+ext/redcloth_scan/extconf.rb
 ext/redcloth_scan/*.[co]
 ext/redcloth_scan/*.bundle
 ext/redcloth_scan/*.so
