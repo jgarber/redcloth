@@ -1,5 +1,4 @@
 require 'yaml'
-require 'erb'
 
 class RagelTask
   RL_OUTPUT_DIR = File.dirname(__FILE__) + "/../ragel"
@@ -13,9 +12,9 @@ class RagelTask
   def define_tasks
     %w(scan inline attributes).each do |machine|
       file target(machine) => [*ragel_dependencies(machine)] do
-        mkdir_p(File.dirname(target)) unless File.directory?(File.dirname(target))
-        ensure_ragel_version(target) do
-          sh "ragel #{flags} #{lang_ragel} -o #{target(machine)}"
+        mkdir_p(File.dirname(target(machine))) unless File.directory?(File.dirname(target(machine)))
+        ensure_ragel_version(target(machine)) do
+          sh "ragel #{flags} #{lang_ragel(machine)} -o #{target(machine)}"
         end
       end
     end
@@ -58,9 +57,9 @@ class RagelTask
   
   def host_language
     {
-      'c'      => '-C',
-      'java'   => '-J',
-      'rb'     => '-R'
+      'c'      => 'C',
+      'java'   => 'J',
+      'rb'     => 'R'
     }[@lang]
   end
   
