@@ -1,31 +1,30 @@
 module Rake
   class RagelExtensionTask < ExtensionTask
     RAGEL_INCLUDE_PATTERN = /include \w+ "([^"]+)";/
+    RAGEL_VERSION_COMMAND = "ragel -v"
     
-    attr_accessor :source_files
     attr_accessor :rl_dir
+    attr_accessor :machines
     
     def init(name = nil, gem_spec = nil)
       super
       
       @lang     = "c"
       @rl_dir = "ragel"
+      @machines = %w(scan inline attributes)
       define_tasks
     end
     
     def source_files
-      @source_files = ["#{@ext_dir}/redcloth_scan.c", "#{@ext_dir}/redcloth_inline.c", "#{@ext_dir}/redcloth_attributes.c"]
-      
-      # @source_files ||= FileList["#{@ext_dir}/#{@source_pattern}"]
+      @source_files ||= machines.map {|m| target(m) }
     end
     
     def define_tasks
-      %w(scan inline attributes).each do |machine|
+      machines.each do |machine|
         file target(machine) => [*ragel_sources(machine)] do
           mkdir_p(File.dirname(target(machine))) unless File.directory?(File.dirname(target(machine)))
-          ensure_ragel_version(target(machine)) do
-            sh "ragel #{flags} #{lang_ragel(machine)} -o #{target(machine)}"
-          end
+          ensure_ragel_version
+          sh "ragel #{flags} #{lang_ragel(machine)} -o #{target(machine)}"
         end
         
         file extconf => [target(machine)]
@@ -96,14 +95,12 @@ module Rake
       }[@lang]
     end
 
-    def ensure_ragel_version(name)
+    def ensure_ragel_version
       @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].split('.').map{|s| s.to_i}
-      if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[1] >= 3)
-        yield
-      else
-        STDERR.puts "Ragel 6.3 or greater is required to generate #{name}."
-        exit(1)
-      end
+      raise unless @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[1] >= 3)
+    rescue
+      STDERR.puts "Ragel 6.3 or greater is required."
+      exit(1)
     end
     
   end
