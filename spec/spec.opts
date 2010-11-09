@@ -1,3 +1,0 @@
---color
---require=spec/differs/inline.rb
---diff=RedClothDiffers::Inline

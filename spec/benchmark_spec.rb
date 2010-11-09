@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe "Benchmarking", :type => :formatter do
-  fixtures = self.fixtures
   version = RedCloth::VERSION.is_a?(Module) ? RedCloth::VERSION::STRING : RedCloth::VERSION
   platform = RedCloth.const_defined?(:EXTENSION_LANGUAGE) ? RedCloth::EXTENSION_LANGUAGE : (version < "4.0.0" ? "ruby-regex" : "C")
   

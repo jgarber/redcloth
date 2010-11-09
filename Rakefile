@@ -235,43 +235,43 @@ task :optimize do
 end
 
 
-#### Custom testing tasks
-
-require 'rubygems' 
-require 'spec/rake/spectask'
-Rake::Task[:default].prerequisites.clear
-Spec::Rake::SpecTask.new do |t|
-  t.spec_opts = ["--options #{File.dirname(__FILE__) + '/spec/spec.opts'}"] 
-  t.spec_files = FileList['spec/**/*_spec.rb'] 
-end 
-
-task :default => :spec
-task :spec => [:ensure_diff_lcs, :compile]
-
-task :ensure_diff_lcs do
-  # A little insurance against rake on JRuby not passing the error from load-diff-lcs.rb
-  begin
-    require 'diff/lcs'
-  rescue LoadError
-    begin
-      require 'rubygems' unless ENV['NO_RUBYGEMS']
-      require 'diff/lcs'
-    rescue LoadError
-      raise "You must gem install diff-lcs to run the specs."
-    end
-  end
-end
-
-task :remove_other_platforms do
-  Dir["lib/redcloth_scan.{bundle,so,jar,rb}"].each { |file| rm file }
-end
-
-def ensure_ragel_version(name)
-  @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].split('.').map{|s| s.to_i}
-  if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[1] >= 3)
-    yield
-  else
-    STDERR.puts "Ragel 6.3 or greater is required to generate #{name}."
-    exit(1)
-  end
-end
+# #### Custom testing tasks
+# 
+# require 'rubygems' 
+# require 'spec/rake/spectask'
+# Rake::Task[:default].prerequisites.clear
+# Spec::Rake::SpecTask.new do |t|
+#   t.spec_opts = ["--options #{File.dirname(__FILE__) + '/spec/spec.opts'}"] 
+#   t.spec_files = FileList['spec/**/*_spec.rb'] 
+# end 
+# 
+# task :default => :spec
+# task :spec => [:ensure_diff_lcs, :compile]
+# 
+# task :ensure_diff_lcs do
+#   # A little insurance against rake on JRuby not passing the error from load-diff-lcs.rb
+#   begin
+#     require 'diff/lcs'
+#   rescue LoadError
+#     begin
+#       require 'rubygems' unless ENV['NO_RUBYGEMS']
+#       require 'diff/lcs'
+#     rescue LoadError
+#       raise "You must gem install diff-lcs to run the specs."
+#     end
+#   end
+# end
+# 
+# task :remove_other_platforms do
+#   Dir["lib/redcloth_scan.{bundle,so,jar,rb}"].each { |file| rm file }
+# end
+# 
+# def ensure_ragel_version(name)
+#   @ragel_v ||= `ragel -v`[/(version )(\S*)/,2].split('.').map{|s| s.to_i}
+#   if @ragel_v[0] > 6 || (@ragel_v[0] == 6 && @ragel_v[1] >= 3)
+#     yield
+#   else
+#     STDERR.puts "Ragel 6.3 or greater is required to generate #{name}."
+#     exit(1)
+#   end
+# end
