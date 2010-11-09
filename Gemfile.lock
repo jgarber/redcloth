@@ -6,6 +6,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
+    diff-lcs (1.1.2)
     rake (0.8.7)
     rake-compiler (0.7.1)
       rake (>= 0.8.3, < 0.9)
@@ -15,6 +16,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  diff-lcs
   rake (~> 0.8.7)
   rake-compiler (~> 0.7.1)
   redcloth!
