@@ -9,11 +9,10 @@ module RedCloth
   class NotCompiledError < LoadError; end
 end
 
-begin
-  require 'redcloth_scan'
-rescue LoadError
+if File.exist?(File.dirname(__FILE__) + '/redcloth_scan.*')
   raise RedCloth::NotCompiledError, "RedCloth uses native extensions. It's extremely fast but must be compiled. Installing the RedCloth gem is the easiest method."
 end
+require 'redcloth_scan'
 require 'redcloth/version'
 require 'redcloth/textile_doc'
 require 'redcloth/formatters/base'
