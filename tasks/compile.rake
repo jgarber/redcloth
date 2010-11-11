@@ -7,21 +7,14 @@ CLEAN.include [
   'lib/redcloth_scan.rb', 
 ]
 
-desc "Compile the Java extensions"
-task :jar => 'lib/redcloth_scan.jar'
-
-ext = "ext/redcloth_scan"
-file 'lib/redcloth_scan.jar' => FileList["#{ext}/RedclothScanService.java", "#{ext}/RedclothInline.java", "#{ext}/RedclothAttributes.java"] do
-  sources = FileList["#{ext}/**/*.java"].join(' ')
-  sh "javac -target 1.5 -source 1.5 -d #{ext} #{java_classpath_arg} #{sources}"
-  sh "jar cf lib/redcloth_scan.jar -C #{ext} ."
-end
-
 begin
-if !defined?(JRUBY_VERSION)
   require 'rake/extensiontask'
+  require 'rake/javaextensiontask'
   require File.dirname(__FILE__) + '/ragel_extension_task'
 
+if defined?(JRUBY_VERSION)
+  Rake::JavaRagelExtensionTask.new('redcloth_scan')
+else  
   extconf = "ext/redcloth_scan/extconf.rb"
   file extconf do
     FileUtils.mkdir(File.dirname(extconf)) unless File.directory?(File.dirname(extconf))
@@ -43,7 +36,6 @@ EOF
       ext.cross_platform = 'i386-mingw32'
     end
   end
-  
 end
 rescue LoadError
   unless defined?($c_warned)

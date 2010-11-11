@@ -13,7 +13,7 @@ require 'redcloth/version'
 Dir['tasks/**/*.rake'].each { |rake| load File.expand_path(rake) }
 
 task :default  => [:spec]
-task :spec     => defined?(JRUBY_VERSION) ? :jar : :compile
+task :spec     => [:compile]
 
 
 ###### OLD ECHOE RAKEFILE #####

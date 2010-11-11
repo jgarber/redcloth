@@ -1,5 +1,5 @@
 module Rake
-  class RagelExtensionTask < ExtensionTask
+  module RagelGenerationTasks
     RAGEL_INCLUDE_PATTERN = /include \w+ "([^"]+)";/
     RAGEL_VERSION_COMMAND = "ragel -v"
     
@@ -9,17 +9,24 @@ module Rake
     def init(name = nil, gem_spec = nil)
       super
       
-      @lang     = "c"
       @rl_dir = "ragel"
       @machines = %w(scan inline attributes)
-      define_tasks
+    end
+    
+    def lang
+      raise NotImplementedError
     end
     
     def source_files
       @source_files ||= machines.map {|m| target(m) }
     end
     
-    def define_tasks
+    def define
+      super
+      define_ragel_tasks
+    end
+    
+    def define_ragel_tasks
       machines.each do |machine|
         file target(machine) => [*ragel_sources(machine)] do
           mkdir_p(File.dirname(target(machine))) unless File.directory?(File.dirname(target(machine)))
@@ -27,7 +34,7 @@ module Rake
           sh "ragel #{flags} #{lang_ragel(machine)} -o #{target(machine)}"
         end
         
-        file extconf => [target(machine)]
+        file extconf => [target(machine)] if lang == 'c'
       end
     end
 
@@ -48,16 +55,16 @@ module Rake
           'java' => "#{@ext_dir}/RedclothAttributes.java",
           'rb'   => "#{@ext_dir}/redcloth_attributes.rb"
         }
-      }[machine][@lang]
+      }[machine][lang]
     end
 
     def lang_ragel(machine)
-      "#{@rl_dir}/redcloth_#{machine}.#{@lang}.rl"
+      "#{@rl_dir}/redcloth_#{machine}.#{lang}.rl"
     end
 
     def ragel_sources(machine)
       deps = [lang_ragel(machine), ragel_file_dependencies(lang_ragel(machine))].flatten.dup
-      deps += ["#{@ext_dir}/redcloth.h"] if @lang == 'c'
+      deps += ["#{@ext_dir}/redcloth.h"] if lang == 'c'
       deps
       # FIXME: merge that header file into other places so it can be eliminated?
     end
@@ -84,7 +91,7 @@ module Rake
         'c'      => 'C',
         'java'   => 'J',
         'rb'     => 'R'
-      }[@lang]
+      }[lang]
     end
 
     def preferred_code_style
@@ -92,7 +99,7 @@ module Rake
         'c'      => 'T0',
         'java'   => nil,
         'rb'     => 'F1'
-      }[@lang]
+      }[lang]
     end
 
     def ensure_ragel_version
@@ -103,5 +110,19 @@ module Rake
       exit(1)
     end
     
+  end
+  class RagelExtensionTask < ExtensionTask
+    include RagelGenerationTasks
+
+    def lang
+      "c"
+    end
+  end  
+  class JavaRagelExtensionTask < JavaExtensionTask
+    include RagelGenerationTasks
+    
+    def lang
+      "java"
+    end
   end
 end
