@@ -7,10 +7,9 @@ CLEAN.include [
   'lib/redcloth_scan.rb', 
 ]
 
-begin
-  require 'rake/extensiontask'
-  require 'rake/javaextensiontask'
-  require File.dirname(__FILE__) + '/ragel_extension_task'
+require 'rake/extensiontask'
+require 'rake/javaextensiontask'
+require File.dirname(__FILE__) + '/ragel_extension_task'
 
 if defined?(JRUBY_VERSION)
   Rake::JavaRagelExtensionTask.new('redcloth_scan')
@@ -26,7 +25,7 @@ $CFLAGS << ' -O0 -Wall' if CONFIG['CC'] =~ /gcc/
 dir_config("redcloth_scan")
 have_library("c", "main")
 create_makefile("redcloth_scan")
-EOF
+      EOF
     end
   end
 
@@ -35,12 +34,5 @@ EOF
       ext.cross_compile = true
       ext.cross_platform = 'i386-mingw32'
     end
-  end
-end
-rescue LoadError
-  unless defined?($c_warned)
-    warn "WARNING: Rake::ExtensionTask not installed. Skipping C compilation." 
-    $c_warned = true
-    task :compile # no-op
   end
 end
