@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.require_path     = "lib"
 
   s.files -= Dir['ext/**/*']
+  s.files -= Dir['ragel/*']
   s.files -= Dir['lib/redcloth.jar']
   s.files -= Dir['lib/**/*.dll']
   s.files -= Dir['lib/**/*.bundle']

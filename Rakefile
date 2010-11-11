@@ -10,6 +10,10 @@ require 'rake/clean'
 $:.unshift(File.dirname(__FILE__) + '/lib')
 require 'redcloth/version'
 
+def gemspec
+  @gemspec ||= Gem::Specification.load(File.expand_path('../redcloth.gemspec', __FILE__))
+end
+
 Dir['tasks/**/*.rake'].each { |rake| load File.expand_path(rake) }
 
 task :default  => [:spec]

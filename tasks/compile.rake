@@ -12,7 +12,7 @@ require 'rake/javaextensiontask'
 require File.dirname(__FILE__) + '/ragel_extension_task'
 
 if defined?(JRUBY_VERSION)
-  Rake::JavaRagelExtensionTask.new('redcloth_scan')
+  Rake::JavaRagelExtensionTask.new('redcloth_scan', gemspec)
 else  
   extconf = "ext/redcloth_scan/extconf.rb"
   file extconf do
@@ -29,7 +29,7 @@ create_makefile("redcloth_scan")
     end
   end
 
-  Rake::RagelExtensionTask.new("redcloth_scan") do |ext|    
+  Rake::RagelExtensionTask.new("redcloth_scan", gemspec) do |ext|    
     if ENV['RUBY_CC_VERSION']
       ext.cross_compile = true
       ext.cross_platform = 'i386-mingw32'
