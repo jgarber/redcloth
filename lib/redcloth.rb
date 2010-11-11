@@ -5,14 +5,16 @@
 # appears to be fixed in Edge Rails [51e4106].
 Object.send(:remove_const, :RedCloth) if Object.const_defined?(:RedCloth) && RedCloth.is_a?(Class)
 
-module RedCloth
-  class NotCompiledError < LoadError; end
+require 'rbconfig'
+begin
+  prefix = Config::CONFIG['arch'] =~ /mswin|mingw/ ? "#{Config::CONFIG['MAJOR']}.#{Config::CONFIG['MINOR']}/" : ''
+  lib = "#{prefix}redcloth_scan"
+  require lib
+rescue LoadError => e
+  e.message << %{\nCouldn't load #{lib}\nThe $LOAD_PATH was:\n#{$LOAD_PATH.join("\n")}}
+  raise e
 end
 
-if File.exist?(File.dirname(__FILE__) + '/redcloth_scan.*')
-  raise RedCloth::NotCompiledError, "RedCloth uses native extensions. It's extremely fast but must be compiled. Installing the RedCloth gem is the easiest method."
-end
-require 'redcloth_scan'
 require 'redcloth/version'
 require 'redcloth/textile_doc'
 require 'redcloth/formatters/base'
