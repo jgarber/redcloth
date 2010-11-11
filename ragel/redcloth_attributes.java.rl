@@ -37,12 +37,12 @@ public class RedclothAttributes extends RedclothScanService.Base {
 
   private int machine;
    
-  public RedclothAttributes(int machine, IRubyObject self, byte[] data, int p, int pe) {
+  public RedclothAttributes(int machine, IRubyObject self, char[] data, int p, int pe) {
     this.runtime = self.getRuntime();
     this.self = self;
 
     // This is GROSS but necessary for EOF matching
-    this.data = new byte[pe+1];
+    this.data = new char[pe+1];
     System.arraycopy(data, p, this.data, 0, pe);
     this.data[pe] = 0;
 
@@ -68,16 +68,16 @@ public class RedclothAttributes extends RedclothScanService.Base {
   }
 
   public static IRubyObject attributes(IRubyObject self, IRubyObject str) {
-    ByteList bl = str.convertToString().getByteList();
+    char[] chars = str.asJavaString().toCharArray();
     int cs = redcloth_attributes_en_inline;
-    return new RedclothAttributes(cs, self, bl.bytes, bl.begin, bl.realSize).parse();
+    return new RedclothAttributes(cs, self, chars, 0, chars.length).parse();
   }
 
   public static IRubyObject link_attributes(IRubyObject self, IRubyObject str) {
     Ruby runtime = self.getRuntime();
 
-    ByteList bl = str.convertToString().getByteList();
+    char[] chars = str.asJavaString().toCharArray();
     int cs = redcloth_attributes_en_link_says;
-    return new RedclothAttributes(cs, self, bl.bytes, bl.begin, bl.realSize).parse();
+    return new RedclothAttributes(cs, self, chars, 0, chars.length).parse();
   }
 }

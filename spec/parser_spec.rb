@@ -10,6 +10,10 @@ describe RedCloth do
     end
   end
   
+  it "should not break on utf8 characters" do
+    RedCloth.new("Zazółć gęślą jaźń").to_html.should =~ /jaźń/
+  end
+  
   it "should have a VERSION" do
     RedCloth.const_defined?("VERSION").should be_true
     RedCloth::VERSION.const_defined?("STRING").should be_true

@@ -1,6 +1,8 @@
 %%{
 
   machine redcloth_common;
+  
+  alphtype char;
 
   action esc { strCatEscaped(self, block, data, ts, te); }
   action esc_pre { strCatEscapedForPreformatted(self, block, data, ts, te); }

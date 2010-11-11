@@ -2,6 +2,8 @@
 
   machine redcloth_common;
 
+  alphtype char;
+
   action A { MARK(); }
   action B { MARK_B(); }
   action ATTR { MARK_ATTR(); }

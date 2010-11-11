@@ -198,7 +198,6 @@ public class RedclothScanService implements BasicLibraryService {
       IRubyObject sym_text = runtime.newSymbol("text");
       IRubyObject btype = ((RubyHash)regs).aref(runtime.newSymbol("type"));
       block = block.callMethod(runtime.getCurrentContext(), "strip");
-
       if(!block.isNil() && !btype.isNil()) {
         method = btype.convertToString().intern();
 
@@ -211,6 +210,7 @@ public class RedclothScanService implements BasicLibraryService {
         IRubyObject formatterMethods = ((RubyObject)self).callMethod(runtime.getCurrentContext(), "formatter_methods");
         if( ((RubyArray)formatterMethods).includes(runtime.getCurrentContext(), method) ) {
           block = self.callMethod(runtime.getCurrentContext(), method.asJavaString(), regs);
+          
         } else {
           IRubyObject fallback = ((RubyHash)regs).aref(runtime.newSymbol("fallback"));
           if(!fallback.isNil()) {
@@ -221,18 +221,20 @@ public class RedclothScanService implements BasicLibraryService {
           block = self.callMethod(runtime.getCurrentContext(), "p", regs);
         }
       }
-
+      
       return block;
     }
 
-    public void strCatEscaped(IRubyObject self, IRubyObject str, byte[] data, int ts, int te) {
-      IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
+    public void strCatEscaped(IRubyObject self, IRubyObject str, char[] data, int ts, int te) {
+      //IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
+      IRubyObject sourceStr = self.getRuntime().newString(new String(data, ts, te-ts));
       IRubyObject escapedStr = self.callMethod(self.getRuntime().getCurrentContext(), "escape", sourceStr);
       ((RubyString)str).concat(escapedStr);
     }
 
-    public void strCatEscapedForPreformatted(IRubyObject self, IRubyObject str, byte[] data, int ts, int te) { 
-      IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
+    public void strCatEscapedForPreformatted(IRubyObject self, IRubyObject str, char[] data, int ts, int te) { 
+      //IRubyObject sourceStr = RubyString.newString(self.getRuntime(), data, ts, te-ts);
+      IRubyObject sourceStr = self.getRuntime().newString(new String(data, ts, te-ts));
       IRubyObject escapedStr = self.callMethod(self.getRuntime().getCurrentContext(), "escape_pre", sourceStr);
       ((RubyString)str).concat(escapedStr);
     }
@@ -249,6 +251,7 @@ public class RedclothScanService implements BasicLibraryService {
 
     public void ADD_BLOCK() {
       ((RubyString)html).append(red_block(self, regs, block, refs));
+      
       extend = runtime.getNil();
       CLEAR(block);
       CLEAR_REGS();      
@@ -276,7 +279,8 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public void CAT(IRubyObject H) {
-      ((RubyString)H).cat(data, ts, te-ts);
+      String temp = new String(data, ts, te-ts);
+      ((RubyString)H).append(runtime.newString(temp));
     }
 
     public void SET_PLAIN_BLOCK(String T) {
@@ -341,8 +345,8 @@ public class RedclothScanService implements BasicLibraryService {
 
     public void STORE(String T) {
       if(p > reg && reg >= ts) {
-      
-        IRubyObject str = RubyString.newString(runtime, data, reg, p-reg);
+        String temp = new String(data, reg, p-reg);
+        IRubyObject str = runtime.newString(temp);
         ((RubyHash)regs).aset(runtime.newSymbol(T), str);
       } else {
         ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.getNil());
@@ -351,7 +355,7 @@ public class RedclothScanService implements BasicLibraryService {
 
     public void STORE_B(String T) {
       if(p > bck && bck >= ts) {
-        IRubyObject str = RubyString.newString(runtime, data, bck, p-bck);
+        IRubyObject str = runtime.newString(new String(data, bck, p-bck));
         ((RubyHash)regs).aset(runtime.newSymbol(T), str);
       } else {
         ((RubyHash)regs).aset(runtime.newSymbol(T), runtime.getNil());
@@ -360,7 +364,7 @@ public class RedclothScanService implements BasicLibraryService {
 
     public void STORE_ATTR(String T) {
       if(p > attr_reg && attr_reg >= ts) {
-        IRubyObject str = RubyString.newString(runtime, data, attr_reg, p-attr_reg);
+        IRubyObject str = runtime.newString(new String(data, attr_reg, p-attr_reg));
         ((RubyHash)attr_regs).aset(runtime.newSymbol(T), str);
       } else {
         ((RubyHash)attr_regs).aset(runtime.newSymbol(T), runtime.getNil());
@@ -368,7 +372,7 @@ public class RedclothScanService implements BasicLibraryService {
     }
 
     public IRubyObject self;
-    public byte[] data;
+    public char[] data;
     public int p, pe;
     public IRubyObject refs;
 
@@ -401,6 +405,9 @@ public class RedclothScanService implements BasicLibraryService {
 %%{
 
   machine redcloth_scan;
+  
+  alphtype char;
+  
   include redcloth_common "redcloth_common.java.rl";
 
   action extend { extend = ((RubyHash)regs).aref(runtime.newSymbol("type")); }
@@ -411,17 +418,17 @@ public class RedclothScanService implements BasicLibraryService {
 
 %% write data nofinal;
 
-    public Transformer(IRubyObject self, byte[] data, int p, int pe, IRubyObject refs) {
+    public Transformer(IRubyObject self, char[] data, int p, int pe, IRubyObject refs) {
       if(p+pe > data.length) {
         throw new RuntimeException("BLAHAHA");
       }
       this.self = self;
 
     // This is GROSS but necessary for EOF matching
-    this.data = new byte[pe+1];
+    this.data = new char[pe+1];
     System.arraycopy(data, p, this.data, 0, pe);
     this.data[pe] = 0;
-
+    
     this.p = 0;
     this.pe = pe+1;
     this.eof = this.pe;
@@ -462,7 +469,7 @@ public class RedclothScanService implements BasicLibraryService {
     }
   }
 
-  public static IRubyObject transform(IRubyObject self, byte[] data, int p, int pe, IRubyObject refs) {
+  public static IRubyObject transform(IRubyObject self, char[] data, int p, int pe, IRubyObject refs) {
     return new Transformer(self, data, p, pe, refs).transform();
   }
   
@@ -471,14 +478,26 @@ public class RedclothScanService implements BasicLibraryService {
   }
 
   public static IRubyObject transform2(IRubyObject self, IRubyObject str) {
+    String conv = "";
     RubyString ss = str.convertToString();
     self.callMethod(self.getRuntime().getCurrentContext(), "before_transform", ss);
-    return transform(self, ss.getByteList().bytes(), ss.getByteList().begin, ss.getByteList().realSize, self.getRuntime().getNil());
+    
+    byte[] b = ss.getBytes();
+    try {
+      conv = new String(b, "UTF8");
+    } catch (java.io.UnsupportedEncodingException e) {}
+    
+    char[] chars = new char[conv.length()];
+    conv.getChars(0, conv.length(), chars, 0);
+    
+    return transform(self, chars, 0, chars.length, self.getRuntime().getNil());
   }
 
   @JRubyMethod
   public static IRubyObject to(IRubyObject self, IRubyObject formatter) {
     Ruby runtime = self.getRuntime();
+    RubyString ss = self.convertToString();
+    
     self.callMethod(runtime.getCurrentContext(), "delete!", runtime.newString("\r"));
     IRubyObject workingCopy = self.rbClone();
 
@@ -505,7 +524,6 @@ public class RedclothScanService implements BasicLibraryService {
       level = args[1];
     }
     str = args[0];
-
     IRubyObject new_str = RubyString.newEmptyString(runtime);
     if(str.isNil()) {
       return new_str;

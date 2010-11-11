@@ -6,7 +6,9 @@
 %%{
 
   machine redcloth_scan;
-
+  
+  alphtype char;
+  
   # blocks
   notextile_tag = notextile (LF+ | EOF) ;
   noparagraph_line_start = " "+ ;

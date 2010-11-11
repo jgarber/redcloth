@@ -37,9 +37,11 @@ public class RedclothInline extends RedclothScanService.Base {
 
   public IRubyObject red_pass_code(IRubyObject self, IRubyObject regs, IRubyObject ref, String meth) {
     IRubyObject txt = ((RubyHash)regs).aref(ref);
+    String str = txt.toString();
+    char[] chars = str.toCharArray();
     if(!txt.isNil()) {
       IRubyObject txt2 = RubyString.newEmptyString(runtime);
-      strCatEscapedForPreformatted(self, txt2, ((RubyString)txt).getByteList().bytes, ((RubyString)txt).getByteList().begin, ((RubyString)txt).getByteList().begin + ((RubyString)txt).getByteList().realSize);
+      strCatEscapedForPreformatted(self, txt2, chars, 0, chars.length);
       ((RubyHash)regs).aset(ref, txt2);
     }
     return self.callMethod(runtime.getCurrentContext(), meth, regs);
@@ -105,12 +107,12 @@ public class RedclothInline extends RedclothScanService.Base {
 
   private int opts;
 
-  public RedclothInline(IRubyObject self, byte[] data, int p, int pe, IRubyObject refs) {
+  public RedclothInline(IRubyObject self, char[] data, int p, int pe, IRubyObject refs) {
     this.runtime = self.getRuntime();
     this.self = self;
     
     // This is GROSS but necessary for EOF matching
-    this.data = new byte[pe+1];
+    this.data = new char[pe+1];
     System.arraycopy(data, p, this.data, 0, pe);
     this.data[pe] = 0;
 
@@ -136,6 +138,12 @@ public class RedclothInline extends RedclothScanService.Base {
 
   public static IRubyObject inline2(IRubyObject self, IRubyObject str, IRubyObject refs) {
     ByteList bl = str.convertToString().getByteList();
-    return new RedclothInline(self, bl.bytes, bl.begin, bl.realSize, refs).inline();
+    char chars[] = new char[0];
+    String temp = new String();
+    try {
+      temp = new String(bl.bytes, "UTF8");
+      chars = temp.toCharArray();
+    } catch (java.io.UnsupportedEncodingException e) {}
+    return new RedclothInline(self, chars, 0, temp.length(), refs).inline();
   }
 }
