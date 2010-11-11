@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   s.platform = ENV['GEM_PLATFORM'] if ENV['GEM_PLATFORM'] 
   case s.platform.to_s
   when /java/
-    s.files += ['lib/redcloth.jar']
+    s.files += ['lib/redcloth_scan.jar']
   when /mswin|mingw32/
     s.files += Dir['lib/*/*.so']
   when /dotnet/
