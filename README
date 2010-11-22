@@ -41,8 +41,14 @@ indicates in which language your copy of RedCloth is compiled.
 
 === Compiling gems
 
-To compile MRI, JRuby, and win32 gems, you need rvm and rake-compiler.
-rake gems:build takes care of compiling and packaging all gems.
+To compile MRI, JRuby, and win32 gems, you need rvm and rake-compiler. These
+and other dependencies can be installed with bundler. Then rake gems:build
+takes care of compiling and packaging all gems.
+
+# gem install bundler
+# bundle install
+# rake rvm:bundle
+# rake gems:build
 
 == Bugs
 

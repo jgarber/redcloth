@@ -37,19 +37,7 @@ EOM
 end
   
 %w(ruby java x86-mswin32 x86-mingw32).map do |gem_platform|
-  Rake::GemPackageTask.new(gemspec.dup) do |t|
+  Rake::GemPackageTask.new(gemspec(gem_platform).dup) do |t|
     t.gem_spec.platform = gem_platform
-    case gem_platform
-    when /java/
-      t.gem_spec.files += ['lib/redcloth_scan.jar']
-    when /mswin|mingw32/
-      t.gem_spec.files += Dir['lib/*/*.so']
-    when /dotnet/
-      t.gem_spec.files += Dir['lib/*.dll']
-    else # MRI or Rubinius
-      t.gem_spec.files += Dir['ext/**/*.c']
-      t.gem_spec.extensions = Dir['ext/**/extconf.rb']
-      t.gem_spec.add_development_dependency('rake-compiler', '~> 0.7.1')
-    end
   end
 end

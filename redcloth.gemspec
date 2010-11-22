@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.summary     = RedCloth::SUMMARY
   s.email       = "redcloth-upwards@rubyforge.org"
   s.homepage    = "http://redcloth.org"
+  s.rubyforge_project = "redcloth"
 
   s.rubygems_version   = "1.3.7"
   s.default_executable = "redcloth"
@@ -29,25 +30,23 @@ Gem::Specification.new do |s|
   s.files -= Dir['lib/**/*.bundle']
   s.files -= Dir['lib/**/*.so']
   
-  if ENV['GEM_PLATFORM']
-    puts "GEM_PLATFORM:#{ENV['GEM_PLATFORM']}"
-    puts "PLATFORM:#{PLATFORM}"
-  end
-  s.platform = ENV['GEM_PLATFORM'] if ENV['GEM_PLATFORM'] 
+  # Rakefile needs to create spec for both platforms (ruby and java), using the
+  # $platform global variable.  In all other cases, we figure it out from RUBY_PLATFORM.
+  s.platform = $platform || RUBY_PLATFORM[/java/] || 'ruby'
+  
   case s.platform.to_s
   when /java/
     s.files += ['lib/redcloth_scan.jar']
   when /mswin|mingw32/
     s.files += Dir['lib/*/*.so']
-  when /dotnet/
-    s.files += Dir['lib/*.dll']
   else # MRI or Rubinius
     s.files += Dir['ext/**/*.c']
     s.extensions = Dir['ext/**/extconf.rb']
-    s.add_development_dependency('rake-compiler', '~> 0.7.1')
+    s.add_development_dependency('rvm')
   end
 
   s.add_development_dependency('rake', '~> 0.8.7')
   s.add_development_dependency('rspec', '~> 2.1')
   s.add_development_dependency('diff-lcs')
+  s.add_development_dependency('rake-compiler', '~> 0.7.1')
 end

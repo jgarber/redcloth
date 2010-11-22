@@ -10,8 +10,13 @@ require 'rake/clean'
 $:.unshift(File.dirname(__FILE__) + '/lib')
 require 'redcloth/version'
 
-def gemspec
-  @gemspec ||= Gem::Specification.load(File.expand_path('../redcloth.gemspec', __FILE__))
+# Load the Gem specification for the current platform (Ruby or JRuby).
+def gemspec(platform = RUBY_PLATFORM[/java/] || 'ruby')
+  @specs ||= ['ruby', 'java', 'x86-mswin32', 'x86-mingw32'].inject({}) { |hash, spec_platform|
+    $platform = spec_platform
+    hash.update(spec_platform=>Gem::Specification.load(File.expand_path('../redcloth.gemspec', __FILE__)))
+  }
+  @specs[platform]
 end
 
 Dir['tasks/**/*.rake'].each { |rake| load File.expand_path(rake) }

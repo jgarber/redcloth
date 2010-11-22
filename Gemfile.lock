@@ -18,6 +18,7 @@ GEM
     rspec-expectations (2.1.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.1.0)
+    rvm (1.1.0)
 
 PLATFORMS
   java
@@ -29,3 +30,4 @@ DEPENDENCIES
   rake-compiler (~> 0.7.1)
   redcloth!
   rspec (~> 2.1)
+  rvm
