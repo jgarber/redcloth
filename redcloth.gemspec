@@ -30,17 +30,13 @@ Gem::Specification.new do |s|
   s.files -= Dir['lib/**/*.bundle']
   s.files -= Dir['lib/**/*.so']
   
-  # Rakefile needs to create spec for both platforms (ruby and java), using the
-  # $platform global variable.  In all other cases, we figure it out from RUBY_PLATFORM.
-  s.platform = $platform || RUBY_PLATFORM[/java/] || 'ruby'
-  
+  s.platform = RUBY_PLATFORM[/java/] || 'ruby'
   case s.platform.to_s
   when /java/
     s.files += ['lib/redcloth_scan.jar']
-  when /mswin|mingw32/
-    s.files += Dir['lib/*/*.so']
   else # MRI or Rubinius
-    s.files += Dir['ext/**/*.c']
+    s.files += %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
+    s.files += ["ext/redcloth_scan/redcloth.h"]
     s.extensions = Dir['ext/**/extconf.rb']
     s.add_development_dependency('rvm')
   end

@@ -1,8 +1,12 @@
 CLEAN.include [
-  'pkg', 'tmp',
-  '**/*.{o,bundle,jar,so,obj,pdb,lib,def,exp,log,rbc}',
+  'tmp',
+  '**/*.{o,obj,class,pdb,lib,def,exp,log,rbc}',
   'ext/redcloth_scan/**/redcloth_*.rb', 
   'ext/redcloth_scan/Makefile',  'ext/redcloth_scan/extconf.rb',
+]
+CLOBBER.include [
+  'pkg',
+  '**/*.{c}',
   'lib/*.{bundle,so,o,obj,pdb,lib,def,exp,jar}', 
   'lib/redcloth_scan.rb', 
 ]
@@ -32,7 +36,7 @@ create_makefile("redcloth_scan")
   Rake::RagelExtensionTask.new("redcloth_scan", gemspec) do |ext|    
     if ENV['RUBY_CC_VERSION']
       ext.cross_compile = true
-      ext.cross_platform = 'i386-mingw32'
+      ext.cross_platform = ['i386-mingw32', 'i386-mswin32-60']
     end
   end
 end

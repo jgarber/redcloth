@@ -48,7 +48,7 @@ takes care of compiling and packaging all gems.
 # gem install bundler
 # bundle install
 # rake rvm:bundle
-# rake gems:build
+# rake gem:all
 
 == Bugs
 
