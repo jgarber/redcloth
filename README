@@ -47,6 +47,8 @@ takes care of compiling and packaging all gems.
 
 # gem install bundler
 # bundle install
+# rake-compiler cross-ruby VERSION=1.8.6-p398
+# rake-compiler cross-ruby VERSION=1.9.1-p243
 # rake build:all
 
 == Bugs
