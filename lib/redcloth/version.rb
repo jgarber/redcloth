@@ -3,7 +3,7 @@ module RedCloth
     MAJOR = 4
     MINOR = 2
     TINY  = 4
-    RELEASE_CANDIDATE = "pre1"
+    RELEASE_CANDIDATE = "pre2"
 
     STRING = [MAJOR, MINOR, TINY, RELEASE_CANDIDATE].join('.')
     TAG = "REL_#{[MAJOR, MINOR, TINY, RELEASE_CANDIDATE].compact.join('_')}".upcase.gsub(/\.|-/, '_')
