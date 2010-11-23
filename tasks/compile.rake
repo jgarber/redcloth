@@ -11,6 +11,11 @@ CLOBBER.include [
   'lib/redcloth_scan.rb', 
 ]
 
+# Load the Gem specification for the current platform (Ruby or JRuby).
+def gemspec(platform = RUBY_PLATFORM[/java/] || 'ruby')
+  Gem::Specification.load(File.expand_path('../../redcloth.gemspec', __FILE__))
+end
+
 require 'rake/extensiontask'
 require 'rake/javaextensiontask'
 require File.dirname(__FILE__) + '/ragel_extension_task'

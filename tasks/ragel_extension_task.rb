@@ -81,7 +81,6 @@ module Rake
     end
 
     def flags
-      # FIXME: reinstate @code_style being passed from optimize rake task?
       code_style_flag = preferred_code_style ? " -" + preferred_code_style : ""
       "-#{host_language_flag}#{code_style_flag}"
     end

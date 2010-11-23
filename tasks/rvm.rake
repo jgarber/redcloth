@@ -3,7 +3,6 @@ namespace :rvm do
   RVM_RUBIES = ['ree-1.8.7', 'ruby-1.8.6-p398', 'ruby-1.9.1-p243', 'ruby-1.9.2-head', 'jruby-1.5.3']
   RVM_GEMSET_NAME = 'redcloth'
   
-  
   task :setup do
     unless @rvm_setup
       rvm_lib_path = "#{`echo $rvm_path`.strip}/lib"
@@ -16,7 +15,7 @@ namespace :rvm do
   
   desc "Install development gems using bundler to each rubie version"
   task :bundle => :setup do
-    rvm_each_rubie { RVM.run 'bundle install' }
+    rvm_each_rubie { RVM.run 'gem install bundler; bundle install' }
   end
   
   desc "Echo command to run specs under each rvm ruby"
@@ -25,7 +24,6 @@ namespace :rvm do
   end
   
 end
-
 
 
 # RVM Helper Methods
