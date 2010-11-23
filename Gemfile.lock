@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    redcloth (4.2.3)
+    RedCloth (4.2.4.pre)
 
 GEM
   remote: http://rubygems.org/
@@ -25,9 +25,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  RedCloth!
   diff-lcs
   rake (~> 0.8.7)
   rake-compiler (~> 0.7.1)
-  redcloth!
   rspec (~> 2.1)
   rvm
