@@ -1,6 +1,6 @@
 namespace :rvm do
   
-  RVM_RUBIES = ['ree-1.8.7', 'ruby-1.8.6-p398', 'ruby-1.9.1-p243', 'ruby-1.9.2-head', 'jruby-1.5.3']
+  RVM_RUBIES = ['jruby-1.5.3', 'ruby-1.8.6-p398', 'ruby-1.9.1-p243', 'ruby-1.9.2-head', 'ree-1.8.7']
   RVM_GEMSET_NAME = 'redcloth'
   
   task :setup do

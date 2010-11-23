@@ -31,8 +31,8 @@ namespace :build do
       "rvm:bundle",
       :clobber,
       :spec,
-      :build,
+      :jruby,
       :win,
-      :jruby
+      :build
     ]
 end
