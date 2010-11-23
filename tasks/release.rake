@@ -4,7 +4,7 @@ namespace :release do
 
   desc 'Push all gems to rubygems.org (gemcutter)'
   task :push_native_gems do
-    Dir.chdir('release') do
+    Dir.chdir('pkg') do
       Dir['*.gem'].each do |gem_file|
         sh("gem push #{gem_file}")
       end
