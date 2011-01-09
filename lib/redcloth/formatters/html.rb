@@ -15,7 +15,7 @@ module RedCloth::Formatters::HTML
   end
   
   def hr(opts)
-    "<hr />\n"
+    "<hr#{pba(opts)} />\n"
   end
   
   def acronym(opts)
@@ -205,7 +205,7 @@ module RedCloth::Formatters::HTML
     if hard_breaks == false
       "\n"
     else
-      "<br />\n"
+      "<br#{pba(opts)} />\n"
     end
   end
   
