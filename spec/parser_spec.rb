@@ -75,6 +75,13 @@ describe RedCloth do
     html = "<p>This is a paragraph</p>\n<p>This is a<br />\nline break.</p>\n<div>\n<p>test</p>\n</div>"
     RedCloth.new(input).to_html.should == html
   end
+
+  it "should not add spurious li tags to the end of markup" do
+    input         = "* one\n* two\n*thee \n\n"
+    failing_input = "* one\n* two\n*thee \n\n\n"
+    RedCloth.new(input).to_html.should_not match /<li>$/
+    RedCloth.new(failing_input).to_html.should_not match /<li>$/
+  end
   
   if RUBY_VERSION > "1.9.0"
     it "should preserve character encoding" do
