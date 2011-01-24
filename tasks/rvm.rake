@@ -18,9 +18,9 @@ namespace :rvm do
     rvm_each_rubie { RVM.run 'gem install bundler; bundle install' }
   end
   
-  desc "Echo command to run specs under each rvm ruby"
+  desc "Runs specs under each rvm ruby"
   task :spec => :setup do
-    puts "rvm #{rvm_rubies.join(',')} rake"
+    sh "rvm #{rvm_rubies.join(',')} rake"
   end
   
 end
