@@ -1,5 +1,6 @@
 === *edge*
 
+* Allow attributes to be set on hr and br tags [Jesse Stormier]
 * Switch to bundler and rake-compiler for gem management/compilation
 * Fix invalid YAML for Ruby 1.9.2 [Aaron Patterson]
 
