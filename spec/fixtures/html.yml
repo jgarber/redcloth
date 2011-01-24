@@ -338,3 +338,11 @@ in: |-
   <notextile><a href="http://a.com">Sir Bobby Robson</a></notextile>, is a famous footballer
 html: |-
   <p><a href="http://a.com">Sir Bobby Robson</a>, is a famous footballer</p>
+---
+name: br tag with class
+in: "br(clear). "
+html: "<br class=\"clear\" />"
+---
+name: hr tag with class
+in: "hr(clear). "
+html: "<hr class=\"clear\" />"
