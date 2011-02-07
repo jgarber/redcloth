@@ -5,7 +5,7 @@ describe "Benchmarking", :type => :formatter do
   platform = RedCloth.const_defined?(:EXTENSION_LANGUAGE) ? RedCloth::EXTENSION_LANGUAGE : (version < "4.0.0" ? "ruby-regex" : "C")
   
   it "should not be too slow" do
-    puts "Benchmarking version #{version} compiled in #{platform}..."
+    # puts "Benchmarking version #{version} compiled in #{platform}..."
     fixtures.each do |name, doc|
       if doc['html']
         RedCloth.new(doc['in']).to_html
