@@ -16,16 +16,13 @@ Gem::Specification.new do |s|
   s.rubygems_version   = "1.3.7"
   s.default_executable = "redcloth"
 
-  s.files            = `git ls-files`.split("\n")
-  s.test_files       = `git ls-files -- {spec}/*`.split("\n")
-  s.executables      = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.files            = Dir['.gemtest', '.rspec', 'CHANGELOG', 'COPYING', 'Gemfile', 'README', 'Rakefile', 'doc/**/*', 'bin/**/*', 'lib/**/*', 'redcloth.gemspec', 'spec/**/*', 'tasks/**/*']
+  s.test_files       = Dir['spec/**/*']
+  s.executables      = ['redcloth']
   s.extra_rdoc_files = ["COPYING", "README", "CHANGELOG"]
   s.rdoc_options     = ["--charset=UTF-8"]
   s.require_path     = "lib"
 
-  s.files -= ['.rvmrc']
-  s.files -= Dir['ext/**/*']
-  s.files -= Dir['ragel/*']
   s.files -= Dir['lib/redcloth.jar']
   s.files -= Dir['lib/**/*.dll']
   s.files -= Dir['lib/**/*.bundle']
