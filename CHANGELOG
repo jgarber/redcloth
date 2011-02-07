@@ -1,4 +1,4 @@
-=== *edge*
+=== 4.2.4 / February 7, 2011
 
 * Add .gemtest to opt-in to rubygems-test program (gem install rubygems-test to participate)
 * Allow attributes to be set on hr and br tags [Jesse Stormier]
