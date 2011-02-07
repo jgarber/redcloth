@@ -6,8 +6,8 @@ CLEAN.include [
 ]
 CLOBBER.include [
   'pkg',
-  '**/*.{c}',
-  'lib/*.{bundle,so,o,obj,pdb,lib,def,exp,jar}', 
+  '**/*.{c,java}',
+  'lib/**/*.{bundle,so,o,obj,pdb,lib,def,exp,jar}', 
   'lib/redcloth_scan.rb', 
 ]
 
