@@ -1,3 +1,8 @@
+=== 4.2.5 / February 7, 2011
+
+* Fix bundler and rubygems-test incompatibilities. Working around bug:
+    https://github.com/carlhuda/bundler/issues/issue/1021
+
 === 4.2.4 / February 7, 2011
 
 * Add .gemtest to opt-in to rubygems-test program (gem install rubygems-test to participate)
