@@ -9,7 +9,7 @@
 #include "redcloth.h"
 
 VALUE mRedCloth, super_ParseError, super_RedCloth, super_HTML, super_LATEX;
-int SYM_escape_preformatted, SYM_escape_attributes;
+VALUE SYM_escape_preformatted, SYM_escape_attributes;
 
 %%{
 
@@ -40,7 +40,7 @@ redcloth_transform(self, p, pe, refs)
   
   
   VALUE list_layout = Qnil;
-  char *list_type = NULL;
+  const char *list_type = NULL;
   VALUE list_index = rb_ary_new();
   VALUE plain_block; SET_PLAIN_BLOCK("p");
   VALUE extend = Qnil;
@@ -93,7 +93,8 @@ redcloth_html_esc(int argc, VALUE* argv, VALUE self) //(self, str, level)
     return new_str;
   
   char *ts = RSTRING_PTR(str), *te = RSTRING_PTR(str) + RSTRING_LEN(str);
-  char *t = ts, *t2 = ts, *ch = NULL;
+  char *t = ts, *t2 = ts;
+  const char *ch = NULL;
   if (te <= ts) return Qnil;
 
   while (t2 < te) {
@@ -152,7 +153,8 @@ redcloth_latex_esc(VALUE self, VALUE str)
     return new_str;
   
   char *ts = RSTRING_PTR(str), *te = RSTRING_PTR(str) + RSTRING_LEN(str);
-  char *t = ts, *t2 = ts, *ch = NULL;
+  char *t = ts, *t2 = ts;
+  const char *ch = NULL;
   if (te <= ts) return Qnil;
 
   while (t2 < te) {
