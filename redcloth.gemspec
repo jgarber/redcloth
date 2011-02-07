@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.rdoc_options     = ["--charset=UTF-8"]
   s.require_path     = "lib"
 
+  s.files -= ['.rvmrc']
   s.files -= Dir['ext/**/*']
   s.files -= Dir['ragel/*']
   s.files -= Dir['lib/redcloth.jar']
@@ -38,11 +39,9 @@ Gem::Specification.new do |s|
     s.files += %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
     s.files += ["ext/redcloth_scan/redcloth.h"]
     s.extensions = Dir['ext/**/extconf.rb']
-    s.add_development_dependency('rvm')
   end
 
   s.add_development_dependency('rake', '~> 0.8.7')
   s.add_development_dependency('rspec', '~> 2.4')
   s.add_development_dependency('diff-lcs')
-  s.add_development_dependency('rake-compiler', '~> 0.7.1')
 end

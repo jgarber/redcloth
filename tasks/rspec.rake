@@ -9,4 +9,5 @@ end
 
 task :default  => :spec
 task :spec     => :compile
-task :test     => :spec # for rubygems-test
+
+RSpec::Core::RakeTask.new(:test) # for rubygems-test
