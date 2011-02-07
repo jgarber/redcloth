@@ -28,9 +28,8 @@ namespace :build do
 
     desc "Build ruby, windows, and jruby gems into the pkg directory"
     task :all => [
-      "rvm:bundle",
       :clobber,
-      :spec,
+      "rvm:spec",
       :jruby,
       :win,
       :build
