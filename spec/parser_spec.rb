@@ -79,8 +79,8 @@ describe RedCloth do
   it "should not add spurious li tags to the end of markup" do
     input         = "* one\n* two\n* three \n\n"
     failing_input = "* one\n* two\n* three \n\n\n"
-    RedCloth.new(input).to_html.should_not match /<li>$/
-    RedCloth.new(failing_input).to_html.should_not match /<li>$/
+    RedCloth.new(input).to_html.should_not match(/<li>$/)
+    RedCloth.new(failing_input).to_html.should_not match(/<li>$/)
   end
   
   if RUBY_VERSION > "1.9.0"
