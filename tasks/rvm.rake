@@ -22,6 +22,7 @@ namespace :rvm do
       STDERR << RVM.run('bundle update').stderr 
             
       result = RVM.perform_set_operation(:rake)
+      STDOUT << result.stdout
       STDERR << result.stderr
     end
   end
