@@ -7,5 +7,6 @@ RSpec::Core::RakeTask.new(:rcov) do |t|
   t.rcov_opts = %w{--exclude osx\/objc,gems\/,spec\/}
 end
 
-task :default  => [:spec]
-task :spec     => [:compile]
+task :default  => :spec
+task :spec     => :compile
+task :test     => :spec # for rubygems-test

@@ -1,5 +1,6 @@
 === *edge*
 
+* Add .gemtest to opt-in to rubygems-test program (gem install rubygems-test to participate)
 * Allow attributes to be set on hr and br tags [Jesse Stormier]
 * Fix dangling <li> [Stephen Bannasch]
 * Switch to bundler and rake-compiler for gem management/compilation
