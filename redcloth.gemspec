@@ -16,10 +16,10 @@ Gem::Specification.new do |s|
   s.rubygems_version   = "1.3.7"
   s.default_executable = "redcloth"
 
-  s.files            = Dir['.gemtest', '.rspec', 'CHANGELOG', 'COPYING', 'Gemfile', 'README', 'Rakefile', 'doc/**/*', 'bin/**/*', 'lib/**/*', 'redcloth.gemspec', 'spec/**/*', 'tasks/**/*']
+  s.files            = Dir['.gemtest', '.rspec', 'CHANGELOG', 'COPYING', 'Gemfile', 'README.rdoc', 'Rakefile', 'doc/**/*', 'bin/**/*', 'lib/**/*', 'redcloth.gemspec', 'spec/**/*', 'tasks/**/*']
   s.test_files       = Dir['spec/**/*']
   s.executables      = ['redcloth']
-  s.extra_rdoc_files = ["COPYING", "README", "CHANGELOG"]
+  s.extra_rdoc_files = ["COPYING", "README.rdoc", "CHANGELOG"]
   s.rdoc_options     = ["--charset=UTF-8"]
   s.require_path     = "lib"
 
