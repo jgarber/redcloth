@@ -1,6 +1,7 @@
 === edge
 
 * Add case-sensitive require back into the gemspec.
+* Fix rdoc options in gemspec.
 
 === 4.2.5 / February 7, 2011
 

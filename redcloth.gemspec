@@ -19,8 +19,8 @@ Gem::Specification.new do |s|
   s.files            = Dir['.gemtest', '.rspec', 'CHANGELOG', 'COPYING', 'Gemfile', 'README.rdoc', 'Rakefile', 'doc/**/*', 'bin/**/*', 'lib/**/*', 'redcloth.gemspec', 'spec/**/*', 'tasks/**/*']
   s.test_files       = Dir['spec/**/*']
   s.executables      = ['redcloth']
-  s.extra_rdoc_files = ["COPYING", "README.rdoc", "CHANGELOG"]
-  s.rdoc_options     = ["--charset=UTF-8"]
+  s.extra_rdoc_files = ["README.rdoc", "COPYING", "CHANGELOG"]
+  s.rdoc_options     = ["--charset=UTF-8", "--line-numbers", "--inline-source", "--title", "RedCloth", "--main", "README.rdoc"]
   s.require_path     = ["lib", "lib/case_sensitive_require"]
 
   s.files -= Dir['lib/redcloth.jar']
