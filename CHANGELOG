@@ -1,3 +1,7 @@
+=== edge
+
+* Add case-sensitive require back into the gemspec.
+
 === 4.2.5 / February 7, 2011
 
 * Fix bundler and rubygems-test incompatibilities. Working around bug:
