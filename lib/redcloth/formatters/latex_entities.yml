@@ -28,9 +28,9 @@ mdash: ---
 #EM DASH
 "8212": ---
 #EN DASH
-ndash: --
+ndash: ' -- '
 #EN DASH
-"8211": --
+"8211": ' -- '
 #HYPHEN
 "8208": "-"
 #OPEN BOX
