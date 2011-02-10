@@ -173,7 +173,7 @@ name: single hyphens with spaces
 desc: Single hyphens are replaced with en-dashes if they are surrounded by spaces.
 in: Observe - tiny and brief.
 html: <p>Observe &#8211; tiny and brief.</p>
-latex: "Observe--tiny and brief.\n\n"
+latex: "Observe -- tiny and brief.\n\n"
 --- 
 name: midword hyphens 
 desc: Single hyphens are left alone if not surrounded by spaces.

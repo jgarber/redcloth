@@ -253,7 +253,7 @@ module RedCloth::Formatters::LATEX
   end
 
   def endash(opts)
-    "--"
+    " -- "
   end
 
   def arrow(opts)
