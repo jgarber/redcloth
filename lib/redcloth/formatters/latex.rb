@@ -241,7 +241,7 @@ module RedCloth::Formatters::LATEX
   end
 
   def quote2(opts)
-    "``#{opts[:text]}\""
+    "``#{opts[:text]}''"
   end
 
   def ellipsis(opts)
