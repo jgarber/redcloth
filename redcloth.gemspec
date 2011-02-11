@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.executables      = ['redcloth']
   s.extra_rdoc_files = ["README.rdoc", "COPYING", "CHANGELOG"]
   s.rdoc_options     = ["--charset=UTF-8", "--line-numbers", "--inline-source", "--title", "RedCloth", "--main", "README.rdoc"]
-  s.require_paths   << "lib/case_sensitive_require"
+  s.require_paths   += ["lib/case_sensitive_require", "ext"]
 
   s.files -= Dir['lib/redcloth.jar']
   s.files -= Dir['lib/**/*.dll']
