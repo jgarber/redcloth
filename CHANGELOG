@@ -1,3 +1,10 @@
+== 4.2.7 / Febrary 10, 2011
+
+* Fixed typo in gemspec to make case-sensitive require work. [Gabe da Silveira]
+* Tested installing the gem and requiring it with both cases on Ubuntu 8.04, 10.10 and OS X Version 10.6.6.
+* Have spaces around the en-dash in LaTeX [Benjamin Quorning]
+* Turned double-quote close to smart quotes in LaTeX [Jonathan D. Blake]
+
 === 4.2.6 / February 9, 2011
 
 * Add case-sensitive require back into the gemspec.
