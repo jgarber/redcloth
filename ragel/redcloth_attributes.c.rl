@@ -23,7 +23,7 @@ redcloth_attribute_parser(machine, self, p, pe)
   VALUE self;
   char *p, *pe;
 {
-  int cs, act;
+  int cs;
   char *ts = 0, *te = 0, *reg = 0, *bck = NULL, *attr_reg = NULL, *eof = NULL;
   VALUE regs = rb_hash_new();
   VALUE attr_regs = rb_hash_new();

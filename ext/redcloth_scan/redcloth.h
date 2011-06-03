@@ -8,7 +8,7 @@
 #endif
 
 
-// Different string conversions for ruby 1.8 and ruby 1.9. For 1.9, 
+// Different string conversions for ruby 1.8 and ruby 1.9. For 1.9,
 // we need to set the encoding of the string.
 
 // For Ruby 1.9
@@ -49,7 +49,7 @@ VALUE red_pass(VALUE, VALUE, VALUE, ID, VALUE);
 VALUE red_pass_code(VALUE, VALUE, VALUE, ID);
 
 /* parser macros */
-#define CLEAR_REGS()   regs = rb_hash_new(); attr_regs = rb_hash_new();
+#define CLEAR_REGS()   regs = rb_hash_new();
 #define RESET_REG()    reg = NULL
 #define MARK()         reg = p;
 #define MARK_B()       bck = p;
