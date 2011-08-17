@@ -1,4 +1,8 @@
-== 4.2.7 / Febrary 10, 2011
+== 4.2.8 / August 17, 2011
+
+* Do not treat warnings as errors so it compiles cleanly. [Tomasz Wałkuski]
+
+== 4.2.7 / February 10, 2011
 
 * Fixed typo in gemspec to make case-sensitive require work. [Gabe da Silveira]
 * Tested installing the gem and requiring it with both cases on Ubuntu 8.04, 10.10 and OS X Version 10.6.6.
