@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009 Jason Garber
  */
+#define RSTRING_NOT_MODIFIED
 #include <ruby.h>
 #include "redcloth.h"
 
