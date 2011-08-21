@@ -5,6 +5,7 @@
  */
 #define redcloth_scan_c
 
+#define RSTRING_NOT_MODIFIED
 #include <ruby.h>
 #include "redcloth.h"
 
