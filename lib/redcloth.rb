@@ -7,7 +7,12 @@ Object.send(:remove_const, :RedCloth) if Object.const_defined?(:RedCloth) && Red
 
 require 'rbconfig'
 begin
-  prefix = Config::CONFIG['arch'] =~ /mswin|mingw/ ? "#{Config::CONFIG['MAJOR']}.#{Config::CONFIG['MINOR']}/" : ''
+  if RUBY_VERSION[0..2] == "1.9"
+    prefix = RbConfig::CONFIG['arch'] =~ /mswin|mingw/ ? "#{Config::CONFIG['MAJOR']}.#{Config::CONFIG['MINOR']}/" : ''
+  else
+    prefix = Config::CONFIG['arch'] =~ /mswin|mingw/ ? "#{Config::CONFIG['MAJOR']}.#{Config::CONFIG['MINOR']}/" : ''
+  end
+
   lib = "#{prefix}redcloth_scan"
   require lib
 rescue LoadError => e
