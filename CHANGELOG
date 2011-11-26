@@ -1,3 +1,8 @@
+== 4.2.9 / November 25, 2011
+
+* Fix RbConfig / Config warning in Ruby 1.9.3. [Steve Purcell, Robert Gleeson, and unclaimedbaggage]
+* Use RSTRING_NOT_MODIFIED header for Rubinius [Dirkjan Bussink]
+
 == 4.2.8 / August 17, 2011
 
 * Do not treat warnings as errors so it compiles cleanly. [Tomasz Wałkuski]

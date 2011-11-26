@@ -24,3 +24,4 @@ rdoc
 release
 tmp
 Gemfile.lock
+.rbx/
