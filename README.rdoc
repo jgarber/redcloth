@@ -74,6 +74,10 @@ Multi-line example:
  EOD
  puts doc.to_html
 
+Alternatively, you may use the redcloth script as a server when writing
+a textile document by executing the following from the command line:
+
+  > redcloth --server Document.textile
 
 == What is Textile?
 

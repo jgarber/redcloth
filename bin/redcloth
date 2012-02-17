@@ -2,6 +2,7 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib/')
 require 'optparse'
 require 'redcloth'
+require 'webrick'
 
 if %w(--version -v).include? ARGV.first
   puts "#{RedCloth::NAME} #{RedCloth::VERSION}"
@@ -9,6 +10,7 @@ if %w(--version -v).include? ARGV.first
 end
 
 output_as = "html"
+server_mode, server_port = nil, 7013
 opts = OptionParser.new do |opts|
     opts.banner = "Usage: redcloth [options] [redcloth_formatted.txt]"
     opts.separator "If no file specified, STDIN will be used. If you are typing input, you can send an EOF by pressing ^D (^Z on Windows)"
@@ -16,13 +18,35 @@ opts = OptionParser.new do |opts|
     opts.on("-o", "--output STYLE", "Output format (defaults to #{output_as})") do |o|
         output_as = o
     end
+    opts.on("--server [PORT]", "Run in server mode (default port #{server_port})") do |port| 
+        server_mode = true
+        server_port = port.to_i unless port.nil? || port.to_i == 0
+    end
 end
 opts.parse! ARGV
 
-red = RedCloth.new( ARGF.read )
-out_meth = "to_#{ output_as }"
-if red.respond_to? out_meth
+if server_mode
+  class RedClothServlet < WEBrick::HTTPServlet::AbstractServlet
+    def do_GET(request, response)
+      contents = open(ARGV.first) { |f| f.read }
+      red = RedCloth.new(contents)
+      response['Content-Type'] = 'text/html'
+      response.body = red.to_html
+    end
+  end
+  server = WEBrick::HTTPServer.new(
+    :Port         => server_port
+  )
+  server.mount('/', RedClothServlet)
+  thread = Thread.new { server.start() }
+  trap("INT") { server.shutdown }
+  thread.join()
+else 
+  red = RedCloth.new( ARGF.read )
+  out_meth = "to_#{ output_as }"
+  if red.respond_to? out_meth
     puts red.method( out_meth ).call
-else
+  else
     abort "** No to_#{ output_as } method found for the `#{ output_as }' format"
+  end
 end
