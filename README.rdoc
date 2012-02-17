@@ -78,6 +78,7 @@ Alternatively, you may use the redcloth script as a server when writing
 a textile document by executing the following from the command line:
 
   > redcloth --server Document.textile
+  > google-chrome http://localhost:7013
 
 == What is Textile?
 

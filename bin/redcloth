@@ -10,7 +10,8 @@ if %w(--version -v).include? ARGV.first
 end
 
 output_as = "html"
-server_mode, server_port = nil, 7013
+
+server_mode, server_port, file_to_render = nil, 7013, nil
 opts = OptionParser.new do |opts|
     opts.banner = "Usage: redcloth [options] [redcloth_formatted.txt]"
     opts.separator "If no file specified, STDIN will be used. If you are typing input, you can send an EOF by pressing ^D (^Z on Windows)"
@@ -18,11 +19,11 @@ opts = OptionParser.new do |opts|
     opts.on("-o", "--output STYLE", "Output format (defaults to #{output_as})") do |o|
         output_as = o
     end
-    opts.on("--server [PORT]", "Run in server mode (default port #{server_port})") do |port| 
+    opts.on("--server", "Run in server mode (port #{server_port})") do |port|
         server_mode = true
-        server_port = port.to_i unless port.nil? || port.to_i == 0
     end
 end
+
 opts.parse! ARGV
 
 if server_mode
