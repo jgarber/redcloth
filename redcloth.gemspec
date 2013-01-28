@@ -49,4 +49,6 @@ Gem::Specification.new do |s|
   # See https://github.com/carlhuda/bundler/issues/issue/1021
   s.add_development_dependency('rvm', '~> 1.2.6')
   s.add_development_dependency('rake-compiler', '~> 0.7.1')
+
+  s.license = "MIT"
 end
