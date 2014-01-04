@@ -1,0 +1,148 @@
+diff --git a/configure.in b/configure.in
+index 608be5c..cfb81d3 100644
+--- a/configure.in
++++ b/configure.in
+@@ -122,7 +122,7 @@ if test "$fat_binary" != no; then
+ 
+     # /usr/lib/arch_tool -archify_list $TARGET_ARCHS
+     ARCH_FLAG=
+-    for archs in $TARGET_ARCHS 
++    for archs in $TARGET_ARCHS
+     do
+         ARCH_FLAG="$ARCH_FLAG -arch $archs"
+     done
+@@ -204,6 +204,9 @@ cygwin*|mingw*)
+ 		esac], [with_winsock2=no])
+ 	if test "$with_winsock2" = yes; then
+ 	  AC_DEFINE(USE_WINSOCK2)
++    COMMON_HEADERS="ws2tcpip.h winsock2.h windows.h"
++  else
++    COMMON_HEADERS="windows.h winsock.h"
+ 	fi
+     esac
+     : ${enable_shared=yes}
+@@ -349,7 +352,7 @@ AC_CHECK_DECLS([sys_nerr], [], [], [$ac_includes_default
+ #include <errno.h>])
+ 
+ dnl whether link libc_r or not
+-AC_ARG_WITH(libc_r, 
++AC_ARG_WITH(libc_r,
+ 	[  --with-libc_r           link libc_r if possible (FreeBSD only)], [
+ 	case $withval in
+ 	yes) with_libc_r=yes;;
+@@ -489,7 +492,7 @@ AC_CHECK_HEADERS(stdlib.h string.h unistd.h limits.h sys/file.h sys/ioctl.h sys/
+ 		 fcntl.h sys/fcntl.h sys/select.h sys/time.h sys/times.h sys/param.h\
+ 		 syscall.h pwd.h grp.h a.out.h utime.h memory.h direct.h sys/resource.h \
+ 		 sys/mkdev.h sys/utime.h netinet/in_systm.h float.h ieeefp.h pthread.h \
+-		 ucontext.h intrinsics.h)
++		 ucontext.h intrinsics.h time.h)
+ 
+ dnl Check additional types.
+ AC_CHECK_SIZEOF(rlim_t, 0, [
+@@ -514,6 +517,13 @@ AC_STRUCT_ST_BLKSIZE
+ AC_STRUCT_ST_BLOCKS
+ AC_STRUCT_ST_RDEV
+ 
++AC_CHECK_TYPES([struct timezone], [], [], [@%:@ifdef HAVE_TIME_H
++@%:@ include <time.h>
++@%:@endif
++@%:@ifdef HAVE_SYS_TIME_H
++@%:@ include <sys/time.h>
++@%:@endif])
++
+ dnl Checks for library functions.
+ AC_TYPE_GETGROUPS
+ AC_TYPE_SIGNAL
+@@ -697,7 +707,7 @@ main()
+ fi
+ 
+ AC_FUNC_GETPGRP
+-AC_FUNC_SETPGRP  
++AC_FUNC_SETPGRP
+ 
+ AC_C_BIGENDIAN
+ AC_C_CONST
+@@ -960,8 +970,8 @@ fi
+ dnl default value for $KANJI
+ DEFAULT_KCODE="KCODE_NONE"
+ 
+-AC_ARG_WITH(default-kcode, 
+-	[  --with-default-kcode=CODE specify default value for \$KCODE (utf8|euc|sjis|none)], 
++AC_ARG_WITH(default-kcode,
++	[  --with-default-kcode=CODE specify default value for \$KCODE (utf8|euc|sjis|none)],
+ 	[case $withval in
+ 	utf8) DEFAULT_KCODE="KCODE_UTF8";;
+ 	euc)  DEFAULT_KCODE="KCODE_EUC";;
+@@ -972,7 +982,7 @@ AC_ARG_WITH(default-kcode,
+ AC_DEFINE_UNQUOTED(DEFAULT_KCODE, $DEFAULT_KCODE)
+ 
+ dnl wheather use dln_a_out or not
+-AC_ARG_WITH(dln-a-out, 
++AC_ARG_WITH(dln-a-out,
+ 	[  --with-dln-a-out        use dln_a_out if possible], [
+ 	case $withval in
+ 	yes) with_dln_a_out=yes;;
+@@ -1189,7 +1199,7 @@ if test "$ac_cv_header_a_out_h" = yes; then
+ #define USE_DLN_A_OUT
+ #include "dln.c"
+ ],
+-	[], 
++	[],
+ 	rb_cv_dln_a_out=yes,
+ 	rb_cv_dln_a_out=no)])
+     if test "$rb_cv_dln_a_out" = yes; then
+@@ -1537,7 +1547,6 @@ case "$target_os" in
+ 	    AC_LIBOBJ([win32])
+ 	    COMMON_LIBS=m
+ #	    COMMON_MACROS="WIN32_LEAN_AND_MEAN="
+-	    COMMON_HEADERS="windows.h winsock.h"
+ 	    ;;
+ 	esac
+ 	LIBRUBY_DLDFLAGS="${DLDFLAGS}"' -Wl,--out-implib=$(LIBRUBY)'
+diff --git a/missing.h b/missing.h
+index 4d54d4a..1cc78d2 100644
+--- a/missing.h
++++ b/missing.h
+@@ -25,6 +25,13 @@ struct timeval {
+ #  include <sys/types.h>
+ #endif
+ 
++#if !defined(HAVE_STRUCT_TIMEZONE)
++struct timezone {
++    int tz_minuteswest;
++    int tz_dsttime;
++};
++#endif
++
+ #ifndef HAVE_ACOSH
+ extern double acosh _((double));
+ extern double asinh _((double));
+diff --git a/win32/win32.h b/win32/win32.h
+index d3cd0ee..0b72f12 100644
+--- a/win32/win32.h
++++ b/win32/win32.h
+@@ -78,6 +78,10 @@ extern "C++" {
+ }
+ #endif
+ 
++#ifdef HAVE_UNISTD_H
++# include <unistd.h>
++#endif
++
+ #ifdef _M_IX86
+ # define WIN95 1
+ #else
+@@ -155,11 +159,9 @@ extern DWORD rb_w32_osid(void);
+ #undef unlink
+ #define unlink(p)		rb_w32_unlink(p)
+ 
++struct timezone;
++
+ #ifdef __MINGW32__
+-struct timezone {
+-  int tz_minuteswest;
+-  int tz_dsttime;
+-};
+ #undef isascii
+ #define isascii __isascii
+ #endif
