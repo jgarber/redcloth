@@ -11,6 +11,25 @@ License::   MIT
 
 RedCloth is a Ruby library for converting Textile into HTML.
 
+== RedCloth needs new maintainers
+
+The {owner of this gem since 2007}[https://github.com/jgarber] is unable to
+keep fixing bugs or work on the next major release, {RedCloth
+5}[https://github.com/jgarber/redcloth-parslet]. He's looking for one or more
+developers who can:
+
+<b>Current version</b>
+
+* Fix any urgent {bugs}[http://jgarber.lighthouseapp.com/projects/13054-redcloth/overview] in RedCloth 4.x. You'll probably need to know Ragel and understand Ruby extensions in C and perhaps Java.
+* Precompile the gem for Windows and JRuby or fix broken cross-compilation to automate the process
+* Cut releases on the 4.x series.
+
+<b>Future version</b>
+
+* Complete {redcloth-parslet}[https://github.com/jgarber/redcloth-parslet], which will be a major release and replace this repository when finished. You need to understand the Parslet DSL, which can be learned in a couple hours.
+* Meet or exceed the current level of unit and integration testing. Unit testing of the individual patterns makes it much easier to develop and maintain than the old parser.
+* Release RedCloth 5.0 to much fanfare.
+
 == Installing
 
 RedCloth can be installed via RubyGems:
@@ -69,7 +88,7 @@ Multi-line example:
 
  doc = RedCloth.new <<EOD
  h2. Test document
- 
+
  Just a simple test.
  EOD
  puts doc.to_html
@@ -122,11 +141,11 @@ of small portions of text within a paragraph.
 
 == Links
 
-To make a hypertext link, put the link text in "quotation 
+To make a hypertext link, put the link text in "quotation
 marks" followed immediately by a colon and the URL of the link.
 
-Optional: text in (parentheses) following the link text, 
-but before the closing quotation mark, will become a title 
+Optional: text in (parentheses) following the link text,
+but before the closing quotation mark, will become a title
 attribute for the link, visible as a tool tip when a cursor is above it.
 
 Example:
@@ -141,12 +160,12 @@ Will become:
 
 To insert an image, put the URL for the image inside exclamation marks.
 
-Optional: text that immediately follows the URL in (parentheses) will 
-be used as the Alt text for the image. Images on the web should always 
-have descriptive Alt text for the benefit of readers using non-graphical 
+Optional: text that immediately follows the URL in (parentheses) will
+be used as the Alt text for the image. Images on the web should always
+have descriptive Alt text for the benefit of readers using non-graphical
 browsers.
 
-Optional: place a colon followed by a URL immediately after the 
+Optional: place a colon followed by a URL immediately after the
 closing ! to make the image into a link.
 
 Example:
@@ -167,11 +186,11 @@ Will become:
 
 == Defining Acronyms
 
-HTML allows authors to define acronyms via the tag. The definition appears as a 
-tool tip when a cursor hovers over the acronym. A crucial aid to clear writing, 
+HTML allows authors to define acronyms via the tag. The definition appears as a
+tool tip when a cursor hovers over the acronym. A crucial aid to clear writing,
 this should be used at least once for each acronym in documents where they appear.
 
-To quickly define an acronym in Textile, place the full text in (parentheses) 
+To quickly define an acronym in Textile, place the full text in (parentheses)
 immediately following the acronym.
 
 Example:
@@ -194,5 +213,3 @@ Styles are applied with curly braces.
 
     table{border:1px solid black}.
     {background:#ddd;color:red}. |a|red|row|
-
-
