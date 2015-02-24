@@ -1,3 +1,11 @@
+= Specifics of this RedCloth fork
+
+This RedCloth fork fixes CVE-2012-6684 as
+{reported by Kousuke Ebihara}(http://co3k.org/blog/redcloth-unfixed-xss-en)
+using a {patch by Antonio Terceiro}(http://sources.debian.net/src/ruby-redcloth/4.2.9-4/debian/patches/0001-Filter-out-javascript-links-when-using-filter_html-o.patch/)
+
+Read on below for the original RedCloth documentation
+
 = RedCloth - Textile parser for Ruby
 
 Homepage::  http://redcloth.org
