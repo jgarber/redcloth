@@ -6,7 +6,7 @@
   * vulnerability reported by [Kousuke Ebihara] 
     * see http://co3k.org/blog/redcloth-unfixed-xss-en
 
-== 4.2.9 / November 25, 2011
+== 4.2.9.1 / February 24, 2015
 
 * Lazy-load latex_entities.yml [Charlie Somerville]
 
