@@ -38,17 +38,10 @@ Gem::Specification.new do |s|
     s.extensions = Dir['ext/**/extconf.rb']
   end
 
-  s.add_development_dependency('bundler', '~> 1.3.4')
+  s.add_development_dependency('bundler', '> 1.3.4')
   s.add_development_dependency('rake', '~> 10.0.3')
   s.add_development_dependency('rspec', '~> 2.4')
   s.add_development_dependency('diff-lcs', '~> 1.1.2')
-
-  # Have to load these even though they're only needed for
-  # gem packaging. Otherwise, Bundler complains that they're
-  # not installed even though they're not required.
-  # See https://github.com/carlhuda/bundler/issues/issue/1021
-  s.add_development_dependency('rvm', '~> 1.2.6')
-  s.add_development_dependency('rake-compiler', '~> 0.7.1')
 
   s.license = "MIT"
 end
