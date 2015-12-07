@@ -14,4 +14,4 @@ compiler:
   - clang
   - gcc
 before_script:
-  - rake clobber
+  - bundle exec rake clobber

@@ -111,7 +111,11 @@ module RedCloth::Formatters::HTML
   end
   
   def link(opts)
-    "<a href=\"#{escape_attribute opts[:href]}\"#{pba(opts)}>#{opts[:name]}</a>"
+    if (filter_html || sanitize_html) && opts[:href] =~ /^\s*javascript:/
+      opts[:name]
+    else
+      "<a href=\"#{escape_attribute opts[:href]}\"#{pba(opts)}>#{opts[:name]}</a>"
+    end
   end
   
   def image(opts)
