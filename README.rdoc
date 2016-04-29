@@ -6,7 +6,7 @@ Maintainer:: Joshua Siler https://github.com/joshuasiler
 Copyright:: (c) 2011 Jason Garber
 License::   MIT
 
-<img src="https://travis-ci.org/jgarber/redcloth.svg" />
+[![Build Status](https://travis-ci.org/jgarber/redcloth.svg)](https://travis-ci.org/jgarber/redcloth)
 
 (See http://redcloth.org/textile/ for a Textile reference.)
 
