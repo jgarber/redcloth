@@ -14,7 +14,7 @@ License::   MIT
 
 RedCloth is a Ruby library for converting Textile into HTML.
 
-== Attention - Deprecating JRuby and Windows support in upcoming 4.3 release
+== Attention - Deprecating JRuby and Windows support in version 4.3
 
 In order to prioritize merging a fix for the long standing vulnerability *CVE-2012-6684*, our {new maintainer}[https://github.com/joshuasiler] has elected to stop maintaining the precompiled versions for Windows and JRuby. 
 
@@ -28,7 +28,7 @@ RedCloth can be installed via RubyGems:
 
 If you just want to use RedCloth, you do NOT need to build/compile it. It is
 compiled from C sources automatically when you install the gem on the ruby
-platform. Precompiled binary gems are provided for JRuby and Win32 platforms.
+platform. Precompiled binary gems are provided for JRuby and Win32 platforms prior to version 4.3.
 
 RedCloth can be compiled with <tt>rake compile</tt>. Ragel 6.3 or greater is
 required. Again, Ragel is NOT needed to simply use RedCloth.

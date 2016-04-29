@@ -20,8 +20,8 @@ require 'rake/extensiontask'
 require File.dirname(__FILE__) + '/ragel_extension_task'
 
 
-  extconf = "ext/redcloth_scan/extconf.rb"
-  file extconf do
+extconf = "ext/redcloth_scan/extconf.rb"
+file extconf do
     FileUtils.mkdir(File.dirname(extconf)) unless File.directory?(File.dirname(extconf))
     File.open(extconf, "w") do |io|
       io.write(<<-EOF)
@@ -33,4 +33,7 @@ have_library("c", "main")
 create_makefile("redcloth_scan")
       EOF
     end
+end
+
+Rake::RagelExtensionTask.new("redcloth_scan", gemspec) do |ext|
 end

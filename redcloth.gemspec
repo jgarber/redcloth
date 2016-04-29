@@ -6,7 +6,7 @@ require "redcloth/version"
 Gem::Specification.new do |s|
   s.name        = "RedCloth"
   s.version     = RedCloth::VERSION.to_s
-  s.authors     = ["Jason Garber", "why the lucky stiff", "Ola Bini"]
+  s.authors     = ["Jason Garber", "Joshua Siler", "Ola Bini"]
   s.description = "Textile parser for Ruby."
   s.summary     = RedCloth::SUMMARY
   s.email       = "redcloth-upwards@rubyforge.org"

@@ -1,3 +1,5 @@
+require 'rvm'
+
 namespace :rvm do
   
   RVM_RUBIES = ['ruby-1.8.6-p398', 'ruby-1.9.1-p243', 'ruby-1.9.2-p136', 'ruby-2.2.3p173']
@@ -21,7 +23,7 @@ namespace :rvm do
       # gets confused when locked to java and running ruby and vice-versa.
       STDERR << RVM.run('bundle update').stderr 
             
-      result = RVM.perform_set_operation(:rake)
+      result = RVM.run("rake test")
       STDOUT << result.stdout
       STDERR << result.stderr
     end
