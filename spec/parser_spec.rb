@@ -6,13 +6,13 @@ describe RedCloth do
     it "should accept options" do
       lambda {
         RedCloth.new("test", [:hard_breaks])
-      }.should_not raise_error(ArgumentError)
+      }.should_not raise_error
     end
   end
   
   it "should have a VERSION" do
-    RedCloth.const_defined?("VERSION").should be_true
-    RedCloth::VERSION.const_defined?("STRING").should be_true
+    RedCloth.const_defined?("VERSION").should be_truthy
+    RedCloth::VERSION.const_defined?("STRING").should be_truthy
   end
   
   it "should show the version as a string" do
@@ -21,7 +21,7 @@ describe RedCloth do
   end
   
   it "should have EXTENSION_LANGUAGE" do
-    RedCloth.const_defined?("EXTENSION_LANGUAGE").should be_true
+    RedCloth.const_defined?("EXTENSION_LANGUAGE").should be_truthy
     RedCloth::EXTENSION_LANGUAGE.should_not be_empty
     RedCloth::DESCRIPTION.should include(RedCloth::EXTENSION_LANGUAGE)
   end
