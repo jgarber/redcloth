@@ -1,0 +1,130 @@
+diff --git a/configure.in b/configure.in
+index e61b634..a118498 100644
+--- a/configure.in
++++ b/configure.in
+@@ -708,6 +708,13 @@ AC_CHECK_TYPES([struct timespec], [], [], [@%:@ifdef HAVE_TIME_H
+ @%:@include <time.h>
+ @%:@endif])
+
++AC_CHECK_TYPES([struct timezone], [], [], [@%:@ifdef HAVE_TIME_H
++@%:@ include <time.h>
++@%:@endif
++@%:@ifdef HAVE_SYS_TIME_H
++@%:@ include <sys/time.h>
++@%:@endif])
++
+ AC_CHECK_TYPE(fd_mask, [AC_DEFINE(HAVE_RB_FD_INIT, 1)])
+
+ dnl RUBY_DEFINT TYPENAME, SIZE, [SIGNED-OR-UNSIGNED], [INCLUDES = DEFAULT-INCLUDES]
+@@ -799,6 +806,7 @@ AC_REPLACE_FUNCS(dup2 memmove strerror\
+                  strlcpy strlcat)
+ AC_CHECK_FUNCS(fmod killpg wait4 waitpid fork spawnv syscall chroot fsync getcwd eaccess\
+ 	      truncate ftruncate chsize times utimes utimensat fcntl lockf lstat\
++        truncate64 ftruncate64 ftello64 fseeko fseeko64 \
+ 	      link symlink readlink\
+ 	      setitimer setruid seteuid setreuid setresuid setproctitle socketpair\
+ 	      setrgid setegid setregid setresgid issetugid pause lchown lchmod\
+diff --git a/include/ruby/missing.h b/include/ruby/missing.h
+index 71cb000..2c1c6d0 100644
+--- a/include/ruby/missing.h
++++ b/include/ruby/missing.h
+@@ -38,6 +38,13 @@ struct timespec {
+ };
+ #endif
+
++#if !defined(HAVE_STRUCT_TIMEZONE)
++struct timezone {
++    int tz_minuteswest;
++    int tz_dsttime;
++};
++#endif
++
+ #ifndef RUBY_EXTERN
+ #define RUBY_EXTERN extern
+ #endif
+diff --git a/include/ruby/win32.h b/include/ruby/win32.h
+index 46388a3..5b57ca4 100644
+--- a/include/ruby/win32.h
++++ b/include/ruby/win32.h
+@@ -88,6 +88,9 @@ typedef unsigned int uintptr_t;
+ #ifndef __MINGW32__
+ # define mode_t int
+ #endif
++#ifdef HAVE_UNISTD_H
++# include <unistd.h>
++#endif
+
+ #ifdef _M_IX86
+ # define WIN95 1
+@@ -179,7 +182,9 @@ extern DWORD rb_w32_osid(void);
+ #define stati64(path, st) rb_w32_stati64(path, st)
+ #elif !defined(_MSC_VER) || _MSC_VER < 1400
+ #define stati64 _stati64
++#ifndef _stati64
+ #define _stati64(path, st) rb_w32_stati64(path, st)
++#endif
+ #else
+ #define stati64 _stat64
+ #define _stat64(path, st) rb_w32_stati64(path, st)
+@@ -195,11 +200,9 @@ extern int rb_w32_fstat(int, struct stat *);
+ #define strncasecmp		strnicmp
+ #define fsync			_commit
+
++struct timezone;
++
+ #ifdef __MINGW32__
+-struct timezone {
+-  int tz_minuteswest;
+-  int tz_dsttime;
+-};
+ #undef isascii
+ #define isascii __isascii
+ #endif
+@@ -337,10 +340,43 @@ extern FILE *rb_w32_fsopen(const char *, const char *, int);
+ //
+
+ #define SUFFIX
+-extern int       truncate(const char *path, off_t length);
+-extern int       ftruncate(int fd, off_t length);
+-extern int       fseeko(FILE *stream, off_t offset, int whence);
+-extern off_t     ftello(FILE *stream);
++
++extern int   rb_w32_ftruncate(int fd, off_t length);
++extern int   rb_w32_truncate(const char *path, off_t length);
++extern off_t   rb_w32_ftello(FILE *stream);
++extern int   rb_w32_fseeko(FILE *stream, off_t offset, int whence);
++
++#undef HAVE_FTRUNCATE
++#define HAVE_FTRUNCATE 1
++#if defined HAVE_FTRUNCATE64
++#define ftruncate ftruncate64
++#else
++#define ftruncate rb_w32_ftruncate
++#endif
++
++#undef HAVE_TRUNCATE
++#define HAVE_TRUNCATE 1
++#if defined HAVE_TRUNCATE64
++#define truncate truncate64
++#else
++#define truncate rb_w32_truncate
++#endif
++
++#undef HAVE_FSEEKO
++#define HAVE_FSEEKO 1
++#if defined HAVE_FSEEKO64
++#define fseeko fseeko64
++#else
++#define fseeko rb_w32_fseeko
++#endif
++
++#undef HAVE_FTELLO
++#define HAVE_FTELLO 1
++#if defined HAVE_FTELLO64
++#define ftello ftello64
++#else
++#define ftello rb_w32_ftello
++#endif
+
+ //
+ // stubs
