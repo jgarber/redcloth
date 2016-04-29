@@ -1,5 +1,13 @@
 == Head
 
+* include CVE-2012-6684 fix [Tomas Pospisek]
+  * fix by [Antonio Terceiro] 
+    * see http://sources.debian.net/src/ruby-redcloth/4.2.9-4/debian/patches/0001-Filter-out-javascript-links-when-using-filter_html-o.patch/
+  * vulnerability reported by [Kousuke Ebihara] 
+    * see http://co3k.org/blog/redcloth-unfixed-xss-en
+
+== 4.2.9.1 / February 24, 2015
+
 * Lazy-load latex_entities.yml [Charlie Somerville]
 
 == 4.2.9 / November 25, 2011
