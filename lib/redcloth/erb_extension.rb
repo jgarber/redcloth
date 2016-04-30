@@ -18,7 +18,6 @@ class ERB
       end
     end
 
-    alias textilize
     module_function :textilize
   end
 end
