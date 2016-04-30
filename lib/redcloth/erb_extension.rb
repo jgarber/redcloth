@@ -1,6 +1,5 @@
 class ERB
   module Util
-
     #
     # A utility method for transforming Textile in _s_ to HTML.
     # 
@@ -19,9 +18,7 @@ class ERB
       end
     end
 
-    alias t textilize
-    module_function :t
+    alias textilize
     module_function :textilize
-
   end
 end
