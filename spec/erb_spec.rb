@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/spec_helper'
+require 'redcloth/erb_extension'
 
 describe "ERB helper" do
   it "should add a textile tag to ERB" do
