@@ -17,7 +17,6 @@ class ERB
         RedCloth.new( s.to_s ).to_html
       end
     end
-
     module_function :textilize
   end
 end
