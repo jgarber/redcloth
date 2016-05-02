@@ -23,20 +23,14 @@ Gem::Specification.new do |s|
   s.rdoc_options     = ["--charset=UTF-8", "--line-numbers", "--inline-source", "--title", "RedCloth", "--main", "README.rdoc"]
   s.require_paths   += ["lib/case_sensitive_require", "ext"]
 
-  s.files -= Dir['lib/redcloth.jar']
-  s.files -= Dir['lib/**/*.dll']
   s.files -= Dir['lib/**/*.bundle']
   s.files -= Dir['lib/**/*.so']
 
-  s.platform = RUBY_PLATFORM[/java/] || 'ruby'
-  case s.platform.to_s
-  when /java/
-    s.files += ['lib/redcloth_scan.jar']
-  else # MRI or Rubinius
-    s.files += %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
-    s.files += ["ext/redcloth_scan/redcloth.h"]
-    s.extensions = Dir['ext/**/extconf.rb']
-  end
+  s.platform = 'ruby'
+  
+  s.files += %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
+  s.files += ["ext/redcloth_scan/redcloth.h"]
+  s.extensions = Dir['ext/**/extconf.rb']
 
   s.add_development_dependency('bundler', '> 1.3.4')
   s.add_development_dependency('rake', '~> 10.0.3')
