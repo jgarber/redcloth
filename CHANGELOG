@@ -1,4 +1,7 @@
-== Head
+== 4.3.0 / April 29th, 2016
+
+* Remove JRuby and Windows cross compilation and support
+* Add Ruby 2.2.3 testing and support
 
 * include CVE-2012-6684 fix [Tomas Pospisek]
   * fix by [Antonio Terceiro] 

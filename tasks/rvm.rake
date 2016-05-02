@@ -1,12 +1,14 @@
+require 'rvm'
+
 namespace :rvm do
   
-  RVM_RUBIES = ['jruby-1.5.6' , 'ruby-1.8.6-p398', 'ruby-1.9.1-p243', 'ruby-1.9.2-p136', 'ree-1.8.7-2010.02']
+  RVM_RUBIES = ['ruby-1.8.6-p398', 'ruby-1.9.1-p243', 'ruby-1.9.2-p136', 'ruby-2.2.3p173']
   RVM_GEMSET_NAME = 'redcloth'
   
   task :setup do
     unless @rvm_setup
       rvm_lib_path = "#{`echo $rvm_path`.strip}/lib"
-      $LOAD_PATH.unshift(rvm_lib_path) unless $LOAD_PATH.include?(rvm_lib_path)
+      #$LOAD_PATH.unshift(rvm_lib_path) unless $LOAD_PATH.include?(rvm_lib_path)
       require 'rvm'
       require 'tmpdir'
       @rvm_setup = true
@@ -21,7 +23,7 @@ namespace :rvm do
       # gets confused when locked to java and running ruby and vice-versa.
       STDERR << RVM.run('bundle update').stderr 
             
-      result = RVM.perform_set_operation(:rake)
+      result = RVM.run("rake test")
       STDOUT << result.stdout
       STDERR << result.stderr
     end
