@@ -1,3 +1,7 @@
+== 4.3.1 / May 17th, 2016
+
+* Fix additional case for CVE-2012-6684 [Joshua Siler]
+
 == 4.3.0 / April 29th, 2016
 
 * Remove JRuby and Windows cross compilation and support

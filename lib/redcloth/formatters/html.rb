@@ -119,11 +119,15 @@ module RedCloth::Formatters::HTML
   end
   
   def image(opts)
-    opts.delete(:align)
-    opts[:alt] = opts[:title]
-    img = "<img src=\"#{escape_attribute opts[:src]}\"#{pba(opts)} alt=\"#{escape_attribute opts[:alt].to_s}\" />"  
-    img = "<a href=\"#{escape_attribute opts[:href]}\">#{img}</a>" if opts[:href]
-    img
+    if (filter_html || sanitize_html) && ( opts[:src] =~ /^\s*javascript:/ || opts[:href] =~ /^\s*javascript:/ )
+      opts[:title]
+    else
+      opts.delete(:align)
+      opts[:alt] = opts[:title]
+      img = "<img src=\"#{escape_attribute opts[:src]}\"#{pba(opts)} alt=\"#{escape_attribute opts[:alt].to_s}\" />"  
+      img = "<a href=\"#{escape_attribute opts[:href]}\">#{img}</a>" if opts[:href]
+      img
+    end
   end
   
   def footno(opts)
