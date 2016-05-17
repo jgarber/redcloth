@@ -1,3 +1,22 @@
+== 4.3.1 / May 17th, 2016
+
+* Fix additional case for CVE-2012-6684 [Joshua Siler]
+
+== 4.3.0 / April 29th, 2016
+
+* Remove JRuby and Windows cross compilation and support
+* Add Ruby 2.2.3 testing and support
+
+* include CVE-2012-6684 fix [Tomas Pospisek]
+  * fix by [Antonio Terceiro] 
+    * see http://sources.debian.net/src/ruby-redcloth/4.2.9-4/debian/patches/0001-Filter-out-javascript-links-when-using-filter_html-o.patch/
+  * vulnerability reported by [Kousuke Ebihara] 
+    * see http://co3k.org/blog/redcloth-unfixed-xss-en
+
+== 4.2.9.1 / February 24, 2015
+
+* Lazy-load latex_entities.yml [Charlie Somerville]
+
 == 4.2.9 / November 25, 2011
 
 * Fix RbConfig / Config warning in Ruby 1.9.3. [Steve Purcell, Robert Gleeson, and unclaimedbaggage]
@@ -82,7 +101,7 @@
 * Accept multiline content in table cells. [Jason Garber]
 
 * Change to list attributes so you can give style/class to list items (taken from PyTextile).  Breaks backwards compatibility.
-  
+
   Before, the style applied to the first list item applied to the entire list.  Now, class/id/style placed
   before the list applies to the list element and after the hash or asterisk applies to the list item.  For
   example:
@@ -163,7 +182,7 @@
   To compile the jruby version of the gem: jruby -S rake compile
 
 * Added textilize ERB utility method. [edraut]
-  Use it in an ERB template like this: <%=t my_textile_string %> or 
+  Use it in an ERB template like this: <%=t my_textile_string %> or
   <%=r %{Some *textile* if you please!} %>
 
 * Fix extended blockcode stripping whitespace following blank line. #78

@@ -1,13 +1,13 @@
 module RedCloth
   module VERSION
     MAJOR = 4
-    MINOR = 2
-    TINY  = 9
-    RELEASE_CANDIDATE = nil
+    MINOR = 3
+    TINY  = 1
+#    RELEASE_CANDIDATE = 0
 
-    STRING = [MAJOR, MINOR, TINY, RELEASE_CANDIDATE].compact.join('.')
-    TAG = "REL_#{[MAJOR, MINOR, TINY, RELEASE_CANDIDATE].compact.join('_')}".upcase.gsub(/\.|-/, '_')
-    FULL_VERSION = "#{[MAJOR, MINOR, TINY, RELEASE_CANDIDATE].compact.join('.')}"
+    STRING = [MAJOR, MINOR, TINY].compact.join('.')
+    TAG = "REL_#{[MAJOR, MINOR, TINY].compact.join('_')}".upcase.gsub(/\.|-/, '_')
+    FULL_VERSION = "#{[MAJOR, MINOR, TINY].compact.join('.')}"
     
     class << self
       def to_s

@@ -1,9 +1,12 @@
 = RedCloth - Textile parser for Ruby
 
 Homepage::  http://redcloth.org
+Maintainer:: Joshua Siler https://github.com/joshuasiler
 Author::    Jason Garber
 Copyright:: (c) 2011 Jason Garber
 License::   MIT
+
+{<img src="https://travis-ci.org/jgarber/redcloth.svg" />}[https://travis-ci.org/jgarber/redcloth] {<img src="https://codeclimate.com/github/jgarber/redcloth/badges/gpa.svg" />}[https://codeclimate.com/github/jgarber/redcloth]
 
 (See http://redcloth.org/textile/ for a Textile reference.)
 
@@ -11,49 +14,36 @@ License::   MIT
 
 RedCloth is a Ruby library for converting Textile into HTML.
 
+== Attention - Deprecating JRuby and Windows support in version 4.3
+
+In order to prioritize merging a fix for the long standing vulnerability *CVE-2012-6684*, our {new maintainer}[https://github.com/joshuasiler] has elected to stop maintaining the precompiled versions for Windows and JRuby. 
+
 == Installing
 
 RedCloth can be installed via RubyGems:
 
   gem install RedCloth
 
-It will install the appropriate Ruby, JRuby, or Win32 gem. If using JRuby,
-version 1.1.5 or greater is required.
-
 == Compiling
 
 If you just want to use RedCloth, you do NOT need to build/compile it. It is
 compiled from C sources automatically when you install the gem on the ruby
-platform. Precompiled binary gems are provided for JRuby and Win32 platforms.
+platform. Precompiled binary gems are provided for JRuby and Win32 platforms prior to version 4.3.
 
 RedCloth can be compiled with <tt>rake compile</tt>. Ragel 6.3 or greater is
 required. Again, Ragel is NOT needed to simply use RedCloth.
 
 === Supported platforms
 
-By default, the rake compile task builds a native C extension (MRI 1.8 or 1.9)
-or Java extension (JRuby 1.3). A pure Ruby version can also be generated, but
-it's super slow and Ruby 1.8-only. The JRuby and pure-Ruby extensions don't
-support multi-byte characters. Cross-compiling for win32 uses rake-compiler.
+By default, the rake compile task builds a native C extension (MRI 1.8 or 1.9). A pure Ruby version can also be generated, but it's super slow and Ruby 1.8-only, and doesn't
+support multi-byte characters. 
 
 The RedCloth::EXTENSION_LANGUAGE constant indicates in which language your
 copy of RedCloth is compiled.
 
-=== Compiling gems
-
-To compile MRI, JRuby, and win32 gems, you need rvm and rake-compiler. These
-and other dependencies can be installed with bundler. Then rake build:all
-takes care of compiling and packaging all gems.
-
-  1. gem install bundler
-  2. bundle install
-  3. rake-compiler cross-ruby VERSION=1.8.6-p398
-  4. rake-compiler cross-ruby VERSION=1.9.1-p243
-  5. rake build:all
-
 == Bugs
 
-Please submit bugs to http://jgarber.lighthouseapp.com/projects/13054-redcloth/overview
+Please submit bugs as issues to this repo.
 
 == Using RedCloth
 
@@ -69,7 +59,7 @@ Multi-line example:
 
  doc = RedCloth.new <<EOD
  h2. Test document
- 
+
  Just a simple test.
  EOD
  puts doc.to_html
@@ -122,11 +112,11 @@ of small portions of text within a paragraph.
 
 == Links
 
-To make a hypertext link, put the link text in "quotation 
+To make a hypertext link, put the link text in "quotation
 marks" followed immediately by a colon and the URL of the link.
 
-Optional: text in (parentheses) following the link text, 
-but before the closing quotation mark, will become a title 
+Optional: text in (parentheses) following the link text,
+but before the closing quotation mark, will become a title
 attribute for the link, visible as a tool tip when a cursor is above it.
 
 Example:
@@ -141,12 +131,12 @@ Will become:
 
 To insert an image, put the URL for the image inside exclamation marks.
 
-Optional: text that immediately follows the URL in (parentheses) will 
-be used as the Alt text for the image. Images on the web should always 
-have descriptive Alt text for the benefit of readers using non-graphical 
+Optional: text that immediately follows the URL in (parentheses) will
+be used as the Alt text for the image. Images on the web should always
+have descriptive Alt text for the benefit of readers using non-graphical
 browsers.
 
-Optional: place a colon followed by a URL immediately after the 
+Optional: place a colon followed by a URL immediately after the
 closing ! to make the image into a link.
 
 Example:
@@ -167,11 +157,11 @@ Will become:
 
 == Defining Acronyms
 
-HTML allows authors to define acronyms via the tag. The definition appears as a 
-tool tip when a cursor hovers over the acronym. A crucial aid to clear writing, 
+HTML allows authors to define acronyms via the tag. The definition appears as a
+tool tip when a cursor hovers over the acronym. A crucial aid to clear writing,
 this should be used at least once for each acronym in documents where they appear.
 
-To quickly define an acronym in Textile, place the full text in (parentheses) 
+To quickly define an acronym in Textile, place the full text in (parentheses)
 immediately following the acronym.
 
 Example:
@@ -194,5 +184,3 @@ Styles are applied with curly braces.
 
     table{border:1px solid black}.
     {background:#ddd;color:red}. |a|red|row|
-
-
