@@ -111,7 +111,7 @@ module RedCloth::Formatters::HTML
   end
   
   def link(opts)
-    if (filter_html || sanitize_html) && opts[:href] =~ /^\s*javascript:/
+    if (filter_html || sanitize_html) && opts[:href] =~ /^\s*javascript:/i
       opts[:name]
     else
       "<a href=\"#{escape_attribute opts[:href]}\"#{pba(opts)}>#{opts[:name]}</a>"
@@ -119,7 +119,7 @@ module RedCloth::Formatters::HTML
   end
   
   def image(opts)
-    if (filter_html || sanitize_html) && ( opts[:src] =~ /^\s*javascript:/ || opts[:href] =~ /^\s*javascript:/ )
+    if (filter_html || sanitize_html) && ( opts[:src] =~ /^\s*javascript:/i || opts[:href] =~ /^\s*javascript:/i )
       opts[:title]
     else
       opts.delete(:align)
