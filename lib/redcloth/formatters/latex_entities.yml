@@ -33,6 +33,8 @@ ndash: ' -- '
 "8211": ' -- '
 #HYPHEN
 "8208": "-"
+# DOUBLE EXCLAMATION MARK
+"8252": '!!'
 #OPEN BOX
 "9251": \textvisiblespace{}
 #HORIZONTAL ELLIPSIS
