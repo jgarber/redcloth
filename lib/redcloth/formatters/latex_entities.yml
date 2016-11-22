@@ -180,10 +180,10 @@ lsquor: ","
 "8218": ","
 #DOUBLE LOW-9 QUOTATION MARK
 #requires fontenc:T1
-ldquor: ',,'
+ldquor: ",,"
 #DOUBLE LOW-9 QUOTATION MARK
 #requires fontenc:T1
-"8222": ',,'
+"8222": ",,"
 #LATIN SMALL LIGATURE FF
 "64256": ff
 #LATIN SMALL LIGATURE FI
@@ -197,9 +197,9 @@ ldquor: ',,'
 #LATIN SMALL LIGATURE FL
 "64258": fl
 #DOUBLE HIGH-REVERSED-9 QUOTATION MARK
-"8223": '``'
+"8223": "``"
 #SINGLE HIGH-REVERSED-9 QUOTATION MARK
-"8219": '`'
+"8219": "`"
 #VERTICAL ELLIPSIS
 "8942": \vdots{}
 #HYPHEN BULLET
@@ -502,17 +502,17 @@ raquo: \guillemotright{}
 #requires fontenc:T1
 "187": \guillemotright{}
 #LEFT SINGLE QUOTATION MARK
-lsquo: '`'
+lsquo: "`"
 #LEFT SINGLE QUOTATION MARK
-"8216": '`'
+"8216": "`"
 #RIGHT SINGLE QUOTATION MARK
 rsquo: "'"
 #RIGHT SINGLE QUOTATION MARK
 "8217": "'"
 #LEFT DOUBLE QUOTATION MARK
-ldquo: '``'
+ldquo: "``"
 #LEFT DOUBLE QUOTATION MARK
-"8220": '``'
+"8220": "``"
 #RIGHT DOUBLE QUOTATION MARK
 rdquo: "''"
 #RIGHT DOUBLE QUOTATION MARK
