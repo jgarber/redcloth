@@ -38,14 +38,14 @@ red_parse_link_attr(VALUE self, VALUE regs, VALUE ref)
 {
   VALUE txt = rb_hash_aref(regs, ref);
   VALUE new_regs = red_parse_title(self, redcloth_link_attributes(self, txt), ref);
-  
+
   return rb_funcall(regs, rb_intern("merge!"), 1, new_regs);
 }
 
 VALUE
 red_parse_image_attr(VALUE self, VALUE regs, VALUE ref)
 {
-  
+
   return red_parse_title(self, regs, ref);
 }
 
@@ -97,7 +97,6 @@ red_block(VALUE self, VALUE regs, VALUE block, VALUE refs)
   VALUE sym_text = ID2SYM(rb_intern("text"));
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
   block = rb_funcall(block, rb_intern("strip"), 0);
-  VALUE attr_regs = rb_hash_new();
   if ((!NIL_P(block)) && !NIL_P(btype))
   {
     method = rb_str_intern(btype);
@@ -154,7 +153,7 @@ redcloth_inline(self, p, pe, refs)
   VALUE block = STR_NEW2("");
   VALUE regs = Qnil;
   VALUE attr_regs = Qnil;
-  
+
   %% write init;
 
   %% write exec;
