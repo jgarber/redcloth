@@ -85,8 +85,13 @@ describe RedCloth do
   
   if RUBY_VERSION > "1.9.0"
     it "should preserve character encoding" do
-      input = "This is an ISO-8859-1 string"
-      input.force_encoding 'iso-8859-1'
+      if RUBY_VERSION > "2.3.0"
+        input = String.new("This is an ISO-8859-1 string", encoding: 'iso-8859-1')
+      else
+        input = "This is an ISO-8859-1 string"
+        input.force_encoding 'iso-8859-1'
+      end
+
       output = RedCloth.new(input).to_html
       
       output.should == "<p>This is an <span class=\"caps\">ISO</span>-8859-1 string</p>"
@@ -94,8 +99,12 @@ describe RedCloth do
     end
     
     it "should not raise ArgumentError: invalid byte sequence" do
-      s = "\xa3"
-      s.force_encoding 'iso-8859-1'
+      if RUBY_VERSION > "2.3.0"
+        s = String.new("\xa3", encoding: 'iso-8859-1')
+      else
+        s = "\xa3"
+        s.force_encoding 'iso-8859-1'
+      end
       lambda { RedCloth.new(s).to_html }.should_not raise_error
     end
   end

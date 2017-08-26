@@ -165,7 +165,7 @@ module RedCloth::Formatters::LATEX
 
   # FIXME: need caption and label elements similar to image -> figure
   def table_close(opts)
-    output  = "\\begin{table}\n"
+    output = ["\\begin{table}\n"]
     output << "  \\centering\n"
     output << "  \\begin{tabular}{ #{"l " * @table[0].size }}\n"
     @table.each do |row|
@@ -173,7 +173,7 @@ module RedCloth::Formatters::LATEX
     end
     output << "  \\end{tabular}\n"
     output << "\\end{table}\n"
-    output
+    output.join
   end
 
   # code blocks
