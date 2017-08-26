@@ -28,6 +28,7 @@ module RedCloth::Formatters
       opts.delete(:class) if filter_classes
       opts.delete(:id) if filter_ids
 
+      atts = ''.dup
       opts[:"text-align"] = opts.delete(:align)
       opts[:style] += ';' if opts[:style] && (opts[:style][-1..-1] != ';')
       [:float, :"text-align", :"vertical-align"].each do |a|
@@ -36,10 +37,10 @@ module RedCloth::Formatters
       [:"padding-right", :"padding-left"].each do |a|
         opts[:style] = "#{a}:#{opts[a]}em;#{opts[:style]}" if opts[a]
       end
-      atts = [:style, :class, :lang, :id, :colspan, :rowspan, :title, :start, :align].map do |a|
-        " #{a}=\"#{ html_esc(opts[a].to_s, :html_escape_attributes) }\"" if opts[a]
+      [:style, :class, :lang, :id, :colspan, :rowspan, :title, :start, :align].each do |a|
+        atts << " #{a}=\"#{ html_esc(opts[a].to_s, :html_escape_attributes) }\"" if opts[a]
       end
-      atts.compact.join
+      atts
     end
     
     def method_missing(method, opts)
