@@ -26,7 +26,7 @@ def fixtures
   Dir[File.join(File.dirname(__FILE__), *%w[fixtures *.yml])].each do |testfile|
     testgroup = File.basename(testfile, '.yml')
     num = 0
-    YAML::load_documents(File.open(testfile)) do |doc|
+    YAML::load_stream(File.open(testfile)) do |doc|
       name = doc['name'] || num
       @fixtures["#{testgroup} #{name}"] = doc
       num += 1
