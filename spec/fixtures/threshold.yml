@@ -159,7 +159,7 @@ in: '"link text":http://example.com/'
 html: <p><a href="http://example.com/">link text</a></p>
 ---
 name: local links
-desc: The host name may be ommitted for local links.
+desc: The host name may be omitted for local links.
 in: '"link text":/example'
 html: <p><a href="/example">link text</a></p>
 ---
