@@ -28,7 +28,7 @@ module RedCloth::Formatters
       opts.delete(:class) if filter_classes
       opts.delete(:id) if filter_ids
 
-      atts = ''
+      atts = ''.dup
       opts[:"text-align"] = opts.delete(:align)
       opts[:style] += ';' if opts[:style] && (opts[:style][-1..-1] != ';')
       [:float, :"text-align", :"vertical-align"].each do |a|

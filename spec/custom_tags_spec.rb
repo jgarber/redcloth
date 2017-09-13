@@ -4,7 +4,7 @@ module FigureTag
   def fig( opts )
     label, img = opts[:text].split('|').map! {|str| str.strip}
 
-    html  = %Q{<div class="img" id="figure-#{label.tr('.', '-')}">\n}
+    html  = %Q{<div class="img" id="figure-#{label.tr('.', '-')}">\n}.dup
     html << %Q{  <a class="fig" href="/images/#{img}">\n}
     html << %Q{    <img src="/images/thumbs/#{img}" alt="Figure #{label}" />\n}
     html << %Q{  </a>\n}
@@ -15,13 +15,13 @@ end
 
 describe "custom tags" do
   it "should recognize the custom tag" do
-    input  = %Q{The first line of text.\n\n}
+    input  = %Q{The first line of text.\n\n}.dup
     input << %Q{fig. 1.1 | img.jpg\n\n}
     input << %Q{The last line of text.\n}
     r = RedCloth.new input
     r.extend FigureTag
 
-    html  = %Q{<p>The first line of text.</p>\n}
+    html  = %Q{<p>The first line of text.</p>\n}.dup
     html << %Q{<div class="img" id="figure-1-1">\n}
     html << %Q{  <a class="fig" href="/images/img.jpg">\n}
     html << %Q{    <img src="/images/thumbs/img.jpg" alt="Figure 1.1" />\n}
