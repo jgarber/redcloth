@@ -8,9 +8,20 @@ Object.send(:remove_const, :RedCloth) if Object.const_defined?(:RedCloth) && Red
 require 'rbconfig'
 begin
   conf = Object.const_get(defined?(RbConfig) ? :RbConfig : :Config)::CONFIG
-  prefix = conf['arch'] =~ /mswin|mingw/ ? "#{conf['MAJOR']}.#{conf['MINOR']}/" : ''
-  lib = "#{prefix}redcloth_scan"
-  require lib
+  if conf['arch'] =~ /mswin|mingw/
+    if File.exist? File.join(__dir__, "redcloth_scan.so")
+      # built locally
+      require "redcloth_scan"
+    else
+      # fat binary gem
+      prefix = conf['arch'] = "#{conf['MAJOR']}.#{conf['MINOR']}/"
+      lib = "#{prefix}redcloth_scan"
+      require lib
+    end
+  else
+    require "redcloth_scan"
+  end
+  puts "Loaded so"
 rescue LoadError => e
   e.message << %{\nCouldn't load #{lib}\nThe $LOAD_PATH was:\n#{$LOAD_PATH.join("\n")}}
   raise e
@@ -23,18 +34,18 @@ require 'redcloth/formatters/html'
 require 'redcloth/formatters/latex'
 
 module RedCloth
-  
+
   # A convenience method for creating a new TextileDoc. See
   # RedCloth::TextileDoc.
   def self.new( *args, &block )
     RedCloth::TextileDoc.new( *args, &block )
   end
-  
+
   # Include extension modules (if any) in TextileDoc.
   def self.include(*args)
     RedCloth::TextileDoc.send(:include, *args)
   end
-  
+
 end
 
 begin
