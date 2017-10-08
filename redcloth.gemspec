@@ -37,5 +37,11 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rspec', '~> 2.4')
   s.add_development_dependency('diff-lcs', '~> 1.1.2')
 
+  # allows local mingw builds for RubyInstaller2 builds (ruby 2.4+)
+  if s.respond_to?(:metadata=)
+    s.metadata ||= {}
+    s.metadata["msys2_mingw_dependencies"] = "ragel"
+  end
+
   s.license = "MIT"
 end

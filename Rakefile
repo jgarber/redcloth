@@ -7,7 +7,10 @@ require 'rake/clean'
 if File.directory? "ragel"
   Bundler.setup
   Bundler::GemHelper.install_tasks
-  Dir['tasks/**/*.rake'].each { |rake| load File.expand_path(rake) }
+  Dir['tasks/**/*.rake'].each {|rake|
+    next if (/mingw|mswin/ =~ RUBY_PLATFORM && /rvm\.rake\Z/ =~ rake)
+    load File.expand_path(rake)
+  }
 else
   # Omit generation/compile tasks and dependencies. In a gem package 
   # we only need tasks and dependencies required for running specs.
