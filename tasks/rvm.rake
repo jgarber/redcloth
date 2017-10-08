@@ -1,3 +1,5 @@
+return if /mingw|mswin/ =~ RUBY_PLATFORM
+
 require 'rvm'
 
 namespace :rvm do
