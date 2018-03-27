@@ -171,6 +171,13 @@ Example:
 Will become:
 
  <acronym title="American Civil Liberties Union">ACLU</acronym>
+ 
+== Filtering HTML
+
+RedCloth doesn't filter unsafe html tags by default, do to this use the following syntax:
+  RedCloth.new("<script>alert(1)</script>", [:filter_html]).to_html
+which will filter the script tags from the HTML resulting in:
+  "&lt;script&gt;alert(1)&lt;/script&gt;"
 
 == Adding Tables
 
