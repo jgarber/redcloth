@@ -1,6 +1,5 @@
 class ERB
   module Util
-
     #
     # A utility method for transforming Textile in _s_ to HTML.
     # 
@@ -18,10 +17,6 @@ class ERB
         RedCloth.new( s.to_s ).to_html
       end
     end
-
-    alias t textilize
-    module_function :t
     module_function :textilize
-
   end
 end
