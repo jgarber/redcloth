@@ -198,7 +198,7 @@ module RedCloth::Formatters::LATEX
 
   # links
   def link(opts)
-    "\\href{#{opts[:href]}}{#{opts[:name]}}"
+    "\\href{#{opts[:href].sub!(/#/, '\#')}}{#{opts[:name]}}"
   end
   
   # FIXME: use includegraphics with security verification
