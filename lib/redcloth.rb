@@ -10,6 +10,11 @@ begin
   conf = Object.const_get(defined?(RbConfig) ? :RbConfig : :Config)::CONFIG
   prefix = conf['arch'] =~ /mswin|mingw/ ? "#{conf['MAJOR']}.#{conf['MINOR']}/" : ''
   lib = "#{prefix}redcloth_scan"
+  begin 
+    require lib
+  rescue LoadError => e
+    lib = "redcloth_scan"
+  end
   require lib
 rescue LoadError => e
   e.message << %{\nCouldn't load #{lib}\nThe $LOAD_PATH was:\n#{$LOAD_PATH.join("\n")}}
