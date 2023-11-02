@@ -1,3 +1,9 @@
+== 4.3.3 / Nov 2nd, 2023
+
+* Add tests for CVE-2023-31606 [Helio Cola]
+* Fix rake compile [Helio Cola and Faria Education Group]
+* Fix CVE-2023-31606 (ReDOS possible in the sanitize_html function) [Kornelius Kalnbach and Merbin Russel]
+
 == 4.3.2 / May 23rd, 2016
 
 * Fix additional case for CVE-2012-6684 [Joshua Siler]
