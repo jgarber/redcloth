@@ -324,7 +324,7 @@ private
   # Clean unauthorized tags.
   def clean_html( text, allowed_tags = BASIC_TAGS )
     text.gsub!( /<!\[CDATA\[/, '' )
-    text.gsub!( /<(\/*)([A-Za-z]\w*)([^>]*?)(\s?\/?)>/ ) do |m|
+    text.gsub!( /<(\/*)([A-Za-z]\w*+)([^>]*?)(\s?\/?)>/ ) do |m|
       raw = $~
       tag = raw[2].downcase
       if allowed_tags.has_key? tag
