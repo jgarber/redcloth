@@ -5,14 +5,10 @@
 # appears to be fixed in Edge Rails [51e4106].
 Object.send(:remove_const, :RedCloth) if Object.const_defined?(:RedCloth) && RedCloth.is_a?(Class)
 
-require 'rbconfig'
 begin
-  conf = Object.const_get(defined?(RbConfig) ? :RbConfig : :Config)::CONFIG
-  prefix = conf['arch'] =~ /mswin|mingw/ ? "#{conf['MAJOR']}.#{conf['MINOR']}/" : ''
-  lib = "#{prefix}redcloth_scan"
-  require lib
+  require 'redcloth_scan'
 rescue LoadError => e
-  e.message << %{\nCouldn't load #{lib}\nThe $LOAD_PATH was:\n#{$LOAD_PATH.join("\n")}}
+  e.message << %{\nCouldn't load redcloth_scan\nThe $LOAD_PATH was:\n#{$LOAD_PATH.join("\n")}}
   raise e
 end
 
@@ -23,7 +19,7 @@ require 'redcloth/formatters/html'
 require 'redcloth/formatters/latex'
 
 module RedCloth
-  
+
   # A convenience method for creating a new TextileDoc. See
   # RedCloth::TextileDoc.
   def self.new( *args, &block )
@@ -34,7 +30,7 @@ module RedCloth
   def self.include(*args)
     RedCloth::TextileDoc.send(:include, *args)
   end
-  
+
 end
 
 begin
