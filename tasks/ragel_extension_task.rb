@@ -31,7 +31,7 @@ module Rake
         file target(machine) => [*ragel_sources(machine)] do
           mkdir_p(File.dirname(target(machine))) unless File.directory?(File.dirname(target(machine)))
           ensure_ragel_version
-          sh "ragel #{flags} #{lang_ragel(machine)} -o #{target(machine)}"
+          sh "ragel #{flags} #{lang_ragel(machine)} -I ragel -o #{target(machine)}"
         end
         
         file extconf => [target(machine)] if lang == 'c'
