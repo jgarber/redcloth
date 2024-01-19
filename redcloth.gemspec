@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = "Textile parser for Ruby."
   s.summary     = RedCloth::SUMMARY
   s.email       = "redcloth-upwards@rubyforge.org"
-  s.homepage    = "http://redcloth.org"
+  s.homepage    = "https://github.com/jgarber/redcloth"
   s.rubyforge_project = "redcloth"
 
   s.rubygems_version   = "1.3.7"

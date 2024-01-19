@@ -1,14 +1,12 @@
 = RedCloth - Textile parser for Ruby
 
-Homepage::  http://redcloth.org
-Maintainer:: Joshua Siler https://github.com/joshuasiler
+Homepage::  https://github.com/jgarber/redcloth
+Maintainer:: Helio Cola https://github.com/heliocola
 Author::    Jason Garber
 Copyright:: (c) 2011 Jason Garber
 License::   MIT
 
-{<img src="https://travis-ci.org/jgarber/redcloth.svg" />}[https://travis-ci.org/jgarber/redcloth] {<img src="https://codeclimate.com/github/jgarber/redcloth/badges/gpa.svg" />}[https://codeclimate.com/github/jgarber/redcloth]
-
-(See http://redcloth.org/textile/ for a Textile reference.)
+{rdoc-image:https://codeclimate.com/github/jgarber/redcloth/badges/gpa.svg}[https://codeclimate.com/github/jgarber/redcloth]
 
 = RedCloth
 

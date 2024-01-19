@@ -22,7 +22,7 @@ module RedCloth
   
   NAME = "RedCloth"
   GEM_NAME = NAME
-  URL  = "http://redcloth.org/"
+  URL  = "https://github.com/jgarber/redcloth"
   description = "Textile parser for Ruby."
 
   if RedCloth.const_defined?(:EXTENSION_LANGUAGE)
