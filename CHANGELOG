@@ -1,5 +1,6 @@
 == 4.3.4
 
+* Stop checking for main function in libc [Jean byroot Boussier]
 * Update maintainer, scrub redcloth.org [Jason Garber]
 * Add GitHub action [Anton Maminov]
 
