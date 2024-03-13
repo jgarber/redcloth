@@ -30,13 +30,13 @@ describe "custom tags" do
     html << %Q{<div>\n}
     html << %Q{<p>The last line of text.</p>}
     
-    r.to_html.should == html
+    expect(r.to_html).to eq(html)
   end
 
   it "should fall back if custom tag isn't defined" do
     r = RedCloth.new %Q/fig()>[no]{color:red}. 1.1 | img.jpg/
     
-    r.to_html.should == "<p>fig()>[no]{color:red}. 1.1 | img.jpg</p>"
+    expect(r.to_html).to eq("<p>fig()>[no]{color:red}. 1.1 | img.jpg</p>")
   end
   
   it "should not call just regular string methods" do
@@ -45,6 +45,6 @@ describe "custom tags" do
 
     html  = "<p>next. </p>"
 
-    r.to_html.should == html
+    expect(r.to_html).to eq(html)
   end
 end

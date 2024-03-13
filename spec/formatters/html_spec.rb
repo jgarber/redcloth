@@ -6,8 +6,8 @@ describe "HTML" do
   end
   
   it "should not raise an error when orphaned parentheses in a link are followed by punctuation and words in HTML" do
-    lambda {
+    expect {
       RedCloth.new(%Q{Test "(read this":http://test.host), ok}).to_html
-    }.should_not raise_error
+    }.not_to raise_error
   end
 end

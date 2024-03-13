@@ -4,15 +4,15 @@ describe RedCloth do
   
   describe "#new" do
     it "should accept options" do
-      lambda {
+      expect {
         RedCloth.new("test", [:hard_breaks])
-      }.should_not raise_error
+      }.not_to raise_error
     end
   end
   
   it "should have a VERSION" do
-    RedCloth.const_defined?("VERSION").should be_truthy
-    RedCloth::VERSION.const_defined?("STRING").should be_truthy
+    expect(RedCloth.const_defined?("VERSION")).to be_truthy
+    expect(RedCloth::VERSION.const_defined?("STRING")).to be_truthy
   end
   
   it "should show the version as a string" do

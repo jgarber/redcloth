@@ -20,7 +20,7 @@ describe RedClothSmileyExtension do
 
     html  = %Q{<p>You&#8217;re so silly! <img src='/images/emoticons/58_80.png' title=':P' class='smiley' /></p>}
 
-    RedCloth.new(input).to_html(:textile, :refs_smiley).should == html
+    expect(RedCloth.new(input).to_html(:textile, :refs_smiley)).to eq(html)
   end
   
 end
