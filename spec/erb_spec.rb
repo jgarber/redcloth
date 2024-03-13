@@ -5,6 +5,6 @@ describe "ERB helper" do
     template = %{<%=t "This new ERB tag makes is so _easy_ to use *RedCloth*" %>}
     expected = %{<p>This new <span class="caps">ERB</span> tag makes is so <em>easy</em> to use <strong>RedCloth</strong></p>}
     
-    ERB.new(template).result.should == expected
+    expect(ERB.new(template).result).to eq(expected)
   end
 end

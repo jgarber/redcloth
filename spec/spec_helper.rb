@@ -10,11 +10,11 @@ def examples_from_yaml(&block)
     if doc[formatter]
       example("should output #{formatter} for #{name}") do
         output = method("format_as_#{formatter}").call(doc)
-        output.should == doc[formatter]
+        expect(output).to eq(doc[formatter])
       end
     else
       example("should not raise errors when rendering #{formatter} for #{name}") do
-        lambda { method("format_as_#{formatter}").call(doc) }.should_not raise_error
+        expect { method("format_as_#{formatter}").call(doc) }.not_to raise_error
       end
     end
   end

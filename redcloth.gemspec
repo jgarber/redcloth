@@ -9,12 +9,20 @@ Gem::Specification.new do |s|
   s.authors     = ["Jason Garber", "Joshua Siler", "Ola Bini"]
   s.description = "Textile parser for Ruby."
   s.summary     = RedCloth::SUMMARY
-  s.email       = "redcloth-upwards@rubyforge.org"
   s.homepage    = "https://github.com/jgarber/redcloth"
-  s.rubyforge_project = "redcloth"
+  s.license = "MIT"
 
+  s.platform = 'ruby'
+  s.required_ruby_version = Gem::Requirement.new(">= 2.4")
   s.rubygems_version   = "1.3.7"
-  s.default_executable = "redcloth"
+
+  if s.respond_to?(:metadata=)
+    s.metadata = {
+      "bug_tracker_uri" => "https://github.com/jgarber/redcloth/issues",
+      "changelog_uri" => "https://github.com/jgarber/redcloth/blob/master/CHANGELOG",
+      "source_code_uri" => "https://github.com/jgarber/redcloth"
+    }
+  end
 
   s.files            = Dir['.gemtest', '.rspec', 'CHANGELOG', 'COPYING', 'Gemfile', 'README.rdoc', 'Rakefile', 'doc/**/*', 'bin/**/*', 'lib/**/*', 'redcloth.gemspec', 'spec/**/*', 'tasks/**/*']
   s.test_files       = Dir['spec/**/*']
@@ -26,8 +34,6 @@ Gem::Specification.new do |s|
   s.files -= Dir['lib/**/*.bundle']
   s.files -= Dir['lib/**/*.so']
 
-  s.platform = 'ruby'
-  
   s.files += %w[attributes inline scan].map {|f| "ext/redcloth_scan/redcloth_#{f}.c"}
   s.files += ["ext/redcloth_scan/redcloth.h"]
   s.extensions = Dir['ext/**/extconf.rb']
@@ -37,5 +43,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rspec', '~> 3.12')
   s.add_development_dependency('diff-lcs', '~> 1.5')
 
-  s.license = "MIT"
 end
