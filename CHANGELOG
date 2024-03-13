@@ -1,4 +1,4 @@
-== 4.3.4
+== 4.3.4 / Mar 13th, 2024
 
 * A round of cleanups [Helio Cola]
 * Stop checking for main function in libc [Jean byroot Boussier]
