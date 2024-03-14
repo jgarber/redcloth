@@ -1,0 +1,59 @@
+name: Tests
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  mri:
+    name: >-
+      ${{ matrix.os }} ${{ matrix.ruby }}
+
+    runs-on: ${{ matrix.os }}
+    if: |
+      !(   contains(github.event.pull_request.title, '[ci skip]')
+        || contains(github.event.pull_request.title, '[skip ci]'))
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-20.04, ubuntu-22.04, macos-12, macos-13, windows-2022 ]
+        ruby: [ 2.4, 2.5, 2.6, 2.7, '3.0', 3.1, 3.2, 3.3, head ]
+        include:
+          - { os: windows-2022 , ruby: ucrt  }
+          - { os: windows-2022 , ruby: mswin }
+        exclude:
+          - { os: ubuntu-22.04 , ruby: 2.4   }
+          - { os: ubuntu-22.04 , ruby: 2.5   }
+          - { os: ubuntu-22.04 , ruby: 2.6   }
+          - { os: ubuntu-22.04 , ruby: 2.7   }
+          - { os: ubuntu-22.04 , ruby: 3.0   }
+          - { os: macos-12     , ruby: 2.5   }
+          - { os: macos-12     , ruby: 2.7   }
+          - { os: macos-12     , ruby: 3.1   }
+          - { os: macos-13     , ruby: 2.4   }
+          - { os: macos-13     , ruby: 2.6   }
+          - { os: macos-13     , ruby: '3.0' }
+          - { os: windows-2022 , ruby: head  }
+
+    steps:
+      - name: repo checkout
+        uses: actions/checkout@v4
+
+      - name: load ruby
+        uses: ruby/setup-ruby-pkgs@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          apt-get: ragel
+          brew: ragel
+          rubygems: latest
+          bundler-cache: true # `bundle install` and cache
+        timeout-minutes: 10
+
+      - name: compile
+        run:  bundle exec rake compile
+        timeout-minutes: 3
+
+      - name: test
+        timeout-minutes: 6
+        run: bundle exec rake test
