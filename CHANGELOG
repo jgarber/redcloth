@@ -1,3 +1,7 @@
+== 4.3.5
+
+* Add GitHub Actions - Ubuntu, macOS, & Windows, Ruby 2.4 thru head, misc updates [MSP-Greg]
+
 == 4.3.4 / Mar 13th, 2024
 
 * A round of cleanups [Helio Cola]
