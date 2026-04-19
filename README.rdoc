@@ -49,7 +49,11 @@ RedCloth is simply an extension of the String class that can handle
 Textile formatting.  Use it like a String and output HTML with its
 RedCloth#to_html method.
 
+While the gem name is 'RedCloth', the filename to `require` is 'redcloth` (all lowercare letters).
+
 Simple use:
+ require 'redcloth'
+
  text = "This is *my* text."
  RedCloth.new(text).to_html
 
