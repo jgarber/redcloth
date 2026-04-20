@@ -19,8 +19,6 @@ class ERB
       end
     end
 
-    alias t textilize
-    module_function :t
     module_function :textilize
 
   end

@@ -12,9 +12,19 @@ License::   MIT
 
 RedCloth is a Ruby library for converting Textile into HTML.
 
-== Attention - Deprecating JRuby and Windows support in version 4.3
+== Attention: **BREAKING CHANGE** RedCloth 5.x series
 
-In order to prioritize merging a fix for the long standing vulnerability *CVE-2012-6684*, our {new maintainer}[https://github.com/joshuasiler] has elected to stop maintaining the precompiled versions for Windows and JRuby. 
+RedCloth 5.x series will not create the the <tt>t</tt> alias by default, but will provide an extension file if you wish to continue that behavior.
+
+Keep in mind the long term plan is to drop this all together.
+
+== JRuby and Windows support in version 4.3
+
+A while ago, around the time *CVE-2012-6684* was open, the {maintainer at that time}[https://github.com/joshuasiler], has elected to stop maintaining the precompiled versions for Windows and JRuby.
+
+But there is an ongoing effort to restore JRuby support.
+
+If this interests you, please :+1: {Issue #44}[https://github.com/jgarber/redcloth/issues/44].
 
 == Installing
 

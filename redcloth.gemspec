@@ -43,4 +43,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rspec', '~> 3.12')
   s.add_development_dependency('diff-lcs', '~> 1.5')
 
+  s.post_install_message = %q{
+    **BREAKING CHANGE**: RedCloth 5.x series
+    RedCloth 5.x series has one breaking change related to alias `t`
+    Please see https://github.com/jgarber/redcloth#attention-breaking-change-redcloth-5x-series-
+  }
+
 end
