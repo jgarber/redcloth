@@ -26,10 +26,7 @@ VALUE SYM_escape_preformatted, SYM_escape_attributes;
 %% write data nofinal;
 
 VALUE
-redcloth_transform(self, p, pe, refs)
-  VALUE self;
-  char *p, *pe;
-  VALUE refs;
+redcloth_transform(VALUE self, char *p, char *pe, VALUE refs)
 {
   char *orig_p = p, *orig_pe = pe;
   int cs, act, nest = 0;
@@ -66,8 +63,7 @@ redcloth_transform(self, p, pe, refs)
 }
 
 VALUE
-redcloth_transform2(self, str)
-  VALUE self, str;
+redcloth_transform2(VALUE self, VALUE str)
 {
   StringValue(str);
   rb_funcall(self, rb_intern("before_transform"), 1, str);
@@ -200,8 +196,7 @@ redcloth_latex_esc(VALUE self, VALUE str)
  * Transforms a Textile document with +formatter+
  */
 static VALUE
-redcloth_to(self, formatter)
-  VALUE self, formatter;
+redcloth_to(VALUE self, VALUE formatter)
 {
   rb_funcall(self, rb_intern("delete!"), 1, STR_NEW2("\r"));
   VALUE working_copy = rb_obj_clone(self);

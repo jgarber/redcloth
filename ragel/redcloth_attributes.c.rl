@@ -19,10 +19,7 @@
 
 
 VALUE
-redcloth_attribute_parser(machine, self, p, pe)
-  int machine;
-  VALUE self;
-  char *p, *pe;
+redcloth_attribute_parser(int machine, VALUE self, char *p, char *pe)
 {
   int cs, act;
   char *ts = 0, *te = 0, *reg = 0, *bck = NULL, *attr_reg = NULL, *eof = NULL;
@@ -39,8 +36,7 @@ redcloth_attribute_parser(machine, self, p, pe)
 }
 
 VALUE
-redcloth_attributes(self, str)
-  VALUE self, str;
+redcloth_attributes(VALUE self, VALUE str)
 {
   StringValue(str);
   int cs = redcloth_attributes_en_inline;
@@ -48,8 +44,7 @@ redcloth_attributes(self, str)
 }
 
 VALUE
-redcloth_link_attributes(self, str)
-  VALUE self, str;
+redcloth_link_attributes(VALUE self, VALUE str)
 {
   StringValue(str);
   int cs = redcloth_attributes_en_link_says;

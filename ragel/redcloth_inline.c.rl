@@ -143,10 +143,7 @@ red_inc(VALUE regs, VALUE ref)
 }
 
 VALUE
-redcloth_inline(self, p, pe, refs)
-  VALUE self;
-  char *p, *pe;
-  VALUE refs;
+redcloth_inline(VALUE self, char *p, char *pe, VALUE refs)
 {
   int cs, act;
   char *ts = NULL, *te = NULL, *reg = NULL, *attr_reg = NULL, *eof = NULL;
@@ -168,9 +165,7 @@ redcloth_inline(self, p, pe, refs)
   * @param te  end of character buffer
   */
 void
-rb_str_cat_escaped(self, str, ts, te)
-  VALUE self, str;
-  char *ts, *te;
+rb_str_cat_escaped(VALUE self, VALUE str, char *ts, char *te)
 {
   VALUE source_str = STR_NEW(ts, te-ts);
   VALUE escaped_str = rb_funcall(self, rb_intern("escape"), 1, source_str);
@@ -178,9 +173,7 @@ rb_str_cat_escaped(self, str, ts, te)
 }
 
 void
-rb_str_cat_escaped_for_preformatted(self, str, ts, te)
-  VALUE self, str;
-  char *ts, *te;
+rb_str_cat_escaped_for_preformatted(VALUE self, VALUE str, char *ts, char *te)
 {
   VALUE source_str = STR_NEW(ts, te-ts);
   VALUE escaped_str = rb_funcall(self, rb_intern("escape_pre"), 1, source_str);
@@ -188,8 +181,7 @@ rb_str_cat_escaped_for_preformatted(self, str, ts, te)
 }
 
 VALUE
-redcloth_inline2(self, str, refs)
-  VALUE self, str, refs;
+redcloth_inline2(VALUE self, VALUE str, VALUE refs)
 {
   StringValue(str);
   return redcloth_inline(self, RSTRING_PTR(str), RSTRING_PTR(str) + RSTRING_LEN(str) + 1, refs);
